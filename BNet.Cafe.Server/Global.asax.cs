@@ -14,6 +14,14 @@ namespace BNet.Cafe.Server
         {
             Setup setup = new Setup();
             setup.StartWebsocket();
+
+
+            new Databases.Tables.computers().create();
+
+            //Page.RegisterAsyncTask(new PageAsyncTask(async () =>
+            //{
+
+            //}));
         }
         protected void Application_BeginRequest(object sender, EventArgs e)
         {

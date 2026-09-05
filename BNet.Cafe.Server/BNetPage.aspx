@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="BNetPage.aspx.cs" Inherits="BNet.Cafe.Server.BNetPage" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Async="true" AsyncTimeout="1000000000" CodeBehind="BNetPage.aspx.cs" Inherits="BNet.Cafe.Server.BNetPage" %>
 
 <!DOCTYPE html>
 <html lang="en">
