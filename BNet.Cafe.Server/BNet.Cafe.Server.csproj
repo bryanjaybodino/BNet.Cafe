@@ -43,7 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BNet.WebSocket.Server">
-      <HintPath>..\..\BNet\BNet.WebSocket.Server\bin\Debug\net4.8\BNet.WebSocket.Server.dll</HintPath>
+      <HintPath>..\..\BNet\BNet.WebSocket.Server\bin\Debug\net4.7.2\BNet.WebSocket.Server.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -84,6 +84,7 @@
     <Content Include="Forms\Clients.ascx" />
     <Content Include="clients.html" />
     <Content Include="Global.asax" />
+    <Content Include="index.html" />
     <Content Include="Login.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -136,6 +137,12 @@
   <ItemGroup>
     <Folder Include="Assets\NewFolder1\" />
     <Folder Include="Databases\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BNet.Cafe.Client\BNet.Cafe.Client.csproj">
+      <Project>{46603615-A9F4-4DB8-B2E3-401A96FB5453}</Project>
+      <Name>BNet.Cafe.Client</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

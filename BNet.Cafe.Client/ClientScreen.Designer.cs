@@ -1,6 +1,6 @@
 ﻿namespace BNet.Cafe.Client
 {
-    partial class MainForm
+    partial class ClientScreen
     {
         /// <summary>
         /// Required designer variable.
@@ -30,14 +30,15 @@
         {
             this.SuspendLayout();
             // 
-            // MainForm
+            // ClientScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Name = "MainForm";
+            this.Name = "ClientScreen";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "BNet Cafe Client";
+            this.Load += new System.EventHandler(this.ClientScreen_Load);
             this.ResumeLayout(false);
 
         }

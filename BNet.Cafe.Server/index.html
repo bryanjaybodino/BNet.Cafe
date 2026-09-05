@@ -1,0 +1,2020 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <title>Screen Monitoring</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f4f6f9;
+            --bg2: #ffffff;
+            --bg3: #f0f2f5;
+            --border: #dde1e7;
+            --border2: #c4cad4;
+            --text: #1a1d23;
+            --text2: #5a6270;
+            --text3: #9099a8;
+            --accent: #2563eb;
+            --accent-bg: rgba(37,99,235,.09);
+            --accent-bd: rgba(37,99,235,.35);
+            --green: #16a34a;
+            --green-bg: rgba(22,163,74,.10);
+            --green-bd: rgba(22,163,74,.35);
+            --purple: #7c3aed;
+            --red: #dc2626;
+            --red-bg: rgba(220,38,38,.10);
+            --red-bd: rgba(220,38,38,.35);
+            --orange: #ea580c;
+            --orange-bg: rgba(234,88,12,.10);
+            --orange-bd: rgba(234,88,12,.35);
+            --amber: #d97706;
+            --amber-bg: rgba(217,119,6,.10);
+            --amber-bd: rgba(217,119,6,.35);
+            --shadow: 0 0 0 1px var(--border),0 4px 20px rgba(0,0,0,.08);
+            --shadow-lg: 0 0 0 1px var(--border),0 12px 40px rgba(0,0,0,.14);
+            --r: 10px;
+            --ease: cubic-bezier(.4,0,.2,1);
+            --sidebar-w: 280px;
+            --top-h: 52px;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0a0c10;
+            --bg2: #0f1318;
+            --bg3: #161b22;
+            --border: #21262d;
+            --border2: #30363d;
+            --text: #e6edf3;
+            --text2: #8b949e;
+            --text3: #6e7681;
+            --accent: #58a6ff;
+            --accent-bg: rgba(88,166,255,.12);
+            --accent-bd: rgba(88,166,255,.40);
+            --green: #3fb950;
+            --green-bg: rgba(63,185,80,.12);
+            --green-bd: rgba(63,185,80,.35);
+            --purple: #bc8cff;
+            --red: #f85149;
+            --red-bg: rgba(248,81,73,.12);
+            --red-bd: rgba(248,81,73,.35);
+            --orange: #ffa657;
+            --orange-bg: rgba(255,166,87,.12);
+            --orange-bd: rgba(255,166,87,.35);
+            --amber: #fbbf24;
+            --amber-bg: rgba(251,191,36,.12);
+            --amber-bd: rgba(251,191,36,.35);
+            --shadow: 0 0 0 1px var(--border),0 4px 24px rgba(0,0,0,.5);
+            --shadow-lg: 0 0 0 1px var(--border),0 12px 48px rgba(0,0,0,.7);
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Syne', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background .22s var(--ease), color .22s var(--ease);
+            overflow: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border2);
+            border-radius: 3px;
+        }
+
+        .app {
+            display: grid;
+            grid-template-rows: var(--top-h) 1fr;
+            grid-template-columns: var(--sidebar-w) 1fr;
+            height: 100vh;
+        }
+
+        .topbar {
+            grid-column: 1/-1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            z-index: 30;
+            gap: 12px;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hamburger {
+            display: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            color: var(--text2);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: border-color .15s, color .15s;
+            flex-shrink: 0;
+        }
+
+            .hamburger:hover {
+                border-color: var(--accent);
+                color: var(--accent);
+            }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: -.4px;
+            color: var(--text);
+        }
+
+        .brand-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-bg);
+            animation: blink 2.4s infinite;
+        }
+
+        @keyframes blink {
+            0%,100% {
+                box-shadow: 0 0 0 3px var(--accent-bg)
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px transparent
+            }
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            color: var(--text2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 15px;
+            transition: border-color .15s, color .15s, background .15s;
+        }
+
+            .icon-btn:hover {
+                border-color: var(--accent);
+                color: var(--accent);
+                background: var(--bg2);
+            }
+
+        /* REMOTE BUTTON — fix: always show state correctly */
+        .remote-btn {
+            display: none;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            color: var(--text2);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all .15s;
+        }
+
+            .remote-btn:hover {
+                border-color: var(--orange-bd);
+                color: var(--orange);
+                background: var(--orange-bg);
+            }
+
+            .remote-btn.active {
+                border-color: var(--red-bd) !important;
+                color: var(--red) !important;
+                background: var(--red-bg) !important;
+            }
+
+            .remote-btn .rb-dot {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: currentColor;
+            }
+
+            .remote-btn.active .rb-dot {
+                animation: blink 1s infinite;
+            }
+
+        .sidebar {
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: transform .25s var(--ease);
+        }
+
+        .sec-label {
+            padding: 14px 16px 6px;
+            font-size: 9.5px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--text3);
+        }
+
+        .device-list {
+            padding: 4px 8px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            max-height: 45vh;
+        }
+
+        .no-devices {
+            padding: 10px 12px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text3);
+        }
+
+        .device-entry {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background .14s, border-color .14s;
+            animation: slideIn .2s var(--ease) both;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .device-entry:hover {
+            background: var(--bg3);
+            border-color: var(--border);
+        }
+
+        .device-entry.active {
+            background: var(--accent-bg);
+            border-color: var(--accent-bd);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .device-info-col {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .device-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .device-entry.active .device-name {
+            color: var(--accent);
+        }
+
+        .device-sub {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 2px;
+            font-size: 10px;
+            color: var(--text3);
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .activity-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: var(--green);
+            animation: blink 2s infinite;
+        }
+
+            .activity-dot.idle {
+                background: var(--amber);
+                animation: none;
+            }
+
+            .activity-dot.browser {
+                background: var(--accent);
+                animation: blink 1.5s infinite;
+            }
+
+        .activity-app-label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 140px;
+        }
+
+        .sep {
+            height: 1px;
+            background: var(--border);
+            margin: 8px 14px;
+        }
+
+        .info-panel {
+            flex: 1;
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+        }
+
+            .info-panel.visible {
+                display: flex;
+            }
+
+        .activity-section {
+            padding: 4px 8px 6px;
+        }
+
+        .activity-card {
+            padding: 10px 12px;
+            border-radius: 9px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .activity-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .activity-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-bd);
+        }
+
+            .activity-icon.browser-icon {
+                background: var(--green-bg);
+                border-color: var(--green-bd);
+            }
+
+            .activity-icon.idle-icon {
+                background: var(--amber-bg);
+                border-color: var(--amber-bd);
+            }
+
+        .activity-text {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .activity-app {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .activity-url {
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+            .activity-url.window-title {
+                color: var(--text2);
+            }
+
+        .activity-time {
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text3);
+            margin-top: 1px;
+        }
+
+        .live-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 7px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            background: var(--green-bg);
+            color: var(--green);
+            border: 1px solid var(--green-bd);
+            letter-spacing: .5px;
+        }
+
+        .live-pill-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: blink 1.2s infinite;
+        }
+
+        .activity-history {
+            padding: 0 8px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            transition: background .12s;
+            cursor: default;
+        }
+
+            .history-item:hover {
+                background: var(--bg3);
+            }
+
+        .history-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: var(--border2);
+        }
+
+            .history-dot.browser {
+                background: var(--accent);
+            }
+
+            .history-dot.app {
+                background: var(--purple);
+            }
+
+        .history-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .history-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text2);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-sub {
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text3);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-time {
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text3);
+            flex-shrink: 0;
+        }
+
+        a.history-link {
+            display: block;
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity .15s;
+        }
+
+            a.history-link:hover {
+                opacity: .75;
+                text-decoration: underline;
+            }
+
+        .info-scroll {
+            padding: 0 8px 8px;
+        }
+
+        .info-row {
+            padding: 7px 10px;
+            border-radius: 7px;
+            margin-bottom: 1px;
+            transition: background .12s;
+        }
+
+            .info-row:hover {
+                background: var(--bg3);
+            }
+
+        .info-key {
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            letter-spacing: .9px;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 2px;
+        }
+
+        .info-val {
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text);
+            word-break: break-all;
+            line-height: 1.4;
+        }
+
+            .info-val.hi {
+                color: var(--accent);
+            }
+
+        .sidebar-foot {
+            padding: 10px 14px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text3);
+            flex-shrink: 0;
+        }
+
+        #clock {
+            font-weight: 600;
+            color: var(--text2);
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg);
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .tab-bar {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .screen-tab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 7px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            color: var(--text2);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .14s;
+        }
+
+            .screen-tab:hover {
+                border-color: var(--border2);
+                color: var(--text);
+            }
+
+            .screen-tab.active {
+                background: var(--accent-bg);
+                border-color: var(--accent-bd);
+                color: var(--accent);
+            }
+
+        .stream-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            overflow: hidden;
+            position: relative;
+            min-height: 0;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            color: var(--text3);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            text-align: center;
+            width: 100%;
+            padding: 40px 24px;
+            justify-content: center;
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            opacity: .45;
+        }
+
+        .stream-frame {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #zoomWrapper {
+            transform-origin: center center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            will-change: transform;
+            touch-action: none;
+        }
+
+        #screen {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            background: #000;
+            cursor: default;
+            touch-action: none;
+            will-change: contents;
+        }
+
+            #screen.remote-mode {
+                cursor: none;
+            }
+
+        .lag-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            display: none;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            background: rgba(220,38,38,.75);
+            color: #fff;
+            backdrop-filter: blur(4px);
+            z-index: 5;
+            letter-spacing: .5px;
+        }
+
+        .fps-badge {
+            position: absolute;
+            bottom: 22px;
+            right: 22px;
+            display: none;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            background: rgba(0,0,0,.55);
+            color: rgba(255,255,255,.8);
+            backdrop-filter: blur(4px);
+            z-index: 5;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.45);
+            z-index: 25;
+            backdrop-filter: blur(2px);
+        }
+
+            .overlay.open {
+                display: block;
+            }
+
+        /* Fullscreen button — stacks vertically */
+        .fullscreen-btn {
+            position: absolute;
+            right: 10px;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,.25);
+            background: rgba(0,0,0,.45);
+            color: rgba(255,255,255,.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 15px;
+            z-index: 10;
+            backdrop-filter: blur(6px);
+            transition: background .15s, border-color .15s;
+        }
+
+            .fullscreen-btn:hover {
+                background: rgba(0,0,0,.65);
+                border-color: rgba(255,255,255,.5);
+            }
+
+        #fullscreenBtn {
+            top: 10px;
+        }
+        /* kbToolbarBtn: hidden by default, shown only when remoteActive */
+        #kbToolbarBtn {
+            top: 52px;
+            display: none;
+        }
+
+            #kbToolbarBtn.remote-visible {
+                display: flex;
+            }
+
+        .stream-frame:hover #fullscreenBtn {
+            display: flex;
+        }
+        /* On touch devices always show fullscreen btn */
+        @media (hover:none) {
+            #fullscreenBtn {
+                display: flex !important;
+            }
+
+            #kbToolbarBtn.remote-visible {
+                display: flex !important;
+            }
+        }
+
+        /* Mobile KB bar — hidden until remote active */
+        .mobile-kb-bar {
+            display: none;
+            flex-shrink: 0;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 8px;
+            padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            white-space: nowrap;
+            flex-wrap: nowrap;
+            position: relative;
+            z-index: 10;
+        }
+
+            .mobile-kb-bar::-webkit-scrollbar {
+                display: none;
+            }
+
+            .mobile-kb-bar.visible {
+                display: flex;
+            }
+
+        .mkb-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
+            height: 34px;
+            min-width: 34px;
+            border-radius: 7px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            color: var(--text);
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            transition: all .12s;
+            user-select: none;
+            -webkit-user-select: none;
+            flex-shrink: 0;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+            .mkb-btn:active, .mkb-btn.on {
+                background: var(--accent-bg);
+                border-color: var(--accent-bd);
+                color: var(--accent);
+                transform: scale(.93);
+            }
+
+        .mkb-sep {
+            width: 1px;
+            height: 20px;
+            background: var(--border);
+            flex-shrink: 0;
+            margin: 0 3px;
+        }
+
+        #mobileKeyInput {
+            position: fixed;
+            left: -9999px;
+            top: 50%;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            font-size: 16px;
+            border: none;
+            background: transparent;
+            color: transparent;
+            caret-color: transparent;
+            outline: none;
+            pointer-events: none;
+        }
+
+        .touch-ripple {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 9999;
+            width: 40px;
+            height: 40px;
+            margin: -20px 0 0 -20px;
+            border: 2px solid var(--red);
+            background: var(--red-bg);
+            animation: ripple-anim .5s ease-out forwards;
+        }
+
+        @keyframes ripple-anim {
+            0% {
+                transform: scale(.3);
+                opacity: 1
+            }
+
+            100% {
+                transform: scale(1.6);
+                opacity: 0
+            }
+        }
+
+        @media (max-width:768px) {
+            .app {
+                grid-template-columns: 1fr;
+                grid-template-rows: var(--top-h) 1fr;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: var(--top-h);
+                left: 0;
+                width: min(var(--sidebar-w), 85vw);
+                height: calc(100vh - var(--top-h));
+                z-index: 26;
+                transform: translateX(-110%);
+                box-shadow: var(--shadow-lg);
+            }
+
+                .sidebar.open {
+                    transform: translateX(0);
+                }
+
+            .main {
+                grid-column: 1;
+            }
+
+            .stream-area {
+                padding: 0 !important;
+                background: var(--bg);
+                align-items: center;
+                justify-content: center;
+            }
+
+                .stream-area.streaming {
+                    background: #000;
+                    align-items: stretch;
+                    justify-content: stretch;
+                }
+
+            .stream-frame {
+                align-items: stretch;
+                justify-content: stretch;
+            }
+
+            #zoomWrapper {
+                width: 100% !important;
+                height: 100% !important;
+                overflow: hidden;
+            }
+
+            #screen {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100% !important;
+                max-height: 100% !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                object-fit: contain;
+            }
+
+            .brand span {
+                display: none;
+            }
+
+            .remote-btn span:not(.rb-dot) {
+                display: none;
+            }
+
+            .remote-btn {
+                padding: 5px 10px;
+            }
+        }
+
+        @media (max-width: 1024px) and (orientation: landscape) and (max-height: 500px) {
+            .app {
+                grid-template-columns: 1fr;
+                grid-template-rows: var(--top-h) 1fr;
+            }
+
+            :root {
+                --top-h: 40px;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: var(--top-h);
+                left: 0;
+                width: min(var(--sidebar-w), 85vw);
+                height: calc(100vh - var(--top-h));
+                z-index: 26;
+                transform: translateX(-110%);
+                box-shadow: var(--shadow-lg);
+            }
+
+                .sidebar.open {
+                    transform: translateX(0);
+                }
+
+            .main {
+                grid-column: 1;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                overflow: hidden;
+            }
+
+            .stream-area {
+                padding: 0 !important;
+                flex: 1 1 0;
+                min-height: 0;
+                background: #000;
+                align-items: stretch;
+                justify-content: stretch;
+                overflow: hidden;
+            }
+
+            .stream-frame {
+                align-items: stretch;
+                justify-content: stretch;
+            }
+
+            #zoomWrapper {
+                width: 100% !important;
+                height: 100% !important;
+                overflow: hidden;
+            }
+
+            #screen {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100% !important;
+                max-height: 100% !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                object-fit: contain;
+            }
+
+            .mobile-kb-bar {
+                padding: 4px 6px;
+                padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+                flex-shrink: 0;
+            }
+
+                .mobile-kb-bar.visible {
+                    display: flex;
+                }
+
+            .mkb-btn {
+                height: 28px;
+                padding: 0 8px;
+                font-size: 10px;
+            }
+
+            .brand span {
+                display: none;
+            }
+
+            .remote-btn span:not(.rb-dot) {
+                display: none;
+            }
+
+            .remote-btn {
+                padding: 5px 10px;
+            }
+        }
+
+        /* FULLSCREEN */
+        :fullscreen .app, :-webkit-full-screen .app {
+            height: 100vh;
+        }
+
+        :fullscreen .topbar, :-webkit-full-screen .topbar {
+            display: none;
+        }
+
+        :fullscreen .sidebar, :-webkit-full-screen .sidebar {
+            display: none;
+        }
+
+        :fullscreen .main, :-webkit-full-screen .main {
+            grid-column: 1/-1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        :fullscreen #fullscreenBtn, :-webkit-full-screen #fullscreenBtn {
+            display: flex !important;
+        }
+
+        :fullscreen #kbToolbarBtn.remote-visible, :-webkit-full-screen #kbToolbarBtn.remote-visible {
+            display: flex !important;
+        }
+
+        :fullscreen .mobile-kb-bar, :-webkit-full-screen .mobile-kb-bar {
+            flex-shrink: 0;
+            padding-left: calc(8px + env(safe-area-inset-left, 0px));
+            padding-right: calc(8px + env(safe-area-inset-right, 0px));
+            padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+        }
+
+        :fullscreen .stream-area, :-webkit-full-screen .stream-area {
+            padding: 0;
+            flex: 1 1 0;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        :fullscreen #screen, :-webkit-full-screen #screen {
+            max-height: 100%;
+            border-radius: 0;
+        }
+
+        :fullscreen .tab-bar, :-webkit-full-screen .tab-bar {
+            display: flex !important;
+            flex-shrink: 0;
+            padding: 4px 10px;
+            background: rgba(0,0,0,.55);
+            border-bottom-color: rgba(255,255,255,.12);
+            backdrop-filter: blur(8px);
+        }
+
+            :fullscreen .tab-bar[style*="display: none"], :-webkit-full-screen .tab-bar[style*="display: none"] {
+                display: none !important;
+            }
+
+        :fullscreen .screen-tab, :-webkit-full-screen .screen-tab {
+            background: rgba(255,255,255,.1);
+            border-color: rgba(255,255,255,.2);
+            color: rgba(255,255,255,.75);
+            padding: 3px 10px;
+            font-size: 10px;
+        }
+
+            :fullscreen .screen-tab.active, :-webkit-full-screen .screen-tab.active {
+                background: var(--accent-bg);
+                border-color: var(--accent-bd);
+                color: var(--accent);
+            }
+
+        :fullscreen .mkb-btn, :-webkit-full-screen .mkb-btn {
+            height: 30px;
+            font-size: 10px;
+            padding: 0 8px;
+        }
+    </style>
+</head>
+<body >
+    <div class="overlay" id="overlay"></div>
+    <input id="mobileKeyInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" enterkeyhint="send" />
+
+    <div class="app">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="hamburger" id="hamburger">☰</button>
+                <div class="brand"><div class="brand-dot"></div><span>WorkforceControl</span></div>
+            </div>
+            <div class="topbar-right">
+                <button class="remote-btn" id="remoteBtn" title="Toggle remote control">
+                    <span class="rb-dot"></span>
+                    <span id="remoteBtnLabel">Remote Control</span>
+                </button>
+                <button class="icon-btn" id="themeBtn" title="Toggle theme">🌙</button>
+            </div>
+        </header>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sec-label">Connected Devices</div>
+            <div class="device-list" id="deviceList">
+                <div class="no-devices" id="noDevices">Waiting for devices…</div>
+            </div>
+            <div class="sep"></div>
+            <div class="info-panel" id="infoPanel">
+                <div class="sec-label" style="display:flex;align-items:center;justify-content:space-between;padding-right:14px;">
+                    <span>Current Activity</span>
+                    <span class="live-pill"><span class="live-pill-dot"></span>LIVE</span>
+                </div>
+                <div class="activity-section">
+                    <div class="activity-card" id="activityCard">
+                        <div class="activity-row">
+                            <div class="activity-icon" id="activityIcon">💻</div>
+                            <div class="activity-text">
+                                <div class="activity-app" id="activityApp">—</div>
+                                <div class="activity-url" id="activityDetail">Waiting for data…</div>
+                                <div class="activity-time" id="activityTime"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sec-label">Recent Activity</div>
+                <div class="activity-history" id="activityHistory">
+                    <div style="padding:4px 8px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text3);">No history yet…</div>
+                </div>
+                <div class="sep"></div>
+                <div class="sec-label">Device Information</div>
+                <div class="info-scroll">
+                    <div class="info-row"><div class="info-key">Workgroup</div><div class="info-val" id="Workgroup">—</div></div>
+                    <div class="info-row"><div class="info-key">Windows</div><div class="info-val" id="Windows">—</div></div>
+                    <div class="info-row"><div class="info-key">Windows Version</div><div class="info-val" id="WindowsVersion">—</div></div>
+                    <div class="info-row"><div class="info-key">OS Version</div><div class="info-val" id="OSVersion">—</div></div>
+                    <div class="info-row"><div class="info-key">Architecture</div><div class="info-val hi" id="OSArchitecture">—</div></div>
+                    <div class="info-row"><div class="info-key">Serial Number</div><div class="info-val" id="SerialNumber">—</div></div>
+                    <div class="info-row"><div class="info-key">Processors</div><div class="info-val hi" id="ProcessorCount">—</div></div>
+                    <div class="info-row"><div class="info-key">Machine Name</div><div class="info-val" id="MachineName">—</div></div>
+                    <div class="info-row"><div class="info-key">Username</div><div class="info-val hi" id="Username">—</div></div>
+                </div>
+            </div>
+            <div class="sidebar-foot">⬡ &nbsp;<span id="clock">--:--:--</span></div>
+        </aside>
+
+        <main class="main">
+            <div class="tab-bar" id="tabBar"></div>
+            <div class="stream-area">
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-icon">🖥️</div>
+                    <p>Select a device from the sidebar to start monitoring</p>
+                </div>
+                <div class="stream-frame" id="streamFrame">
+                    <button class="fullscreen-btn" id="fullscreenBtn" title="Toggle fullscreen">⛶</button>
+                    <button class="fullscreen-btn" id="kbToolbarBtn" title="Toggle keyboard">⌨️</button>
+                    <div class="lag-badge" id="lagBadge">⚠ BUFFERED</div>
+                    <div id="zoomWrapper">
+                        <canvas id="screen"></canvas>
+                    </div>
+                    <div class="fps-badge" id="fpsBadge">-- fps</div>
+                </div>
+            </div>
+
+            <!-- Mobile KB bar only — desktop kb-toolbar removed -->
+            <div class="mobile-kb-bar" id="mobileKbBar">
+                <button class="mkb-btn" data-modifier="ctrl" data-key="Control" data-code="ControlLeft" data-kc="17">Ctrl</button>
+                <button class="mkb-btn" data-modifier="alt" data-key="Alt" data-code="AltLeft" data-kc="18">Alt</button>
+                <button class="mkb-btn" data-modifier="shift" data-key="Shift" data-code="ShiftLeft" data-kc="16">⇧</button>
+                <button class="mkb-btn" data-modifier="meta" data-key="Meta" data-code="MetaLeft" data-kc="91">⊞</button>
+                <div class="mkb-sep"></div>
+                <button class="mkb-btn" data-key="Escape" data-code="Escape" data-kc="27">Esc</button>
+                <button class="mkb-btn" data-key="Tab" data-code="Tab" data-kc="9">Tab</button>
+                <button class="mkb-btn" data-key="Backspace" data-code="Backspace" data-kc="8">⌫</button>
+                <button class="mkb-btn" data-key="Enter" data-code="Enter" data-kc="13">↵</button>
+                <button class="mkb-btn" data-key="Delete" data-code="Delete" data-kc="46">Del</button>
+                <div class="mkb-sep"></div>
+                <button class="mkb-btn" data-key="ArrowLeft" data-code="ArrowLeft" data-kc="37">◀</button>
+                <button class="mkb-btn" data-key="ArrowUp" data-code="ArrowUp" data-kc="38">▲</button>
+                <button class="mkb-btn" data-key="ArrowDown" data-code="ArrowDown" data-kc="40">▼</button>
+                <button class="mkb-btn" data-key="ArrowRight" data-code="ArrowRight" data-kc="39">▶</button>
+                <div class="mkb-sep"></div>
+                <button class="mkb-btn" data-key="F1" data-code="F1" data-kc="112">F1</button>
+                <button class="mkb-btn" data-key="F2" data-code="F2" data-kc="113">F2</button>
+                <button class="mkb-btn" data-key="F3" data-code="F3" data-kc="114">F3</button>
+                <button class="mkb-btn" data-key="F4" data-code="F4" data-kc="115">F4</button>
+                <button class="mkb-btn" data-key="F5" data-code="F5" data-kc="116">F5</button>
+                <button class="mkb-btn" data-key="F11" data-code="F11" data-kc="122">F11</button>
+                <button class="mkb-btn" data-key="F12" data-code="F12" data-kc="123">F12</button>
+                <div class="mkb-sep"></div>
+                <button class="mkb-btn" id="mkbCad">CAD</button>
+                <button class="mkb-btn" id="mkbCopy">Ctrl+C</button>
+                <button class="mkb-btn" id="mkbPaste">Ctrl+V</button>
+                <button class="mkb-btn" id="mkbUndo">Ctrl+Z</button>
+                <div class="mkb-sep"></div>
+                <button class="mkb-btn" id="mkbType">⌨️ Type</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        'use strict';
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // STATE
+        // ═══════════════════════════════════════════════════════════════════════
+        var currentClient = '';
+        var currentScreen = 'screen_1';
+        var screenCount = 0;
+        var lastClientList = [];
+        var knownDevices = new Set();
+        var remoteActive = false;
+        var activityData = Object.create(null);
+        var MAX_HISTORY = 20;
+        var modState = { ctrl: false, alt: false, shift: false, meta: false };
+        var isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        var currentScreenIndex = 0;
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // CANVAS / FRAME PIPELINE
+        // ═══════════════════════════════════════════════════════════════════════
+        var canvas = document.getElementById('screen');
+        var ctx2d = canvas.getContext('2d', { alpha: false });
+        var frameNaturalW = 1920;
+        var frameNaturalH = 1080;
+        var pendingFrame = null;
+        var decodeInFlight = 0;
+        var lastFrameAt = 0;
+        var frameCount = 0;
+        var lastFpsTime = performance.now();
+        var lagBadge = document.getElementById('lagBadge');
+        var fpsDisplay = document.getElementById('fpsBadge');
+        var LAG_THRESHOLD = 3000;
+
+        setInterval(function () {
+            var now = performance.now();
+            var elapsed = (now - lastFpsTime) / 1000;
+            var fps = elapsed > 0 ? Math.round(frameCount / elapsed) : 0;
+            frameCount = 0; lastFpsTime = now;
+            if (currentClient) fpsDisplay.textContent = fps + ' fps';
+            var stale = currentClient && lastFrameAt > 0 && (Date.now() - lastFrameAt) > LAG_THRESHOLD;
+            lagBadge.style.display = stale ? 'block' : 'none';
+        }, 1000);
+
+        function renderLoop() {
+            requestAnimationFrame(renderLoop);
+            if (!pendingFrame || decodeInFlight > 0) return;
+            var buf = pendingFrame;
+            pendingFrame = null;
+            decodeInFlight++;
+            var blob = new Blob([new Uint8Array(buf, 1)], { type: 'image/jpeg' });
+            createImageBitmap(blob, { colorSpaceConversion: 'none' })
+                .then(function (bm) {
+                    if (canvas.width !== bm.width || canvas.height !== bm.height) {
+                        frameNaturalW = bm.width; frameNaturalH = bm.height;
+                        canvas.width = bm.width; canvas.height = bm.height;
+                    }
+                    ctx2d.drawImage(bm, 0, 0);
+                    bm.close();
+                    frameCount++;
+                    lastFrameAt = Date.now();
+                    lagBadge.style.display = 'none';
+                })
+                .catch(function () { })
+                .finally(function () { decodeInFlight--; });
+        }
+        renderLoop();
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // THEME + CLOCK
+        // ═══════════════════════════════════════════════════════════════════════
+        var html = document.documentElement;
+        var themeBtn = document.getElementById('themeBtn');
+        function applyTheme(t) {
+            html.setAttribute('data-theme', t);
+            themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+            try { localStorage.setItem('wcTheme', t); } catch (e) { }
+        }
+        applyTheme((function () { try { return localStorage.getItem('wcTheme'); } catch (e) { return null; } })() || 'light');
+        themeBtn.addEventListener('click', function () { applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
+        function tick() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { hour12: false }); }
+        tick(); setInterval(tick, 1000);
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // SIDEBAR
+        // ═══════════════════════════════════════════════════════════════════════
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('overlay');
+        var hamburger = document.getElementById('hamburger');
+        function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); }
+        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+        hamburger.addEventListener('click', function () { sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); });
+        overlay.addEventListener('click', closeSidebar);
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // FULLSCREEN
+        // ═══════════════════════════════════════════════════════════════════════
+        var fullscreenBtn = document.getElementById('fullscreenBtn');
+        var kbToolbarBtn = document.getElementById('kbToolbarBtn');
+        function enterFullscreen() { var el = document.documentElement; (el.requestFullscreen || el.webkitRequestFullscreen).call(el); }
+        function exitFullscreen() { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
+        function isFullscreen() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+        function toggleFullscreen() { isFullscreen() ? exitFullscreen() : enterFullscreen(); }
+        function onFsChange() {
+            document.body.classList.toggle('is-fullscreen', isFullscreen());
+            if (!isFullscreen()) {
+                // Reset mobile KB bar on exit fullscreen
+                mobileKbBar.classList.remove('visible');
+                kbToolbarBtn.textContent = '⌨️';
+            }
+        }
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        document.addEventListener('fullscreenchange', onFsChange);
+        document.addEventListener('webkitfullscreenchange', onFsChange);
+
+        // kbToolbarBtn: toggles mobileKbBar, only works when remoteActive
+        kbToolbarBtn.addEventListener('click', function () {
+            if (!remoteActive) return;
+            mobileKbBar.classList.toggle('visible');
+            kbToolbarBtn.textContent = mobileKbBar.classList.contains('visible') ? '✕' : '⌨️';
+        });
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // WEBSOCKET
+        // ═══════════════════════════════════════════════════════════════════════
+        var ws = null;
+        var wsReady = false;
+        var _decoder = new TextDecoder();
+        var _encoder = new TextEncoder();
+        var _pingMsg = new Uint8Array([0x22]).buffer;
+        var _wsReconnecting = false;
+
+        function connectWS() {
+            _wsReconnecting = false;
+            var proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket('ws://localhost:2050');
+            ws.binaryType = 'arraybuffer';
+            ws.onopen = function () {
+                wsReady = true; _wsReconnecting = false;
+                if (currentClient) sendSubscribe(currentScreen + '_' + currentClient);
+            };
+            ws.onerror = function () { wsReady = false; };
+            ws.onclose = function () {
+                wsReady = false; pendingFrame = null; lastFrameAt = 0;
+                lagBadge.style.display = 'none';
+                if (!_wsReconnecting) { _wsReconnecting = true; setTimeout(connectWS, 3000); }
+            };
+            ws.onmessage = function (evt) {
+                if (!(evt.data instanceof ArrayBuffer)) return;
+                var view = new Uint8Array(evt.data);
+                var type = view[0];
+                if (type === 0x10) { pendingFrame = evt.data; return; }
+                var body = _decoder.decode(new Uint8Array(evt.data, 1));
+                if (type === 0x11) {
+                    try {
+                        var data = JSON.parse(body);
+                        if (!Array.isArray(data)) return;
+                        lastClientList = data;
+                        renderDevices(data);
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].AccountName !== currentClient) continue;
+                            var prev = screenCount;
+                            screenCount = Number(data[i].ScreenCount) || 1;
+                            updateInfo(data[i]);
+                            if (prev !== screenCount) renderTabs();
+                            break;
+                        }
+                    } catch (e) { console.error('CLIENT_LIST parse error', e); }
+                    return;
+                }
+                if (type === 0x12) {
+                    try { var info = JSON.parse(body); if (info && info.accountName) ingestActivity(info); }
+                    catch (e) { console.error('ACTIVITY parse error', e); }
+                    return;
+                }
+            };
+        }
+
+        function wsSend(data) { if (ws && ws.readyState === WebSocket.OPEN) ws.send(data); }
+        function sendSubscribe(screenKey) {
+            var kb = _encoder.encode(screenKey);
+            var msg = new Uint8Array(1 + kb.length);
+            msg[0] = 0x21; msg.set(kb, 1);
+            wsSend(msg.buffer);
+        }
+        function sendInput(payload) {
+            if (!currentClient || !wsReady) return;
+            payload.screenIndex = currentScreenIndex;
+            var json = JSON.stringify(payload);
+            var jb = _encoder.encode(json);
+            var msg = new Uint8Array(1 + jb.length);
+            msg[0] = 0x20; msg.set(jb, 1);
+            wsSend(msg.buffer);
+        }
+        setInterval(function () { if (wsReady) wsSend(_pingMsg); }, 10000);
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // ACTIVITY
+        // ═══════════════════════════════════════════════════════════════════════
+        function ingestActivity(info) {
+            var name = info.accountName;
+            if (!activityData[name]) activityData[name] = { current: null, history: [] };
+            var slot = activityData[name];
+            var prev = slot.current;
+            if (prev && (prev.appName !== info.appName || prev.url !== info.url)) {
+                slot.history.unshift(prev);
+                if (slot.history.length > MAX_HISTORY) slot.history.length = MAX_HISTORY;
+            }
+            slot.current = info;
+            updateDeviceSubLabel(name, info);
+            if (name === currentClient) renderActivityPanel(slot);
+        }
+
+        var ICON_MAP = [
+            [['excel', 'winword', 'powerpnt'], '📄'],
+            [['outlook', 'thunderbird'], '📧'],
+            [['teams', 'slack', 'discord'], '💬'],
+            [['code', 'devenv', 'rider'], '💻'],
+            [['explorer'], '📁'],
+        ];
+        function getAppIcon(info) {
+            if (!info) return { icon: '💻', cls: '' };
+            if (info.isBrowser) return { icon: '🌐', cls: 'browser-icon' };
+            var proc = (info.processName || '').toLowerCase();
+            if (proc === 'idle') return { icon: '😴', cls: 'idle-icon' };
+            for (var i = 0; i < ICON_MAP.length; i++) {
+                var terms = ICON_MAP[i][0];
+                for (var j = 0; j < terms.length; j++)
+                    if (proc.includes(terms[j])) return { icon: ICON_MAP[i][1], cls: '' };
+            }
+            return { icon: '🖥️', cls: '' };
+        }
+
+        var _timeOpts = { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        function fmtTime(s) { if (!s) return ''; try { return new Date(s).toLocaleTimeString('en-US', _timeOpts); } catch (e) { return s; } }
+
+        function updateDeviceSubLabel(accountName, info) {
+            var entry = document.querySelector('.device-entry[data-name="' + accountName + '"]');
+            if (!entry) return;
+            var sub = entry.querySelector('.device-sub');
+            if (!sub) return;
+            var dotClass = info.isBrowser ? 'browser' : '';
+            var displayLabel = info.isBrowser ? (info.url || info.appName || 'Browser') : (info.appName || info.processName || 'Unknown');
+            var fullLabel = displayLabel;
+            if (info.isBrowser && info.url) { try { displayLabel = new URL(info.url).hostname; } catch (e) { } }
+            sub.innerHTML = '<span class="activity-dot ' + dotClass + '"></span><span class="activity-app-label" title="' + escHtml(fullLabel) + '">' + escHtml(displayLabel) + '</span>';
+        }
+
+        function renderActivityPanel(slot) {
+            var info = slot.current;
+            var ig = getAppIcon(info);
+            var iconEl = document.getElementById('activityIcon');
+            iconEl.textContent = ig.icon; iconEl.className = 'activity-icon ' + ig.cls;
+            if (info) {
+                document.getElementById('activityApp').textContent = info.appName || info.processName || 'Unknown';
+                var detailEl = document.getElementById('activityDetail');
+                if (info.isBrowser && info.url) { detailEl.textContent = info.url; detailEl.className = 'activity-url'; detailEl.title = info.url; }
+                else { detailEl.textContent = info.windowTitle || '—'; detailEl.className = 'activity-url window-title'; detailEl.title = info.windowTitle || ''; }
+                document.getElementById('activityTime').textContent = 'Since ' + fmtTime(info.capturedAt);
+            } else {
+                document.getElementById('activityApp').textContent = '—';
+                var d = document.getElementById('activityDetail');
+                d.textContent = 'Waiting for data…'; d.className = 'activity-url window-title';
+                document.getElementById('activityTime').textContent = '';
+            }
+            var hist = document.getElementById('activityHistory');
+            if (!slot.history.length) { hist.innerHTML = '<div style="padding:4px 8px;font-size:10px;font-family:\'JetBrains Mono\',monospace;color:var(--text3);">No history yet…</div>'; return; }
+            var htmlStr = '';
+            var items = slot.history.slice(0, 10);
+            for (var i = 0; i < items.length; i++) {
+                var h = items[i];
+                var isBrow = h.isBrowser;
+                var dotCls = isBrow ? 'browser' : 'app';
+                var name = h.appName || h.processName || 'Unknown';
+                var fullUrl = isBrow ? (h.url || '') : (h.windowTitle || '');
+                var displaySub = fullUrl;
+                if (isBrow && h.url) { try { displaySub = new URL(h.url).hostname; } catch (e) { } }
+                var subHtml = (isBrow && fullUrl)
+                    ? '<a class="history-sub history-link" href="' + escHtml(fullUrl) + '" target="_blank" rel="noopener noreferrer">' + escHtml(displaySub) + '</a>'
+                    : '<div class="history-sub">' + escHtml(displaySub) + '</div>';
+                htmlStr += '<div class="history-item"><span class="history-dot ' + dotCls + '"></span><div class="history-text"><div class="history-name">' + escHtml(name) + '</div>' + subHtml + '</div><span class="history-time">' + fmtTime(h.capturedAt) + '</span></div>';
+            }
+            hist.innerHTML = htmlStr;
+        }
+
+        var _escDiv = document.createElement('div');
+        var _escText = document.createTextNode('');
+        _escDiv.appendChild(_escText);
+        function escHtml(s) { if (!s) return ''; _escText.nodeValue = s; return _escDiv.innerHTML; }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // REMOTE CONTROL
+        // ═══════════════════════════════════════════════════════════════════════
+        var remoteBtn = document.getElementById('remoteBtn');
+        var remoteBtnLabel = document.getElementById('remoteBtnLabel');
+        var streamFrame = document.getElementById('streamFrame');
+        var mobileKbBar = document.getElementById('mobileKbBar');
+        var streamArea = document.querySelector('.stream-area');
+        var zoomWrapper = document.getElementById('zoomWrapper');
+
+        remoteBtn.addEventListener('click', function () {
+            if (!currentClient) return;
+            remoteActive = !remoteActive;
+            applyRemoteState();
+        });
+
+        function applyRemoteState() {
+            // Fix: force-reset button styles so .active always wins cleanly
+            remoteBtn.classList.remove('active');
+            if (remoteActive) remoteBtn.classList.add('active');
+
+            remoteBtnLabel.textContent = remoteActive ? 'Stop Remote' : 'Remote Control';
+            canvas.classList.toggle('remote-mode', remoteActive);
+
+            // kbToolbarBtn: only visible when streaming AND remote active
+            if (remoteActive && currentClient) {
+                kbToolbarBtn.classList.add('remote-visible');
+            } else {
+                kbToolbarBtn.classList.remove('remote-visible');
+                kbToolbarBtn.textContent = '⌨️';
+            }
+
+            // Mobile KB bar: show when remote active on mobile, hide when not
+            if (!remoteActive) {
+                mobileKbBar.classList.remove('visible');
+                resetZoom();
+            } else if (isMobile) {
+                mobileKbBar.classList.add('visible');
+            }
+
+            if (remoteActive && !isMobile) canvas.focus();
+        }
+
+        function getScaledCoords(e) {
+            var rect = canvas.getBoundingClientRect();
+            return { x: Math.round((e.clientX - rect.left) * frameNaturalW / rect.width), y: Math.round((e.clientY - rect.top) * frameNaturalH / rect.height) };
+        }
+
+        var mouseMoveRafId = 0, pendingMX = 0, pendingMY = 0;
+        canvas.addEventListener('mousemove', function (e) {
+            if (!remoteActive) return;
+            var c = getScaledCoords(e); pendingMX = c.x; pendingMY = c.y;
+            if (!mouseMoveRafId) mouseMoveRafId = requestAnimationFrame(function () {
+                mouseMoveRafId = 0;
+                sendInput({ type: 'mousemove', x: pendingMX, y: pendingMY, frameW: frameNaturalW, frameH: frameNaturalH });
+            });
+        });
+        canvas.addEventListener('mousedown', function (e) {
+            if (!remoteActive) return; e.preventDefault();
+            var c = getScaledCoords(e);
+            sendInput({ type: 'mousedown', x: c.x, y: c.y, button: e.button, frameW: frameNaturalW, frameH: frameNaturalH });
+        });
+        canvas.addEventListener('mouseup', function (e) {
+            if (!remoteActive) return; e.preventDefault();
+            var c = getScaledCoords(e);
+            sendInput({ type: 'mouseup', x: c.x, y: c.y, button: e.button, frameW: frameNaturalW, frameH: frameNaturalH });
+        });
+        canvas.addEventListener('wheel', function (e) {
+            if (!remoteActive) return; e.preventDefault();
+            sendInput({ type: 'wheel', delta: Math.round(e.deltaY) });
+        }, { passive: false });
+        canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+        canvas.setAttribute('tabindex', '0');
+        window.addEventListener('keydown', function (e) {
+            if (!remoteActive) return; e.preventDefault();
+            sendInput({ type: 'keydown', key: e.key, code: e.code, keyCode: e.keyCode, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey });
+        });
+        window.addEventListener('keyup', function (e) {
+            if (!remoteActive) return; e.preventDefault();
+            sendInput({ type: 'keyup', key: e.key, code: e.code, keyCode: e.keyCode, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey });
+        });
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // ZOOM
+        // ═══════════════════════════════════════════════════════════════════════
+        function resetZoom() { zoomWrapper.style.transform = 'none'; zoomWrapper.style.transformOrigin = 'center center'; }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // TOUCH / MOBILE REMOTE
+        // ═══════════════════════════════════════════════════════════════════════
+        var longPressTimer = null, longPressFired = false, touchMoved = false;
+        var LONG_PRESS_MS = 600;
+        var lastTouchX = 0, lastTouchY = 0;
+        var remoteCursorX = frameNaturalW / 2, remoteCursorY = frameNaturalH / 2;
+        var TOUCH_SENSITIVITY = 2.0, touchDeltaX = 0, touchDeltaY = 0, touchMoveRafId = 0;
+        var velX = 0, velY = 0, SMOOTHING = 0.35;
+        var fingerCanvasX = -1, fingerCanvasY = -1;
+        var EDGE_SNAP_PX = 22;
+
+        function scheduleTouchMoveFrame() {
+            if (touchMoveRafId) return;
+            touchMoveRafId = requestAnimationFrame(function () {
+                touchMoveRafId = 0;
+                if (!remoteActive || (!touchDeltaX && !touchDeltaY)) return;
+                velX = velX * (1 - SMOOTHING) + touchDeltaX * SMOOTHING;
+                velY = velY * (1 - SMOOTHING) + touchDeltaY * SMOOTHING;
+                touchDeltaX = 0; touchDeltaY = 0;
+                var nextX = remoteCursorX + velX * TOUCH_SENSITIVITY;
+                var nextY = remoteCursorY + velY * TOUCH_SENSITIVITY;
+                if (nextX < 0) { nextX = 0; velX = 0; } if (nextX > frameNaturalW - 1) { nextX = frameNaturalW - 1; velX = 0; }
+                if (nextY < 0) { nextY = 0; velY = 0; } if (nextY > frameNaturalH - 1) { nextY = frameNaturalH - 1; velY = 0; }
+                remoteCursorX = nextX; remoteCursorY = nextY;
+                if (fingerCanvasX >= 0) {
+                    var rect = canvas.getBoundingClientRect();
+                    if (rect.width > 0 && rect.height > 0) {
+                        if (fingerCanvasX - rect.left <= EDGE_SNAP_PX) { remoteCursorX = 0; velX = 0; }
+                        if (rect.right - fingerCanvasX <= EDGE_SNAP_PX) { remoteCursorX = frameNaturalW - 1; velX = 0; }
+                        if (fingerCanvasY - rect.top <= EDGE_SNAP_PX) { remoteCursorY = 0; velY = 0; }
+                        if (rect.bottom - fingerCanvasY <= EDGE_SNAP_PX) { remoteCursorY = frameNaturalH - 1; velY = 0; }
+                    }
+                }
+                sendInput({ type: 'mousemove', x: Math.round(remoteCursorX), y: Math.round(remoteCursorY), frameW: frameNaturalW, frameH: frameNaturalH });
+            });
+        }
+
+        function showRipple(cx, cy) {
+            var r = document.createElement('div'); r.className = 'touch-ripple';
+            r.style.left = cx + 'px'; r.style.top = cy + 'px';
+            document.body.appendChild(r);
+            r.addEventListener('animationend', function () { r.remove(); }, { once: true });
+        }
+
+        zoomWrapper.addEventListener('touchstart', onTouchStart, { passive: false });
+        zoomWrapper.addEventListener('touchmove', onTouchMove, { passive: false });
+        zoomWrapper.addEventListener('touchend', onTouchEnd, { passive: false });
+        zoomWrapper.addEventListener('touchcancel', onTouchCancel, { passive: false });
+
+        function onTouchStart(e) {
+            e.preventDefault();
+            if (e.touches.length === 1) {
+                var t = e.touches[0];
+                lastTouchX = t.clientX; lastTouchY = t.clientY;
+                velX = 0; velY = 0; touchDeltaX = 0; touchDeltaY = 0;
+                touchMoved = false; longPressFired = false;
+                longPressTimer = setTimeout(function () {
+                    if (!touchMoved) {
+                        longPressFired = true; showRipple(t.clientX, t.clientY);
+                        if (remoteActive) {
+                            sendInput({ type: 'mousedown', x: Math.round(remoteCursorX), y: Math.round(remoteCursorY), button: 2, frameW: frameNaturalW, frameH: frameNaturalH });
+                            sendInput({ type: 'mouseup', x: Math.round(remoteCursorX), y: Math.round(remoteCursorY), button: 2, frameW: frameNaturalW, frameH: frameNaturalH });
+                        }
+                        if (navigator.vibrate) navigator.vibrate(40);
+                    }
+                }, LONG_PRESS_MS);
+            }
+        }
+        function onTouchMove(e) {
+            e.preventDefault();
+            if (e.touches.length === 1) {
+                var t = e.touches[0];
+                var rawDx = t.clientX - lastTouchX; var rawDy = t.clientY - lastTouchY;
+                if (!touchMoved && (Math.abs(rawDx) > 2 || Math.abs(rawDy) > 2)) { touchMoved = true; clearTimeout(longPressTimer); }
+                if (!touchMoved || !remoteActive) return;
+                fingerCanvasX = t.clientX; fingerCanvasY = t.clientY;
+                touchDeltaX += rawDx; touchDeltaY += rawDy;
+                scheduleTouchMoveFrame();
+                lastTouchX = t.clientX; lastTouchY = t.clientY;
+            }
+        }
+        function onTouchEnd(e) {
+            e.preventDefault(); clearTimeout(longPressTimer);
+            if (e.touches.length === 0) {
+                if (!longPressFired && !touchMoved && remoteActive) {
+                    sendInput({ type: 'mousedown', x: Math.round(remoteCursorX), y: Math.round(remoteCursorY), button: 0, frameW: frameNaturalW, frameH: frameNaturalH });
+                    sendInput({ type: 'mouseup', x: Math.round(remoteCursorX), y: Math.round(remoteCursorY), button: 0, frameW: frameNaturalW, frameH: frameNaturalH });
+                }
+                velX = 0; velY = 0; touchDeltaX = 0; touchDeltaY = 0;
+                touchMoved = false; longPressFired = false; fingerCanvasX = -1; fingerCanvasY = -1;
+            }
+        }
+        function onTouchCancel(e) {
+            clearTimeout(longPressTimer);
+            velX = 0; velY = 0; touchDeltaX = 0; touchDeltaY = 0;
+            touchMoved = false; longPressFired = false; fingerCanvasX = -1; fingerCanvasY = -1;
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // MOBILE KB BUTTONS
+        // ═══════════════════════════════════════════════════════════════════════
+        function handleKbBtnClick(btn) {
+            var key = btn.dataset.key;
+            var code = btn.dataset.code;
+            var keyCode = parseInt(btn.dataset.kc, 10);
+            var isMod = btn.dataset.modifier;
+            if (isMod) {
+                modState[isMod] = !modState[isMod];
+                document.querySelectorAll('[data-modifier="' + isMod + '"]').forEach(function (b) {
+                    b.classList.toggle('on', modState[isMod]);
+                    b.style.background = modState[isMod] ? 'var(--accent-bg)' : '';
+                    b.style.borderColor = modState[isMod] ? 'var(--accent-bd)' : '';
+                    b.style.color = modState[isMod] ? 'var(--accent)' : '';
+                });
+                return;
+            }
+            sendInput({ type: 'keydown', key: key, code: code, keyCode: keyCode, ctrl: modState.ctrl, alt: modState.alt, shift: modState.shift, meta: modState.meta });
+            sendInput({ type: 'keyup', key: key, code: code, keyCode: keyCode, ctrl: modState.ctrl, alt: modState.alt, shift: modState.shift, meta: modState.meta });
+            ['ctrl', 'alt', 'shift', 'meta'].forEach(function (m) {
+                if (!modState[m]) return; modState[m] = false;
+                document.querySelectorAll('[data-modifier="' + m + '"]').forEach(function (b) { b.classList.remove('on'); b.style.background = b.style.borderColor = b.style.color = ''; });
+            });
+        }
+
+        document.querySelectorAll('.mkb-btn[data-key]').forEach(function (btn) {
+            btn.addEventListener('click', function () { handleKbBtnClick(btn); });
+            btn.addEventListener('touchstart', function (e) { e.stopPropagation(); }, { passive: true });
+            btn.addEventListener('touchend', function (e) { e.stopPropagation(); }, { passive: true });
+        });
+
+        function sendKeys(pairs) { for (var i = 0; i < pairs.length; i++) sendInput(pairs[i]); }
+
+        document.getElementById('mkbCad').addEventListener('click', function () {
+            sendKeys([
+                { type: 'keydown', key: 'Control', code: 'ControlLeft', keyCode: 17 },
+                { type: 'keydown', key: 'Alt', code: 'AltLeft', keyCode: 18, ctrl: true },
+                { type: 'keydown', key: 'Delete', code: 'Delete', keyCode: 46, ctrl: true, alt: true },
+                { type: 'keyup', key: 'Delete', code: 'Delete', keyCode: 46, ctrl: true, alt: true },
+                { type: 'keyup', key: 'Alt', code: 'AltLeft', keyCode: 18, ctrl: true },
+                { type: 'keyup', key: 'Control', code: 'ControlLeft', keyCode: 17 },
+            ]);
+        });
+        function mkbCombo(key, code, kc) {
+            sendInput({ type: 'keydown', key: key, code: code, keyCode: kc, ctrl: true });
+            sendInput({ type: 'keyup', key: key, code: code, keyCode: kc, ctrl: true });
+        }
+        document.getElementById('mkbCopy').addEventListener('click', function () { mkbCombo('c', 'KeyC', 67); });
+        document.getElementById('mkbPaste').addEventListener('click', function () { mkbCombo('v', 'KeyV', 86); });
+        document.getElementById('mkbUndo').addEventListener('click', function () { mkbCombo('z', 'KeyZ', 90); });
+        document.getElementById('mkbType').addEventListener('click', function (e) { e.stopPropagation(); openMobileKeyboard(); });
+
+        ['mkbCad', 'mkbCopy', 'mkbPaste', 'mkbUndo', 'mkbType'].forEach(function (id) {
+            var el = document.getElementById(id);
+            el.addEventListener('touchstart', function (e) { e.stopPropagation(); }, { passive: true });
+            el.addEventListener('touchend', function (e) { e.stopPropagation(); }, { passive: true });
+        });
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // MOBILE KEYBOARD INPUT
+        // ═══════════════════════════════════════════════════════════════════════
+        var mobileKeyInput = document.getElementById('mobileKeyInput');
+        var lastMobileInputVal = '';
+        function openMobileKeyboard() {
+            mobileKeyInput.style.left = '50%'; mobileKeyInput.style.pointerEvents = 'auto';
+            mobileKeyInput.value = ''; mobileKeyInput.focus();
+            setTimeout(function () { mobileKeyInput.style.left = '-9999px'; mobileKeyInput.style.pointerEvents = 'none'; }, 300);
+        }
+        mobileKeyInput.addEventListener('focus', function () { lastMobileInputVal = mobileKeyInput.value; });
+        var SPECIAL_KEYS = ['Backspace', 'Enter', 'Escape', 'Tab', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Delete', 'Home', 'End', 'PageUp', 'PageDown'];
+        mobileKeyInput.addEventListener('keydown', function (e) {
+            if (!remoteActive) return;
+            if (SPECIAL_KEYS.indexOf(e.key) !== -1) {
+                e.preventDefault();
+                sendInput({ type: 'keydown', key: e.key, code: e.code, keyCode: e.keyCode, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey });
+                sendInput({ type: 'keyup', key: e.key, code: e.code, keyCode: e.keyCode, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey });
+            }
+        });
+        mobileKeyInput.addEventListener('input', function () {
+            if (!remoteActive) return;
+            var newVal = mobileKeyInput.value; var oldVal = lastMobileInputVal;
+            if (newVal.length > oldVal.length) {
+                var added = newVal.slice(oldVal.length);
+                for (var i = 0; i < added.length; i++) {
+                    var ch = added[i]; var kc = ch.toUpperCase().charCodeAt(0);
+                    sendInput({ type: 'keydown', key: ch, code: 'Key' + ch.toUpperCase(), keyCode: kc });
+                    sendInput({ type: 'keyup', key: ch, code: 'Key' + ch.toUpperCase(), keyCode: kc });
+                }
+            } else if (newVal.length < oldVal.length) {
+                var count = oldVal.length - newVal.length;
+                for (var j = 0; j < count; j++) {
+                    sendInput({ type: 'keydown', key: 'Backspace', code: 'Backspace', keyCode: 8 });
+                    sendInput({ type: 'keyup', key: 'Backspace', code: 'Backspace', keyCode: 8 });
+                }
+            }
+            lastMobileInputVal = newVal;
+            setTimeout(function () { mobileKeyInput.value = ''; lastMobileInputVal = ''; }, 0);
+        });
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // DEVICE SELECTION & TABS
+        // ═══════════════════════════════════════════════════════════════════════
+        function selectDevice(name) {
+            if (remoteActive) { remoteActive = false; applyRemoteState(); }
+            currentClient = name;
+            currentScreen = 'screen_1'; currentScreenIndex = 0;
+            var entry = lastClientList.find(function (c) { return c.AccountName === name; });
+            screenCount = entry ? (Number(entry.ScreenCount) || 1) : 1;
+            remoteCursorX = frameNaturalW / 2; remoteCursorY = frameNaturalH / 2;
+            resetZoom();
+            pendingFrame = null; lastFrameAt = 0; lagBadge.style.display = 'none';
+            document.querySelectorAll('.device-entry').forEach(function (el) { el.classList.toggle('active', el.dataset.name === name); });
+            document.getElementById('emptyState').style.display = 'none';
+            streamFrame.style.display = 'flex';
+            streamArea.classList.add('streaming');
+            fpsDisplay.style.display = 'block';
+            remoteBtn.style.display = 'flex';
+            document.getElementById('infoPanel').classList.add('visible');
+            renderActivityPanel(activityData[name] || { current: null, history: [] });
+            document.getElementById('tabBar').innerHTML = '';
+            renderTabs();
+            subscribeToScreen();
+            closeSidebar();
+        }
+
+        function subscribeToScreen() { if (currentClient) sendSubscribe(currentScreen + '_' + currentClient); }
+
+        function renderDevices(data) {
+            var list = document.getElementById('deviceList');
+            var incoming = new Set(data.map(function (item) { return item.AccountName; }));
+            knownDevices.forEach(function (name) {
+                if (incoming.has(name)) return;
+                knownDevices.delete(name);
+                var el = list.querySelector('.device-entry[data-name="' + name + '"]');
+                if (el) el.remove();
+                if (currentClient === name) {
+                    currentClient = ''; remoteActive = false; applyRemoteState();
+                    streamFrame.style.display = 'none'; streamArea.classList.remove('streaming');
+                    document.getElementById('emptyState').style.display = '';
+                    fpsDisplay.style.display = 'none'; remoteBtn.style.display = 'none';
+                    document.getElementById('tabBar').innerHTML = '';
+                    document.getElementById('infoPanel').classList.remove('visible');
+                    pendingFrame = null; lastFrameAt = 0; lagBadge.style.display = 'none';
+                    clearInfo();
+                }
+            });
+            data.forEach(function (item, i) {
+                var name = item.AccountName;
+                if (knownDevices.has(name)) return;
+                knownDevices.add(name);
+                var ph = document.getElementById('noDevices'); if (ph) ph.remove();
+                var el = document.createElement('div');
+                el.className = 'device-entry'; el.dataset.name = name; el.style.animationDelay = (i * 50) + 'ms';
+                el.innerHTML = '<div class="avatar">' + escHtml(name.charAt(0).toUpperCase()) + '</div><div class="device-info-col"><div class="device-name">' + escHtml(name) + '</div><div class="device-sub"><span class="activity-dot"></span><span class="activity-app-label">online</span></div></div>';
+                el.addEventListener('click', (function (n) { return function () { selectDevice(n); }; })(name));
+                list.appendChild(el);
+                if (activityData[name] && activityData[name].current) updateDeviceSubLabel(name, activityData[name].current);
+            });
+            if (knownDevices.size === 0 && !document.getElementById('noDevices')) {
+                var ph2 = document.createElement('div'); ph2.className = 'no-devices'; ph2.id = 'noDevices'; ph2.textContent = 'Waiting for devices…'; list.appendChild(ph2);
+            }
+        }
+
+        function clearInfo() {
+            ['Workgroup', 'Windows', 'WindowsVersion', 'OSVersion', 'OSArchitecture', 'SerialNumber', 'ProcessorCount', 'MachineName', 'Username'].forEach(function (id) { document.getElementById(id).textContent = '—'; });
+            document.getElementById('activityApp').textContent = '—';
+            document.getElementById('activityDetail').textContent = 'Waiting for data…';
+            document.getElementById('activityTime').textContent = '';
+            document.getElementById('activityHistory').innerHTML = '<div style="padding:4px 8px;font-size:10px;font-family:\'JetBrains Mono\',monospace;color:var(--text3);">No history yet…</div>';
+        }
+
+        function updateInfo(item) {
+            document.getElementById('Workgroup').textContent = item.WorkGroup || '—';
+            document.getElementById('Windows').textContent = item.Windows || '—';
+            document.getElementById('WindowsVersion').textContent = item.WindowsVersion || '—';
+            document.getElementById('OSVersion').textContent = item.OSVersion || '—';
+            document.getElementById('OSArchitecture').textContent = item.OSArchitecture || '—';
+            document.getElementById('SerialNumber').textContent = item.SerialNumber || '—';
+            document.getElementById('ProcessorCount').textContent = item.ProcessorCount || '—';
+            document.getElementById('MachineName').textContent = item.MachineName || '—';
+            document.getElementById('Username').textContent = item.AccountName || '—';
+        }
+
+        function renderTabs() {
+            var bar = document.getElementById('tabBar');
+            bar.innerHTML = '';
+            var shouldShow = currentClient && screenCount > 1;
+            bar.style.display = shouldShow ? 'flex' : 'none';
+            if (!shouldShow) return;
+            var frag = document.createDocumentFragment();
+            for (var i = 1; i <= screenCount; i++) {
+                (function (idx) {
+                    var id = 'screen_' + idx;
+                    var btn = document.createElement('button');
+                    btn.className = 'screen-tab' + (currentScreen === id ? ' active' : '');
+                    btn.id = 'tab_' + id; btn.textContent = '🖥 Screen ' + idx;
+                    btn.addEventListener('click', function () {
+                        currentScreen = id; currentScreenIndex = idx - 1;
+                        pendingFrame = null; lastFrameAt = 0; lagBadge.style.display = 'none';
+                        remoteCursorX = frameNaturalW / 2; remoteCursorY = frameNaturalH / 2;
+                        document.querySelectorAll('.screen-tab').forEach(function (t) { t.classList.remove('active'); });
+                        btn.classList.add('active'); subscribeToScreen();
+                    });
+                    frag.appendChild(btn);
+                })(i);
+            }
+            bar.appendChild(frag);
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // BOOT
+        // ═══════════════════════════════════════════════════════════════════════
+        connectWS();
+    </script>
+</body>
+</html>

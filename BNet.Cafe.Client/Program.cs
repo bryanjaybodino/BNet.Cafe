@@ -29,7 +29,7 @@ namespace BNet.Cafe.Client
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            Application.Run(new ClientScreen());
         }
     }
 }
