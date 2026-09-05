@@ -102,20 +102,24 @@ namespace BNet.Cafe.Server.BNetWebsocket
 
         public void StartWebsocket()
         {
-            int port = 2050;
-            string prefix = $"http://*:{port}/";
+            try
+            {
+                int port = 2050;
+                string prefix = $"http://*:{port}/";
 
-            // 1. Grant non-admin listening rights for the wildcard URL
-            PortManager.AddUrlAcl(prefix);
+                // 1. Grant non-admin listening rights for the wildcard URL
+                PortManager.AddUrlAcl(prefix);
 
-            // 2. Open inbound firewall port
-            PortManager.OpenFirewallPort(port, $"WebSocketPort_{port}");
+                // 2. Open inbound firewall port
+                PortManager.OpenFirewallPort(port, $"WebSocketPort_{port}");
 
-            // 3. Start server
-            _server = new HttpListener();
-            _server.Prefixes.Add(prefix);
-            _server.Start();
+                // 3. Start server
+                _server = new HttpListener();
+                _server.Prefixes.Add(prefix);
+                _server.Start();
 
+            }
+            catch { }
             Task.Run(AcceptLoop);
         }
 

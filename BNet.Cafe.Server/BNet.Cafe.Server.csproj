@@ -78,10 +78,9 @@
   <ItemGroup>
     <Content Include="BNetPage.aspx" />
     <Content Include="Callback.aspx" />
-    <Content Include="Forms\Clients.ascx" />
-    <Content Include="remote.html" />
+    <Content Include="Forms\Computers.ascx" />
+    <Content Include="Remote.html" />
     <Content Include="Global.asax" />
-    <Content Include="index.html" />
     <Content Include="Login.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -105,12 +104,12 @@
     <Compile Include="Callback.aspx.designer.cs">
       <DependentUpon>Callback.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Clients.ascx.cs">
-      <DependentUpon>Clients.ascx</DependentUpon>
+    <Compile Include="Forms\Computers.ascx.cs">
+      <DependentUpon>Computers.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Forms\Clients.ascx.designer.cs">
-      <DependentUpon>Clients.ascx</DependentUpon>
+    <Compile Include="Forms\Computers.ascx.designer.cs">
+      <DependentUpon>Computers.ascx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Dashboard</title>
+    <title>BNet Cafe</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -44,7 +44,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background-color: var(--bg-light);
             color: var(--text-light);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: none;
         }
 
         .container {
@@ -65,7 +65,7 @@
                 backdrop-filter: blur(4px);
                 opacity: 0;
                 pointer-events: none;
-                transition: opacity 0.3s ease;
+                transition: none;
                 z-index: 99;
             }
 
@@ -81,7 +81,7 @@
             border-right: 1px solid var(--border-light);
             padding: 24px 0;
             overflow-y: auto;
-            transition: all 0.3s ease;
+            transition: none;
             position: fixed;
             height: 100vh;
             left: 0;
@@ -127,7 +127,7 @@
                 text-decoration: none;
                 color: var(--text-light-secondary);
                 border-radius: 8px;
-                transition: all 0.3s ease;
+                transition: none;
                 font-size: 14px;
             }
 
@@ -157,7 +157,7 @@
             margin-left: 260px;
             display: flex;
             flex-direction: column;
-            transition: margin-left 0.3s ease;
+            transition: none;
         }
 
             .main-wrapper.expanded {
@@ -188,7 +188,7 @@
             cursor: pointer;
             font-size: 18px;
             color: var(--text-light);
-            transition: color 0.3s ease;
+            transition: none;
             padding: 8px;
         }
 
@@ -196,30 +196,7 @@
                 color: var(--primary);
             }
 
-        .search-box {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background-color: var(--bg-light-tertiary);
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
-            padding: 8px 12px;
-            width: 250px;
-            transition: all 0.3s ease;
-        }
 
-            .search-box input {
-                background: none;
-                border: none;
-                outline: none;
-                color: var(--text-light);
-                width: 100%;
-                font-size: 13px;
-            }
-
-                .search-box input::placeholder {
-                    color: var(--text-light-secondary);
-                }
 
         .topbar-right {
             display: flex;
@@ -233,7 +210,7 @@
             cursor: pointer;
             font-size: 18px;
             color: var(--text-light);
-            transition: color 0.3s ease;
+            transition: none;
             padding: 8px;
         }
 
@@ -248,7 +225,7 @@
             cursor: pointer;
             padding: 8px;
             border-radius: 8px;
-            transition: background-color 0.3s ease;
+            transition: none;
         }
 
             .user-menu:hover {
@@ -304,7 +281,7 @@
             border: 1px solid var(--border-light);
             border-radius: 12px;
             padding: 24px;
-            transition: all 0.3s ease;
+            transition: none;
         }
 
             .card:hover {
@@ -383,9 +360,7 @@
                     margin-left: 0;
                 }
 
-            .search-box {
-                display: none;
-            }
+
 
             .cards-grid {
                 grid-template-columns: 1fr;
@@ -428,15 +403,24 @@
         <div class="sidebar" id="sidebar">
             <div class="logo">
                 <i class="fas fa-cube"></i>
-                <span>Dashboard</span>
+                <span>BNet Cafe</span>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="#" class="active"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
-                <li><a href="#"><i class="fas fa-chart-bar"></i><span>Analytics</span></a></li>
-                <li><a href="#"><i class="fas fa-wallet"></i><span>Finance</span></a></li>
-                <li><a href="#"><i class="fas fa-users"></i><span>Users</span></a></li>
-                <li><a href="#"><i class="fas fa-cog"></i><span>Settings</span></a></li>
-                <li><a href="#"><i class="fas fa-question-circle"></i><span>Help</span></a></li>
+                <li>
+                    <asp:HyperLink ID="HyperLink_Dashboard" runat="server" NavigateUrl="?Form=Dashboard">
+            <i class="fas fa-home"></i><span>Dashboard</span>
+                    </asp:HyperLink>
+                </li>
+                <li>
+                    <asp:HyperLink ID="HyperLink_Computers" runat="server" NavigateUrl="?Form=Computers">
+            <i class="fas fa-computer"></i><span>Computers</span>
+                    </asp:HyperLink>
+                </li>
+                <li>
+                    <asp:HyperLink ID="HyperLink_Users" runat="server" NavigateUrl="?Form=Users">
+            <i class="fas fa-users"></i><span>Users</span>
+                    </asp:HyperLink>
+                </li>
             </ul>
         </div>
 
@@ -448,10 +432,6 @@
                     <button class="toggle-btn" id="toggleBtn" title="Toggle sidebar">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <div class="search-box">
-                        <i class="fas fa-search" style="color: var(--text-light-secondary);"></i>
-                        <input type="text" placeholder="Search...">
-                    </div>
                 </div>
 
                 <div class="topbar-right">
@@ -470,10 +450,7 @@
 
             <!-- Main Content -->
             <div class="main-content">
-                <div class="content-header">
-                    <h1>Welcome Back!</h1>
-                    <p>Here's what's happening with your business today</p>
-                </div>
+                <asp:PlaceHolder ID="PlaceHolder_Container" runat="server"></asp:PlaceHolder>
             </div>
         </div>
     </div>

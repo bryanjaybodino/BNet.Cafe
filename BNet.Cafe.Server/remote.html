@@ -232,7 +232,7 @@
 <body>
     <div class="remote-app">
         <header class="topbar">
-            <a href="index.html" class="back-link">← Dashboard</a>
+            <a href="BNetPage.aspx?Form=Computers" class="back-link">← Back</a>
             <div class="client-title" id="clientTitle">Target: Offline</div>
             <div class="topbar-actions">
                 <button class="btn btn-secondary" id="fullscreenBtn">⛶ Fullscreen</button>
@@ -302,7 +302,7 @@
         var screenCount = 1;
         var remoteActive = false;
 
-        document.getElementById('clientTitle').textContent = currentClient ? 'Target: ' + currentClient : 'No Client Selected';
+        document.getElementById('clientTitle').textContent = currentClient ? currentClient.toUpperCase() : 'No Client Selected';
 
         var canvas = document.getElementById('screen');
         var ctx2d = canvas.getContext('2d', { alpha: false });

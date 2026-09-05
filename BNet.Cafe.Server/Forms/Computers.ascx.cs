@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 namespace BNet.Cafe.Server.Forms
 {
-    public partial class Clients : System.Web.UI.UserControl
+    public partial class Computers : System.Web.UI.UserControl
     {
         protected void Page_Load(object sender, EventArgs e)
         {

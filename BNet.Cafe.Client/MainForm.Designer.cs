@@ -1,6 +1,6 @@
 ﻿namespace BNet.Cafe.Client
 {
-    partial class ClientScreen
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.

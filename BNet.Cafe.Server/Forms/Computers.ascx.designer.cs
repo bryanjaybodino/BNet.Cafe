@@ -11,7 +11,7 @@ namespace BNet.Cafe.Server.Forms
 {
 
 
-    public partial class Clients
+    public partial class Computers
     {
     }
 }

@@ -57,11 +57,11 @@
     <Reference Include="UIAutomationTypes" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientScreen.cs">
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ClientScreen.Designer.cs">
-      <DependentUpon>ClientScreen.cs</DependentUpon>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\RemoteInput.cs" />
     <Compile Include="Models\TextContent.cs" />
@@ -77,8 +77,8 @@
     <Compile Include="Repositories\ScreenCaptured.cs" />
     <Compile Include="Repositories\ScreenScale.cs" />
     <Compile Include="Repositories\UserActivity.cs" />
-    <EmbeddedResource Include="ClientScreen.resx">
-      <DependentUpon>ClientScreen.cs</DependentUpon>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
