@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Remote Control Stream</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0f1115;
+            --bg2: #1a1d23;
+            --bg3: #262a33;
+            --border: #333842;
+            --text: #f0f2f5;
+            --accent: #2563eb;
+            --red: #dc2626;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        .remote-app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            height: 50px;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-link {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            background: var(--bg3);
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .client-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .tab-bar {
+            display: flex;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .screen-tab {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            color: var(--text);
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+            .screen-tab.active {
+                background: var(--accent);
+                border-color: var(--accent);
+            }
+
+        .stream-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #zoomWrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #screen {
+            max-width: 100%;
+            max-height: 100%;
+            background: #000;
+            cursor: default;
+            touch-action: none;
+        }
+
+            #screen.remote-mode {
+                cursor: none;
+            }
+
+        .badge {
+            position: absolute;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            background: rgba(0,0,0,.6);
+            backdrop-filter: blur(4px);
+        }
+
+        .fps-badge {
+            bottom: 12px;
+            right: 12px;
+            position:fixed;
+        }
+
+        .lag-badge {
+            top: 12px;
+            left: 12px;
+            background: var(--red);
+            display: none;
+        }
+
+        .mkb-btn {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            color: var(--text);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+            .mkb-btn:active {
+                background: var(--accent);
+            }
+
+        #mobileKeyInput {
+            position: fixed;
+            left: -9999px;
+            opacity: 0;
+        }
+
+        /* Hide the mobile keyboard bar by default on desktop */
+        .mobile-kb-bar {
+            display: none;
+            gap: 4px;
+            padding: 8px;
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        /* Display the bar only on mobile screens (max-width: 850px) */
+        @media (max-width: 850px) {
+            .mobile-kb-bar {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <input id="mobileKeyInput" type="text" autocomplete="off" />
+    <div class="remote-app">
+        <header class="topbar">
+            <a href="index.html" class="back-link">← Dashboard</a>
+            <div class="client-title" id="clientTitle">Target: Offline</div>
+            <button class="mkb-btn" id="remoteToggleBtn" style="background:var(--accent);">Start Control</button>
+        </header>
+
+        <div class="tab-bar" id="tabBar"></div>
+
+        <div class="stream-area">
+            <div class="lag-badge" id="lagBadge">⚠ BUFFERED</div>
+            <div id="zoomWrapper">
+                <canvas id="screen"></canvas>
+            </div>
+            <div class="fps-badge" id="fpsBadge">-- fps</div>
+        </div>
+
+        <div class="mobile-kb-bar">
+            <button class="mkb-btn" id="mkbCad">CAD</button>
+            <button class="mkb-btn" id="mkbCopy">Ctrl+C</button>
+            <button class="mkb-btn" id="mkbPaste">Ctrl+V</button>
+            <button class="mkb-btn" id="mkbType">⌨️ Type</button>
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+        var urlParams = new URLSearchParams(window.location.search);
+        var currentClient = urlParams.get('client') || '';
+        var currentScreen = 'screen_1';
+        var currentScreenIndex = 0;
+        var screenCount = 1;
+        var remoteActive = false;
+
+        document.getElementById('clientTitle').textContent = currentClient ? 'Target: ' + currentClient : 'No Client Selected';
+
+        var canvas = document.getElementById('screen');
+        var ctx2d = canvas.getContext('2d', { alpha: false });
+        var frameNaturalW = 1920, frameNaturalH = 1080;
+        var pendingFrame = null, decodeInFlight = 0, lastFrameAt = 0, frameCount = 0, lastFpsTime = performance.now();
+
+        setInterval(function () {
+            var now = performance.now();
+            var fps = Math.round(frameCount / ((now - lastFpsTime) / 1000));
+            frameCount = 0; lastFpsTime = now;
+            document.getElementById('fpsBadge').textContent = fps + ' fps';
+            document.getElementById('lagBadge').style.display = (lastFrameAt > 0 && (Date.now() - lastFrameAt) > 3000) ? 'block' : 'none';
+        }, 1000);
+
+        function renderLoop() {
+            requestAnimationFrame(renderLoop);
+            if (!pendingFrame || decodeInFlight > 0) return;
+            var buf = pendingFrame; pendingFrame = null; decodeInFlight++;
+            createImageBitmap(new Blob([new Uint8Array(buf, 1)], { type: 'image/jpeg' }))
+                .then(function (bm) {
+                    if (canvas.width !== bm.width || canvas.height !== bm.height) {
+                        frameNaturalW = bm.width; frameNaturalH = bm.height;
+                        canvas.width = bm.width; canvas.height = bm.height;
+                    }
+                    ctx2d.drawImage(bm, 0, 0);
+                    bm.close(); frameCount++; lastFrameAt = Date.now();
+                })
+                .finally(function () { decodeInFlight--; });
+        }
+        renderLoop();
+
+        function fetchDeviceDetails() {
+            fetch('http://localhost:2050/text')
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (Array.isArray(data)) {
+                        var item = data.find(function (c) { return c.AccountName === currentClient; });
+                        if (item) {
+                            screenCount = Number(item.ScreenCount) || 1;
+                            renderTabs();
+                        }
+                    }
+                })
+                .catch(function (err) { console.error('Error fetching specs:', err); });
+        }
+
+        var ws = null, wsReady = false, _encoder = new TextEncoder();
+        function connectWS() {
+            ws = new WebSocket('ws://localhost:2050/ws/browser');
+            ws.binaryType = 'arraybuffer';
+            ws.onopen = function () {
+                wsReady = true;
+                if (currentClient) sendSubscribe(currentScreen + '_' + currentClient);
+            };
+            ws.onmessage = function (evt) {
+                if (!(evt.data instanceof ArrayBuffer)) return;
+                var view = new Uint8Array(evt.data);
+                if (view[0] === 0x10) { pendingFrame = evt.data; }
+            };
+            ws.onclose = function () { wsReady = false; setTimeout(connectWS, 3000); };
+        }
+
+        function sendSubscribe(screenKey) {
+            var kb = _encoder.encode(screenKey);
+            var msg = new Uint8Array(1 + kb.length); msg[0] = 0x21; msg.set(kb, 1);
+            if (wsReady) ws.send(msg.buffer);
+        }
+
+        function sendInput(payload) {
+            if (!currentClient || !wsReady || !remoteActive) return;
+            payload.screenIndex = currentScreenIndex;
+            var jb = _encoder.encode(JSON.stringify(payload));
+            var msg = new Uint8Array(1 + jb.length); msg[0] = 0x20; msg.set(jb, 1);
+            ws.send(msg.buffer);
+        }
+
+        document.getElementById('remoteToggleBtn').addEventListener('click', function () {
+            remoteActive = !remoteActive;
+            this.textContent = remoteActive ? 'Stop Control' : 'Start Control';
+            this.style.background = remoteActive ? 'var(--red)' : 'var(--accent)';
+            canvas.classList.toggle('remote-mode', remoteActive);
+        });
+
+        function getScaledCoords(e) {
+            var rect = canvas.getBoundingClientRect();
+            return { x: Math.round((e.clientX - rect.left) * frameNaturalW / rect.width), y: Math.round((e.clientY - rect.top) * frameNaturalH / rect.height) };
+        }
+
+        canvas.addEventListener('mousemove', function (e) { var c = getScaledCoords(e); sendInput({ type: 'mousemove', x: c.x, y: c.y, frameW: frameNaturalW, frameH: frameNaturalH }); });
+        canvas.addEventListener('mousedown', function (e) { e.preventDefault(); var c = getScaledCoords(e); sendInput({ type: 'mousedown', x: c.x, y: c.y, button: e.button, frameW: frameNaturalW, frameH: frameNaturalH }); });
+        canvas.addEventListener('mouseup', function (e) { e.preventDefault(); var c = getScaledCoords(e); sendInput({ type: 'mouseup', x: c.x, y: c.y, button: e.button, frameW: frameNaturalW, frameH: frameNaturalH }); });
+        window.addEventListener('keydown', function (e) { sendInput({ type: 'keydown', key: e.key, code: e.code, keyCode: e.keyCode, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey }); });
+        window.addEventListener('keyup', function (e) { sendInput({ type: 'keyup', key: e.key, code: e.code, keyCode: e.keyCode, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey }); });
+
+        function renderTabs() {
+            var bar = document.getElementById('tabBar');
+            bar.innerHTML = '';
+            if (screenCount <= 1) return;
+            for (var i = 1; i <= screenCount; i++) {
+                (function (idx) {
+                    var id = 'screen_' + idx;
+                    var btn = document.createElement('button');
+                    btn.className = 'screen-tab' + (currentScreen === id ? ' active' : '');
+                    btn.textContent = 'Screen ' + idx;
+                    btn.addEventListener('click', function () {
+                        currentScreen = id; currentScreenIndex = idx - 1;
+                        document.querySelectorAll('.screen-tab').forEach(function (t) { t.classList.remove('active'); });
+                        btn.classList.add('active'); sendSubscribe(currentScreen + '_' + currentClient);
+                    });
+                    bar.appendChild(btn);
+                })(i);
+            }
+        }
+
+        document.getElementById('mkbType').addEventListener('click', function () {
+            var input = document.getElementById('mobileKeyInput');
+            input.focus();
+        });
+
+        fetchDeviceDetails();
+        connectWS();
+    </script>
+</body>
+</html>
