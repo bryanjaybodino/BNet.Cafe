@@ -42,7 +42,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BNet.WebSocket.Server">
+      <HintPath>..\..\BNet\BNet.WebSocket.Server\bin\Debug\net4.8\BNet.WebSocket.Server.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>bin\RestSharp\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration.ConfigurationManager">
+      <HintPath>bin\System.Runtime.Caching\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Runtime.CompilerServices.Unsafe\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -63,6 +81,9 @@
   <ItemGroup>
     <Content Include="BNetPage.aspx" />
     <Content Include="Callback.aspx" />
+    <Content Include="Forms\Clients.ascx" />
+    <Content Include="clients.html" />
+    <Content Include="Global.asax" />
     <Content Include="Login.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -74,12 +95,25 @@
     <Compile Include="BNetPage.aspx.designer.cs">
       <DependentUpon>BNetPage.aspx</DependentUpon>
     </Compile>
+    <Compile Include="BNetWebsocket\Models\RemoteInput.cs" />
+    <Compile Include="BNetWebsocket\Setup.cs" />
+    <Compile Include="BNetWebsocket\Models\TextContent.cs" />
     <Compile Include="Callback.aspx.cs">
       <DependentUpon>Callback.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Callback.aspx.designer.cs">
       <DependentUpon>Callback.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Clients.ascx.cs">
+      <DependentUpon>Clients.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Clients.ascx.designer.cs">
+      <DependentUpon>Clients.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
