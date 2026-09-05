@@ -67,7 +67,10 @@
 
             <!-- Main Content -->
             <div class="main-content">
-                <asp:PlaceHolder ID="PlaceHolder_Container" runat="server"></asp:PlaceHolder>
+                <form runat="server" id="MainForm">
+                    <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
+                    <asp:PlaceHolder ID="PlaceHolder_Container" runat="server"></asp:PlaceHolder>
+                </form>
             </div>
         </div>
     </div>

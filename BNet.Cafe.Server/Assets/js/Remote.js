@@ -180,7 +180,7 @@ function deselectDevice() {
 }
 
 function updateInfo(item) {
-    document.getElementById('Username').textContent = item.AccountName || '—';
+    document.getElementById('Username').textContent = item.AccountName.toUpperCase() || '—';
     document.getElementById('MachineName').textContent = item.MachineName || '—';
     document.getElementById('Workgroup').textContent = item.WorkGroup || '—';
     document.getElementById('Windows').textContent = item.Windows || '—';

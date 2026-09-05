@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BNet.Cafe.Server.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,8 +10,11 @@ namespace BNet.Cafe.Server.Forms
 {
     public partial class Computers : System.Web.UI.UserControl
     {
-        protected void Page_Load(object sender, EventArgs e)
+        ComputerService computerService = new ComputerService();
+        protected void Page_PreRender(object sender, EventArgs e)
         {
+            GridViewTable.DataSource = computerService.GetAll(TextBox_Search.Text);
+            GridViewTable.DataBind();
 
         }
     }

@@ -1,0 +1,6 @@
+SELECT * FROM computers 
+WHERE 1 
+AND DBIsDeleted ='FALSE' 
+AND DBComputerName LIKE '%%'
+ORDER BY DBId DESC 
+LIMIT 100

@@ -104,6 +104,11 @@
     <Content Include="Assets\js\Script.js" />
     <Content Include="BNetPage.aspx" />
     <Content Include="Callback.aspx" />
+    <Content Include="Databases\Queries\Computers\Create.sql" />
+    <Content Include="Databases\Queries\Computers\DeleteById.sql" />
+    <Content Include="Databases\Queries\Computers\GetAll.sql" />
+    <Content Include="Databases\Queries\Computers\Update.sql" />
+    <Content Include="Databases\Queries\Computers\UpdateCount.sql" />
     <Content Include="Forms\Computers.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Remote.html" />
@@ -161,6 +166,7 @@
     </Compile>
     <Compile Include="OAuth\GoogleUserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ComputerService.cs" />
     <Compile Include="Services\TimeService.cs" />
   </ItemGroup>
   <ItemGroup>

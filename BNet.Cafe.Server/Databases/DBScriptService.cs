@@ -21,7 +21,7 @@ namespace BNet.Cafe.Server.Databases
         // ── Constants ────────────────────────────────────────────────────────────
 
         private const string SafeQuote = "ˈ";   // replacement for single-quote in values
-        private const string SqlScriptBaseDir = @"C:\Zion.Published\SQL Scripts\";
+        private const string SqlScriptBaseDir = @"C:\BNet.Cafe\SQL Scripts\";
         private const int FileWriteRetries = 3;
         private const int FileWriteDelayMs = 200;
 
@@ -444,10 +444,8 @@ namespace BNet.Cafe.Server.Databases
         {
             string fileName = Path.GetFileName(templatePath);
             string lastFolder = Path.GetFileName(Path.GetDirectoryName(templatePath)) ?? string.Empty;
-            string appName = Assembly.GetEntryAssembly()?.GetName().Name ?? "app";
             string dbPrefix = DBContext.DBSchema;
-
-            string directory = Path.Combine(SqlScriptBaseDir, dbPrefix, appName, lastFolder);
+            string directory = Path.Combine(SqlScriptBaseDir, dbPrefix, lastFolder);
             Directory.CreateDirectory(directory);
 
             SafeWriteAllText(Path.Combine(directory, fileName), sql);
@@ -459,16 +457,18 @@ namespace BNet.Cafe.Server.Databases
             {
                 try
                 {
-                    var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
-                    var sw = new StreamWriter(fs);
-                    sw.Write(content);
+                    using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+                    using (var sw = new StreamWriter(fs))
+                    {
+                        sw.Write(content);
+                        sw.Flush(); // Ensures all buffered content hits the disk stream
+                    }
                     return; // success
                 }
                 catch (IOException) when (attempt < FileWriteRetries - 1)
                 {
                     Thread.Sleep(FileWriteDelayMs);
                 }
-                // final attempt: let the IOException propagate naturally
             }
         }
     }
