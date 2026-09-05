@@ -32,9 +32,9 @@ namespace BNet.Cafe.Client
     ///  • WebSocket send/recv buffer raised to 256 KB to handle large frames without kernel splits.
     ///  • ImageCompressor.CompressInto() used to write JPEG directly into the payload stream.
     /// </summary>
-    public partial class ClientScreen : Form
+    public partial class MainForm : Form
     {
-        public ClientScreen() { InitializeComponent(); }
+        public MainForm() { InitializeComponent(); }
         private const int ReconnectDelayMs = 500;    // was 1000 — near-instant recovery
         private const int TargetFrameMs = 25;     // was 33  — aims for 40fps, lands ~30fps after OS timer jitter
         private const int TextInfoEveryNFrames = 300;  // was 120 — device info every ~7.5s; it almost never changes
@@ -82,7 +82,7 @@ namespace BNet.Cafe.Client
         // FORM LOAD
         // ─────────────────────────────────────────────────────────────────────
 
-        private async void ClientScreen_Load(object sender, EventArgs e)
+        private async void MainForm_Load(object sender, EventArgs e)
         {
             await Task.Delay(1000);
             _deviceInfo = await GatherDeviceInfo();

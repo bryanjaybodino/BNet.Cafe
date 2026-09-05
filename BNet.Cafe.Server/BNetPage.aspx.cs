@@ -61,6 +61,10 @@ namespace BNet.Cafe.Server
             {
                 HyperLink_Users.CssClass = "active";
             }
+            else if (HyperLink_Remote.ID.Contains(formName))
+            {
+                HyperLink_Remote.CssClass = "active";
+            }
         }
     }
 }

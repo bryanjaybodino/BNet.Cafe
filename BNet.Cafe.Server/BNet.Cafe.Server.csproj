@@ -76,9 +76,14 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\css\Remote.css" />
+    <Content Include="Assets\css\Style.css" />
+    <Content Include="Assets\js\Remote.js" />
+    <Content Include="Assets\js\Script.js" />
     <Content Include="BNetPage.aspx" />
     <Content Include="Callback.aspx" />
     <Content Include="Forms\Computers.ascx" />
+    <Content Include="Forms\Remote.ascx" />
     <Content Include="Remote.html" />
     <Content Include="Global.asax" />
     <Content Include="Login.aspx" />
@@ -111,6 +116,13 @@
     <Compile Include="Forms\Computers.ascx.designer.cs">
       <DependentUpon>Computers.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Remote.ascx.cs">
+      <DependentUpon>Remote.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Remote.ascx.designer.cs">
+      <DependentUpon>Remote.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -133,7 +145,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\" />
     <Folder Include="Databases\" />
   </ItemGroup>
   <PropertyGroup>

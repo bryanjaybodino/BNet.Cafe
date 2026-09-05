@@ -38,7 +38,7 @@
             this.Name = "ClientScreen";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "BNet Cafe Client";
-            this.Load += new System.EventHandler(this.ClientScreen_Load);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
 
         }
