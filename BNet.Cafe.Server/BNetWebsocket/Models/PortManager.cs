@@ -20,15 +20,20 @@ namespace BNet.Cafe.Server.BNetWebsocket
                 CreateNoWindow = true
             };
 
-            var process = Process.Start(psi);
-            process.WaitForExit();
-            return process.StandardOutput.ReadToEnd();
+            using (var process = Process.Start(psi))
+            {
+                string output = process.StandardOutput.ReadToEnd();
+                string error = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+
+                return string.IsNullOrWhiteSpace(error) ? output : $"Error: {error}";
+            }
         }
 
         // Add URL ACL reservation (allows non-admin apps to bind to the URL)
-        public static void AddUrlAcl(string url = "http://*:7891/")
+        public static void AddUrlAcl(string url)
         {
-            string result = RunNetsh($"http add urlacl url={url} user=Everyone");
+            string result = RunNetsh($"http add urlacl url=\"{url}\" user=Everyone");
             Console.WriteLine($"AddUrlAcl: {result}");
         }
 

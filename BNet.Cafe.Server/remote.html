@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>Remote Control Stream</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -12,11 +12,11 @@
         }
 
         :root {
-            --bg: #0f1115;
-            --bg2: #1a1d23;
-            --bg3: #262a33;
-            --border: #333842;
-            --text: #f0f2f5;
+            --bg: #f8fafc;
+            --bg2: #ffffff;
+            --bg3: #e2e8f0;
+            --border: #cbd5e1;
+            --text: #0f172a;
             --accent: #2563eb;
             --red: #dc2626;
         }
@@ -27,6 +27,7 @@
             background: var(--bg);
             color: var(--text);
             overflow: hidden;
+            user-select: none;
         }
 
         .remote-app {
@@ -43,6 +44,8 @@
             height: 50px;
             background: var(--bg2);
             border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
         .back-link {
@@ -61,12 +64,19 @@
             color: var(--accent);
         }
 
+        .topbar-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
         .tab-bar {
             display: flex;
             gap: 6px;
             padding: 6px 12px;
             background: var(--bg2);
             border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
         }
 
         .screen-tab {
@@ -82,6 +92,7 @@
             .screen-tab.active {
                 background: var(--accent);
                 border-color: var(--accent);
+                color: #ffffff;
             }
 
         .stream-area {
@@ -91,7 +102,22 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
+            min-height: 0;
+            background: #eef2f6;
         }
+
+            /* Pure stream mode when in native full-screen */
+            .stream-area:fullscreen {
+                background: #000000;
+                width: 100vw;
+                height: 100vh;
+            }
+
+            .stream-area:-webkit-full-screen {
+                background: #000000;
+                width: 100vw;
+                height: 100vh;
+            }
 
         #zoomWrapper {
             width: 100%;
@@ -104,106 +130,171 @@
         #screen {
             max-width: 100%;
             max-height: 100%;
-            background: #000;
+            background: #ffffff;
             cursor: default;
-            touch-action: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-            #screen.remote-mode {
-                cursor: none;
-            }
+        .stream-area:fullscreen #screen,
+        .stream-area:-webkit-full-screen #screen {
+            box-shadow: none;
+        }
 
-        .badge {
-            position: absolute;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            background: rgba(0,0,0,.6);
-            backdrop-filter: blur(4px);
+        #screen.remote-mode {
+            cursor: none;
         }
 
         .fps-badge {
             bottom: 12px;
             right: 12px;
-            position:fixed;
+            position: absolute;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            background: rgba(255,255,255,.8);
+            color: var(--text);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+            z-index: 10;
         }
 
         .lag-badge {
+            position: absolute;
             top: 12px;
             left: 12px;
             background: var(--red);
+            color: #ffffff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
             display: none;
+            pointer-events: none;
+            z-index: 10;
         }
 
-        .mkb-btn {
-            padding: 8px 12px;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 12px;
             border-radius: 6px;
             border: 1px solid var(--border);
-            background: var(--bg3);
-            color: var(--text);
-            font-size: 11px;
+            background: var(--accent);
+            color: #ffffff;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
         }
 
-            .mkb-btn:active {
-                background: var(--accent);
-            }
-
-        #mobileKeyInput {
-            position: fixed;
-            left: -9999px;
-            opacity: 0;
+        .btn-secondary {
+            background: var(--bg3);
+            color: var(--text);
         }
 
-        /* Hide the mobile keyboard bar by default on desktop */
-        .mobile-kb-bar {
+        /* On-screen exit floating button (visible only in full-screen) */
+        .exit-fs-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 99;
+            background: rgba(15, 23, 42, 0.7);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            opacity: 0.3;
+            transition: opacity 0.2s ease;
             display: none;
-            gap: 4px;
-            padding: 8px;
-            background: var(--bg2);
-            border-top: 1px solid var(--border);
-            overflow-x: auto;
-            white-space: nowrap;
         }
 
-        /* Display the bar only on mobile screens (max-width: 850px) */
-        @media (max-width: 850px) {
-            .mobile-kb-bar {
-                display: flex;
+        .stream-area:fullscreen .exit-fs-btn,
+        .stream-area:-webkit-full-screen .exit-fs-btn {
+            display: block;
+        }
+
+        .exit-fs-btn:hover {
+            opacity: 1;
+        }
+
+        /* Mobile styling */
+        @media (max-width: 768px), (pointer: coarse) {
+            .toggle-btn {
+                display: none !important;
             }
         }
     </style>
 </head>
 <body>
-    <input id="mobileKeyInput" type="text" autocomplete="off" />
     <div class="remote-app">
         <header class="topbar">
             <a href="index.html" class="back-link">← Dashboard</a>
             <div class="client-title" id="clientTitle">Target: Offline</div>
-            <button class="mkb-btn" id="remoteToggleBtn" style="background:var(--accent);">Start Control</button>
+            <div class="topbar-actions">
+                <button class="btn btn-secondary" id="fullscreenBtn">⛶ Fullscreen</button>
+                <button class="btn toggle-btn" id="remoteToggleBtn">Start Control</button>
+            </div>
         </header>
 
         <div class="tab-bar" id="tabBar"></div>
 
-        <div class="stream-area">
+        <div class="stream-area" id="streamArea">
+            <button class="exit-fs-btn" id="exitFullscreenBtn">✕ Exit Fullscreen</button>
             <div class="lag-badge" id="lagBadge">⚠ BUFFERED</div>
             <div id="zoomWrapper">
                 <canvas id="screen"></canvas>
             </div>
             <div class="fps-badge" id="fpsBadge">-- fps</div>
         </div>
-
-        <div class="mobile-kb-bar">
-            <button class="mkb-btn" id="mkbCad">CAD</button>
-            <button class="mkb-btn" id="mkbCopy">Ctrl+C</button>
-            <button class="mkb-btn" id="mkbPaste">Ctrl+V</button>
-            <button class="mkb-btn" id="mkbType">⌨️ Type</button>
-        </div>
     </div>
 
     <script>
         'use strict';
+
+        /* Disable Inspect Element and Context Menu */
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        window.addEventListener('keydown', function (e) {
+            // Prevent F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U
+            if (
+                e.keyCode === 123 ||
+                (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) ||
+                (e.ctrlKey && e.keyCode === 85)
+            ) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, true);
+
+        var streamArea = document.getElementById('streamArea');
+        var fullscreenBtn = document.getElementById('fullscreenBtn');
+        var exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                if (streamArea.requestFullscreen) {
+                    streamArea.requestFullscreen();
+                } else if (streamArea.webkitRequestFullscreen) {
+                    streamArea.webkitRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+        }
+
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        exitFullscreenBtn.addEventListener('click', toggleFullscreen);
+
         var urlParams = new URLSearchParams(window.location.search);
         var currentClient = urlParams.get('client') || '';
         var currentScreen = 'screen_1';
@@ -260,7 +351,7 @@
 
         var ws = null, wsReady = false, _encoder = new TextEncoder();
         function connectWS() {
-            ws = new WebSocket('ws://localhost:2050/ws/browser');
+            ws = new WebSocket('ws://192.168.1.2:2050/ws/browser');
             ws.binaryType = 'arraybuffer';
             ws.onopen = function () {
                 wsReady = true;
@@ -288,10 +379,11 @@
             ws.send(msg.buffer);
         }
 
-        document.getElementById('remoteToggleBtn').addEventListener('click', function () {
+        var remoteToggleBtn = document.getElementById('remoteToggleBtn');
+        remoteToggleBtn.addEventListener('click', function () {
             remoteActive = !remoteActive;
-            this.textContent = remoteActive ? 'Stop Control' : 'Start Control';
-            this.style.background = remoteActive ? 'var(--red)' : 'var(--accent)';
+            remoteToggleBtn.textContent = remoteActive ? 'Stop Control' : 'Start Control';
+            remoteToggleBtn.style.background = remoteActive ? 'var(--red)' : 'var(--accent)';
             canvas.classList.toggle('remote-mode', remoteActive);
         });
 
@@ -300,11 +392,21 @@
             return { x: Math.round((e.clientX - rect.left) * frameNaturalW / rect.width), y: Math.round((e.clientY - rect.top) * frameNaturalH / rect.height) };
         }
 
-        canvas.addEventListener('mousemove', function (e) { var c = getScaledCoords(e); sendInput({ type: 'mousemove', x: c.x, y: c.y, frameW: frameNaturalW, frameH: frameNaturalH }); });
-        canvas.addEventListener('mousedown', function (e) { e.preventDefault(); var c = getScaledCoords(e); sendInput({ type: 'mousedown', x: c.x, y: c.y, button: e.button, frameW: frameNaturalW, frameH: frameNaturalH }); });
-        canvas.addEventListener('mouseup', function (e) { e.preventDefault(); var c = getScaledCoords(e); sendInput({ type: 'mouseup', x: c.x, y: c.y, button: e.button, frameW: frameNaturalW, frameH: frameNaturalH }); });
-        window.addEventListener('keydown', function (e) { sendInput({ type: 'keydown', key: e.key, code: e.code, keyCode: e.keyCode, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey }); });
-        window.addEventListener('keyup', function (e) { sendInput({ type: 'keyup', key: e.key, code: e.code, keyCode: e.keyCode, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey }); });
+        /* Desktop Mouse and Keyboard Controls */
+        canvas.addEventListener('mousemove', function (e) { if (remoteActive) { var c = getScaledCoords(e); sendInput({ type: 'mousemove', x: c.x, y: c.y, frameW: frameNaturalW, frameH: frameNaturalH }); } });
+        canvas.addEventListener('mousedown', function (e) { if (remoteActive) { e.preventDefault(); var c = getScaledCoords(e); sendInput({ type: 'mousedown', x: c.x, y: c.y, button: e.button, frameW: frameNaturalW, frameH: frameNaturalH }); } });
+        canvas.addEventListener('mouseup', function (e) { if (remoteActive) { e.preventDefault(); var c = getScaledCoords(e); sendInput({ type: 'mouseup', x: c.x, y: c.y, button: e.button, frameW: frameNaturalW, frameH: frameNaturalH }); } });
+
+        window.addEventListener('keydown', function (e) {
+            // Allow press 'F' to toggle full-screen when not actively controlling remote input
+            if (!remoteActive && (e.key === 'f' || e.key === 'F')) {
+                toggleFullscreen();
+                return;
+            }
+            if (remoteActive) sendInput({ type: 'keydown', key: e.key, code: e.code, keyCode: e.keyCode, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey });
+        });
+
+        window.addEventListener('keyup', function (e) { if (remoteActive) sendInput({ type: 'keyup', key: e.key, code: e.code, keyCode: e.keyCode, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey }); });
 
         function renderTabs() {
             var bar = document.getElementById('tabBar');
@@ -325,11 +427,6 @@
                 })(i);
             }
         }
-
-        document.getElementById('mkbType').addEventListener('click', function () {
-            var input = document.getElementById('mobileKeyInput');
-            input.focus();
-        });
 
         fetchDeviceDetails();
         connectWS();

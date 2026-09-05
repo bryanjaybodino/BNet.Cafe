@@ -12,27 +12,27 @@
         }
 
         :root {
-            --bg: #f4f6f9;
+            --bg: #f1f5f9;
             --bg2: #ffffff;
-            --bg3: #f0f2f5;
-            --border: #dde1e7;
-            --border2: #c4cad4;
-            --text: #1a1d23;
-            --text2: #5a6270;
-            --text3: #9099a8;
+            --bg3: #e2e8f0;
+            --border: #cbd5e1;
+            --border-hover: #94a3b8;
+            --text: #0f172a;
+            --text2: #334155;
+            --text3: #64748b;
             --accent: #2563eb;
-            --accent-bg: rgba(37,99,235,.09);
+            --accent-glow: rgba(37, 99, 235, 0.15);
             --green: #16a34a;
+            --green-bg: #dcfce7;
             --purple: #7c3aed;
-            --amber: #d97706;
             --ease: cubic-bezier(.4,0,.2,1);
-            --sidebar-w: 320px;
+            --sidebar-w: 340px;
             --top-h: 52px;
         }
 
         html, body {
             height: 100%;
-            font-family: 'Syne', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: var(--bg);
             color: var(--text);
             overflow: hidden;
@@ -87,6 +87,7 @@
             font-weight: 800;
             font-size: 15px;
             color: var(--text);
+            letter-spacing: 0.3px;
         }
 
         .brand-dot {
@@ -94,17 +95,7 @@
             height: 9px;
             border-radius: 50%;
             background: var(--accent);
-            animation: blink 2.4s infinite;
-        }
-
-        @keyframes blink {
-            0%,100% {
-                box-shadow: 0 0 0 3px var(--accent-bg)
-            }
-
-            50% {
-                box-shadow: 0 0 0 6px transparent
-            }
+            box-shadow: 0 0 8px var(--accent-glow);
         }
 
         .main {
@@ -116,92 +107,136 @@
         }
 
         .sec-label {
-            padding: 12px 16px 6px;
-            font-size: 10px;
-            font-family: 'JetBrains Mono', monospace;
+            padding: 16px 20px 8px;
+            font-size: 11px;
+            font-family: monospace;
             font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 1px;
             color: var(--text3);
         }
 
+        /* ── Modern Light Station Grid Layout ── */
         .device-list {
-            padding: 12px 16px;
+            padding: 16px 20px;
             overflow-y: auto;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
             align-content: start;
         }
 
         .no-devices {
             grid-column: 1 / -1;
-            padding: 20px;
-            font-size: 12px;
-            font-family: 'JetBrains Mono', monospace;
+            padding: 40px 20px;
+            font-size: 13px;
+            font-family: monospace;
             color: var(--text3);
             text-align: center;
+            background: var(--bg2);
+            border: 1px dashed var(--border);
+            border-radius: 12px;
         }
 
         .device-entry {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            padding: 12px;
-            border-radius: 10px;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 12px;
             cursor: pointer;
             background: var(--bg2);
             border: 1px solid var(--border);
-            transition: all .14s var(--ease);
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s var(--ease);
         }
 
             .device-entry:hover {
-                background: var(--bg3);
+                border-color: var(--accent);
                 transform: translateY(-2px);
+                box-shadow: 0 4px 12px var(--accent-glow);
             }
 
             .device-entry.active {
-                background: var(--accent-bg);
+                background: #f0f6ff;
                 border-color: var(--accent);
+                box-shadow: 0 0 0 2px var(--accent);
             }
 
+        .device-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .device-avatar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .avatar {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 8px;
             background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 800;
             color: #fff;
         }
 
-        .device-name {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .device-sub {
-            display: flex;
+        .status-badge {
+            display: inline-flex;
             align-items: center;
             gap: 5px;
-            margin-top: 4px;
-            font-size: 10px;
-            color: var(--text3);
-            font-family: 'JetBrains Mono', monospace;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-family: monospace;
+            font-weight: 700;
+            background: var(--green-bg);
+            color: var(--green);
+            border: 1px solid rgba(22, 163, 74, 0.2);
         }
 
         .activity-dot {
-            width: 6px;
-            height: 6px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background: var(--green);
-            animation: blink 2s infinite;
+        }
+
+        /* ── Full Visibility Active Task Box ── */
+        .device-body {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: #f8fafc;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .device-body-label {
+            font-size: 9px;
+            font-family: monospace;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text3);
+            letter-spacing: 0.5px;
+        }
+
+        .device-sub {
+            font-size: 12px;
+            color: var(--text2);
+            font-family: monospace;
+            font-weight: 600;
+            word-break: break-word; /* Allows long URLs and titles to wrap cleanly */
+            line-height: 1.4;
         }
 
         .sidebar {
@@ -221,17 +256,18 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            padding: 8px 12px;
+            padding: 10px 14px;
             margin: 12px 14px 4px;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid var(--border);
             background: var(--bg3);
             color: var(--text2);
             font-size: 11px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: monospace;
             font-weight: 700;
             cursor: pointer;
             text-decoration: none;
+            transition: all 0.15s var(--ease);
         }
 
         .remote-launch-btn {
@@ -248,33 +284,35 @@
         }
 
         .info-scroll {
-            padding: 0 12px 8px;
+            padding: 0 14px 8px;
         }
 
         .info-row {
-            padding: 7px 10px;
-            border-radius: 7px;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--bg3);
         }
 
         .info-key {
             font-size: 9px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: monospace;
             font-weight: 700;
             color: var(--text3);
+            text-transform: uppercase;
         }
 
         .info-val {
             font-size: 12px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: monospace;
             color: var(--text);
             word-break: break-all;
+            margin-top: 2px;
         }
 
         .sidebar-foot {
-            padding: 10px 14px;
+            padding: 12px 16px;
             border-top: 1px solid var(--border);
             font-size: 11px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: monospace;
             color: var(--text3);
         }
 
@@ -282,8 +320,9 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,.45);
+            background: rgba(0,0,0,.3);
             z-index: 25;
+            backdrop-filter: blur(2px);
         }
 
             .overlay.open {
@@ -349,6 +388,7 @@
                     <div class="info-row"><div class="info-key">Serial Number</div><div class="info-val" id="SerialNumber">—</div></div>
                     <div class="info-row"><div class="info-key">Processor Count</div><div class="info-val" id="ProcessorCount">—</div></div>
                     <div class="info-row"><div class="info-key">Screen Count</div><div class="info-val" id="ScreenCount">—</div></div>
+                    <div class="info-row"><div class="info-key">Active Window</div><div class="info-val" id="ActiveWindow">—</div></div>
                 </div>
             </div>
             <div class="sidebar-foot">⬡ &nbsp;<span id="clock">--:--:--</span></div>
@@ -358,10 +398,14 @@
     <script>
         'use strict';
         var currentClient = '';
-        var knownDevices = new Set();
+        var clientDataMap = new Map();
+        var clientActivityMap = new Map();
 
-        function tick() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { hour12: false }); }
-        setInterval(tick, 1000); tick();
+        function tick() {
+            document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
+        }
+        setInterval(tick, 1000);
+        tick();
 
         var sidebar = document.getElementById('sidebar');
         var overlay = document.getElementById('overlay');
@@ -373,54 +417,155 @@
         hamburger.addEventListener('click', function () { sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); });
         overlay.addEventListener('click', closeSidebar);
 
-        function fetchDeviceData() {
-            fetch('http://localhost:2050/text')
-                .then(function (res) { return res.json(); })
-                .then(function (data) {
-                    if (Array.isArray(data)) {
-                        renderDevices(data);
-                        data.forEach(function (item) {
-                            if (item.AccountName === currentClient) updateInfo(item);
-                        });
+        // ── WebSocket Client Setup ──────────────────────────────────────────
+        const socketUrl = 'ws://192.168.1.2:2050/ws/browser';
+        const textDecoder = new TextDecoder('utf-8');
+        let ws = null;
+
+        function connectWebSocket() {
+            ws = new WebSocket(socketUrl);
+            ws.binaryType = 'arraybuffer';
+
+            ws.onopen = function () {
+                console.log('Connected to server via WebSocket');
+            };
+
+            ws.onmessage = function (event) {
+                if (event.data instanceof ArrayBuffer) {
+                    const bytes = new Uint8Array(event.data);
+                    if (bytes.length === 0) return;
+
+                    const messageType = bytes[0];
+                    const payloadBytes = bytes.subarray(1); // Strip 1-byte header
+
+                    if (messageType === 0x11) { // CLIENT_LIST
+                        try {
+                            const jsonString = textDecoder.decode(payloadBytes);
+                            const clients = JSON.parse(jsonString);
+                            handleClientListUpdate(clients);
+                        } catch (err) {
+                            console.error('Failed to parse CLIENT_LIST JSON:', err);
+                        }
+                    } else if (messageType === 0x12) { // ACTIVITY
+                        try {
+                            const jsonString = textDecoder.decode(payloadBytes);
+                            const activity = JSON.parse(jsonString);
+                            handleActivityUpdate(activity);
+                        } catch (err) {
+                            console.error('Failed to parse ACTIVITY JSON:', err);
+                        }
                     }
-                })
-                .catch(function (err) { console.error('Error fetching text data:', err); });
+                }
+            };
+
+            ws.onclose = function () {
+                console.warn('WebSocket disconnected. Attempting reconnect in 3s…');
+                setTimeout(connectWebSocket, 3000);
+            };
+
+            ws.onerror = function (err) {
+                console.error('WebSocket error:', err);
+            };
         }
 
-        function renderDevices(data) {
-            var list = document.getElementById('deviceList');
-            var incoming = new Set(data.map(function (item) { return item.AccountName; }));
-            knownDevices.forEach(function (name) {
-                if (!incoming.has(name)) {
-                    knownDevices.delete(name);
-                    var el = list.querySelector('.device-entry[data-name="' + name + '"]');
-                    if (el) el.remove();
-                    if (currentClient === name) deselectDevice();
+        function handleClientListUpdate(clients) {
+            clientDataMap.clear();
+            clients.forEach(function (client) {
+                if (client.AccountName) {
+                    clientDataMap.set(client.AccountName.toLowerCase(), client);
                 }
             });
-            data.forEach(function (item) {
+
+            renderDevices(clients);
+
+            if (currentClient && clientDataMap.has(currentClient.toLowerCase())) {
+                updateInfo(clientDataMap.get(currentClient.toLowerCase()));
+            }
+        }
+
+        function handleActivityUpdate(activity) {
+            if (!activity || !activity.accountName) return;
+            const accountKey = activity.accountName.toLowerCase();
+            clientActivityMap.set(accountKey, activity);
+
+            // Update sub-label status on device entry card
+            var subEl = document.getElementById('sub-' + accountKey);
+            if (subEl) {
+                subEl.textContent = activity.windowTitle || activity.appName || 'Online';
+            }
+
+            // Update details sidebar if this station is selected
+            if (currentClient && currentClient.toLowerCase() === accountKey) {
+                document.getElementById('ActiveWindow').textContent = activity.windowTitle || '—';
+            }
+        }
+
+        function renderDevices(clients) {
+            var list = document.getElementById('deviceList');
+            list.innerHTML = '';
+
+            if (clients.length === 0) {
+                var ph = document.createElement('div');
+                ph.className = 'no-devices';
+                ph.id = 'noDevices';
+                ph.textContent = 'Waiting for connected PCs…';
+                list.appendChild(ph);
+                return;
+            }
+
+            clients.forEach(function (item) {
                 var name = item.AccountName;
-                if (knownDevices.has(name)) return;
-                knownDevices.add(name);
-                var ph = document.getElementById('noDevices'); if (ph) ph.remove();
+                if (!name) return;
+                var accountKey = name.toLowerCase();
+
                 var el = document.createElement('div');
-                el.className = 'device-entry'; el.dataset.name = name;
-                el.innerHTML = '<div class="avatar">' + name.charAt(0).toUpperCase() + '</div><div><div class="device-name">' + name + '</div><div class="device-sub"><span class="activity-dot"></span>Online</div></div>';
+                el.className = 'device-entry';
+                if (currentClient.toLowerCase() === accountKey) el.classList.add('active');
+                el.dataset.name = name;
+
+                var activity = clientActivityMap.get(accountKey);
+                var statusText = activity ? (activity.windowTitle || activity.appName) : 'Idle / Online';
+
+                el.innerHTML =
+                    '<div class="device-top">' +
+                    '<div class="device-avatar-wrap">' +
+                    '<div class="avatar">' + escapeHtml(name).toUpperCase() + '</div>' +
+                    '</div>' +
+                    '<div class="status-badge"><span class="activity-dot"></span>Active</div>' +
+                    '</div>' +
+                    '<div class="device-body">' +
+                    '<div class="device-body-label">Active Task</div>' +
+                    '<div class="device-sub" id="sub-' + accountKey + '">' + escapeHtml(statusText) + '</div>' +
+                    '</div>';
+
                 el.addEventListener('click', function () { selectDevice(name); });
                 list.appendChild(el);
             });
-            if (knownDevices.size === 0 && !document.getElementById('noDevices')) {
-                var ph2 = document.createElement('div'); ph2.className = 'no-devices'; ph2.id = 'noDevices'; ph2.textContent = 'Waiting for connected PCs…'; list.appendChild(ph2);
-            }
         }
 
         function selectDevice(name) {
             currentClient = name;
-            document.querySelectorAll('.device-entry').forEach(function (el) { el.classList.toggle('active', el.dataset.name === name); });
+            var accountKey = name.toLowerCase();
+
+            document.querySelectorAll('.device-entry').forEach(function (el) {
+                el.classList.toggle('active', el.dataset.name.toLowerCase() === accountKey);
+            });
+
             sidebar.classList.add('visible');
             app.classList.add('has-selection');
             document.getElementById('remoteLaunchBtn').href = 'remote.html?client=' + encodeURIComponent(name);
-            fetchDeviceData();
+
+            if (clientDataMap.has(accountKey)) {
+                updateInfo(clientDataMap.get(accountKey));
+            }
+
+            if (clientActivityMap.has(accountKey)) {
+                const act = clientActivityMap.get(accountKey);
+                document.getElementById('ActiveWindow').textContent = act.windowTitle || '—';
+            } else {
+                document.getElementById('ActiveWindow').textContent = '—';
+            }
+
             closeSidebar();
         }
 
@@ -444,8 +589,13 @@
             document.getElementById('ScreenCount').textContent = item.ScreenCount || '—';
         }
 
-        fetchDeviceData();
-        setInterval(fetchDeviceData, 3000);
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // Initialize WebSocket connection
+        connectWebSocket();
     </script>
 </body>
 </html>
