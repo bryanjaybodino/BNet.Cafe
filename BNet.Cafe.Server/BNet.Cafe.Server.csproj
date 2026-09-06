@@ -114,6 +114,11 @@
     <Content Include="Forms\Computers.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Forms\SampleModal.ascx" />
+    <Content Include="Offline Packages\Newtonsoft.Json\Newtonsoft.Json.dll" />
+    <Content Include="Offline Packages\RestSharp\RestSharp.dll" />
+    <Content Include="Offline Packages\System.Runtime.Caching\System.Configuration.ConfigurationManager.dll" />
+    <Content Include="Offline Packages\System.Runtime.Caching\System.Runtime.Caching.dll" />
+    <Content Include="Offline Packages\System.Runtime.CompilerServices.Unsafe\System.Runtime.CompilerServices.Unsafe.dll" />
     <Content Include="Remote.html" />
     <Content Include="Global.asax" />
     <Content Include="Login.aspx" />

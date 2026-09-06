@@ -93,7 +93,7 @@ namespace BNet.Cafe.Server.Services
             }
             else
             {
-                RenderPaginationPanel(gridView, paginationPanel, currentPageIndex);
+                RenderPaginationPanel(gridView, paginationPanel, currentPageIndex, currentBatchCount);
             }
         }
 
@@ -124,15 +124,13 @@ namespace BNet.Cafe.Server.Services
 
         // ── Custom UI Rendering ─────────────────────────────────────────────────
 
-        private static void RenderPaginationPanel(GridView gridView, Panel paginationPanel, int currentPage)
+        private static void RenderPaginationPanel(GridView gridView, Panel paginationPanel, int currentPage, int currentBatchCount)
         {
             paginationPanel.Controls.Clear();
             paginationPanel.CssClass = "custom-pagination-container";
 
-            int totalPages = (int)Math.Ceiling((double)GridviewPaginationService.PageSize + 1 / GridviewPaginationService.PageSize);
-
-            if (totalPages <= 1) return;
-
+            int totalPages = (int)Math.Ceiling((double)currentBatchCount / GridviewPaginationService.PageSize);
+          
             var ul = new HtmlGenericControl("ul");
             ul.Attributes["class"] = "pagination mb-0 justify-content-center";
 
