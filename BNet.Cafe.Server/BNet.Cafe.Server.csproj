@@ -109,6 +109,7 @@
     <Content Include="Databases\Queries\Computers\GetAll.sql" />
     <Content Include="Databases\Queries\Computers\Update.sql" />
     <Content Include="Databases\Queries\Computers\UpdateCount.sql" />
+    <Content Include="Forms\ComputerCreate.ascx" />
     <Content Include="Forms\Computers.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Remote.html" />
@@ -140,6 +141,13 @@
     <Compile Include="Databases\DBMigration.cs" />
     <Compile Include="Databases\DBScriptService.cs" />
     <Compile Include="Databases\Tables\computers.cs" />
+    <Compile Include="Forms\ComputerCreate.ascx.cs">
+      <DependentUpon>ComputerCreate.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\ComputerCreate.ascx.designer.cs">
+      <DependentUpon>ComputerCreate.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Computers.ascx.cs">
       <DependentUpon>Computers.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

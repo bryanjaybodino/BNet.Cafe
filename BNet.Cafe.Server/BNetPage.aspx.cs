@@ -49,19 +49,19 @@ namespace BNet.Cafe.Server
             HyperLink_Users.CssClass = "";
 
 
-            if (HyperLink_Dashboard.ID.Contains(formName))
+            if (formName.Contains(HyperLink_Dashboard.ToolTip))
             {
                 HyperLink_Dashboard.CssClass = "active";
             }
-            else if (HyperLink_Computers.ID.Contains(formName))
+            else if (formName.Contains(HyperLink_Computers.ToolTip))
             {
                 HyperLink_Computers.CssClass = "active";
             }
-            else if (HyperLink_Users.ID.Contains(formName))
+            else if (formName.Contains(HyperLink_Users.ToolTip))
             {
                 HyperLink_Users.CssClass = "active";
             }
-            else if (HyperLink_Remote.ID.Contains(formName))
+            else if (formName.Contains(HyperLink_Remote.ToolTip))
             {
                 HyperLink_Remote.CssClass = "active";
             }

@@ -19,22 +19,22 @@
             </div>
             <ul class="sidebar-menu">
                 <li>
-                    <asp:HyperLink ID="HyperLink_Dashboard" runat="server" NavigateUrl="?Form=Dashboard">
+                    <asp:HyperLink ID="HyperLink_Dashboard" runat="server" ToolTip="Dashboard" NavigateUrl="?Form=Dashboard">
             <i class="fas fa-home"></i><span>Dashboard</span>
                     </asp:HyperLink>
                 </li>
                 <li>
-                    <asp:HyperLink ID="HyperLink_Computers" runat="server" NavigateUrl="?Form=Computers">
+                    <asp:HyperLink ID="HyperLink_Computers" runat="server" ToolTip="Computer" NavigateUrl="?Form=Computers">
             <i class="fas fa-computer"></i><span>Computers</span>
                     </asp:HyperLink>
                 </li>
                 <li>
-                    <asp:HyperLink ID="HyperLink_Remote" runat="server" NavigateUrl="?Form=Remote">
+                    <asp:HyperLink ID="HyperLink_Remote" runat="server" ToolTip="Remote" NavigateUrl="?Form=Remote">
             <i class="fas fa-display"></i><span>Remote</span>
                     </asp:HyperLink>
                 </li>
                 <li>
-                    <asp:HyperLink ID="HyperLink_Users" runat="server" NavigateUrl="?Form=Users">
+                    <asp:HyperLink ID="HyperLink_Users" runat="server" ToolTip="User" NavigateUrl="?Form=Users">
             <i class="fas fa-users"></i><span>Users</span>
                     </asp:HyperLink>
                 </li>

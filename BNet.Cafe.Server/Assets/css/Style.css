@@ -136,10 +136,10 @@ body {
     }
 
 .main-content {
-    flex: 1;
+
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 32px 24px;
+    padding:10px;
     background-color: var(--bg-light);
     min-width: 0;
 }
@@ -279,13 +279,15 @@ body {
     background-color: var(--bg-light-secondary);
     border: 1px solid var(--border-light);
     border-radius: 12px;
-    padding: 20px;
-    margin-top: 20px;
+    padding-top:25px;
+    padding-bottom:25px;
+    padding-left: 15px;
+    padding-right: 15px;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
     display: block;
-    overflow: hidden;
+    overflow: visible !important;
 }
 
 .table-toolbar {
@@ -297,21 +299,23 @@ body {
     flex-wrap: wrap;
 }
 
-/* Dedicated Scroll Container */
 .table-container {
     width: 100%;
     max-width: 100%;
-    overflow-x: auto !important;
-    overflow-y: hidden;
+    overflow-x: auto !important; /* Re-enabled horizontal scroll so content doesn't push wrapper */
+    overflow-y: visible !important;
     display: block;
     box-sizing: border-box;
     padding-bottom: 8px;
+    min-height:300px;
+    padding-right: 1px; /* Prevents border-clipping on the far right */
 }
 
 .data-table {
     width: 100%;
-    min-width: 1200px;
-    border-collapse: collapse;
+    min-width: 100%; /* Changed from fixed 1200px to allow fluid scaling */
+    border-collapse: separate; /* Changed to separate so cell paddings align properly */
+    border-spacing: 0;
     font-size: 14px;
     text-align: left;
     white-space: nowrap;
@@ -322,7 +326,14 @@ body {
         padding: 14px 16px;
         border-bottom: 1px solid var(--border-light);
         white-space: nowrap;
+        box-sizing: border-box;
     }
+
+        /* Ensure the last column gets equal right-side inner padding */
+        .data-table th:last-child,
+        .data-table td:last-child {
+            padding-right: 20px;
+        }
 
     .data-table th {
         color: var(--text-light-secondary);
@@ -333,9 +344,14 @@ body {
         background-color: var(--bg-light-tertiary);
     }
 
-    .data-table tr:hover {
-        background-color: var(--bg-light-tertiary);
+    .data-table tr {
+        position: relative;
     }
+
+        .data-table tr:hover {
+            background-color: var(--bg-light);
+            z-index: 10;
+        }
 
 /* ==========================================
    7. CARDS & WIDGETS
@@ -562,7 +578,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 10000;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease-in-out;
@@ -612,7 +628,120 @@ body {
 }
 
 /* ==========================================
-   10. MEDIA QUERIES & RESPONSIVE DESIGN
+   10. ACTION DROPDOWN SYSTEM (PURE CSS CLICK)
+   ========================================== */
+.action-dropdown {
+    position: relative;
+    display: inline-block;
+    outline: none; /* Prevents focus outline ring on wrapper */
+}
+
+.action-dropdown-toggle {
+    background-color: var(--bg-light-tertiary);
+    color: var(--text-light);
+    border: 1px solid var(--border-light);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+    .action-dropdown-toggle:hover {
+        background-color: var(--border-light);
+        border-color: var(--primary);
+    }
+
+.action-dropdown-menu {
+    display: none;
+    position: absolute;
+    left: 0; /* Aligns menu to bottom-left edge of the button */
+    top: 100%; /* Displays directly below button */
+    z-index: 9999;
+    min-width: 180px;
+    padding: 6px 0;
+    margin-top: 4px;
+    background-color: var(--bg-light-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Pure CSS Click Trigger via :focus-within */
+.action-dropdown:focus-within .action-dropdown-menu {
+    display: block;
+}
+
+/* Universal styles for both <a> and <span> items inside dropdown */
+a.dropdown-item,
+span.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--text-light);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    text-align: left;
+    user-select: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+    a.dropdown-item i,
+    span.dropdown-item i {
+        font-size: 14px;
+        width: 16px;
+        text-align: center;
+        color: var(--text-light-secondary);
+    }
+
+    a.dropdown-item:hover,
+    span.dropdown-item:hover {
+        background-color: var(--bg-light-tertiary);
+        color: var(--primary);
+    }
+
+        a.dropdown-item:hover i,
+        span.dropdown-item:hover i {
+            color: var(--primary);
+        }
+
+/* Danger Item Specifics (Delete Trigger) */
+.dropdown-item.text-danger {
+    color: #ef4444;
+}
+
+    .dropdown-item.text-danger i {
+        color: #ef4444;
+    }
+
+    .dropdown-item.text-danger:hover {
+        background-color: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+    }
+
+        .dropdown-item.text-danger:hover i {
+            color: #dc2626;
+        }
+
+.dropdown-divider {
+    height: 1px;
+    margin: 4px 0;
+    overflow: hidden;
+    background-color: var(--border-light);
+}
+
+/* ==========================================
+   11. MEDIA QUERIES & RESPONSIVE DESIGN
    ========================================== */
 @media (max-width: 768px) {
     .sidebar {
@@ -645,10 +774,6 @@ body {
 
     .content-header h1 {
         font-size: 22px;
-    }
-
-    .main-content {
-        padding: 16px 12px;
     }
 
     .card {

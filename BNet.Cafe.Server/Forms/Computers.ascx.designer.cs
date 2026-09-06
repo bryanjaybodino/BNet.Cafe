@@ -33,6 +33,15 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.TextBox TextBox_Search;
 
         /// <summary>
+        /// HyperLink_Add control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Add;
+
+        /// <summary>
         /// GridViewTable control.
         /// </summary>
         /// <remarks>
@@ -40,5 +49,23 @@ namespace BNet.Cafe.Server.Forms
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView GridViewTable;
+
+        /// <summary>
+        /// HiddenField_DeleteId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField HiddenField_DeleteId;
+
+        /// <summary>
+        /// Button_ConfirmDelete control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button_ConfirmDelete;
     }
 }

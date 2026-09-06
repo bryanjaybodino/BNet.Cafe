@@ -107,6 +107,9 @@ namespace BNet.Cafe.Server.BNetWebsocket
                 int port = 2050;
                 string prefix = $"http://*:{port}/";
 
+                // Remove any existing URL ACL for the wildcard URL (in case it was left over from a previous run)
+                PortManager.RemoveUrlAcl(prefix);
+
                 // 1. Grant non-admin listening rights for the wildcard URL
                 PortManager.AddUrlAcl(prefix);
 
