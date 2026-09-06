@@ -42,7 +42,7 @@ namespace BNet.Cafe.Client
         private const long JpegQualityBacklog = 8L;    // was 10  — squeeze harder under pressure
         private const double ImageScale = 0.70;   // was 0.75 — saves ~13% more pixels vs 0.75, still sharp on HD
         private const double ImageScaleBacklog = 0.40; // was 0.5  — real pressure relief without going unreadable
-        private const int ActivityIntervalMs = 8000;   // was 5000 — low-value poll, no reason to run it often
+        private const int ActivityIntervalMs = 1000;   // was 5000 — low-value poll, no reason to run it often
         private const int SendTimeoutMs = 600;    // was 800  — faster failure detection; 600ms is still generous
         // Shared UTF-8 encoder — used for all JSON/string payloads
         private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
@@ -150,8 +150,6 @@ namespace BNet.Cafe.Client
                         var session = new AgentSession(ws, SendTimeoutMs);
                         _currentSession = session;
 
-                        await SendDeviceInfo(session);
-
                         _ = Task.Run(async () =>
                         {
                             var info = UserActivity.ActiveWindowMonitor.GetCurrent();
@@ -189,7 +187,6 @@ namespace BNet.Cafe.Client
         private async Task CaptureLoop(AgentSession session)
         {
             var compressor = new ImageCompressor();
-            int frameCounter = 0;
 
             while (session.IsOpen)
             {
@@ -207,9 +204,6 @@ namespace BNet.Cafe.Client
                     RebuildScreenKeyCache(totalScreens);
                     _deviceInfo.ScreenCount = totalScreens.ToString();
 
-                    if (frameCounter % TextInfoEveryNFrames == 0)
-                        _ = SendDeviceInfo(session);
-                    frameCounter++;
 
                     int[] indices = _requestedScreenIndices;
                     if (indices.Length == 0) goto NextFrame;
@@ -386,10 +380,16 @@ namespace BNet.Cafe.Client
         // ACTIVITY SENDER
         // ─────────────────────────────────────────────────────────────────────
 
+        private string _lastSentTitle = string.Empty;
+
         private async Task SendActivityInfo(AgentSession session, UserActivity.ActiveWindowInfo info)
         {
             try
             {
+                // Skip sending if the window title hasn't changed
+                if (info.WindowTitle == _lastSentTitle) return;
+                _lastSentTitle = info.WindowTitle;
+
                 var payloadObj = new
                 {
                     accountName = _deviceInfo.AccountName,
@@ -398,32 +398,26 @@ namespace BNet.Cafe.Client
                     windowTitle = info.WindowTitle,
                     url = info.Url,
                     isBrowser = info.IsBrowser,
-                    capturedAt = info.CapturedAt.ToString("o")
+                    capturedAt = info.CapturedAt.ToString("o"),
+
+                    // Included device details in the activity packet
+                    windows = _deviceInfo.Windows,
+                    windowsVersion = _deviceInfo.WindowsVersion,
+                    osArchitecture = _deviceInfo.OSArchitecture,
+                    serialNumber = _deviceInfo.SerialNumber,
+                    machineName = _deviceInfo.MachineName,
+                    workGroup = _deviceInfo.WorkGroup,
+                    osVersion = _deviceInfo.OSVersion,
+                    processorCount = _deviceInfo.ProcessorCount,
+                    screenCount = ScreenCaptured.GetScreenCount().ToString()
                 };
+
                 string json = JsonConvert.SerializeObject(payloadObj);
                 byte[] jsonBytes = Utf8.GetBytes(json);
                 byte[] frame = new byte[1 + jsonBytes.Length];
-                frame[0] = 0x03;
+                frame[0] = 0x03; // Using Activity opcode 0x03
                 Buffer.BlockCopy(jsonBytes, 0, frame, 1, jsonBytes.Length);
                 await session.SendAsync(frame, WebSocketMessageType.Binary);
-            }
-            catch { }
-        }
-
-        // ─────────────────────────────────────────────────────────────────────
-        // DEVICE INFO SENDER
-        // ─────────────────────────────────────────────────────────────────────
-
-        private async Task SendDeviceInfo(AgentSession session)
-        {
-            try
-            {
-                string json = JsonConvert.SerializeObject(_deviceInfo);
-                byte[] jsonBytes = Utf8.GetBytes(json);
-                byte[] payload = new byte[1 + jsonBytes.Length];
-                payload[0] = 0x02;
-                Buffer.BlockCopy(jsonBytes, 0, payload, 1, jsonBytes.Length);
-                await session.SendAsync(payload, WebSocketMessageType.Binary);
             }
             catch { }
         }

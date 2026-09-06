@@ -164,17 +164,6 @@ namespace BNet.Cafe.Server.BNetWebsocket
                     }
                     ctx.Response.StatusCode = 400; ctx.Response.Close(); return;
                 }
-
-         
-                if (path == "/text" && ctx.Request.HttpMethod == "GET")
-                {
-                    byte[] b = Utf8.GetBytes(_clientListJson);
-                    ctx.Response.ContentType = "application/json";
-                    ctx.Response.ContentLength64 = b.Length;
-                    await ctx.Response.OutputStream.WriteAsync(b, 0, b.Length);
-                    ctx.Response.Close(); return;
-                }
-
                 ctx.Response.StatusCode = 404; ctx.Response.Close();
             }
             catch { try { ctx.Response.Close(); } catch { } }
@@ -227,36 +216,33 @@ namespace BNet.Cafe.Server.BNetWebsocket
 
                         _ = Task.Run(() => PushPayloadToBrowsers(screenKey, payload));
                     }
-                    else if (msgType == 0x02) // TEXT_INFO — binary frame, UTF-8 JSON body
-                    {
-                        string json = Utf8.GetString(msg, 1, msg.Length - 1);
-                        var info = JsonConvert.DeserializeObject<TextContent>(json);
-                        if (info == null) continue;
-
-                        agentName = info.AccountName?.ToLower();
-                        if (agentName != null) _agentSessions[agentName] = session;
-
-                        UpdateClientList(info);
-                        await FlushInputQueueToAgent(agentName, session);
-                        _ = BroadcastClientList();
-
-                        int subs;
-                        lock (_subscriberLock) subs = _agentSubscriberCount.GetOrAdd(agentName, 0);
-
-                        if (subs == 0)
-                            try { await session.SendAsync(PausePayload); } catch { }
-                        else
-                        {
-                            try { await session.SendAsync(ResumePayload); } catch { }
-                            await SendActiveScreensToAgent(agentName, session);
-                        }
-
-                        if (_latestActivity.TryGetValue(agentName, out var cached))
-                            _ = BroadcastActivity(cached);
-                    }
-                    else if (msgType == 0x03) // ACTIVITY — binary frame, UTF-8 JSON body
+                    else if (msgType == 0x03) // ACTIVITY
                     {
                         string actJson = Utf8.GetString(msg, 1, msg.Length - 1);
+                        var info = JsonConvert.DeserializeObject<TextContent>(actJson); // Maps to TextContent fields
+
+                        if (info != null && !string.IsNullOrEmpty(info.AccountName))
+                        {
+                            agentName = info.AccountName.ToLower();
+                            _agentSessions[agentName] = session;
+
+                            // Keep client list and screen streaming state updated
+                            UpdateClientList(info);
+                            await FlushInputQueueToAgent(agentName, session);
+                            _ = BroadcastClientList();
+
+                            int subs;
+                            lock (_subscriberLock) subs = _agentSubscriberCount.GetOrAdd(agentName, 0);
+
+                            if (subs == 0)
+                                try { await session.SendAsync(PausePayload); } catch { }
+                            else
+                            {
+                                try { await session.SendAsync(ResumePayload); } catch { }
+                                await SendActiveScreensToAgent(agentName, session);
+                            }
+                        }
+
                         if (agentName != null) _latestActivity[agentName] = actJson;
                         _ = BroadcastActivity(actJson);
                     }
