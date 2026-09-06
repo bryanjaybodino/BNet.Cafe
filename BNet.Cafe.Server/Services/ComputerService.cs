@@ -11,14 +11,14 @@ namespace BNet.Cafe.Server.Services
     {
         private readonly DBContext DBContext = new DBContext();
         private readonly DBScriptService dBScriptService = new DBScriptService();
-
-        public DataTable GetAll(string search = "", bool isDeleted = false, int limit = 100)
+        private readonly GridviewPaginationService paginationService = new GridviewPaginationService();
+        public DataTable GetAll(string search = "", int pageIndex = 0, bool isDeleted = false)
         {
             var scripts = new Dictionary<string, string>
             {
                 { "DBIsDeleted", isDeleted ? "TRUE" : "FALSE" },
                 { "DBComputerName", dBScriptService.CleanUpToUpper(search) },
-                { "LIMIT", $"{limit}" }
+                { "LIMIT", $"{paginationService.SetPagination(pageIndex)}" }
             };
 
             Page page = HttpContext.Current.Handler as Page;

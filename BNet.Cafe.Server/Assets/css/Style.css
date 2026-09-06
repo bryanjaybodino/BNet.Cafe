@@ -851,3 +851,92 @@ span.dropdown-item {
         height: 250px;
     }
 }
+
+/* ==========================================
+   GRIDVIEW TEMPLATE & EXTERNAL PAGINATION
+   ========================================== */
+
+/* 1. External Pagination Container */
+.custom-pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 16px;
+    margin-top: 12px;
+    border-top: 1px solid var(--border-light, #e5e7eb);
+    width: 100%;
+}
+
+    /* 2. Pagination List Container */
+    .custom-pagination-container ul.pagination {
+        display: flex;
+        align-items: center;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 6px;
+    }
+
+    .custom-pagination-container .page-item {
+        display: inline-block;
+        margin: 0;
+    }
+
+    /* 3. Button Styles (.page-link) */
+    .custom-pagination-container .page-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 34px;
+        height: 34px;
+        padding: 0 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        background-color: var(--bg-light-tertiary, #f3f4f6);
+        color: var(--text-light-secondary, #4b5563);
+        border: 1px solid var(--border-light, #e5e7eb);
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* Hover State for Active Links */
+    .custom-pagination-container .page-item:not(.disabled):not(.active) .page-link:hover {
+        background-color: var(--border-light, #e5e7eb);
+        color: var(--primary, #2563eb);
+        border-color: var(--primary, #2563eb);
+    }
+
+    /* Active Page State */
+    .custom-pagination-container .page-item.active .page-link {
+        background-color: var(--primary, #2563eb);
+        color: #ffffff;
+        border-color: var(--primary, #2563eb);
+        cursor: default;
+    }
+
+    /* Disabled Prev/Next Buttons */
+    .custom-pagination-container .page-item.disabled .page-link {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
+        background-color: var(--bg-light-secondary, #f9fafb);
+    }
+
+/* 4. Empty State Panel Styling */
+.empty-state-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    width: 100%;
+    border-top: 1px solid var(--border-light, #e5e7eb);
+    margin-top: 12px;
+}
+
+.d-none {
+    display: none !important;
+}

@@ -6,7 +6,7 @@
         <div class="table-wrapper">
             <div class="table-toolbar">
                 <div class="search-box">
-                    <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" placeholder="Search computers..." AutoPostBack="true" />
+                    <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" placeholder="Search computers..."/>
                 </div>
                 <asp:HyperLink ID="HyperLink_Add" NavigateUrl="~/BNetPage.aspx?Form=ComputerCreate" CssClass="btn btn-primary" runat="server">
                      + Add Computer 
@@ -15,7 +15,13 @@
 
             <!-- Scrollable container wrapper -->
             <div class="table-container">
-                <asp:GridView ID="GridViewTable" runat="server" ShowHeaderWhenEmpty="true" AutoGenerateColumns="False" CssClass="data-table" GridLines="None">
+                <asp:GridView ID="GridViewTable" runat="server" ShowHeaderWhenEmpty="true" 
+                    AutoGenerateColumns="False" CssClass="data-table" GridLines="None"
+                    AllowPaging="True" OnPageIndexChanging="GridViewTable_PageIndexChanging">
+                    
+                    <PagerSettings Mode="NumericFirstLast" FirstPageText="&laquo;" LastPageText="&raquo;" PreviousPageText="&lsaquo;" NextPageText="&rsaquo;" PageButtonCount="5" />
+                    <PagerStyle CssClass="custom-pagination" HorizontalAlign="Center" />
+
                     <Columns>
                         <asp:TemplateField HeaderText="Action" ItemStyle-Width="120px">
                             <ItemTemplate>
@@ -25,24 +31,16 @@
                                         Command <i class="fa-solid fa-chevron-down"></i>
                                     </button>
                                     <div class="action-dropdown-menu">
-                                        <!-- 1. Rent Time -->
                                         <a href='<%# "BNetPage.aspx?Form=RentTime&id=" + Eval("DBId") %>' class="dropdown-item">
                                             <i class="fa-regular fa-clock"></i>Start Rental Session
                                         </a>
-
-                                        <!-- 2. Billing -->
                                         <a href='<%# "BNetPage.aspx?Form=Billing&id=" + Eval("DBId") %>' class="dropdown-item">
                                             <i class="fa-solid fa-file-invoice-dollar"></i>Billing & Invoices
                                         </a>
-
-                                        <!-- 3. History -->
                                         <a href='<%# "BNetPage.aspx?Form=History&id=" + Eval("DBId") %>' class="dropdown-item">
                                             <i class="fa-solid fa-clock-rotate-left"></i>Session History
                                         </a>
-
                                         <div class="dropdown-divider"></div>
-
-                                        <!-- 4. Delete Trigger (Opens Modal) -->
                                         <span class="dropdown-item text-danger" onclick="openDeleteModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
                                             <i class="fa-solid fa-trash-can"></i>Delete Computer
                                         </span>
@@ -63,34 +61,28 @@
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Time Start" ItemStyle-Width="200px">
-                            <ItemTemplate>
-                            </ItemTemplate>
+                            <ItemTemplate></ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Time End" ItemStyle-Width="200px">
-                            <ItemTemplate>
-                            </ItemTemplate>
+                            <ItemTemplate></ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Total Hours" ItemStyle-Width="200px">
-                            <ItemTemplate>
-                            </ItemTemplate>
+                            <ItemTemplate></ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Status" ItemStyle-Width="200px">
-                            <ItemTemplate>
-                            </ItemTemplate>
+                            <ItemTemplate></ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Billing" ItemStyle-Width="200px">
-                            <ItemTemplate>
-                            </ItemTemplate>
+                            <ItemTemplate></ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
             </div>
+            <asp:Panel ID="Panel_Pagination" runat="server" CssClass="custom-pagination-container" />
         </div>
 
-        <!-- Hidden Field to store target DBId for deletion -->
         <asp:HiddenField ID="HiddenField_DeleteId" runat="server" />
 
-        <!-- Delete Modal Confirmation Overlay -->
         <div id="deleteModal" class="modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">

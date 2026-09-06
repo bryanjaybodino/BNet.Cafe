@@ -51,6 +51,15 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.GridView GridViewTable;
 
         /// <summary>
+        /// Panel_Pagination control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel Panel_Pagination;
+
+        /// <summary>
         /// HiddenField_DeleteId control.
         /// </summary>
         /// <remarks>
