@@ -41,8 +41,12 @@ namespace BNet.Cafe.Server.Services
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Computers/Create.sql");
             string sql = dBScriptService.Scripts(scripts, template);
+            var result = DBContext.SqlExecuteReaderAsync(sql);
+            int computerNameExist = Convert.ToInt32(result["ComputerNameExist"]);
 
-            return DBContext.SqlExecuteAsync(sql);
+            bool name = computerNameExist != 1;
+            return (name);
+
         }
 
         public bool Update(int id, string computerName)

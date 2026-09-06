@@ -33,7 +33,7 @@ namespace BNet.Cafe.Server
                 Control myControl = Page.LoadControl(virtualPath);
 
                 // Assign an ID so ViewState functions properly
-                myControl.ID = "myDynamicControl";
+                myControl.ID = "BNet";
 
                 PlaceHolder_Container.Controls.Clear();
                 PlaceHolder_Container.Controls.Add(myControl);
@@ -47,6 +47,8 @@ namespace BNet.Cafe.Server
             HyperLink_Dashboard.CssClass = "";
             HyperLink_Computers.CssClass = "";
             HyperLink_Users.CssClass = "";
+            HyperLink_Remote.CssClass = "";
+            HyperLink_BillingHistory.CssClass = "";
 
 
             if (formName.Contains(HyperLink_Dashboard.ToolTip))
@@ -64,6 +66,10 @@ namespace BNet.Cafe.Server
             else if (formName.Contains(HyperLink_Remote.ToolTip))
             {
                 HyperLink_Remote.CssClass = "active";
+            }
+            else if (formName.Contains(HyperLink_BillingHistory.ToolTip))
+            {
+                HyperLink_BillingHistory.CssClass = "active";
             }
         }
     }

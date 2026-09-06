@@ -18,16 +18,13 @@
     --text-light-secondary: #64748b;
     --border-light: #e2e8f0;
     --sidebar-light: #ffffff;
-    /* Dynamic Button Text Color */
     --btn-primary-text: #ffffff;
-    /* Scrollbar Variables (Light Mode) */
     --scrollbar-track: #f1f5f9;
     --scrollbar-thumb: #cbd5e1;
     --scrollbar-thumb-hover: #94a3b8;
 }
 
 [data-theme="dark"] {
-    /* Custom Requested Dark Mode Blue Color */
     --primary: #2F48A1;
     --primary-dark: #1f3273;
     --secondary: #6366f1;
@@ -38,9 +35,7 @@
     --text-light-secondary: #cbd5e1;
     --border-light: #2a2a2a;
     --sidebar-light: #151515;
-    /* Primary Button Text Color for Dark Mode */
     --btn-primary-text: #ffffff;
-    /* Scrollbar Variables (Dark Mode) */
     --scrollbar-track: #111111;
     --scrollbar-thumb: #2a2a2a;
     --scrollbar-thumb-hover: #3d3d3d;
@@ -58,18 +53,16 @@ body {
     }
 
 /* ==========================================
-   2. CUSTOM MODERN SCROLLBAR (GLOBAL & DARKMODE)
+   2. CUSTOM MODERN SCROLLBAR
    ========================================== */
-/* Firefox Scrollbar Support */
 * {
     scrollbar-width: thin;
     scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
-/* WebKit (Chrome, Edge, Safari) Custom Scrollbars */
 ::-webkit-scrollbar {
     width: 8px;
-    height: 8px; /* Height for horizontal scrollbars */
+    height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -126,7 +119,7 @@ body {
     margin-left: 260px;
     display: flex;
     flex-direction: column;
-    min-width: 0; /* Ensures container clips overflow correctly */
+    min-width: 0;
     overflow-x: hidden;
     transition: none;
 }
@@ -243,12 +236,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
+.topbar-left,
 .topbar-right {
     display: flex;
     align-items: center;
@@ -278,10 +266,7 @@ body {
     background-color: var(--bg-light-secondary);
     border: 1px solid var(--border-light);
     border-radius: 12px;
-    padding-top: 25px;
-    padding-bottom: 25px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 25px 15px;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
@@ -301,19 +286,19 @@ body {
 .table-container {
     width: 100%;
     max-width: 100%;
-    overflow-x: auto !important; /* Re-enabled horizontal scroll so content doesn't push wrapper */
+    overflow-x: auto !important;
     overflow-y: visible !important;
     display: block;
     box-sizing: border-box;
     padding-bottom: 8px;
     min-height: 300px;
-    padding-right: 1px; /* Prevents border-clipping on the far right */
+    padding-right: 1px;
 }
 
 .data-table {
     width: 100%;
-    min-width: 100%; /* Changed from fixed 1200px to allow fluid scaling */
-    border-collapse: separate; /* Changed to separate so cell paddings align properly */
+    min-width: 100%;
+    border-collapse: separate;
     border-spacing: 0;
     font-size: 14px;
     text-align: left;
@@ -328,7 +313,6 @@ body {
         box-sizing: border-box;
     }
 
-        /* Ensure the last column gets equal right-side inner padding */
         .data-table th:last-child,
         .data-table td:last-child {
             padding-right: 20px;
@@ -437,7 +421,6 @@ body {
     border-top: 1px solid var(--border-light);
 }
 
-
 .form-group {
     display: flex;
     flex-direction: column;
@@ -459,6 +442,7 @@ body {
     border-radius: 8px;
     font-size: 14px;
     outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
     .form-control:focus {
@@ -579,6 +563,29 @@ body {
     font-size: 14px;
 }
 
+
+/* Disabled button state */
+.btn.disabled, .btn:disabled {
+    opacity: 0.75;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* Spinner Icon Rotation */
+.fa-spin {
+    animation: fa-spin 1s infinite linear;
+}
+
+@keyframes fa-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 /* ==========================================
    9. MODALS & OVERLAYS
    ========================================== */
@@ -643,12 +650,12 @@ body {
 }
 
 /* ==========================================
-   10. ACTION DROPDOWN SYSTEM (PURE CSS CLICK)
+   10. ACTION DROPDOWN SYSTEM
    ========================================== */
 .action-dropdown {
     position: relative;
     display: inline-block;
-    outline: none; /* Prevents focus outline ring on wrapper */
+    outline: none;
 }
 
 .action-dropdown-toggle {
@@ -674,8 +681,8 @@ body {
 .action-dropdown-menu {
     display: none;
     position: absolute;
-    left: 0; /* Aligns menu to bottom-left edge of the button */
-    top: 100%; /* Displays directly below button */
+    left: 0;
+    top: 100%;
     z-index: 9999;
     min-width: 180px;
     padding: 6px 0;
@@ -686,12 +693,10 @@ body {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Pure CSS Click Trigger via :focus-within */
 .action-dropdown:focus-within .action-dropdown-menu {
     display: block;
 }
 
-/* Universal styles for both <a> and <span> items inside dropdown */
 a.dropdown-item,
 span.dropdown-item {
     display: flex;
@@ -730,7 +735,6 @@ span.dropdown-item {
             color: var(--primary);
         }
 
-/* Danger Item Specifics (Delete Trigger) */
 .dropdown-item.text-danger {
     color: #ef4444;
 }
@@ -756,7 +760,51 @@ span.dropdown-item {
 }
 
 /* ==========================================
-   11. MEDIA QUERIES & RESPONSIVE DESIGN
+   11. FORM VALIDATION STYLES
+   ========================================== */
+.form-control.is-invalid {
+    border-color: #ef4444 !important;
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+.form-control.is-valid {
+    border-color: #10b981 !important;
+    background-color: rgba(16, 185, 129, 0.05);
+}
+
+.alert-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ef4444;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+    .alert-box.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Success Alert Variant */
+    .alert-box.alert-success {
+        background-color: #10b981;
+    }
+
+/* ==========================================
+   12. MEDIA QUERIES & RESPONSIVE DESIGN
    ========================================== */
 @media (max-width: 768px) {
     .sidebar {

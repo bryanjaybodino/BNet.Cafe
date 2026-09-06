@@ -34,6 +34,11 @@
                     </asp:HyperLink>
                 </li>
                 <li>
+                    <asp:HyperLink ID="HyperLink_BillingHistory" runat="server" ToolTip="BillingHistory" NavigateUrl="?Form=BillingHistory">
+            <i class="fa-solid fa-file-invoice-dollar"></i><span>Billing History</span>
+                    </asp:HyperLink>
+                </li>
+                <li>
                     <asp:HyperLink ID="HyperLink_Users" runat="server" ToolTip="User" NavigateUrl="?Form=Users">
             <i class="fas fa-users"></i><span>Users</span>
                     </asp:HyperLink>

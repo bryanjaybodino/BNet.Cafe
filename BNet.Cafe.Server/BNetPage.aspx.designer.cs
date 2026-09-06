@@ -42,6 +42,15 @@ namespace BNet.Cafe.Server
         protected global::System.Web.UI.WebControls.HyperLink HyperLink_Remote;
 
         /// <summary>
+        /// HyperLink_BillingHistory control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_BillingHistory;
+
+        /// <summary>
         /// HyperLink_Users control.
         /// </summary>
         /// <remarks>

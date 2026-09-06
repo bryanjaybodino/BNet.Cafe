@@ -100,6 +100,7 @@
   <ItemGroup>
     <Content Include="Assets\css\Remote.css" />
     <Content Include="Assets\css\Style.css" />
+    <Content Include="Assets\js\ComputerCreate.js" />
     <Content Include="Assets\js\Remote.js" />
     <Content Include="Assets\js\Script.js" />
     <Content Include="BNetPage.aspx" />
