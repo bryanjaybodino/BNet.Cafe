@@ -10,6 +10,9 @@
     <link href="Assets/css/Style.css" rel="stylesheet" />
 </head>
 <body>
+    <div id="pageLoadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
     <div class="container">
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
@@ -19,27 +22,27 @@
             </div>
             <ul class="sidebar-menu">
                 <li>
-                    <asp:HyperLink ID="HyperLink_Dashboard" runat="server" ToolTip="Dashboard" NavigateUrl="?Form=Dashboard">
+                    <asp:HyperLink ID="HyperLink_Dashboard" runat="server" ToolTip="Dashboard" onclick="navigateTo('?Form=Dashboard'); return false;">
             <i class="fas fa-home"></i><span>Dashboard</span>
                     </asp:HyperLink>
                 </li>
                 <li>
-                    <asp:HyperLink ID="HyperLink_Computers" runat="server" ToolTip="Computer" NavigateUrl="?Form=Computers">
+                    <asp:HyperLink ID="HyperLink_Computers" runat="server" ToolTip="Computer" onclick="navigateTo('?Form=Computers'); return false;">
             <i class="fas fa-computer"></i><span>Computers</span>
                     </asp:HyperLink>
                 </li>
                 <li>
-                    <asp:HyperLink ID="HyperLink_Remote" runat="server" ToolTip="Remote" NavigateUrl="?Form=Remote">
+                    <asp:HyperLink ID="HyperLink_Remote" runat="server" ToolTip="Remote" onclick="navigateTo('?Form=Remote'); return false;">
             <i class="fas fa-display"></i><span>Remote</span>
                     </asp:HyperLink>
                 </li>
                 <li>
-                    <asp:HyperLink ID="HyperLink_BillingHistory" runat="server" ToolTip="BillingHistory" NavigateUrl="?Form=BillingHistory">
+                    <asp:HyperLink ID="HyperLink_BillingHistory" runat="server" ToolTip="BillingHistory" onclick="navigateTo('?Form=BillingHistory'); return false;">
             <i class="fa-solid fa-file-invoice-dollar"></i><span>Billing History</span>
                     </asp:HyperLink>
                 </li>
                 <li>
-                    <asp:HyperLink ID="HyperLink_Users" runat="server" ToolTip="User" NavigateUrl="?Form=Users">
+                    <asp:HyperLink ID="HyperLink_Users" runat="server" ToolTip="User" onclick="navigateTo('?Form=Users'); return false;">
             <i class="fas fa-users"></i><span>Users</span>
                     </asp:HyperLink>
                 </li>

@@ -1,4 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Computers.ascx.cs" Inherits="BNet.Cafe.Server.Forms.Computers" %>
+<%@ Register Src="~/Forms/Modals/ComputerDelete.ascx" TagPrefix="uc1" TagName="ComputerDelete" %>
+
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
@@ -6,7 +8,7 @@
         <div class="table-wrapper">
             <div class="table-toolbar">
                 <div class="search-box">
-                    <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" placeholder="Search computers..."/>
+                    <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" placeholder="Search computers..." />
                 </div>
                 <asp:HyperLink ID="HyperLink_Add" NavigateUrl="~/BNetPage.aspx?Form=ComputerCreate" CssClass="btn btn-primary" runat="server">
                      + Add Computer 
@@ -15,10 +17,10 @@
 
             <!-- Scrollable container wrapper -->
             <div class="table-container">
-                <asp:GridView ID="GridViewTable" runat="server" ShowHeaderWhenEmpty="true" 
+                <asp:GridView ID="GridViewTable" runat="server" ShowHeaderWhenEmpty="true"
                     AutoGenerateColumns="False" CssClass="data-table" GridLines="None"
                     AllowPaging="True" OnPageIndexChanging="GridViewTable_PageIndexChanging">
-                    
+
                     <PagerSettings Mode="NumericFirstLast" FirstPageText="&laquo;" LastPageText="&raquo;" PreviousPageText="&lsaquo;" NextPageText="&rsaquo;" PageButtonCount="5" />
                     <PagerStyle CssClass="custom-pagination" HorizontalAlign="Center" />
 
@@ -39,6 +41,9 @@
                                         </a>
                                         <a href='<%# "BNetPage.aspx?Form=History&id=" + Eval("DBId") %>' class="dropdown-item">
                                             <i class="fa-solid fa-clock-rotate-left"></i>Session History
+                                        </a>
+                                        <a href='<%# "BNetPage.aspx?Form=ComputerEdit&id=" + Eval("DBId") %>' class="dropdown-item">
+                                            <i class="fa-solid fa-pen-to-square"></i>Edit Computer
                                         </a>
                                         <div class="dropdown-divider"></div>
                                         <span class="dropdown-item text-danger" onclick="openDeleteModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
@@ -80,37 +85,6 @@
             </div>
             <asp:Panel ID="Panel_Pagination" runat="server" CssClass="custom-pagination-container" />
         </div>
-
-        <asp:HiddenField ID="HiddenField_DeleteId" runat="server" />
-
-        <div id="deleteModal" class="modal-overlay">
-            <div class="modal-container">
-                <div class="modal-header">
-                    <h3 class="modal-title">Confirm Deletion</h3>
-                    <button type="button" class="modal-close" onclick="closeDeleteModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete computer <strong id="deleteTargetName"></strong>?</p>
-                    <p style="color: var(--text-light-secondary); font-size: 13px; margin-top: 6px;">This action cannot be undone.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
-                    <asp:Button ID="Button_ConfirmDelete" runat="server" CssClass="btn btn-danger" Text="Delete" />
-                </div>
-            </div>
-        </div>
-
-        <script type="text/javascript">
-            function openDeleteModal(id, name) {
-                document.getElementById('<%= HiddenField_DeleteId.ClientID %>').value = id;
-                document.getElementById('deleteTargetName').innerText = name;
-                document.getElementById('deleteModal').classList.add('active');
-            }
-
-            function closeDeleteModal() {
-                document.getElementById('deleteModal').classList.remove('active');
-            }
-        </script>
-
+        <uc1:ComputerDelete runat="server" id="ComputerDelete" />
     </ContentTemplate>
 </asp:UpdatePanel>

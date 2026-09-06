@@ -1,0 +1,4 @@
+﻿SELECT * FROM computers 
+WHERE DBId = '{DBId}'
+ORDER BY DBId DESC 
+{LIMIT}

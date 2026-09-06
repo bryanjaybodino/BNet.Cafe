@@ -9,40 +9,15 @@ namespace BNet.Cafe.Server.Forms
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
         {
             ComputerService computerService = new ComputerService();
-            bool isComputerNameValid = computerService.Create(TextBox_ComputerName.Text);
+            bool isSuccess = computerService.Create(TextBox_ComputerName.Text);
 
-            if (isComputerNameValid)
+            if (isSuccess)
             {
-                string script = @"
-                    Sys.Application.add_load(function() {
-                        ShowAlert('Computer successfully added.', 'success');
-                        setTimeout(function(){ 
-                            window.location.href = 'BNetPage.aspx?Form=Computers'; 
-                        }, 1500);
-                    });";
-
-                ScriptManager.RegisterStartupScript(
-                    UpdatePanel1,
-                    UpdatePanel1.GetType(),
-                    "SuccessAlert",
-                    script,
-                    true
-                );
+                AlertService.ShowAlert(UpdatePanel1, "Computer successfully added.", "success", "BNetPage.aspx?Form=Computers");
             }
             else
             {
-                string script = @"
-                    Sys.Application.add_load(function() {
-                        ShowAlert('Failed to add computer. The name might already exist.', 'error');
-                    });";
-
-                ScriptManager.RegisterStartupScript(
-                    UpdatePanel1,
-                    UpdatePanel1.GetType(),
-                    "ErrorAlert",
-                    script,
-                    true
-                );
+                AlertService.ShowAlert(UpdatePanel1, "Failed to add computer. The name might already exist.", "error");
             }
         }
     }

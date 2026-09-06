@@ -28,6 +28,20 @@ namespace BNet.Cafe.Server.Services
             return DBContext.SqlDataAdapterAsync(sql);
         }
 
+        public DataTable GetById(string id)
+        {
+            var scripts = new Dictionary<string, string>
+            {
+                { "DBId", id },
+            };
+
+            Page page = HttpContext.Current.Handler as Page;
+            string template = page.Server.MapPath("~/Databases/Queries/Computers/GetById.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+
+            return DBContext.SqlDataAdapterAsync(sql);
+        }
+
         public bool Create(string computerName)
         {
             var scripts = new Dictionary<string, string>
@@ -49,11 +63,11 @@ namespace BNet.Cafe.Server.Services
 
         }
 
-        public bool Update(int id, string computerName)
+        public bool Update(string id, string computerName)
         {
             var scripts = new Dictionary<string, string>
             {
-                { "DBId", id.ToString() },
+                { "DBId", id },
                 { "DBComputerName", dBScriptService.CleanUpToUpper(computerName) }
             };
 
@@ -64,11 +78,11 @@ namespace BNet.Cafe.Server.Services
             return DBContext.SqlExecuteAsync(sql);
         }
 
-        public bool Delete(int id)
+        public bool Delete(string id)
         {
             var scripts = new Dictionary<string, string>
             {
-                { "DBId", id.ToString() }
+                { "DBId", id }
             };
 
             Page page = HttpContext.Current.Handler as Page;

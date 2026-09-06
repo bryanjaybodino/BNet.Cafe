@@ -318,3 +318,24 @@ function limitTo24(el) {
     if (value < 0) el.value = 0;
     if (value > 24) el.value = 24;
 }
+
+
+function navigateTo(url) {
+    showPageLoading();
+    window.location.href = url;
+}
+
+function showPageLoading() {
+    var loader = document.getElementById('pageLoadingOverlay');
+    if (loader) loader.classList.add('active');
+}
+
+function hidePageLoading() {
+    var loader = document.getElementById('pageLoadingOverlay');
+    if (loader) loader.classList.remove('active');
+}
+
+// 1. Show loader before browser unloads (handles standard link clicks & full postbacks)
+window.addEventListener('beforeunload', function () {
+    showPageLoading();
+});

@@ -100,6 +100,7 @@
   <ItemGroup>
     <Content Include="Assets\css\Remote.css" />
     <Content Include="Assets\css\Style.css" />
+    <Content Include="Assets\js\ComputerEdit.js" />
     <Content Include="Assets\js\ComputerCreate.js" />
     <Content Include="Assets\js\Remote.js" />
     <Content Include="Assets\js\Script.js" />
@@ -107,11 +108,14 @@
     <Content Include="Callback.aspx" />
     <Content Include="Databases\Queries\Computers\Create.sql" />
     <Content Include="Databases\Queries\Computers\DeleteById.sql" />
+    <Content Include="Databases\Queries\Computers\GetById.sql" />
     <Content Include="Databases\Queries\Computers\GetAll.sql" />
     <Content Include="Databases\Queries\Computers\Update.sql" />
     <Content Include="Databases\Queries\Computers\UpdateCount.sql" />
     <Content Include="Forms\ComputerCreate.ascx" />
+    <Content Include="Forms\ComputerEdit.ascx" />
     <Content Include="Forms\Computers.ascx" />
+    <Content Include="Forms\Modals\ComputerDelete.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Forms\SampleModal.ascx" />
     <Content Include="Offline Packages\Newtonsoft.Json\Newtonsoft.Json.dll" />
@@ -150,12 +154,26 @@
     <Compile Include="Forms\ComputerCreate.ascx.designer.cs">
       <DependentUpon>ComputerCreate.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ComputerEdit.ascx.cs">
+      <DependentUpon>ComputerEdit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\ComputerEdit.ascx.designer.cs">
+      <DependentUpon>ComputerEdit.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Computers.ascx.cs">
       <DependentUpon>Computers.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Forms\Computers.ascx.designer.cs">
       <DependentUpon>Computers.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\ComputerDelete.ascx.cs">
+      <DependentUpon>ComputerDelete.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\ComputerDelete.ascx.designer.cs">
+      <DependentUpon>ComputerDelete.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Remote.ascx.cs">
       <DependentUpon>Remote.ascx</DependentUpon>
@@ -187,6 +205,7 @@
     <Compile Include="Services\ErrorLogService.cs" />
     <Compile Include="Services\GridViewTemplateService.cs" />
     <Compile Include="Services\GridviewPaginationService.cs" />
+    <Compile Include="Services\AlertService.cs" />
     <Compile Include="Services\TimeService.cs" />
   </ItemGroup>
   <ItemGroup>

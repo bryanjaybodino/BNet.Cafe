@@ -11,8 +11,17 @@ namespace BNet.Cafe.Server.Forms
 {
 
 
-    public partial class Computers
+    public partial class ComputerEdit
     {
+
+        /// <summary>
+        /// ScriptManagerProxy1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.ScriptManagerProxy ScriptManagerProxy1;
 
         /// <summary>
         /// UpdatePanel1 control.
@@ -24,48 +33,21 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
-        /// TextBox_Search control.
+        /// TextBox_ComputerName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox_Search;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_ComputerName;
 
         /// <summary>
-        /// HyperLink_Add control.
+        /// LinkButton_Submit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Add;
-
-        /// <summary>
-        /// GridViewTable control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridViewTable;
-
-        /// <summary>
-        /// Panel_Pagination control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel Panel_Pagination;
-
-        /// <summary>
-        /// ComputerDelete control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::BNet.Cafe.Server.Forms.Modals.ComputerDelete ComputerDelete;
+        protected global::System.Web.UI.WebControls.LinkButton LinkButton_Submit;
     }
 }
