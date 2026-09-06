@@ -7,14 +7,9 @@ using System.Web.UI.WebControls;
 
 namespace BNet.Cafe.Server.Forms
 {
-    public partial class ComputerCreate : System.Web.UI.UserControl
+    public partial class SampleModal : System.Web.UI.UserControl
     {
         protected void Page_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        protected void LinkButton_Submit_Click(object sender, EventArgs e)
         {
 
         }

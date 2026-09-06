@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BNet.Cafe.Server.BNetWebsocket
+namespace BNet.Cafe.Websocket
 {
     public class Setup
     {
@@ -107,34 +107,52 @@ namespace BNet.Cafe.Server.BNetWebsocket
                 int port = 2050;
                 string prefix = $"http://*:{port}/";
 
-                // Remove any existing URL ACL for the wildcard URL (in case it was left over from a previous run)
                 PortManager.RemoveUrlAcl(prefix);
-
-                // 1. Grant non-admin listening rights for the wildcard URL
                 PortManager.AddUrlAcl(prefix);
-
-                // 2. Open inbound firewall port
                 PortManager.OpenFirewallPort(port, $"WebSocketPort_{port}");
 
-                // 3. Start server
                 _server = new HttpListener();
                 _server.Prefixes.Add(prefix);
                 _server.Start();
 
+                // Fire-and-forget the accept loop safely
+                Task.Run(() => AcceptLoop());
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        public void StopWebsocket()
+        {
+            try
+            {
+                _server?.Stop();
+                _server?.Close();
             }
             catch { }
-            Task.Run(AcceptLoop);
         }
 
         private async Task AcceptLoop()
         {
-            while (true)
+            while (_server != null && _server.IsListening)
             {
-                try { var ctx = await _server.GetContextAsync(); _ = Task.Run(() => RouteRequest(ctx)); }
-                catch { }
+                try
+                {
+                    var ctx = await _server.GetContextAsync();
+                    _ = Task.Run(() => RouteRequest(ctx));
+                }
+                catch (HttpListenerException)
+                {
+                    // Triggered when _server.Stop() is called during shutdown
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    await Task.Delay(1000); // Prevent CPU spinning if an error continuously repeats
+                }
             }
         }
-
         // ─────────────────────────────────────────────────────────────────────
         // ROUTER
         // ─────────────────────────────────────────────────────────────────────

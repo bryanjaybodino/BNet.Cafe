@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36511.14 d17.14
+VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BNet.Cafe.Client", "BNet.Cafe.Client\BNet.Cafe.Client.csproj", "{46603615-A9F4-4DB8-B2E3-401A96FB5453}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BNet.Cafe.Server", "BNet.Cafe.Server\BNet.Cafe.Server.csproj", "{378D3D9E-DC41-4B9E-B0FA-2133FEA8D0A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BNet.Cafe.Websocket", "BNet.Cafe.Websocket\BNet.Cafe.Websocket.csproj", "{A08D4E03-B0CB-421A-82BE-7589D92274DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{378D3D9E-DC41-4B9E-B0FA-2133FEA8D0A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{378D3D9E-DC41-4B9E-B0FA-2133FEA8D0A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{378D3D9E-DC41-4B9E-B0FA-2133FEA8D0A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A08D4E03-B0CB-421A-82BE-7589D92274DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A08D4E03-B0CB-421A-82BE-7589D92274DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A08D4E03-B0CB-421A-82BE-7589D92274DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A08D4E03-B0CB-421A-82BE-7589D92274DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

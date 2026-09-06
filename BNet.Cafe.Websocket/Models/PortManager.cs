@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
-namespace BNet.Cafe.Server.BNetWebsocket
+namespace BNet.Cafe.Websocket
 {
     public class PortManager
     {
