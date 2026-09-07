@@ -12,6 +12,7 @@ namespace BNet.Cafe.Server
         protected void Application_Start(object sender, EventArgs e)
         {
             new Databases.Tables.computers().create();
+            new Databases.Tables.rentals().create();
 
             //Page.RegisterAsyncTask(new PageAsyncTask(async () =>
             //{

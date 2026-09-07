@@ -10,8 +10,8 @@ namespace BNet.Cafe.Server.Forms
         {
             if (!IsPostBack)
             {
-                ComputerService computerService = new ComputerService();
-                var computer = computerService.GetById(Request.QueryString["id"]);
+                Repositories.Computers computers = new Repositories.Computers();
+                var computer = computers.GetById(Request.QueryString["id"]);
                 for (int i = 0; i < computer.Rows.Count; i++)
                 {
                     TextBox_ComputerName.Text = computer.Rows[i]["DBComputerName"].ToString();
@@ -21,9 +21,9 @@ namespace BNet.Cafe.Server.Forms
 
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
         {
-            ComputerService computerService = new ComputerService();
+            Repositories.Computers computers = new Repositories.Computers();
             string id = Request.QueryString["id"];
-            bool isSuccess = computerService.Update(id, TextBox_ComputerName.Text);
+            bool isSuccess = computers.Update(id, TextBox_ComputerName.Text);
 
             if (isSuccess)
             {

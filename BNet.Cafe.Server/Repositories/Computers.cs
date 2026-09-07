@@ -1,13 +1,14 @@
 ﻿using BNet.Cafe.Server.Databases;
+using BNet.Cafe.Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Web;
 using System.Web.UI;
 
-namespace BNet.Cafe.Server.Services
+namespace BNet.Cafe.Server.Repositories
 {
-    public class ComputerService
+    public class Computers
     {
         private readonly DBContext DBContext = new DBContext();
         private readonly DBScriptService dBScriptService = new DBScriptService();

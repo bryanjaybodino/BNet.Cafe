@@ -83,7 +83,7 @@
                     </Columns>
                 </asp:GridView>
             </div>
-            <asp:Panel ID="Panel_Pagination" runat="server" CssClass="custom-pagination-container" />
+            <asp:Panel ID="Panel_Pagination" runat="server"/>
         </div>
         <uc1:ComputerDelete runat="server" id="ComputerDelete" />
     </ContentTemplate>

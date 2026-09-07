@@ -8,8 +8,8 @@ namespace BNet.Cafe.Server.Forms
     {
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
         {
-            ComputerService computerService = new ComputerService();
-            bool isSuccess = computerService.Create(TextBox_ComputerName.Text);
+            Repositories.Computers computers = new Repositories.Computers();
+            bool isSuccess = computers.Create(TextBox_ComputerName.Text);
 
             if (isSuccess)
             {

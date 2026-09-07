@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BNet Cafe</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="Assets/fontawesome/font-awesome.min.css" rel="stylesheet" />
     <link href="Assets/css/Style.css" rel="stylesheet" />
 </head>
 <body>
@@ -64,9 +64,13 @@
                         <i class="fas fa-moon"></i>
                     </button>
                     <div class="user-menu">
-                        <div class="user-avatar">JD</div>
+                        <div class="user-avatar">
+                            <asp:Label ID="Label_InitialName" runat="server" Text=""></asp:Label>
+                        </div>
                         <div style="font-size: 13px;">
-                            <div style="font-weight: 600; color: var(--text-light);">John Doe</div>
+                            <div style="font-weight: 600; color: var(--text-light);">
+                                <asp:Label ID="label_FullName" runat="server" Text=""></asp:Label>
+                            </div>
                             <div style="color: var(--text-light-secondary); font-size: 12px;">Admin</div>
                         </div>
                     </div>

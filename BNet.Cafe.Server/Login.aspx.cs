@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BNet.Cafe.Server.Services;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace BNet.Cafe.Server
 {
     public partial class Login : System.Web.UI.Page
     {
+        Sessions.User userCookies = new Sessions.User();
         protected void Page_Load(object sender, EventArgs e)
         {
             // Prevent caching
@@ -21,7 +23,7 @@ namespace BNet.Cafe.Server
             if (!IsPostBack)
             {
                 // Check if user already logged in
-                if (Session["GoogleUser"] != null)
+                if (userCookies.count > 0)
                 {
                     Response.Redirect("BNetPage.aspx", false);
                 }

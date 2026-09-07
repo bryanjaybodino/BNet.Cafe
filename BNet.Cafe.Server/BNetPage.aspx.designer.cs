@@ -60,6 +60,24 @@ namespace BNet.Cafe.Server
         protected global::System.Web.UI.WebControls.HyperLink HyperLink_Users;
 
         /// <summary>
+        /// Label_InitialName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label_InitialName;
+
+        /// <summary>
+        /// label_FullName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label label_FullName;
+
+        /// <summary>
         /// MainForm control.
         /// </summary>
         /// <remarks>

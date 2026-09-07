@@ -98,6 +98,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\fontawesome\font-awesome.min.css" />
     <Content Include="Assets\css\Remote.css" />
     <Content Include="Assets\css\Style.css" />
     <Content Include="Assets\js\ComputerEdit.js" />
@@ -147,6 +148,7 @@
     <Compile Include="Databases\DBMigration.cs" />
     <Compile Include="Databases\DBScriptService.cs" />
     <Compile Include="Databases\Tables\computers.cs" />
+    <Compile Include="Databases\Tables\rentals.cs" />
     <Compile Include="Forms\ComputerCreate.ascx.cs">
       <DependentUpon>ComputerCreate.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -201,14 +203,20 @@
     </Compile>
     <Compile Include="OAuth\GoogleUserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\ComputerService.cs" />
+    <Compile Include="Repositories\Computers.cs" />
     <Compile Include="Services\ErrorLogService.cs" />
     <Compile Include="Services\GridViewTemplateService.cs" />
     <Compile Include="Services\GridviewPaginationService.cs" />
     <Compile Include="Services\AlertService.cs" />
+    <Compile Include="Services\SecuredDataService.cs" />
     <Compile Include="Services\TimeService.cs" />
+    <Compile Include="Sessions\User.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\fontawesome\webfonts\fa-brands-400.woff2" />
+    <Content Include="Assets\fontawesome\webfonts\fa-regular-400.woff2" />
+    <Content Include="Assets\fontawesome\webfonts\fa-solid-900.woff2" />
+    <Content Include="Assets\fontawesome\webfonts\fa-v4compatibility.woff2" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

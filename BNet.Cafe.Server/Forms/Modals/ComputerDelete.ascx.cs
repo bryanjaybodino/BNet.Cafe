@@ -8,8 +8,8 @@ namespace BNet.Cafe.Server.Forms.Modals
     {
         protected void LinkButton_ConfirmDelete_Click(object sender, EventArgs e)
         {
-            ComputerService computerService = new ComputerService();
-            bool isSuccess = computerService.Delete(HiddenField_DeleteId.Value);
+            Repositories.Computers computers = new Repositories.Computers();
+            bool isSuccess = computers.Delete(HiddenField_DeleteId.Value);
 
             if (isSuccess)
             {

@@ -22,10 +22,6 @@ namespace BNet.Cafe.Server
                 string code = Request.QueryString["code"];
                 string error = Request.QueryString["error"];
 
-                // ❌ OLD - Causes Thread Abort
-                // Response.Redirect("Login.aspx?error=" + Uri.EscapeDataString(error));
-
-                // ✅ NEW - No Thread Abort
                 if (!string.IsNullOrEmpty(error))
                 {
                     Response.Redirect("Login.aspx?error=" + Uri.EscapeDataString(error), false);
@@ -41,7 +37,6 @@ namespace BNet.Cafe.Server
                     return;
                 }
 
-                // ... rest of your code ...
 
                 // Token exchange
                 string accessToken = ExchangeCodeForToken(code);
@@ -61,7 +56,8 @@ namespace BNet.Cafe.Server
 
                 // Store in session
                 Session["GoogleUser"] = userInfo;
-                Session["UserEmail"] = userInfo.email;
+                Sessions.User userCookies = new Sessions.User();
+                userCookies.createCookies(userInfo.email, userInfo.name);
 
                 // Redirect to dashboard
                 Response.Redirect("BNetPage.aspx", false);

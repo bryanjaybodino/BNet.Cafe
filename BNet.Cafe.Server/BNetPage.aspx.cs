@@ -10,12 +10,24 @@ namespace BNet.Cafe.Server
 {
     public partial class BNetPage : System.Web.UI.Page
     {
+        Sessions.User userCookies = new Sessions.User();
         protected void Page_Load(object sender, EventArgs e)
         {
             // Get the "Form" query string parameter value, default to "Dashboard" if missing
             string formName = Request.QueryString["Form"] ?? "Dashboard";
             LoadMyUserControl(formName);
             LoadMyHyperLink(formName);
+            if (!IsPostBack)
+            {
+                label_FullName.Text = userCookies.fullname.ToUpper();
+
+                Label_InitialName.Text = string.Join("",
+                    userCookies.fullname
+                        .Split(' ', (char)StringSplitOptions.RemoveEmptyEntries)
+                        .Select(name => name.Substring(0, 1))
+                ).ToUpper();
+
+            }
         }
 
         private void LoadMyUserControl(string formName)
@@ -43,33 +55,36 @@ namespace BNet.Cafe.Server
 
         private void LoadMyHyperLink(string formName)
         {
-            // Reset classes
-            HyperLink_Dashboard.CssClass = "";
-            HyperLink_Computers.CssClass = "";
-            HyperLink_Users.CssClass = "";
-            HyperLink_Remote.CssClass = "";
-            HyperLink_BillingHistory.CssClass = "";
+            if (!IsPostBack)
+            {
+                // Reset classes
+                HyperLink_Dashboard.CssClass = "";
+                HyperLink_Computers.CssClass = "";
+                HyperLink_Users.CssClass = "";
+                HyperLink_Remote.CssClass = "";
+                HyperLink_BillingHistory.CssClass = "";
 
 
-            if (formName.Contains(HyperLink_Dashboard.ToolTip))
-            {
-                HyperLink_Dashboard.CssClass = "active";
-            }
-            else if (formName.Contains(HyperLink_Computers.ToolTip))
-            {
-                HyperLink_Computers.CssClass = "active";
-            }
-            else if (formName.Contains(HyperLink_Users.ToolTip))
-            {
-                HyperLink_Users.CssClass = "active";
-            }
-            else if (formName.Contains(HyperLink_Remote.ToolTip))
-            {
-                HyperLink_Remote.CssClass = "active";
-            }
-            else if (formName.Contains(HyperLink_BillingHistory.ToolTip))
-            {
-                HyperLink_BillingHistory.CssClass = "active";
+                if (formName.Contains(HyperLink_Dashboard.ToolTip))
+                {
+                    HyperLink_Dashboard.CssClass = "active";
+                }
+                else if (formName.Contains(HyperLink_Computers.ToolTip))
+                {
+                    HyperLink_Computers.CssClass = "active";
+                }
+                else if (formName.Contains(HyperLink_Users.ToolTip))
+                {
+                    HyperLink_Users.CssClass = "active";
+                }
+                else if (formName.Contains(HyperLink_Remote.ToolTip))
+                {
+                    HyperLink_Remote.CssClass = "active";
+                }
+                else if (formName.Contains(HyperLink_BillingHistory.ToolTip))
+                {
+                    HyperLink_BillingHistory.CssClass = "active";
+                }
             }
         }
     }

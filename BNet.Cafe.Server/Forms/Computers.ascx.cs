@@ -10,11 +10,11 @@ namespace BNet.Cafe.Server.Forms
 {
     public partial class Computers : System.Web.UI.UserControl
     {
-        ComputerService computerService = new ComputerService();
+        Repositories.Computers computers = new Repositories.Computers();
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
-            var data = computerService.GetAll(TextBox_Search.Text, GridViewTemplateService.GetPaginationIndex(GridViewTable));
+            var data = computers.GetAll(TextBox_Search.Text, GridViewTemplateService.GetPaginationIndex(GridViewTable));
             GridViewTemplateService.SetGridView(GridViewTable, data, Panel_Pagination);
         }
         protected void GridViewTable_PageIndexChanging(object sender, GridViewPageEventArgs e)
