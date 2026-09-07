@@ -1,6 +1,7 @@
 ﻿using BNet.Cafe.Client.Models;
 using BNet.Cafe.Client.Repositories;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -109,7 +110,7 @@ namespace BNet.Cafe.Client
             if (count == _cachedScreenCount) return;
             _cachedScreenCount = count;
             var keys = new byte[count][];
-            string user = _deviceInfo.AccountName.ToLower();
+            string user = _deviceInfo.AccountName.ToUpper();
             for (int i = 0; i < count; i++)
                 keys[i] = Utf8.GetBytes($"screen_{i + 1}_{user}");
             _screenKeyBytes = keys;
@@ -397,8 +398,21 @@ namespace BNet.Cafe.Client
                 return;
             }
 
-            // Action implementation example: display a native system notification dialog
-            MessageBox.Show(this, textMessage, "Server Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            if (Repositories.JsonValidation.IsValidJson(textMessage))
+            {
+                // Parse and process JSON payload
+                var jsonObject = JObject.Parse(textMessage);
+
+                BNetCafeTimer bNetCafeTimer = new BNetCafeTimer();
+                bNetCafeTimer.Show();
+            }
+            else
+            {
+                // Action implementation example: display a native system notification dialog
+                MessageBox.Show(this, textMessage, "Server Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
         }
         // ─────────────────────────────────────────────────────────────────────
         // ACTIVITY SENDER
@@ -530,7 +544,7 @@ namespace BNet.Cafe.Client
                 OSArchitecture = arch,
                 SerialNumber = serial,
                 MachineName = Environment.MachineName,
-                AccountName = ConfigurationManager.AppSettings["ClientName"].ToLower(),
+                AccountName = ConfigurationManager.AppSettings["ClientName"].ToUpper().Replace(" ",""),
                 WorkGroup = Environment.UserDomainName,
                 OSVersion = Environment.OSVersion.VersionString,
                 ProcessorCount = Environment.ProcessorCount.ToString(),

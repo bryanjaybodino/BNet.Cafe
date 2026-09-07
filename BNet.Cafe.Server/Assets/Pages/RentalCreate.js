@@ -138,7 +138,7 @@ function Validate() {
         }
         return false;
     }
-    sendTextMessageToPC('PC 1', "Hello PC 1, please restart your app.");
+    sendTextMessageToPC('PC-01', "Hello PC 1, please restart your app.");
     //disableSubmitButton();
     return true;
 }

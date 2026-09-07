@@ -251,7 +251,7 @@ namespace BNet.Cafe.Websocket
 
                         if (info != null && !string.IsNullOrEmpty(info.AccountName))
                         {
-                            agentName = info.AccountName.ToLower();
+                            agentName = info.AccountName.ToUpper();
                             _agentSessions[agentName] = session;
 
                             // Keep client list and screen streaming state updated
@@ -350,7 +350,7 @@ namespace BNet.Cafe.Websocket
                     }
                     else if (msgType == 0x21) // SUBSCRIBE — binary frame, UTF-8 key body
                     {
-                        string newKey = Utf8.GetString(msg, 1, msg.Length - 1).Trim();
+                        string newKey = Utf8.GetString(msg, 1, msg.Length - 1).Trim().Replace(" ","");
                         if (newKey == subKey) continue;
 
                         string oldAgent = subKey != null ? ExtractClientName(subKey) : null;
@@ -430,7 +430,7 @@ namespace BNet.Cafe.Websocket
 
                         if (textMsg != null && !string.IsNullOrEmpty(textMsg.TargetClient))
                         {
-                            await SendTextMessageToAgent(textMsg.TargetClient.ToLower(), textMsg.Message);
+                            await SendTextMessageToAgent(textMsg.TargetClient.ToUpper(), textMsg.Message);
                         }
                     }
                     else if (msgType == 0x22) // PING
@@ -679,7 +679,7 @@ namespace BNet.Cafe.Websocket
         {
             if (screenKey == null) return null;
             var parts = screenKey.Split('_');
-            return parts.Length >= 3 ? string.Join("_", parts.Skip(2)).ToLower() : null;
+            return parts.Length >= 3 ? string.Join("_", parts.Skip(2)).ToUpper() : null;
         }
 
         private static int ExtractScreenIndex(string screenKey)

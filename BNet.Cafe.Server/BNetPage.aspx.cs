@@ -13,21 +13,12 @@ namespace BNet.Cafe.Server
         Sessions.User userCookies = new Sessions.User();
         protected void Page_Load(object sender, EventArgs e)
         {
-
             if (!IsPostBack)
             {
-                if(userCookies.count == 0)
+                if (userCookies.count == 0)
                 {
                     Response.Redirect("Login.aspx");
                 }
-            }
-
-            // Get the "Form" query string parameter value, default to "Dashboard" if missing
-            string formName = Request.QueryString["Form"] ?? "Dashboard";
-            LoadMyUserControl(formName);
-            LoadMyHyperLink(formName);
-            if (!IsPostBack)
-            {
                 label_FullName.Text = userCookies.fullname.ToUpper();
 
                 Label_InitialName.Text = string.Join("",
@@ -38,6 +29,11 @@ namespace BNet.Cafe.Server
                 ).ToUpper();
 
             }
+
+            // Get the "Form" query string parameter value, default to "Dashboard" if missing
+            string formName = Request.QueryString["Form"] ?? "Dashboard";
+            LoadMyUserControl(formName);
+            LoadMyHyperLink(formName);
         }
 
         private void LoadMyUserControl(string formName)

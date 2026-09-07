@@ -296,13 +296,13 @@
         exitFullscreenBtn.addEventListener('click', toggleFullscreen);
 
         var urlParams = new URLSearchParams(window.location.search);
-        var currentClient = urlParams.get('client') || '';
+        var currentClient = urlParams.get('client').toUpperCase().replace(' ', '') || '';
         var currentScreen = 'screen_1';
         var currentScreenIndex = 0;
         var screenCount = 1;
         var remoteActive = false;
 
-        document.getElementById('clientTitle').textContent = currentClient ? currentClient.toUpperCase() : 'No Client Selected';
+        document.getElementById('clientTitle').textContent = currentClient ? currentClient : 'No Client Selected';
 
         var canvas = document.getElementById('screen');
         var ctx2d = canvas.getContext('2d', { alpha: false });
@@ -334,20 +334,7 @@
         }
         renderLoop();
 
-        function fetchDeviceDetails() {
-            fetch('http://localhost:2050/text')
-                .then(function (res) { return res.json(); })
-                .then(function (data) {
-                    if (Array.isArray(data)) {
-                        var item = data.find(function (c) { return c.AccountName === currentClient; });
-                        if (item) {
-                            screenCount = Number(item.ScreenCount) || 1;
-                            renderTabs();
-                        }
-                    }
-                })
-                .catch(function (err) { console.error('Error fetching specs:', err); });
-        }
+
 
         var ws = null, wsReady = false, _encoder = new TextEncoder();
         function connectWS() {
@@ -428,7 +415,7 @@
             }
         }
 
-        fetchDeviceDetails();
+
         connectWS();
     </script>
 </body>

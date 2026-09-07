@@ -57,6 +57,12 @@
     <Reference Include="UIAutomationTypes" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BNetCafeTimer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BNetCafeTimer.Designer.cs">
+      <DependentUpon>BNetCafeTimer.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,18 +71,21 @@
     </Compile>
     <Compile Include="Models\RemoteInput.cs" />
     <Compile Include="Models\TextContent.cs" />
-    <Compile Include="Models\TimeData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ByteCompressor.cs" />
     <Compile Include="Repositories\ImageCompressor.cs" />
     <Compile Include="Repositories\ImageSize.cs" />
+    <Compile Include="Repositories\JsonValidation.cs" />
     <Compile Include="Repositories\MouseCursor.cs" />
     <Compile Include="Repositories\PortManager.cs" />
     <Compile Include="Repositories\RemoteController.cs" />
     <Compile Include="Repositories\ScreenCaptured.cs" />
     <Compile Include="Repositories\ScreenScale.cs" />
     <Compile Include="Repositories\UserActivity.cs" />
+    <EmbeddedResource Include="BNetCafeTimer.resx">
+      <DependentUpon>BNetCafeTimer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

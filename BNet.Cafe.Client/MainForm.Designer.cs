@@ -30,14 +30,18 @@
         {
             this.SuspendLayout();
             // 
-            // ClientScreen
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Name = "ClientScreen";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.ClientSize = new System.Drawing.Size(148, 0);
+            this.ControlBox = false;
+            this.MaximumSize = new System.Drawing.Size(166, 47);
+            this.MinimumSize = new System.Drawing.Size(166, 47);
+            this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "BNet Cafe Client";
+            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
 

@@ -13,14 +13,14 @@
                 <h1 style="font-size: 20px; display: flex; align-items: center; gap: 8px;">
                     <i class="fa-solid fa-desktop" style="color: var(--primary);"></i>Add New Computer
                 </h1>
-                <p>Enter the machine details below to add a new station to the system.</p>
+                <p>Enter the machine details below to add a new station to the system. Make sure it is similar to client name of your app.config</p>
             </div>
 
             <div style="form-grid">
                 <!-- Computer Name -->
                 <div class="form-group">
                     <label for="<%= TextBox_ComputerName.ClientID %>">Computer Name <span style="color: #ef4444;">*</span></label>
-                    <asp:TextBox ID="TextBox_ComputerName" runat="server" CssClass="form-control" placeholder="e.g., PC-01" MaxLength="50"></asp:TextBox>
+                    <asp:TextBox ID="TextBox_ComputerName" runat="server" CssClass="form-control" placeholder="e.g., PC-01" onkeydown="return event.key !== ' ';" MaxLength="50"></asp:TextBox>
                 </div>
             </div>
             <!-- Actions -->

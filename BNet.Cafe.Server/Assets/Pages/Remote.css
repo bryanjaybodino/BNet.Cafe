@@ -87,7 +87,7 @@
 }
 
 .avatar {
-    width: 36px;
+    width: 60px;
     height: 36px;
     border-radius: 8px;
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
