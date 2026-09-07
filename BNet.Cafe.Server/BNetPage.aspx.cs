@@ -13,6 +13,15 @@ namespace BNet.Cafe.Server
         Sessions.User userCookies = new Sessions.User();
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            if (!IsPostBack)
+            {
+                if(userCookies.count == 0)
+                {
+                    Response.Redirect("Login.aspx");
+                }
+            }
+
             // Get the "Form" query string parameter value, default to "Dashboard" if missing
             string formName = Request.QueryString["Form"] ?? "Dashboard";
             LoadMyUserControl(formName);
@@ -23,8 +32,9 @@ namespace BNet.Cafe.Server
 
                 Label_InitialName.Text = string.Join("",
                     userCookies.fullname
-                        .Split(' ', (char)StringSplitOptions.RemoveEmptyEntries)
-                        .Select(name => name.Substring(0, 1))
+                        .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Where(name => !string.IsNullOrWhiteSpace(name))
+                        .Select(name => name[0])
                 ).ToUpper();
 
             }

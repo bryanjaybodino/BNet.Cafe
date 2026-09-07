@@ -37,7 +37,7 @@ namespace BNet.Cafe.Server.Sessions
         {
             get
             {
-                return "mail.zionstrategicsolutions.com";
+                return "mail.gmail.com";
             }
         }
         public int imap_port
