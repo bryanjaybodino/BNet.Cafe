@@ -70,50 +70,6 @@ function updateThemeIcon(theme) {
     }
 }
 
-// =============================================================================
-// Alert Notification System
-// =============================================================================
-// ==========================================
-// CUSTOM ALERT SYSTEM
-// ==========================================
-function ShowAlert(message, type = 'error') {
-    let alertBox = document.getElementById('custom-alert-box');
-    if (!alertBox) {
-        alertBox = document.createElement('div');
-        alertBox.id = 'custom-alert-box';
-        alertBox.className = 'alert-box';
-        document.body.appendChild(alertBox);
-    }
-
-    // Reset variant classes
-    alertBox.classList.remove('alert-success');
-
-    let iconClass = 'fa-triangle-exclamation';
-    if (type === 'success') {
-        alertBox.classList.add('alert-success');
-        iconClass = 'fa-circle-check';
-    }
-
-    // Format content based on input type (Array vs String)
-    let contentHtml = '';
-    if (Array.isArray(message)) {
-        const items = message.map(msg => `<li>${msg}</li>`).join('');
-        contentHtml = `<ul class="alert-list">${items}</ul>`;
-    } else {
-        contentHtml = `<span>${message}</span>`;
-    }
-
-    alertBox.innerHTML = `
-        <i class="fa-solid ${iconClass} alert-icon"></i>
-        <div class="alert-content">${contentHtml}</div>
-    `;
-
-    alertBox.classList.add('show');
-
-    setTimeout(() => {
-        alertBox.classList.remove('show');
-    }, 5000); // Extended slightly for easier reading of multiple lines
-}
 
 // =============================================================================
 // XSS Helper & Input Sanitization
@@ -334,23 +290,3 @@ function limitTo24(el) {
     if (value > 24) el.value = 24;
 }
 
-
-function navigateTo(url) {
-    showPageLoading();
-    window.location.href = url;
-}
-
-function showPageLoading() {
-    var loader = document.getElementById('pageLoadingOverlay');
-    if (loader) loader.classList.add('active');
-}
-
-function hidePageLoading() {
-    var loader = document.getElementById('pageLoadingOverlay');
-    if (loader) loader.classList.remove('active');
-}
-
-// 1. Show loader before browser unloads (handles standard link clicks & full postbacks)
-window.addEventListener('beforeunload', function () {
-    showPageLoading();
-});

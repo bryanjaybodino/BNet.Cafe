@@ -1,0 +1,115 @@
+﻿/* ==========================================
+   10. BNET ACTION DROPDOWN SYSTEM
+   ========================================== */
+.bnet-dropdown {
+    position: relative;
+    display: inline-block;
+    outline: none;
+}
+
+.bnet-dropdown-toggle {
+    background-color: var(--bg-light-tertiary);
+    color: var(--text-light);
+    border: 1px solid var(--border-light);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+    .bnet-dropdown-toggle:hover {
+        background-color: var(--border-light);
+        border-color: var(--primary);
+    }
+
+.bnet-dropdown-menu {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 9999;
+    min-width: 180px;
+    padding: 6px 0;
+    margin-top: 4px;
+    background-color: var(--bg-light-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Open state via CSS focus-within or JS active class */
+.bnet-dropdown:focus-within .bnet-dropdown-menu,
+.bnet-dropdown.open .bnet-dropdown-menu {
+    display: block;
+}
+
+a.bnet-dropdown-item,
+span.bnet-dropdown-item,
+button.bnet-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--text-light);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    text-align: left;
+    user-select: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+    a.bnet-dropdown-item i,
+    span.bnet-dropdown-item i,
+    button.bnet-dropdown-item i {
+        font-size: 14px;
+        width: 16px;
+        text-align: center;
+        color: var(--text-light-secondary);
+    }
+
+    a.bnet-dropdown-item:hover,
+    span.bnet-dropdown-item:hover,
+    button.bnet-dropdown-item:hover {
+        background-color: var(--bg-light-tertiary);
+        color: var(--primary);
+    }
+
+        a.bnet-dropdown-item:hover i,
+        span.bnet-dropdown-item:hover i,
+        button.bnet-dropdown-item:hover i {
+            color: var(--primary);
+        }
+
+.bnet-dropdown-item.text-danger {
+    color: #ef4444;
+}
+
+    .bnet-dropdown-item.text-danger i {
+        color: #ef4444;
+    }
+
+    .bnet-dropdown-item.text-danger:hover {
+        background-color: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+    }
+
+        .bnet-dropdown-item.text-danger:hover i {
+            color: #dc2626;
+        }
+
+.bnet-dropdown-divider {
+    height: 1px;
+    margin: 4px 0;
+    overflow: hidden;
+    background-color: var(--border-light);
+}

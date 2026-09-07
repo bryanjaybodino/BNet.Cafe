@@ -98,8 +98,14 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\BNetAlert\Script.js" />
+    <Content Include="Assets\BNetAlert\Style.css" />
+    <Content Include="Assets\BNetDropdown\Style.css" />
+    <Content Include="Assets\BNetPageLoader\Script.js" />
+    <Content Include="Assets\BNetPageLoader\Style.css" />
     <Content Include="Assets\BNetSelect\Script.js" />
     <Content Include="Assets\BNetSelect\Style.css" />
+    <Content Include="Assets\BNetTable\Style.css" />
     <Content Include="Assets\fontawesome\font-awesome.min.css" />
     <Content Include="Assets\css\Remote.css" />
     <Content Include="Assets\css\Style.css" />

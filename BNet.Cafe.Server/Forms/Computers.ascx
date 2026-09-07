@@ -5,8 +5,8 @@
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
 
-        <div class="table-wrapper">
-            <div class="table-toolbar">
+        <div class="bnet-table-wrapper">
+            <div class="bnet-table-toolbar">
                 <div class="search-box">
                     <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" placeholder="Search computers..." />
                 </div>
@@ -16,37 +16,37 @@
             </div>
 
             <!-- Scrollable container wrapper -->
-            <div class="table-container">
+            <div class="bnet-table-container">
                 <asp:GridView ID="GridViewTable" runat="server" ShowHeaderWhenEmpty="true"
-                    AutoGenerateColumns="False" CssClass="data-table" GridLines="None"
+                    AutoGenerateColumns="False" CssClass="bnet-table" GridLines="None"
                     AllowPaging="True" OnPageIndexChanging="GridViewTable_PageIndexChanging">
 
                     <PagerSettings Mode="NumericFirstLast" FirstPageText="&laquo;" LastPageText="&raquo;" PreviousPageText="&lsaquo;" NextPageText="&rsaquo;" PageButtonCount="5" />
-                    <PagerStyle CssClass="custom-pagination" HorizontalAlign="Center" />
+                    <PagerStyle CssClass="bnet-pagination" HorizontalAlign="Center" />
 
                     <Columns>
                         <asp:TemplateField HeaderText="Action" ItemStyle-Width="120px">
                             <ItemTemplate>
                                 <!-- Pure CSS Click-Triggered Dropdown -->
-                                <div class="action-dropdown" tabindex="0">
-                                    <button type="button" class="action-dropdown-toggle">
+                                <div class="bnet-dropdown" tabindex="0">
+                                    <button type="button" class="bnet-dropdown-toggle">
                                         Command <i class="fa-solid fa-chevron-down"></i>
                                     </button>
-                                    <div class="action-dropdown-menu">
-                                        <a onclick="navigateTo('BNetPage.aspx?Form=RentalCreate&id=<%# Eval("DBId") %>')" class="dropdown-item">
+                                    <div class="bnet-dropdown-menu">
+                                        <a onclick="navigateTo('BNetPage.aspx?Form=RentalCreate&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                             <i class="fa-regular fa-clock"></i>Start Rental Session
                                         </a>
-                                        <a class="dropdown-item">
+                                        <a class="bnet-dropdown-item">
                                             <i class="fa-solid fa-file-invoice-dollar"></i>Billing & Invoices
                                         </a>
-                                        <a class="dropdown-item">
+                                        <a class="bnet-dropdown-item">
                                             <i class="fa-solid fa-clock-rotate-left"></i>Session History
                                         </a>
-                                        <a href='<%# "BNetPage.aspx?Form=ComputerEdit&id=" + Eval("DBId") %>' class="dropdown-item">
+                                        <a href='<%# "BNetPage.aspx?Form=ComputerEdit&id=" + Eval("DBId") %>' class="bnet-dropdown-item">
                                             <i class="fa-solid fa-pen-to-square"></i>Edit Computer
                                         </a>
-                                        <div class="dropdown-divider"></div>
-                                        <span class="dropdown-item text-danger" onclick="openDeleteModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
+                                        <div class="bnet-dropdown-divider"></div>
+                                        <span class="bnet-dropdown-item text-danger" onclick="openDeleteModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
                                             <i class="fa-solid fa-trash-can"></i>Delete Computer
                                         </span>
                                     </div>

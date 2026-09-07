@@ -99,7 +99,7 @@ namespace BNet.Cafe.Server.Services
 
         private static void ApplyGridViewStyles(GridView gridView, bool showHeader)
         {
-            gridView.CssClass = "data-table";
+            gridView.CssClass = "bnet-table";
             gridView.PagerStyle.CssClass = "d-none";
             gridView.GridLines = GridLines.None;
             gridView.AllowPaging = true;
@@ -112,7 +112,7 @@ namespace BNet.Cafe.Server.Services
         private static void RenderEmptyState(Panel paginationPanel)
         {
             paginationPanel.Controls.Clear();
-            paginationPanel.CssClass = "empty-state-container text-center p-4";
+            paginationPanel.CssClass = "bnet-table-empty-container text-center p-4";
 
             var label = new Label
             {
@@ -127,12 +127,12 @@ namespace BNet.Cafe.Server.Services
         private static void RenderPaginationPanel(GridView gridView, Panel paginationPanel, int currentPage, int currentBatchCount)
         {
             paginationPanel.Controls.Clear();
-            paginationPanel.CssClass = "custom-pagination-container";
+            paginationPanel.CssClass = "bnet-table-pagination-container";
 
             int totalPages = (int)Math.Ceiling((double)currentBatchCount / GridviewPaginationService.PageSize);
-          
+
             var ul = new HtmlGenericControl("ul");
-            ul.Attributes["class"] = "pagination mb-0 justify-content-center";
+            ul.Attributes["class"] = "bnet-pagination mb-0 justify-content-center";
 
             // Previous Button (<)
             RenderPageButton(ul, gridView, currentPage - 1, "&lsaquo;", currentPage == 0);

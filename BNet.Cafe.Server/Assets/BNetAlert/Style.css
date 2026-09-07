@@ -1,0 +1,87 @@
+﻿/* ==========================================
+   BNetAlert Box Layout
+   ========================================== */
+.bnet-alert-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ef4444;
+    color: #ffffff;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 10000;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    max-width: 420px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+    .bnet-alert-box.show {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    .bnet-alert-box .bnet-alert-icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    .bnet-alert-box .bnet-alert-content {
+        flex: 1;
+    }
+
+    .bnet-alert-box .bnet-alert-list {
+        margin: 0;
+        padding-left: 18px;
+        list-style-type: disc;
+    }
+
+        .bnet-alert-box .bnet-alert-list li {
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+            .bnet-alert-box .bnet-alert-list li:last-child {
+                margin-bottom: 0;
+            }
+
+    .bnet-alert-box .bnet-alert-close {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 4px;
+    }
+
+        .bnet-alert-box .bnet-alert-close:hover {
+            color: #ffffff;
+        }
+
+    /* Variant Colors */
+    .bnet-alert-box.bnet-alert-error {
+        background-color: #ef4444;
+    }
+
+    .bnet-alert-box.bnet-alert-success {
+        background-color: #10b981;
+    }
+
+    .bnet-alert-box.bnet-alert-warning {
+        background-color: #f59e0b;
+    }
+
+    .bnet-alert-box.bnet-alert-info {
+        background-color: #3b82f6;
+    }

@@ -1,0 +1,169 @@
+﻿/* ==========================================
+   6. BNET TABLES, TOOLBARS & WRAPPERS
+   ========================================== */
+.bnet-table-wrapper {
+    background-color: var(--bg-light-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 25px 15px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    display: block;
+    overflow: visible !important;
+}
+
+.bnet-table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.bnet-table-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    display: block;
+    box-sizing: border-box;
+    padding-bottom: 8px;
+    padding-right: 1px;
+}
+
+.bnet-table {
+    width: 100%;
+    min-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+    .bnet-table th,
+    .bnet-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border-light);
+        white-space: nowrap;
+        box-sizing: border-box;
+    }
+
+        .bnet-table th:last-child,
+        .bnet-table td:last-child {
+            padding-right: 20px;
+        }
+
+    .bnet-table th {
+        color: var(--text-light-secondary);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        background-color: var(--bg-light-tertiary);
+    }
+
+    .bnet-table tr {
+        position: relative;
+    }
+
+        .bnet-table tr:hover {
+            background-color: var(--bg-light);
+            z-index: 10;
+        }
+
+    /* Sortable Headers */
+    .bnet-table th.sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+
+        .bnet-table th.sortable:hover {
+            color: var(--primary);
+        }
+
+
+/* ==========================================
+   BNET GRIDVIEW TEMPLATE & PAGINATION
+   ========================================== */
+
+/* External Pagination Container */
+.bnet-table-pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12px;
+    width: 100%;
+}
+
+    /* Pagination List Container */
+    .bnet-table-pagination-container ul.bnet-pagination {
+        display: flex;
+        align-items: center;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 6px;
+    }
+
+    .bnet-table-pagination-container .page-item {
+        display: inline-block;
+        margin: 0;
+    }
+
+    /* Button Styles (.page-link) */
+    .bnet-table-pagination-container .page-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 34px;
+        height: 34px;
+        padding: 0 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        background-color: var(--bg-light-tertiary, #f3f4f6);
+        color: var(--text-light-secondary, #4b5563);
+        border: 1px solid var(--border-light, #e5e7eb);
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* Hover State for Active Links */
+    .bnet-table-pagination-container .page-item:not(.disabled):not(.active) .page-link:hover {
+        background-color: var(--border-light, #e5e7eb);
+        color: var(--primary, #2563eb);
+        border-color: var(--primary, #2563eb);
+    }
+
+    /* Active Page State */
+    .bnet-table-pagination-container .page-item.active .page-link {
+        background-color: var(--primary, #2563eb);
+        color: #ffffff;
+        border-color: var(--primary, #2563eb);
+        cursor: default;
+    }
+
+    /* Disabled Prev/Next Buttons */
+    .bnet-table-pagination-container .page-item.disabled .page-link {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
+        background-color: var(--bg-light-secondary, #f9fafb);
+    }
+
+/* Empty State Panel Styling */
+.bnet-table-empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    width: 100%;
+    border-top: 1px solid var(--border-light, #e5e7eb);
+    margin-top: 12px;
+}

@@ -11,6 +11,10 @@
 
     <link href="Assets/BNetSelect/Style.css" rel="stylesheet" />
     <link href="Assets/BNetModal/Style.css" rel="stylesheet" />
+    <link href="Assets/BNetAlert/Style.css" rel="stylesheet" />
+    <link href="Assets/BNetPageLoader/Style.css" rel="stylesheet" />
+    <link href="Assets/BNetTable/Style.css" rel="stylesheet" />
+    <link href="Assets/BNetDropdown/Style.css" rel="stylesheet" />
 </head>
 <body>
     <div id="pageLoadingOverlay" class="loading-overlay">
@@ -92,5 +96,7 @@
     <script src="Assets/js/Script.js"></script>
     <script src="Assets/BNetSelect/Script.js"></script>
     <script src="Assets/BNetModal/Script.js"></script>
+    <script src="Assets/BNetAlert/Script.js"></script>
+    <script src="Assets/BNetPageLoader/Script.js"></script>
 </body>
 </html>
