@@ -27,7 +27,7 @@
                 <!-- Customer -->
                 <div class="form-group">
                     <label for="<%= DropDownList_Customer.ClientID %>">Customer <span style="color: #ef4444;">*</span></label>
-                    <asp:DropDownList ID="DropDownList_Customer" runat="server" CssClass="v-select-enable"></asp:DropDownList>
+                    <asp:DropDownList ID="DropDownList_Customer" runat="server" CssClass="bnet-select"></asp:DropDownList>
                 </div>
 
                 <!-- Duration -->

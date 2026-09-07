@@ -1,0 +1,148 @@
+﻿/* ==========================================
+   14. CUSTOM VIRTUAL SELECT (Infinite Scroll)
+   ========================================== */
+.bnet-select-container {
+    position: relative;
+    width: 100%;
+    user-select: none;
+    font-size: 14px;
+}
+
+/* Main Trigger Button */
+.bnet-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 14px;
+    background-color: var(--bg-light-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+    .bnet-select-trigger:hover,
+    .bnet-select-container.open .bnet-select-trigger {
+        border-color: var(--primary);
+    }
+
+.bnet-select-placeholder {
+    color: var(--text-light-secondary);
+}
+
+.bnet-select-arrow {
+    font-size: 12px;
+    color: var(--text-light-secondary);
+    transition: transform 0.2s ease;
+}
+
+.bnet-select-container.open .bnet-select-arrow {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Menu Overlay */
+.bnet-select-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: var(--bg-light-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.bnet-select-container.open .bnet-select-dropdown {
+    display: block;
+}
+
+/* Search Box Header */
+.bnet-select-search-wrapper {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-light);
+    background-color: var(--bg-light-secondary);
+}
+
+.bnet-select-search-input {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: var(--bg-light-tertiary);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    color: var(--text-light);
+    font-size: 13px;
+    outline: none;
+}
+
+    .bnet-select-search-input:focus {
+        border-color: var(--primary);
+    }
+
+/* Infinite Scroll List Area */
+.bnet-select-options-list {
+    max-height: 220px;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* List Items */
+.bnet-select-option {
+    padding: 10px 14px;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 13.5px;
+    transition: background-color 0.15s ease;
+}
+
+    .bnet-select-option:hover,
+    .bnet-select-option.highlighted {
+        background-color: var(--bg-light-tertiary);
+        color: var(--primary);
+    }
+
+    .bnet-select-option.selected {
+        background-color: var(--primary);
+        color: #ffffff;
+    }
+
+/* Indicator & Loader */
+.bnet-select-loading,
+.bnet-select-empty {
+    padding: 12px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-light-secondary);
+}
+
+/* Validation Highlights */
+.bnet-select-container.is-invalid .bnet-select-trigger {
+    border-color: #ef4444 !important;
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+.bnet-select-container.is-valid .bnet-select-trigger {
+    border-color: #10b981 !important;
+    background-color: rgba(16, 185, 129, 0.05);
+}
+
+/* Disabled state styling */
+.bnet-select-container.disabled .bnet-select-trigger {
+    background-color: var(--bg-light-tertiary) !important;
+    color: var(--text-light-secondary) !important;
+    border-color: var(--border-light) !important;
+    cursor: not-allowed !important;
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+.bnet-select-container.disabled .bnet-select-arrow {
+    color: var(--text-light-secondary) !important;
+    opacity: 0.65;
+}

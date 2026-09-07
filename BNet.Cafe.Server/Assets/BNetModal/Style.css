@@ -1,0 +1,63 @@
+﻿/* ==========================================
+   9. MODALS & OVERLAYS
+   ========================================== */
+.bnet-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: none; /* Hide inactive overlays entirely */
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+}
+
+    .bnet-modal-overlay.active {
+        display: flex; /* Show only when active */
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+.bnet-modal-container {
+    background-color: var(--bg-light-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    padding: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+.bnet-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.bnet-modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.bnet-modal-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--text-light-secondary);
+}
+
+.bnet-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}

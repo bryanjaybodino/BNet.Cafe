@@ -8,6 +8,9 @@
     <title>BNet Cafe</title>
     <link href="Assets/fontawesome/font-awesome.min.css" rel="stylesheet" />
     <link href="Assets/css/Style.css" rel="stylesheet" />
+
+    <link href="Assets/BNetSelect/Style.css" rel="stylesheet" />
+    <link href="Assets/BNetModal/Style.css" rel="stylesheet" />
 </head>
 <body>
     <div id="pageLoadingOverlay" class="loading-overlay">
@@ -87,6 +90,7 @@
         </div>
     </div>
     <script src="Assets/js/Script.js"></script>
-
+    <script src="Assets/BNetSelect/Script.js"></script>
+    <script src="Assets/BNetModal/Script.js"></script>
 </body>
 </html>

@@ -98,6 +98,8 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\BNetSelect\Script.js" />
+    <Content Include="Assets\BNetSelect\Style.css" />
     <Content Include="Assets\fontawesome\font-awesome.min.css" />
     <Content Include="Assets\css\Remote.css" />
     <Content Include="Assets\css\Style.css" />
@@ -106,6 +108,8 @@
     <Content Include="Assets\js\ComputerCreate.js" />
     <Content Include="Assets\js\Remote.js" />
     <Content Include="Assets\js\Script.js" />
+    <Content Include="Assets\BNetModal\Script.js" />
+    <Content Include="Assets\BNetModal\Style.css" />
     <Content Include="BNetPage.aspx" />
     <Content Include="Callback.aspx" />
     <Content Include="Databases\Queries\Computers\Create.sql" />
