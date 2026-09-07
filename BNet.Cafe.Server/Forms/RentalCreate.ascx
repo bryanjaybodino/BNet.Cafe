@@ -19,8 +19,9 @@
             <div class="form-grid">
                 <!-- Computer -->
                 <div class="form-group">
-                    <label for="<%= DropDownList_Computer.ClientID %>">Computer <span style="color: #ef4444;">*</span></label>
-                    <asp:DropDownList ID="DropDownList_Computer" runat="server" CssClass="v-select-enable"></asp:DropDownList>
+                    <label for="<%= TextBox_ComputerName.ClientID %>">Computer <span style="color: #ef4444;">*</span></label>
+                    <asp:TextBox ID="TextBox_ComputerName" Enabled="false" runat="server" CssClass="form-control" placeholder="e.g., PC-01" MaxLength="50"></asp:TextBox>
+
                 </div>
 
                 <!-- Customer -->

@@ -435,8 +435,10 @@ body {
         color: var(--text-light);
     }
 
-.form-control {
-    background-color: var(--bg-light-tertiary);
+/* Update default input background to look active */
+.form-control,
+.search-input {
+    background-color: var(--bg-light-secondary);
     border: 1px solid var(--border-light);
     color: var(--text-light);
     padding: 10px 14px;
@@ -446,10 +448,41 @@ body {
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-    .form-control:focus {
-        border-color: var(--primary);
+    /* Explicit styling for disabled & read-only form controls */
+    .form-control:disabled,
+    .form-control[readonly],
+    .search-input:disabled,
+    .search-input[readonly] {
+        background-color: var(--bg-light-tertiary);
+        color: var(--text-light-secondary);
+        border-color: var(--border-light);
+        cursor: not-allowed;
+        opacity: 0.65;
     }
 
+/* Base styles for standard native HTML form elements */
+input,
+select,
+textarea,
+button {
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+    /* Global disabled state for standard native elements */
+    input:disabled,
+    select:disabled,
+    textarea:disabled,
+    button:disabled,
+    input[readonly],
+    textarea[readonly] {
+        background-color: var(--bg-light-tertiary) !important;
+        color: var(--text-light-secondary) !important;
+        border-color: var(--border-light) !important;
+        cursor: not-allowed !important;
+        opacity: 0.65;
+    }
 .search-input {
     background-color: var(--bg-light-tertiary);
     border: 1px solid var(--border-light);
@@ -1147,4 +1180,35 @@ span.dropdown-item {
 .v-select-container.is-valid .v-select-trigger {
     border-color: #10b981 !important;
     background-color: rgba(16, 185, 129, 0.05);
+}
+
+/* Active state for v-select-trigger */
+.v-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 14px;
+    background-color: var(--bg-light-secondary); /* Ensure this is secondary for active look */
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Disabled state styling triggered by the JS class */
+.v-select-container.disabled .v-select-trigger {
+    background-color: var(--bg-light-tertiary) !important;
+    color: var(--text-light-secondary) !important;
+    border-color: var(--border-light) !important;
+    cursor: not-allowed !important;
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+/* Dim the arrow icon when disabled */
+.v-select-container.disabled .v-select-arrow {
+    color: var(--text-light-secondary) !important;
+    opacity: 0.65;
 }

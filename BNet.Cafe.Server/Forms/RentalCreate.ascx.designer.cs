@@ -33,13 +33,13 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
-        /// DropDownList_Computer control.
+        /// TextBox_ComputerName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DropDownList_Computer;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_ComputerName;
 
         /// <summary>
         /// DropDownList_Customer control.

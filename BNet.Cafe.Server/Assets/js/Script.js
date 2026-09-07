@@ -445,6 +445,7 @@ class VirtualSelect {
     }
 
     toggle() {
+        if (this.container.classList.contains('disabled')) return;
         const isOpen = this.container.classList.contains('open');
         // Close all other instances if multiple exist on the page
         document.querySelectorAll('.v-select-container.open').forEach(el => el.classList.remove('open'));
@@ -588,6 +589,9 @@ function initVirtualSelects(selector = 'select.v-select-enable') {
 
         // 3. Dynamically create and insert the UI container element right after the native select
         const container = document.createElement('div');
+        if (aspDropdown.disabled) {
+            container.classList.add('disabled');
+        }
         aspDropdown.parentNode.insertBefore(container, aspDropdown.nextSibling);
 
         // 4. Instantiate VirtualSelect

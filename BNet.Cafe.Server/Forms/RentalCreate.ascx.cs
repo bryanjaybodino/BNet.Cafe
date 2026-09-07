@@ -10,34 +10,30 @@ namespace BNet.Cafe.Server.Forms
         {
             if (!IsPostBack)
             {
+                Repositories.Computers computers = new Repositories.Computers();
+                var computer = computers.GetById(Request.QueryString["id"]);
+                for (int i = 0; i < computer.Rows.Count; i++)
+                {
+                    TextBox_ComputerName.Text = computer.Rows[i]["DBComputerName"].ToString();
+                }
                 LoadDropdowns();
             }
         }
 
         private void LoadDropdowns()
         {
-            // Populate Computer DropDownList
-            Repositories.Computers computers = new Repositories.Computers();
-            DropDownList_Computer.DataSource = computers.GetAll();
-            DropDownList_Computer.DataTextField = "DBComputerName";
-            DropDownList_Computer.DataValueField = "DBId";
-            DropDownList_Computer.DataBind();
-            DropDownList_Computer.Items.Insert(0, new System.Web.UI.WebControls.ListItem("-- Select Computer --", ""));
-
-
-
-
             //// Populate Customer DropDownList
             //Repositories.Customers customers = new Repositories.Customers();
             //DropDownList_Customer.DataSource = customers.GetAll();
-            //DropDownList_Customer.DataTextField = "CustomerName";
-            //DropDownList_Customer.DataValueField = "Id";
+            //DropDownList_Customer.DataTextField = "DBCustomerName";
+            //DropDownList_Customer.DataValueField = "DBId";
             //DropDownList_Customer.DataBind();
+            //DropDownList_Customer.Items.Insert(0, new System.Web.UI.WebControls.ListItem("-- Select Customer --", ""));
         }
 
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
         {
-            string computerId = DropDownList_Computer.SelectedValue;
+            string computerId = Request.QueryString["id"];
             string customerId = DropDownList_Customer.SelectedValue;
             string duration = TextBox_Duration.Text.Trim();
             string amount = TextBox_Amount.Text.Trim();
