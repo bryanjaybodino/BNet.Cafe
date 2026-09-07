@@ -56,6 +56,7 @@
     <Compile Include="Models\ByteCompressor.cs" />
     <Compile Include="Models\PortManager.cs" />
     <Compile Include="Models\RemoteInput.cs" />
+    <Compile Include="Models\ServerTextMessage.cs" />
     <Compile Include="Models\TextContent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

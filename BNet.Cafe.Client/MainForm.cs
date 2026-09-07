@@ -332,7 +332,16 @@ namespace BNet.Cafe.Client
 
                     byte msgType = msg[0];
 
-                    if (msgType == 0x40)      // PAUSE
+                    if (msgType == 0x02) // TEXT_MESSAGE — direct message received from server
+                    {
+                        try
+                        {
+                            string textMessage = Utf8.GetString(msg, 1, msg.Length - 1);
+                            HandleIncomingTextMessage(textMessage);
+                        }
+                        catch { }
+                    }
+                    else if (msgType == 0x40) // PAUSE
                     {
                         _paused = true;
                         _pendingFrames.Clear();
@@ -355,8 +364,7 @@ namespace BNet.Cafe.Client
                             var indexSet = new HashSet<int>(indices);
                             foreach (var key in _pendingFrames.Keys.ToArray())
                                 if (!indexSet.Contains(key)) _pendingFrames.TryRemove(key, out _);
-                            // Clear hashes for screens that are no longer requested
-                            // so they get a full frame when re-subscribed.
+
                             foreach (var key in _lastFrameHash.Keys.ToArray())
                                 if (!indexSet.Contains(key)) _lastFrameHash.TryRemove(key, out _);
                         }
@@ -376,6 +384,22 @@ namespace BNet.Cafe.Client
             }
         }
 
+        // ─────────────────────────────────────────────────────────────────────
+        // MESSAGE HANDLER
+        // ─────────────────────────────────────────────────────────────────────
+
+        private void HandleIncomingTextMessage(string textMessage)
+        {
+            // Ensure thread-safe execution on the WinForms UI thread
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() => HandleIncomingTextMessage(textMessage)));
+                return;
+            }
+
+            // Action implementation example: display a native system notification dialog
+            MessageBox.Show(this, textMessage, "Server Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
         // ─────────────────────────────────────────────────────────────────────
         // ACTIVITY SENDER
         // ─────────────────────────────────────────────────────────────────────

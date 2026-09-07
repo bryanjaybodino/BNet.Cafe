@@ -7,38 +7,38 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BNet.Cafe.Server.Forms
+namespace BNet.Cafe.Server.Forms.Modals
 {
 
 
-    public partial class Remote
+    public partial class RemoteMessage
     {
 
         /// <summary>
-        /// ScriptManagerProxy1 control.
+        /// HiddenField_ClientName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.ScriptManagerProxy ScriptManagerProxy1;
+        protected global::System.Web.UI.WebControls.HiddenField HiddenField_ClientName;
 
         /// <summary>
-        /// UpdatePanel1 control.
+        /// TextBox_MessageContent control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_MessageContent;
 
         /// <summary>
-        /// RemoteMessageModal control.
+        /// LinkButton_SendMessage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::BNet.Cafe.Server.Forms.Modals.RemoteMessage RemoteMessageModal;
+        protected global::System.Web.UI.WebControls.LinkButton LinkButton_SendMessage;
     }
 }

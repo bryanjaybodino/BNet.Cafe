@@ -8,13 +8,16 @@ function tick() {
     if (clock) clock.textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
 }
 setInterval(tick, 1000);
-tick();
 
-var detailsSidebar = document.getElementById('detailsSidebar');
+// Safe helper to get sidebar dynamically
+function getDetailsSidebar() {
+    return document.getElementById('detailsSidebar');
+}
 
 // Hide sidebar when clicking outside of it
 document.addEventListener('click', function (e) {
-    if (!detailsSidebar.classList.contains('visible')) return;
+    var detailsSidebar = getDetailsSidebar();
+    if (!detailsSidebar || !detailsSidebar.classList.contains('visible')) return;
 
     var isClickInsideSidebar = detailsSidebar.contains(e.target);
     var isClickOnDeviceCard = e.target.closest('.device-entry');
@@ -77,20 +80,20 @@ function handleClientListUpdate(clients) {
     clientDataMap.clear();
     clients.forEach(function (client) {
         if (client.AccountName) {
-            clientDataMap.set(client.AccountName.toLowerCase(), client);
+            clientDataMap.set(client.AccountName.toUpperCase(), client);
         }
     });
 
     renderDevices(clients);
 
-    if (currentClient && clientDataMap.has(currentClient.toLowerCase())) {
-        updateInfo(clientDataMap.get(currentClient.toLowerCase()));
+    if (currentClient && clientDataMap.has(currentClient.toUpperCase())) {
+        updateInfo(clientDataMap.get(currentClient.toUpperCase()));
     }
 }
 
 function handleActivityUpdate(activity) {
     if (!activity || !activity.accountName) return;
-    const accountKey = activity.accountName.toLowerCase();
+    const accountKey = activity.accountName.toUpperCase();
     clientActivityMap.set(accountKey, activity);
 
     var subEl = document.getElementById('sub-' + accountKey);
@@ -98,8 +101,11 @@ function handleActivityUpdate(activity) {
         subEl.textContent = activity.windowTitle || activity.appName || 'Online';
     }
 
-    if (currentClient && currentClient.toLowerCase() === accountKey) {
-        document.getElementById('ActiveWindow').textContent = activity.windowTitle || '—';
+    if (currentClient && currentClient.toUpperCase() === accountKey) {
+        var activeWinEl = document.getElementById('ActiveWindow');
+        if (activeWinEl) {
+            activeWinEl.textContent = activity.windowTitle || '—';
+        }
     }
 }
 
@@ -120,11 +126,11 @@ function renderDevices(clients) {
     clients.forEach(function (item) {
         var name = item.AccountName;
         if (!name) return;
-        var accountKey = name.toLowerCase();
+        var accountKey = name.toUpperCase();
 
         var el = document.createElement('div');
         el.className = 'device-entry';
-        if (currentClient.toLowerCase() === accountKey) el.classList.add('active');
+        if (currentClient.toUpperCase() === accountKey) el.classList.add('active');
         el.dataset.name = name;
 
         var activity = clientActivityMap.get(accountKey);
@@ -151,45 +157,65 @@ function renderDevices(clients) {
 }
 
 function selectDevice(name) {
-    currentClient = name;
-    var accountKey = name.toLowerCase();
+    currentClient = name ? name.toUpperCase() : ''; // Transform to uppercase
+    var accountKey = currentClient;
 
     document.querySelectorAll('.device-entry').forEach(function (el) {
-        el.classList.toggle('active', el.dataset.name.toLowerCase() === accountKey);
+        el.classList.toggle('active', el.dataset.name.toUpperCase() === accountKey);
     });
 
-    detailsSidebar.classList.add('visible');
-    document.getElementById('remoteLaunchBtn').href = 'Remote.html?client=' + encodeURIComponent(name);
+    var detailsSidebar = getDetailsSidebar();
+    if (detailsSidebar) {
+        detailsSidebar.classList.add('visible');
+    }
+
+    var launchBtn = document.getElementById('remoteLaunchBtn');
+    if (launchBtn) {
+        launchBtn.href = 'Remote.html?client=' + encodeURIComponent(currentClient);
+    }
 
     if (clientDataMap.has(accountKey)) {
         updateInfo(clientDataMap.get(accountKey));
     }
 
-    if (clientActivityMap.has(accountKey)) {
-        const act = clientActivityMap.get(accountKey);
-        document.getElementById('ActiveWindow').textContent = act.windowTitle || '—';
-    } else {
-        document.getElementById('ActiveWindow').textContent = '—';
+    var activeWinEl = document.getElementById('ActiveWindow');
+    if (activeWinEl) {
+        if (clientActivityMap.has(accountKey)) {
+            const act = clientActivityMap.get(accountKey);
+            activeWinEl.textContent = act.windowTitle || '—';
+        } else {
+            activeWinEl.textContent = '—';
+        }
     }
 }
 
 function deselectDevice() {
     currentClient = '';
-    detailsSidebar.classList.remove('visible');
-    document.querySelectorAll('.device-entry').forEach(function (el) { el.classList.remove('active'); });
+    var detailsSidebar = getDetailsSidebar();
+    if (detailsSidebar) {
+        detailsSidebar.classList.remove('visible');
+    }
+    document.querySelectorAll('.device-entry').forEach(function (el) {
+        el.classList.remove('active');
+    });
 }
 
 function updateInfo(item) {
-    document.getElementById('Username').textContent = item.AccountName.toUpperCase() || '—';
-    document.getElementById('MachineName').textContent = item.MachineName || '—';
-    document.getElementById('Workgroup').textContent = item.WorkGroup || '—';
-    document.getElementById('Windows').textContent = item.Windows || '—';
-    document.getElementById('WindowsVersion').textContent = item.WindowsVersion || '—';
-    document.getElementById('OSVersion').textContent = item.OSVersion || '—';
-    document.getElementById('OSArchitecture').textContent = item.OSArchitecture || '—';
-    document.getElementById('SerialNumber').textContent = item.SerialNumber || '—';
-    document.getElementById('ProcessorCount').textContent = item.ProcessorCount || '—';
-    document.getElementById('ScreenCount').textContent = item.ScreenCount || '—';
+    var setElText = function (id, val) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = val || '—';
+    };
+
+    setElText('Username', item.AccountName ? item.AccountName.toUpperCase() : null);
+    setElText('MachineName', item.MachineName);
+    setElText('Workgroup', item.WorkGroup);
+    setElText('Windows', item.Windows);
+    setElText('WindowsVersion', item.WindowsVersion);
+    setElText('OSVersion', item.OSVersion);
+    setElText('OSArchitecture', item.OSArchitecture);
+    setElText('SerialNumber', item.SerialNumber);
+    setElText('ProcessorCount', item.ProcessorCount);
+    setElText('ScreenCount', item.ScreenCount);
 }
 
 function escapeHtml(str) {
@@ -197,4 +223,8 @@ function escapeHtml(str) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-connectWebSocket();
+// Ensure DOM and components are loaded before connecting
+document.addEventListener('DOMContentLoaded', function () {
+    tick();
+    connectWebSocket();
+});

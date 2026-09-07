@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BNet Cafe</title>
     <link href="Assets/fontawesome/font-awesome.min.css" rel="stylesheet" />
-    <link href="Assets/css/Style.css" rel="stylesheet" />
+    <link href="Assets/Pages/Style.css" rel="stylesheet" />
 
     <link href="Assets/BNetSelect/Style.css" rel="stylesheet" />
     <link href="Assets/BNetModal/Style.css" rel="stylesheet" />
@@ -93,7 +93,7 @@
             </div>
         </div>
     </div>
-    <script src="Assets/js/Script.js"></script>
+    <script src="Assets/Pages/Script.js"></script>
     <script src="Assets/BNetSelect/Script.js"></script>
     <script src="Assets/BNetModal/Script.js"></script>
     <script src="Assets/BNetAlert/Script.js"></script>

@@ -2,7 +2,7 @@
 <!-- Register script via ScriptManager to ensure compatibility with UpdatePanel -->
 <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
     <Scripts>
-        <asp:ScriptReference Path="~/Assets/js/ComputerEdit.js" />
+        <asp:ScriptReference Path="~/Assets/Pages/ComputerEdit.js" />
     </Scripts>
 </asp:ScriptManagerProxy>
 

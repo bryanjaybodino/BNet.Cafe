@@ -118,9 +118,9 @@ function Validate() {
 
     var errors = [];
 
-    if (!customerSelect || customerSelect.value === '0' || customerSelect.value === '') {
-        errors.push('Please select a customer.');
-    }
+    //if (!customerSelect || customerSelect.value === '0' || customerSelect.value === '') {
+    //    errors.push('Please select a customer.');
+    //}
 
     if (!durationInput || parseInt(durationInput.value, 10) <= 0) {
         errors.push('Please select or input a valid duration.');
@@ -138,8 +138,8 @@ function Validate() {
         }
         return false;
     }
-
-    disableSubmitButton();
+    sendTextMessageToPC('PC 1', "Hello PC 1, please restart your app.");
+    //disableSubmitButton();
     return true;
 }
 

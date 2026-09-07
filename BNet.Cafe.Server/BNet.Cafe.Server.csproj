@@ -106,16 +106,18 @@
     <Content Include="Assets\BNetSelect\Script.js" />
     <Content Include="Assets\BNetSelect\Style.css" />
     <Content Include="Assets\BNetTable\Style.css" />
+    <Content Include="Assets\Pages\RentalCreate.css" />
     <Content Include="Assets\fontawesome\font-awesome.min.css" />
-    <Content Include="Assets\css\Remote.css" />
-    <Content Include="Assets\css\Style.css" />
-    <Content Include="Assets\js\RentalCreate.js" />
-    <Content Include="Assets\js\ComputerEdit.js" />
-    <Content Include="Assets\js\ComputerCreate.js" />
-    <Content Include="Assets\js\Remote.js" />
-    <Content Include="Assets\js\Script.js" />
+    <Content Include="Assets\Pages\Remote.css" />
+    <Content Include="Assets\Pages\Style.css" />
+    <Content Include="Assets\Pages\RentalCreate.js" />
+    <Content Include="Assets\Pages\ComputerEdit.js" />
+    <Content Include="Assets\Pages\ComputerCreate.js" />
+    <Content Include="Assets\Pages\Remote.js" />
+    <Content Include="Assets\Pages\Script.js" />
     <Content Include="Assets\BNetModal\Script.js" />
     <Content Include="Assets\BNetModal\Style.css" />
+    <Content Include="Assets\Pages\RemoteMessaging.js" />
     <Content Include="BNetPage.aspx" />
     <Content Include="Callback.aspx" />
     <Content Include="Databases\Queries\Computers\Create.sql" />
@@ -128,6 +130,7 @@
     <Content Include="Forms\ComputerEdit.ascx" />
     <Content Include="Forms\Computers.ascx" />
     <Content Include="Forms\Modals\ComputerDelete.ascx" />
+    <Content Include="Forms\Modals\RemoteMessage.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Forms\RentalCreate.ascx" />
     <Content Include="Forms\SampleModal.ascx" />
@@ -188,6 +191,13 @@
     </Compile>
     <Compile Include="Forms\Modals\ComputerDelete.ascx.designer.cs">
       <DependentUpon>ComputerDelete.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\RemoteMessage.ascx.cs">
+      <DependentUpon>RemoteMessage.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\RemoteMessage.ascx.designer.cs">
+      <DependentUpon>RemoteMessage.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Remote.ascx.cs">
       <DependentUpon>Remote.ascx</DependentUpon>

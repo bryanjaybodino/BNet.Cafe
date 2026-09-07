@@ -38,17 +38,21 @@ namespace BNet.Cafe.Server.Forms
             string duration = TextBox_Duration.Text.Trim();
             string amount = TextBox_Amount.Text.Trim();
 
-            Repositories.Rentals rentals = new Repositories.Rentals();
-            bool isSuccess = rentals.Create(computerId, customerId, duration, amount);
 
-            if (isSuccess)
-            {
-                AlertService.ShowAlert(UpdatePanel1, "Rental session successfully created.", "success", "BNetPage.aspx?Form=Rentals");
-            }
-            else
-            {
-                AlertService.ShowAlert(UpdatePanel1, "Failed to create rental session.", "error");
-            }
+
+
+
+            //Repositories.Rentals rentals = new Repositories.Rentals();
+            //bool isSuccess = rentals.Create(computerId, customerId, duration, amount);
+
+            //if (isSuccess)
+            //{
+            //    AlertService.ShowAlert(UpdatePanel1, "Rental session successfully created.", "success", "BNetPage.aspx?Form=Rentals");
+            //}
+            //else
+            //{
+            //    AlertService.ShowAlert(UpdatePanel1, "Failed to create rental session.", "error");
+            //}
         }
     }
 }

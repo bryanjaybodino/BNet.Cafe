@@ -1,14 +1,9 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="RentalCreate.ascx.cs" Inherits="BNet.Cafe.Server.Forms.RentalCreate" %>
-
-<style>
- .duration-section {background-color: var(--bg-light-tertiary);border: 1px solid var(--border-light);border-radius: 10px;padding: 16px;margin: 16px 0;}.quick-btn-group {display: flex;flex-wrap: wrap;gap: 8px;margin-top: 8px;}.btn-danger-outline {background-color: transparent;color: #ef4444;border: 1px solid #ef4444;}.btn-danger-outline:hover {background-color: #ef4444;color: #ffffff;}.rate-legend-box {background-color: var(--bg-light-secondary);border: 1px dashed var(--border-light);border-radius: 8px;padding: 12px 16px;margin-top: 12px;}.rate-legend-title {font-size: 12px;font-weight: 700;color: var(--text-light-secondary);text-transform: uppercase;margin-bottom: 8px;}.rate-grid {display: grid;grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));gap: 8px;font-size: 13px;color: var(--text-light);}.rate-note {margin-top: 10px;padding-top: 8px;border-top: 1px dashed var(--border-light);font-size: 12px;color: var(--text-light-secondary);display: flex;align-items: center;gap: 6px;}.rate-note i {color: var(--primary);}.amount-display {font-weight: 700;font-size: 16px;color: var(--primary) !important;}.summary-display-card {display: flex;align-items: center;justify-content: space-around;background-color: var(--bg-light-secondary);border: 2px solid var(--primary);border-radius: 12px;padding: 20px;margin: 20px 0;box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);}.summary-item {display: flex;flex-direction: column;align-items: center;gap: 6px;}.summary-label {font-size: 13px;font-weight: 600;color: var(--text-light-secondary);text-transform: uppercase;letter-spacing: 0.5px;}.summary-value {font-size: 28px;font-weight: 800;line-height: 1.2;}.highlight-time {color: var(--text-light);}.highlight-amount {color: #10b981;}.summary-divider {width: 1px;height: 50px;background-color: var(--border-light);}@media (max-width: 576px) {.summary-display-card {flex-direction: column;gap: 16px;}.summary-divider {width: 100%;height: 1px;}}
-</style>
-
-
-
+<link href="Assets/Pages/RentalCreate.css" rel="stylesheet" />
 <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
     <Scripts>
-        <asp:ScriptReference Path="~/Assets/js/RentalCreate.js" />
+        <asp:ScriptReference Path="~/Assets/Pages/RentalCreate.js" />
+        <asp:ScriptReference Path="~/Assets/Pages/RemoteMessaging.js" />
     </Scripts>
 </asp:ScriptManagerProxy>
 

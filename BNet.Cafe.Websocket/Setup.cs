@@ -183,6 +183,13 @@ namespace BNet.Cafe.Websocket
                         _ = Task.Run(() => HandleBrowserWebSocket(wsCtx.WebSocket));
                         return;
                     }
+                    if (path == "/ws/server")
+                    {
+                        var wsCtx = await ctx.AcceptWebSocketAsync(null);
+                        Interlocked.Increment(ref _activeConnections);
+                        _ = Task.Run(() => HandleServerWebSocket(wsCtx.WebSocket));
+                        return;
+                    }
                     ctx.Response.StatusCode = 400; ctx.Response.Close(); return;
                 }
                 ctx.Response.StatusCode = 404; ctx.Response.Close();
@@ -397,7 +404,65 @@ namespace BNet.Cafe.Websocket
                 }
             }
         }
+        // ─────────────────────────────────────────────────────────────────────
+        // SERVER WebSocket
+        // ─────────────────────────────────────────────────────────────────────
 
+        private async Task HandleServerWebSocket(WebSocket ws)
+        {
+            var session = new WebSocketSession(ws);
+            var buf = new byte[BrowserRecvBufSize];
+
+            try
+            {
+                while (ws.State == WebSocketState.Open)
+                {
+                    byte[] msg = await ReceiveFullMessage(ws, buf);
+                    if (msg == null) break;
+                    if (msg.Length == 0) continue;
+
+                    byte msgType = msg[0];
+
+                    if (msgType == 0x02) // TEXT_INFO / Direct message routing
+                    {
+                        string json = Utf8.GetString(msg, 1, msg.Length - 1);
+                        var textMsg = JsonConvert.DeserializeObject<ServerTextMessage>(json);
+
+                        if (textMsg != null && !string.IsNullOrEmpty(textMsg.TargetClient))
+                        {
+                            await SendTextMessageToAgent(textMsg.TargetClient.ToLower(), textMsg.Message);
+                        }
+                    }
+                    else if (msgType == 0x22) // PING
+                    {
+                        try { await session.SendAsync(PongPayload); } catch { }
+                    }
+                }
+            }
+            catch { }
+            finally
+            {
+                Interlocked.Decrement(ref _activeConnections);
+                await CloseWebSocketSafely(ws);
+            }
+        }
+
+        private async Task SendTextMessageToAgent(string clientName, string message)
+        {
+            // Check if the agent PC is currently connected
+            if (_agentSessions.TryGetValue(clientName, out var agentSession))
+            {
+                byte[] jb = Utf8.GetBytes(message);
+
+                // Construct binary payload: [0x02][UTF-8 message]
+                byte[] payload = new byte[1 + jb.Length];
+                payload[0] = 0x02;
+                Buffer.BlockCopy(jb, 0, payload, 1, jb.Length);
+
+                // Forward payload to target PC agent
+                await agentSession.SendAsync(payload);
+            }
+        }
         // ─────────────────────────────────────────────────────────────────────
         // SET_SCREENS (0x43)
         // ─────────────────────────────────────────────────────────────────────
