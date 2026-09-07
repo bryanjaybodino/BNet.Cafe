@@ -773,26 +773,53 @@ span.dropdown-item {
     background-color: rgba(16, 185, 129, 0.05);
 }
 
+/* Custom Alert Box Layout Enhancements */
 .alert-box {
     position: fixed;
     top: 20px;
     right: 20px;
     background-color: #ef4444;
     color: #ffffff;
-    padding: 12px 20px;
+    padding: 14px 20px;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 500;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     z-index: 10000;
     display: flex;
-    align-items: center;
-    gap: 10px;
+    align-items: flex-start; /* Align icon to top when alert expands */
+    gap: 12px;
+    max-width: 420px;
     opacity: 0;
     transform: translateY(-10px);
     transition: opacity 0.3s ease, transform 0.3s ease;
     pointer-events: none;
 }
+
+    .alert-box .alert-icon {
+        font-size: 16px;
+        margin-top: 2px; /* Visual alignment with first line */
+        flex-shrink: 0;
+    }
+
+    .alert-box .alert-content {
+        flex: 1;
+    }
+
+    .alert-box .alert-list {
+        margin: 0;
+        padding-left: 18px;
+        list-style-type: disc;
+    }
+
+        .alert-box .alert-list li {
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+            .alert-box .alert-list li:last-child {
+                margin-bottom: 0;
+            }
 
     .alert-box.show {
         opacity: 1;
@@ -1109,4 +1136,15 @@ span.dropdown-item {
     text-align: center;
     font-size: 13px;
     color: var(--text-light-secondary);
+}
+
+/* VirtualSelect Validation Highlights */
+.v-select-container.is-invalid .v-select-trigger {
+    border-color: #ef4444 !important;
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+.v-select-container.is-valid .v-select-trigger {
+    border-color: #10b981 !important;
+    background-color: rgba(16, 185, 129, 0.05);
 }

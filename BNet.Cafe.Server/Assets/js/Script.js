@@ -94,12 +94,25 @@ function ShowAlert(message, type = 'error') {
         iconClass = 'fa-circle-check';
     }
 
-    alertBox.innerHTML = `<i class="fa-solid ${iconClass}"></i> ${message}`;
+    // Format content based on input type (Array vs String)
+    let contentHtml = '';
+    if (Array.isArray(message)) {
+        const items = message.map(msg => `<li>${msg}</li>`).join('');
+        contentHtml = `<ul class="alert-list">${items}</ul>`;
+    } else {
+        contentHtml = `<span>${message}</span>`;
+    }
+
+    alertBox.innerHTML = `
+        <i class="fa-solid ${iconClass} alert-icon"></i>
+        <div class="alert-content">${contentHtml}</div>
+    `;
+
     alertBox.classList.add('show');
 
     setTimeout(() => {
         alertBox.classList.remove('show');
-    }, 4000);
+    }, 5000); // Extended slightly for easier reading of multiple lines
 }
 
 // =============================================================================
@@ -139,32 +152,34 @@ function requiredValidation(id) {
 
     element.classList.remove('is-valid', 'is-invalid');
 
-    // Vanilla JS lookup for Select2 container
-    var select2Container = element.nextElementSibling;
-    var hasSelect2 = select2Container && select2Container.classList.contains('select2-container');
+    // Look for Select2 or VirtualSelect container
+    var nextContainer = element.nextElementSibling;
+    var hasCustomSelect = nextContainer && (
+        nextContainer.classList.contains('select2-container') ||
+        nextContainer.classList.contains('v-select-container')
+    );
 
-    if (hasSelect2) {
-        select2Container.classList.remove('is-valid', 'is-invalid');
+    if (hasCustomSelect) {
+        nextContainer.classList.remove('is-valid', 'is-invalid');
     }
 
     if (value === null) {
         element.classList.add('is-invalid');
-        if (hasSelect2) select2Container.classList.add('is-invalid');
+        if (hasCustomSelect) nextContainer.classList.add('is-invalid');
         ShowAlert('Invalid input detected. HTML/script tags are not allowed.');
         return false;
     }
 
-    if (value !== '') {
+    if (value !== '' && value !== '0') {
         element.classList.add('is-valid');
-        if (hasSelect2) select2Container.classList.add('is-valid');
+        if (hasCustomSelect) nextContainer.classList.add('is-valid');
         return true;
     } else {
         element.classList.add('is-invalid');
-        if (hasSelect2) select2Container.classList.add('is-invalid');
+        if (hasCustomSelect) nextContainer.classList.add('is-invalid');
         return false;
     }
 }
-
 function emailValidation(id) {
     var text = document.getElementById(id);
     if (!text) return false;

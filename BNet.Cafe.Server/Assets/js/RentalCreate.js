@@ -1,16 +1,12 @@
-﻿/**
- * Validates the Rental Creation form fields, disables submit button, and shows loading indicator
- * @returns {boolean} True if valid, false to cancel ASP.NET postback
- */
-function Validate() {
+﻿function Validate() {
     var computerSelect = document.querySelector('[id$="DropDownList_Computer"]');
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
     var amountInput = document.querySelector('[id$="TextBox_Amount"]');
 
     var errors = [];
 
-    // 1. Validate Computer Selection
-    if (!computerSelect || !computerSelect.value || computerSelect.value === '0' || computerSelect.value === '') {
+    // 1. Validate Computer Selection using requiredValidation
+    if (!computerSelect || !requiredValidation(computerSelect.id) || computerSelect.value === '0') {
         errors.push('Please select a computer.');
     }
 
@@ -26,7 +22,7 @@ function Validate() {
 
     // If any validation errors exist, alert all of them and prevent postback
     if (errors.length > 0) {
-        ShowAlert(errors.join('\n'));
+        ShowAlert(errors);
         return false;
     }
 
