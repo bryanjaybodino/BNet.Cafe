@@ -101,6 +101,7 @@
     <Content Include="Assets\fontawesome\font-awesome.min.css" />
     <Content Include="Assets\css\Remote.css" />
     <Content Include="Assets\css\Style.css" />
+    <Content Include="Assets\js\RentalCreate.js" />
     <Content Include="Assets\js\ComputerEdit.js" />
     <Content Include="Assets\js\ComputerCreate.js" />
     <Content Include="Assets\js\Remote.js" />
@@ -118,6 +119,7 @@
     <Content Include="Forms\Computers.ascx" />
     <Content Include="Forms\Modals\ComputerDelete.ascx" />
     <Content Include="Forms\Remote.ascx" />
+    <Content Include="Forms\RentalCreate.ascx" />
     <Content Include="Forms\SampleModal.ascx" />
     <Content Include="Offline Packages\Newtonsoft.Json\Newtonsoft.Json.dll" />
     <Content Include="Offline Packages\RestSharp\RestSharp.dll" />
@@ -184,6 +186,13 @@
     <Compile Include="Forms\Remote.ascx.designer.cs">
       <DependentUpon>Remote.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Forms\RentalCreate.ascx.cs">
+      <DependentUpon>RentalCreate.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\RentalCreate.ascx.designer.cs">
+      <DependentUpon>RentalCreate.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SampleModal.ascx.cs">
       <DependentUpon>SampleModal.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -204,6 +213,7 @@
     <Compile Include="OAuth\GoogleUserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Computers.cs" />
+    <Compile Include="Repositories\Rentals.cs" />
     <Compile Include="Services\ErrorLogService.cs" />
     <Compile Include="Services\GridViewTemplateService.cs" />
     <Compile Include="Services\GridviewPaginationService.cs" />

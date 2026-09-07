@@ -33,13 +33,13 @@
                                         Command <i class="fa-solid fa-chevron-down"></i>
                                     </button>
                                     <div class="action-dropdown-menu">
-                                        <a href='<%# "BNetPage.aspx?Form=RentTime&id=" + Eval("DBId") %>' class="dropdown-item">
+                                        <a onclick="navigateTo('BNetPage.aspx?Form=RentalCreate&id=<%# Eval("DBId") %>')" class="dropdown-item">
                                             <i class="fa-regular fa-clock"></i>Start Rental Session
                                         </a>
-                                        <a href='<%# "BNetPage.aspx?Form=Billing&id=" + Eval("DBId") %>' class="dropdown-item">
+                                        <a class="dropdown-item">
                                             <i class="fa-solid fa-file-invoice-dollar"></i>Billing & Invoices
                                         </a>
-                                        <a href='<%# "BNetPage.aspx?Form=History&id=" + Eval("DBId") %>' class="dropdown-item">
+                                        <a class="dropdown-item">
                                             <i class="fa-solid fa-clock-rotate-left"></i>Session History
                                         </a>
                                         <a href='<%# "BNetPage.aspx?Form=ComputerEdit&id=" + Eval("DBId") %>' class="dropdown-item">
@@ -83,8 +83,8 @@
                     </Columns>
                 </asp:GridView>
             </div>
-            <asp:Panel ID="Panel_Pagination" runat="server"/>
+            <asp:Panel ID="Panel_Pagination" runat="server" />
         </div>
-        <uc1:ComputerDelete runat="server" id="ComputerDelete" />
+        <uc1:ComputerDelete runat="server" ID="ComputerDelete" />
     </ContentTemplate>
 </asp:UpdatePanel>

@@ -339,3 +339,282 @@ function hidePageLoading() {
 window.addEventListener('beforeunload', function () {
     showPageLoading();
 });
+
+
+
+
+// =============================================================================
+// Virtual Infinite Scroll Dropdown Component
+// =============================================================================
+class VirtualSelect {
+    constructor(options) {
+        this.container = typeof options.container === 'string'
+            ? document.querySelector(options.container)
+            : options.container;
+        this.data = options.data || [];
+        this.pageSize = options.pageSize || 20;
+        this.placeholder = options.placeholder || 'Select an option...';
+        this.onChange = options.onChange || null;
+
+        this.filteredData = [];
+        this.displayedCount = 0;
+        this.selectedValue = null;
+        this.selectedText = '';
+        this.searchQuery = '';
+
+        this.initDOM();
+        this.bindEvents();
+        this.filterAndReset('');
+    }
+
+    initDOM() {
+        this.container.classList.add('v-select-container');
+        this.container.innerHTML = `
+            <div class="v-select-trigger">
+                <span class="v-select-value-text v-select-placeholder">${this.placeholder}</span>
+                <i class="fa-solid fa-chevron-down v-select-arrow"></i>
+            </div>
+            <div class="v-select-dropdown">
+                <div class="v-select-search-wrapper">
+                    <input type="text" class="v-select-search-input" placeholder="Search..." />
+                </div>
+                <ul class="v-select-options-list"></ul>
+            </div>
+        `;
+
+        this.trigger = this.container.querySelector('.v-select-trigger');
+        this.valueText = this.container.querySelector('.v-select-value-text');
+        this.dropdown = this.container.querySelector('.v-select-dropdown');
+        this.searchInput = this.container.querySelector('.v-select-search-input');
+        this.optionsList = this.container.querySelector('.v-select-options-list');
+    }
+
+    bindEvents() {
+        // Toggle Dropdown
+        this.trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggle();
+        });
+
+        // Prevent dropdown click from closing dropdown
+        this.dropdown.addEventListener('click', (e) => e.stopPropagation());
+
+        // Client-side Search Engine (Debounced)
+        let debounceTimer;
+        this.searchInput.addEventListener('input', (e) => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                const cleanQuery = sanitizeInput(e.target.value) || '';
+                this.filterAndReset(cleanQuery);
+            }, 150);
+        });
+
+        // Infinite Scroll Pagination Event
+        this.optionsList.addEventListener('scroll', () => {
+            const { scrollTop, scrollHeight, clientHeight } = this.optionsList;
+            if (scrollTop + clientHeight >= scrollHeight - 15) {
+                this.loadMore();
+            }
+        });
+
+        // Select Option Event (Delegated)
+        this.optionsList.addEventListener('click', (e) => {
+            const item = e.target.closest('.v-select-option');
+            if (item) {
+                this.selectItem(item.dataset.value, item.textContent);
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => this.close());
+    }
+
+    toggle() {
+        const isOpen = this.container.classList.contains('open');
+        // Close all other instances if multiple exist on the page
+        document.querySelectorAll('.v-select-container.open').forEach(el => el.classList.remove('open'));
+
+        if (!isOpen) {
+            this.container.classList.add('open');
+            this.searchInput.focus();
+        }
+    }
+
+    close() {
+        this.container.classList.remove('open');
+    }
+
+    filterAndReset(query) {
+        this.searchQuery = query.toLowerCase().trim();
+        this.displayedCount = 0;
+        this.optionsList.innerHTML = '';
+
+        if (this.searchQuery === '') {
+            this.filteredData = this.data;
+        } else {
+            // Local client-side search across values and text labels
+            this.filteredData = this.data.filter(item =>
+                String(item.label).toLowerCase().includes(this.searchQuery) ||
+                String(item.value).toLowerCase().includes(this.searchQuery)
+            );
+        }
+
+        if (this.filteredData.length === 0) {
+            this.optionsList.innerHTML = `<div class="v-select-empty">No results found</div>`;
+            return;
+        }
+
+        this.loadMore();
+    }
+
+    loadMore() {
+        if (this.displayedCount >= this.filteredData.length) return;
+
+        const fragment = document.createDocumentFragment();
+        const nextBatch = this.filteredData.slice(
+            this.displayedCount,
+            this.displayedCount + this.pageSize
+        );
+
+        nextBatch.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'v-select-option';
+            if (String(item.value) === String(this.selectedValue)) {
+                li.classList.add('selected');
+            }
+            li.dataset.value = item.value;
+            li.textContent = item.label;
+            fragment.appendChild(li);
+        });
+
+        this.optionsList.appendChild(fragment);
+        this.displayedCount += nextBatch.length;
+    }
+
+    selectItem(value, label) {
+        this.selectedValue = value;
+        this.selectedText = label;
+
+        this.valueText.textContent = label;
+        this.valueText.classList.remove('v-select-placeholder');
+
+        // Update CSS state in DOM
+        this.optionsList.querySelectorAll('.v-select-option').forEach(el => {
+            el.classList.toggle('selected', el.dataset.value === String(value));
+        });
+
+        this.close();
+
+        if (typeof this.onChange === 'function') {
+            this.onChange({ value, label });
+        }
+    }
+
+    // Public method to set programmatic options or update dataset
+    updateData(newData) {
+        this.data = newData;
+        this.filterAndReset(this.searchQuery);
+    }
+}
+
+// =============================================================================
+// Example Initialization with Large Mock Dataset (10,000+ Items)
+// =============================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const targetElement = document.getElementById('customDropdown');
+    if (!targetElement) return;
+
+    // Mock Generating 10,000 records
+    const mockLargeData = Array.from({ length: 10000 }, (_, i) => ({
+        value: `val_${i + 1}`,
+        label: `Option ${i + 1} - System Entry Node #${1000 + i}`
+    }));
+
+    // Instantiate virtual dropdown
+    window.mySelect = new VirtualSelect({
+        container: '#customDropdown',
+        data: mockLargeData,
+        pageSize: 25, // Renders 25 items at a time on scroll
+        placeholder: '-- Select a System Entry --',
+        onChange: (selected) => {
+            console.log('User selected:', selected);
+        }
+    });
+});
+
+
+// =============================================================================
+// Reusable Auto-Binding Function for ASP.NET / Native <select> Elements
+// =============================================================================
+function initVirtualSelects(selector = 'select.v-select-enable') {
+    const selectElements = document.querySelectorAll(selector);
+
+    selectElements.forEach((aspDropdown) => {
+        // Prevent duplicate initializations
+        if (aspDropdown.dataset.vSelectInitialized === "true") return;
+
+        // 1. Extract data and initial selection from native <select> options
+        const extractedData = [];
+        const initialSelectedValue = aspDropdown.value;
+        const placeholder = aspDropdown.getAttribute('data-placeholder') ||
+            (aspDropdown.options[0] ? aspDropdown.options[0].text : 'Select an option...');
+
+        Array.from(aspDropdown.options).forEach((opt) => {
+            if (opt.value !== "") {
+                extractedData.push({
+                    value: opt.value,
+                    label: opt.text
+                });
+            }
+        });
+
+        // 2. Hide the native dropdown instead of clearing its options
+        aspDropdown.style.display = 'none';
+
+        // 3. Dynamically create and insert the UI container element right after the native select
+        const container = document.createElement('div');
+        aspDropdown.parentNode.insertBefore(container, aspDropdown.nextSibling);
+
+        // 4. Instantiate VirtualSelect
+        const vsInstance = new VirtualSelect({
+            container: container,
+            data: extractedData,
+            pageSize: 25,
+            placeholder: placeholder,
+            onChange: function (selected) {
+                // Update native dropdown value so ASP.NET receives it on postback
+                aspDropdown.value = selected.value;
+
+                // Trigger standard HTML change event if other scripts rely on it
+                aspDropdown.dispatchEvent(new Event('change', { bubbles: true }));
+
+                // Optional: Uncomment below if instant WebForms PostBack is required:
+                // if (aspDropdown.name) __doPostBack(aspDropdown.name, '');
+            }
+        });
+
+        // 5. Sync initial selection state
+        if (initialSelectedValue) {
+            const existingItem = extractedData.find(item => item.value === initialSelectedValue);
+            if (existingItem) {
+                vsInstance.selectItem(existingItem.value, existingItem.label);
+            }
+        }
+
+        // Mark as initialized and store reference on the DOM element
+        aspDropdown.dataset.vSelectInitialized = "true";
+        aspDropdown.virtualSelect = vsInstance;
+    });
+}
+
+// Automatically bind on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    initVirtualSelects();
+});
+
+// Support ASP.NET AJAX UpdatePanel partial postbacks
+if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+    Sys.WebForms.PageRequestManager.getInstance().add_endRequest(() => {
+        initVirtualSelects();
+    });
+}
