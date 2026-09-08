@@ -17,15 +17,50 @@ namespace BNet.Cafe.Server.Forms
         {
             var data = computers.GetAll(TextBox_Search.Text, GridViewTemplateService.GetPaginationIndex(GridViewTable));
             GridViewTemplateService.SetGridView(GridViewTable, data, Panel_Pagination);
+
             ClientData clientData = new ClientData();
             var liveData = clientData.FetchData();
+
             for (int i = 0; i < GridViewTable.Rows.Count; i++)
             {
                 Label Label_DBComputerName = (Label)GridViewTable.Rows[i].FindControl("Label_DBComputerName");
-                var fetchData = liveData.Where(x => x.ClientName == Label_DBComputerName.Text).FirstOrDefault();
+                Label Label_TimeStart = (Label)GridViewTable.Rows[i].FindControl("Label_TimeStart");
+                Label Label_TimeEnd = (Label)GridViewTable.Rows[i].FindControl("Label_TimeEnd");
+                Label Label_TotalHours = (Label)GridViewTable.Rows[i].FindControl("Label_TotalHours");
+                Label Label_Status = (Label)GridViewTable.Rows[i].FindControl("Label_Status");
 
-                fetchData.
+                var fetchData = liveData.FirstOrDefault(x => x.ClientName == Label_DBComputerName.Text);
 
+                if (fetchData != null)
+                {
+                    if (!string.IsNullOrEmpty(fetchData.TimeStart) && DateTime.TryParse(fetchData.TimeStart, out DateTime start))
+                    {
+                        DateTime.TryParse(fetchData.TimeEnd, out DateTime end);
+                        double totalHours = (end - start).TotalHours;
+
+                        Label_TimeStart.Text = start.ToString("MMM dd, yyyy – hh:mm tt");
+                        Label_TimeEnd.Text = end.ToString("MMM dd, yyyy – hh:mm tt");
+                        Label_TotalHours.Text = $"{totalHours:F2}";
+                        Label_Status.Text = "Occupied";
+                        Label_Status.CssClass = "badge-status occupied";
+                    }
+                    else
+                    {
+                        Label_TimeStart.Text = "-";
+                        Label_TimeEnd.Text = "-";
+                        Label_TotalHours.Text = "-";
+                        Label_Status.Text = "Available";
+                        Label_Status.CssClass = "badge-status available";
+                    }
+                }
+                else
+                {
+                    Label_TimeStart.Text = "-";
+                    Label_TimeEnd.Text = "-";
+                    Label_TotalHours.Text = "-";
+                    Label_Status.Text = "Offline";
+                    Label_Status.CssClass = "badge-status offline";
+                }
             }
         }
         protected void GridViewTable_PageIndexChanging(object sender, GridViewPageEventArgs e)

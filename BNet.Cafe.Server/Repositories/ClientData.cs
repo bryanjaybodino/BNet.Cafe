@@ -17,16 +17,23 @@ namespace BNet.Cafe.Server.Repositories
         }
         public List<ClientData.ClientTimeout> FetchData()
         {
-            string apiUrl = "http://localhost:2050/text";
-            using (WebClient client = new WebClient())
+            try
             {
-                // Synchronously download the JSON string from the API
-                string jsonResult = client.DownloadString(apiUrl);
+                string apiUrl = "http://localhost:2050/text";
+                using (WebClient client = new WebClient())
+                {
+                    // Synchronously download the JSON string from the API
+                    string jsonResult = client.DownloadString(apiUrl);
 
-                // Deserialize the JSON array using your model class
-                List<ClientData.ClientTimeout> clientList = JsonConvert.DeserializeObject<List<ClientData.ClientTimeout>>(jsonResult);
+                    // Deserialize the JSON array using your model class
+                    List<ClientData.ClientTimeout> clientList = JsonConvert.DeserializeObject<List<ClientData.ClientTimeout>>(jsonResult);
 
-                return clientList;
+                    return clientList;
+                }
+            }
+            catch
+            {
+                return new List<ClientData.ClientTimeout>();
             }
 
         }

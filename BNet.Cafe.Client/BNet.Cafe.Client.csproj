@@ -82,6 +82,7 @@
     <Compile Include="Repositories\RemoteController.cs" />
     <Compile Include="Repositories\ScreenCaptured.cs" />
     <Compile Include="Repositories\ScreenScale.cs" />
+    <Compile Include="Repositories\TimeService.cs" />
     <Compile Include="Repositories\UserActivity.cs" />
     <EmbeddedResource Include="BNetCafeTimer.resx">
       <DependentUpon>BNetCafeTimer.cs</DependentUpon>

@@ -33,14 +33,12 @@ namespace BNet.Cafe.Server.Forms
 
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
         {
-            string computerId = Request.QueryString["id"];
-            string customerId = DropDownList_Customer.SelectedValue;
-            string duration = TextBox_Duration.Text.Trim();
-            string amount = TextBox_Amount.Text.Trim();
+            AlertService.ShowAlert(UpdatePanel1, "Rental session successfully created.", "success", "BNetPage.aspx?Form=Computers");
 
-
-
-
+            //string computerId = Request.QueryString["id"];
+            //string customerId = DropDownList_Customer.SelectedValue;
+            //string duration = TextBox_Duration.Text.Trim();
+            //string amount = TextBox_Amount.Text.Trim();
 
             //Repositories.Rentals rentals = new Repositories.Rentals();
             //bool isSuccess = rentals.Create(computerId, customerId, duration, amount);

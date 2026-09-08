@@ -82,7 +82,7 @@
 
             <!-- Form Actions -->
             <div class="form-grid-action">
-                <span onclick="navigateTo('BNetPage.aspx?Form=Rentals')" class="btn btn-secondary">Back</span>
+                <span onclick="navigateTo('BNetPage.aspx?Form=Computers')" class="btn btn-secondary">Back</span>
                 <asp:LinkButton ID="LinkButton_Submit" OnClick="LinkButton_Submit_Click" CssClass="btn btn-primary" OnClientClick="return Validate();" runat="server">
                     <i class="fa fa-save"></i>Add Rental
                 </asp:LinkButton>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BNet.Cafe.Client.Repositories;
+using System;
 using System.Configuration;
 using System.Drawing;
 using System.IO;
@@ -9,11 +10,10 @@ namespace BNet.Cafe.Client
     public partial class BNetCafeTimer : Form
     {
         private double remainingSeconds = 0;
+        private DateTime createdTime; // 1. Added createdTime field
         private DateTime endTime;
         private readonly string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
 
-
-        // Constructor to RESUME session on application restart
         public BNetCafeTimer()
         {
             InitializeComponent();
@@ -36,8 +36,9 @@ namespace BNet.Cafe.Client
             double.TryParse(duration, out double parsedDurationMinutes);
             double.TryParse(amount, out double parsedAmount);
 
-            // Set end time relative to current time
-            endTime = DateTime.Now.AddMinutes(parsedDurationMinutes);
+            // 2. Capture creation time when creating a new session
+            createdTime = TimeService.Get();
+            endTime = createdTime.AddMinutes(parsedDurationMinutes);
 
             ApplyTimerData(customerName, parsedAmount);
         }
@@ -52,30 +53,22 @@ namespace BNet.Cafe.Client
 
             endTime = endTime.AddMinutes(parsedDurationMinutes);
 
-            // Extract current customer name from existing label if available
             string currentCustomerName = Label_CustomerName.Text.Replace("User : ", "");
 
             ApplyTimerData(currentCustomerName, parsedAmount);
         }
 
-        /// <summary>
-        /// Helper method to recalculate remaining time, update UI elements, save session state, and ensure countdown timer runs.
-        /// </summary>
         private void ApplyTimerData(string customerName, double amount)
         {
-            // Calculate remaining seconds based on computed end time
-            remainingSeconds = (endTime - DateTime.Now).TotalSeconds;
+            remainingSeconds = (endTime - TimeService.Get()).TotalSeconds;
 
-            // Save state to text file
             SaveSessionToFile(customerName, amount);
 
-            // Update UI Labels
             Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
             Label_CustomerName.Text = $"User : {(string.IsNullOrWhiteSpace(customerName) ? "GUEST" : customerName.ToUpper())}";
             Label_TotalHours.Text = $"Purchased : {FormatPurchasedTime(remainingSeconds)}";
             label_TotalAmount.Text = $"Amount : ₱{amount:N2}";
 
-            // Displays exact timeout time (e.g., "05:30 PM")
             Label_TimeoutDisplay.Text = $"Timeout : {endTime:hh:mm tt}";
 
             UpdateDisplay();
@@ -86,10 +79,10 @@ namespace BNet.Cafe.Client
                 Timer_Countdown.Start();
             }
         }
+
         private void Timer_Countdown_Tick(object sender, EventArgs e)
         {
-            // Compute live remaining seconds relative to actual system time
-            remainingSeconds = (endTime - DateTime.Now).TotalSeconds;
+            remainingSeconds = (endTime - TimeService.Get()).TotalSeconds;
 
             if (remainingSeconds > 0)
             {
@@ -102,7 +95,7 @@ namespace BNet.Cafe.Client
                 UpdateDisplay();
                 Button_Logout.Enabled = false;
 
-                ClearSessionFile(); // Session ended, delete text file
+                ClearSessionFile();
                 MessageBox.Show("Your time has expired!", "Session Ended", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -119,13 +112,12 @@ namespace BNet.Cafe.Client
         {
             try
             {
-                // File format: TargetEndTimeTicks|CustomerName|Amount
-                string content = $"{endTime.Ticks}|{customerName}|{amount}";
+                // 3. Saved CreatedTime Ticks into file format: CreatedTimeTicks|TargetEndTimeTicks|CustomerName|Amount
+                string content = $"{createdTime.Ticks}|{endTime.Ticks}|{customerName}|{amount}";
                 File.WriteAllText(sessionFilePath, content);
             }
             catch (Exception ex)
             {
-                // Handle file writing errors safely
                 Console.WriteLine($"Error saving session: {ex.Message}");
             }
         }
@@ -139,13 +131,17 @@ namespace BNet.Cafe.Client
                     string content = File.ReadAllText(sessionFilePath);
                     string[] parts = content.Split('|');
 
-                    if (parts.Length >= 3 && long.TryParse(parts[0], out long ticks))
+                    // 4. Added support to read 4 pipe-separated values
+                    if (parts.Length >= 4 &&
+                        long.TryParse(parts[0], out long createdTicks) &&
+                        long.TryParse(parts[1], out long endTicks))
                     {
-                        endTime = new DateTime(ticks);
-                        string customerName = parts[1];
-                        double.TryParse(parts[2], out double amount);
+                        createdTime = new DateTime(createdTicks);
+                        endTime = new DateTime(endTicks);
+                        string customerName = parts[2];
+                        double.TryParse(parts[3], out double amount);
 
-                        remainingSeconds = (endTime - DateTime.Now).TotalSeconds;
+                        remainingSeconds = (endTime - TimeService.Get()).TotalSeconds;
 
                         if (remainingSeconds > 0)
                         {
@@ -200,6 +196,8 @@ namespace BNet.Cafe.Client
             var result = MessageBox.Show("Are you sure you want to log out?", "Confirm Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
+                MainForm._timeStart = "";
+                MainForm._timeEnd = "";
                 Timer_Countdown.Stop();
                 ClearSessionFile();
                 remainingSeconds = 0;

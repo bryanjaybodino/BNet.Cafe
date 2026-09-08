@@ -150,7 +150,7 @@ function Validate() {
 
 
     sendTextMessageToPC(computerInput.value, JSON.stringify(data));
-    //disableSubmitButton();
+    disableSubmitButton();
     return true;
 }
 

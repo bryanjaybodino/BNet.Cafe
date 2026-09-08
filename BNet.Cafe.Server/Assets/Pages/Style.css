@@ -69,6 +69,81 @@ body {font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen
 .form-control.is-invalid {border-color: #ef4444 !important;background-color: rgba(239, 68, 68, 0.05);}.form-control.is-valid {border-color: #10b981 !important;background-color: rgba(16, 185, 129, 0.05);}
 
 
+/* Status Badge Base Styling */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+    /* Pulsing Status Indicator Dot */
+    .badge-status::before {
+        content: '';
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+    }
+
+    /* Occupied State (Red/Pulsing) */
+    .badge-status.occupied {
+        background-color: rgba(239, 68, 68, 0.12);
+        color: #dc2626;
+        border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+        .badge-status.occupied::before {
+            background-color: #dc2626;
+            box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+            animation: status-pulse-red 1.6s infinite;
+        }
+
+    /* Available State (Green) */
+    .badge-status.available {
+        background-color: rgba(34, 197, 94, 0.12);
+        color: #16a34a;
+        border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+
+        .badge-status.available::before {
+            background-color: #16a34a;
+        }
+
+    /* Offline State (Gray) */
+    .badge-status.offline {
+        background-color: rgba(107, 114, 128, 0.12);
+        color: #4b5563;
+        border: 1px solid rgba(107, 114, 128, 0.25);
+    }
+
+        .badge-status.offline::before {
+            background-color: #9ca3af;
+        }
+
+
+/* Pulse Keyframes */
+@keyframes status-pulse-red {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(220, 38, 38, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+    }
+}
+
 
 
 /* ==========================================

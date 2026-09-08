@@ -437,8 +437,8 @@ namespace BNet.Cafe.Client
         // ─────────────────────────────────────────────────────────────────────
 
         private string _lastSentTitle = string.Empty;
-        string timeStart = string.Empty;
-        string timeEnd = string.Empty;
+        public static string _timeStart = string.Empty;
+        public static string _timeEnd = string.Empty;
         private async Task SendActivityInfo(AgentSession session, UserActivity.ActiveWindowInfo info)
         {
             try
@@ -449,7 +449,7 @@ namespace BNet.Cafe.Client
 
 
 
-                if (timeEnd == string.Empty)
+                if (_timeStart == string.Empty && _timeEnd == string.Empty)
                 {
                     string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
                     if (File.Exists(sessionFilePath))
@@ -457,13 +457,18 @@ namespace BNet.Cafe.Client
                         string content = File.ReadAllText(sessionFilePath);
                         string[] parts = content.Split('|');
 
-                        if (parts.Length >= 3 && long.TryParse(parts[0], out long ticks))
+                        // Check for 4 parts: createdTicks|endTicks|customerName|amount
+                        if (parts.Length >= 4
+                            && long.TryParse(parts[0], out long createdTicks)
+                            && long.TryParse(parts[1], out long endTicks))
                         {
-                            DateTime endTime = new DateTime(ticks);
-                            timeEnd = endTime.ToString("yyyy-MM-dd HH:mm:ss");
+                            DateTime startTime = new DateTime(createdTicks);
+                            DateTime endTime = new DateTime(endTicks);
+
+                            _timeStart = startTime.ToString("yyyy-MM-dd HH:mm:ss");
+                            _timeEnd = endTime.ToString("yyyy-MM-dd HH:mm:ss");
                         }
                     }
-
                 }
                 var payloadObj = new
                 {
@@ -474,8 +479,8 @@ namespace BNet.Cafe.Client
                     url = info.Url,
                     isBrowser = info.IsBrowser,
                     capturedAt = info.CapturedAt.ToString("o"),
-                    timeStart = timeStart,
-                    timeEnd = timeEnd,
+                    timeStart = _timeStart,
+                    timeEnd = _timeEnd,
 
                     // Included device details in the activity packet
                     windows = _deviceInfo.Windows,

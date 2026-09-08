@@ -66,19 +66,29 @@
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Time Start" ItemStyle-Width="200px">
-                            <ItemTemplate></ItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="Label_TimeStart" runat="server" Text=""></asp:Label>
+                            </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Time End" ItemStyle-Width="200px">
-                            <ItemTemplate></ItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="Label_TimeEnd" runat="server" Text=""></asp:Label>
+                            </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Total Hours" ItemStyle-Width="200px">
-                            <ItemTemplate></ItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="Label_TotalHours" runat="server" Text=""></asp:Label>
+                            </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Status" ItemStyle-Width="200px">
-                            <ItemTemplate></ItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="Label_Status" runat="server" Text=""></asp:Label>
+                            </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Billing" ItemStyle-Width="200px">
-                            <ItemTemplate></ItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="Label_Billing" runat="server" Text=""></asp:Label>
+                            </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
                 </asp:GridView>

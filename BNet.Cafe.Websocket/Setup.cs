@@ -619,6 +619,18 @@ namespace BNet.Cafe.Websocket
                     _connectedClients.Add(info.ClientName);
                     _clientList.Add(info);
                 }
+                else
+                {
+                    // Find existing entry and update its properties
+                    var existingClient = _clientList.FirstOrDefault(c => c.ClientName == info.ClientName);
+                    if (existingClient != null)
+                    {
+                        existingClient.TimeStart = info.TimeStart;
+                        existingClient.TimeEnd = info.TimeEnd;
+                        // Add/update any other properties of TextContent here
+                    }
+                }
+
                 _clientListJson = JsonConvert.SerializeObject(_clientList, Formatting.Indented);
             }
         }
