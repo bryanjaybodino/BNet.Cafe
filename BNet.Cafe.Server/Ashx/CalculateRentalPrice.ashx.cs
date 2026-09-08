@@ -92,14 +92,16 @@ namespace BNet.Cafe.Server.Ashx
             int hours = totalMinutes / 60;
             int minutes = totalMinutes % 60;
 
+            string hrLabel = hours == 1 ? "hr" : "hrs";
+            string minLabel = minutes == 1 ? "min" : "mins";
+
             if (hours > 0 && minutes > 0)
-                return $"{hours} {(hours == 1 ? "hr" : "hrs")} {minutes} mins";
+                return $"{hours} {hrLabel} {minutes} {minLabel}";
             if (hours > 0)
-                return $"{hours} {(hours == 1 ? "hr" : "hrs")}";
+                return $"{hours} {hrLabel}";
 
-            return $"{minutes} mins";
+            return $"{minutes} {minLabel}";
         }
-
         public bool IsReusable => false;
     }
 }

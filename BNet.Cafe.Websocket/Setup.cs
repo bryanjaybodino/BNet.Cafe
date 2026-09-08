@@ -200,6 +200,36 @@ namespace BNet.Cafe.Websocket
                     await ctx.Response.OutputStream.WriteAsync(b, 0, b.Length);
                     ctx.Response.Close(); return;
                 }
+                if (path == "/sse" && ctx.Request.HttpMethod == "GET")
+                {
+                    // Set headers required for Server-Sent Events
+                    ctx.Response.ContentType = "text/event-stream";
+                    ctx.Response.Headers.Add("Cache-Control", "no-cache");
+                    ctx.Response.Headers.Add("Connection", "keep-alive");
+
+                    using (var writer = new StreamWriter(ctx.Response.OutputStream, Utf8))
+                    {
+                        string lastJson = null;
+
+                        // Keep connection open and stream updates when _clientListJson changes
+                        while (_server.IsListening)
+                        {
+                            string currentJson = _clientListJson;
+
+                            if (currentJson != lastJson)
+                            {
+                                lastJson = currentJson;
+
+                                // SSE format: "data: <content>\n\n"
+                                await writer.WriteAsync($"data: {currentJson}\n\n");
+                                await writer.FlushAsync();
+                            }
+
+                            await Task.Delay(1000); // Check for updates every 1 sec
+                        }
+                    }
+                    return;
+                }
                 ctx.Response.StatusCode = 404; ctx.Response.Close();
             }
             catch { try { ctx.Response.Close(); } catch { } }

@@ -4,7 +4,7 @@
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
-
+        <asp:LinkButton ID="LinkButton_Refresh" runat="server"></asp:LinkButton>
         <div class="bnet-table-wrapper">
             <div class="bnet-table-toolbar">
                 <div class="search-box">
@@ -98,3 +98,14 @@
         <uc1:ComputerDelete runat="server" ID="ComputerDelete" />
     </ContentTemplate>
 </asp:UpdatePanel>
+
+<script type="text/javascript">
+    (function () {
+        var endpoint = window.location.protocol + '//' + window.location.hostname + ':2050/sse';
+        const evtSource = new EventSource(endpoint);
+        evtSource.onmessage = function (event) {
+            var LinkButton_Refresh = document.querySelector('[id$="LinkButton_Refresh"]');
+            LinkButton_Refresh.click();
+        };
+    })();
+</script>

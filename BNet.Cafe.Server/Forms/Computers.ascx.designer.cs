@@ -24,6 +24,15 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
+        /// LinkButton_Refresh control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton LinkButton_Refresh;
+
+        /// <summary>
         /// TextBox_Search control.
         /// </summary>
         /// <remarks>

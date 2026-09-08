@@ -28,7 +28,6 @@ namespace BNet.Cafe.Server.Forms
                 Label Label_TimeEnd = (Label)GridViewTable.Rows[i].FindControl("Label_TimeEnd");
                 Label Label_TotalHours = (Label)GridViewTable.Rows[i].FindControl("Label_TotalHours");
                 Label Label_Status = (Label)GridViewTable.Rows[i].FindControl("Label_Status");
-
                 var fetchData = liveData.FirstOrDefault(x => x.ClientName == Label_DBComputerName.Text);
 
                 if (fetchData != null)
@@ -36,23 +35,29 @@ namespace BNet.Cafe.Server.Forms
                     if (!string.IsNullOrEmpty(fetchData.TimeStart) && DateTime.TryParse(fetchData.TimeStart, out DateTime start))
                     {
                         DateTime.TryParse(fetchData.TimeEnd, out DateTime end);
-                        double totalHours = (end - start).TotalHours;
 
                         TimeSpan duration = end - start;
                         int hours = (int)duration.TotalHours;
                         int minutes = duration.Minutes;
 
+                        string hrLabel = hours == 1 ? "hr" : "hrs";
+                        string minLabel = minutes == 1 ? "min" : "mins";
+
                         if (hours > 0 && minutes > 0)
                         {
-                            Label_TotalHours.Text = $"{hours} {(hours == 1 ? "hr" : "hrs")} {minutes} mins";
+                            Label_TotalHours.Text = $"{hours} {hrLabel} {minutes} {minLabel}";
                         }
                         else if (hours > 0)
                         {
-                            Label_TotalHours.Text = $"{hours} {(hours == 1 ? "hr" : "hrs")}";
+                            Label_TotalHours.Text = $"{hours} {hrLabel}";
+                        }
+                        else if (minutes > 0)
+                        {
+                            Label_TotalHours.Text = $"{minutes} {minLabel}"; // Handles "1 min" and "15 mins"
                         }
                         else
                         {
-                            Label_TotalHours.Text = $"{minutes} mins"; // Outputs: "15 mins"
+                            Label_TotalHours.Text = "0 mins";
                         }
 
                         Label_TimeStart.Text = start.ToString("MMM dd, yyyy – hh:mm tt");
