@@ -411,12 +411,18 @@ namespace BNet.Cafe.Client
                 if (!File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt")))
                 {
                     _activeTimerForm.CreateTimerData(customerName, duration, amount);
-                    // Clear reference when the form closes
                     _activeTimerForm.FormClosed += (s, args) => _activeTimerForm = null;
                     _activeTimerForm.Show();
-                }
-                else
-                {
+
+                    // FORCE clear title cache and send immediate update to server
+                    _lastSentTitle = string.Empty;
+
+                    // Grab active window info and send packet right away
+                    var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
+                    if (_currentSession != null)
+                    {
+                        _ = SendActivityInfo(_currentSession, currentWindow);
+                    }
                 }
             }
             else

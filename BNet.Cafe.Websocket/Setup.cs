@@ -614,21 +614,19 @@ namespace BNet.Cafe.Websocket
         {
             lock (_clientLock)
             {
-                if (!_connectedClients.Contains(info.ClientName))
+                var existingClient = _clientList.FirstOrDefault(c =>
+                    string.Equals(c.ClientName, info.ClientName, StringComparison.OrdinalIgnoreCase));
+
+                if (existingClient == null)
                 {
                     _connectedClients.Add(info.ClientName);
                     _clientList.Add(info);
                 }
                 else
                 {
-                    // Find existing entry and update its properties
-                    var existingClient = _clientList.FirstOrDefault(c => c.ClientName == info.ClientName);
-                    if (existingClient != null)
-                    {
-                        existingClient.TimeStart = info.TimeStart;
-                        existingClient.TimeEnd = info.TimeEnd;
-                        // Add/update any other properties of TextContent here
-                    }
+                    // ALWAYS update the timestamps when payload arrives
+                    existingClient.TimeStart = info.TimeStart;
+                    existingClient.TimeEnd = info.TimeEnd;
                 }
 
                 _clientListJson = JsonConvert.SerializeObject(_clientList, Formatting.Indented);
