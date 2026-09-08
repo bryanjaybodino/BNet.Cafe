@@ -257,9 +257,9 @@ namespace BNet.Cafe.Websocket
                         string actJson = Utf8.GetString(msg, 1, msg.Length - 1);
                         var info = JsonConvert.DeserializeObject<TextContent>(actJson); // Maps to TextContent fields
 
-                        if (info != null && !string.IsNullOrEmpty(info.AccountName))
+                        if (info != null && !string.IsNullOrEmpty(info.ClientName))
                         {
-                            agentName = info.AccountName.ToUpper();
+                            agentName = info.ClientName.ToUpper();
                             _agentSessions[agentName] = session;
 
                             // Keep client list and screen streaming state updated
@@ -308,7 +308,7 @@ namespace BNet.Cafe.Websocket
                     {
                         _connectedClients.Remove(agentName);
                         var ex = _clientList.FirstOrDefault(c =>
-                            string.Equals(c.AccountName, agentName, StringComparison.OrdinalIgnoreCase));
+                            string.Equals(c.ClientName, agentName, StringComparison.OrdinalIgnoreCase));
                         if (ex != null) _clientList.Remove(ex);
                         _clientListJson = JsonConvert.SerializeObject(_clientList, Formatting.Indented);
                     }
@@ -358,7 +358,7 @@ namespace BNet.Cafe.Websocket
                     }
                     else if (msgType == 0x21) // SUBSCRIBE — binary frame, UTF-8 key body
                     {
-                        string newKey = Utf8.GetString(msg, 1, msg.Length - 1).Trim().Replace(" ","");
+                        string newKey = Utf8.GetString(msg, 1, msg.Length - 1).Trim().Replace(" ", "");
                         if (newKey == subKey) continue;
 
                         string oldAgent = subKey != null ? ExtractClientName(subKey) : null;
@@ -614,15 +614,15 @@ namespace BNet.Cafe.Websocket
         {
             lock (_clientLock)
             {
-                if (!_connectedClients.Contains(info.AccountName))
+                if (!_connectedClients.Contains(info.ClientName))
                 {
-                    _connectedClients.Add(info.AccountName);
+                    _connectedClients.Add(info.ClientName);
                     _clientList.Add(info);
                 }
                 else
                 {
                     var ex = _clientList.FirstOrDefault(c =>
-                        string.Equals(c.AccountName, info.AccountName, StringComparison.OrdinalIgnoreCase));
+                        string.Equals(c.ClientName, info.ClientName, StringComparison.OrdinalIgnoreCase));
                     if (ex != null)
                     {
                         ex.ScreenCount = info.ScreenCount;

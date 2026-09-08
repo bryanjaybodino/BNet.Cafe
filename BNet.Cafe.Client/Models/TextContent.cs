@@ -15,7 +15,7 @@ namespace BNet.Cafe.Client.Models
         public string OSArchitecture { get; set; }
         public string SerialNumber { get; set; }
         public string ProcessorCount { get; set; }
-        public string AccountName { get; set; }
+        public string ClientName { get; set; }
         public string Windows { get; set; }
         public string WindowsVersion { get; set; }
     }

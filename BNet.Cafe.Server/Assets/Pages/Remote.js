@@ -79,8 +79,8 @@ function connectWebSocket() {
 function handleClientListUpdate(clients) {
     clientDataMap.clear();
     clients.forEach(function (client) {
-        if (client.AccountName) {
-            clientDataMap.set(client.AccountName.toUpperCase(), client);
+        if (client.ClientName) {
+            clientDataMap.set(client.ClientName.toUpperCase(), client);
         }
     });
 
@@ -92,8 +92,8 @@ function handleClientListUpdate(clients) {
 }
 
 function handleActivityUpdate(activity) {
-    if (!activity || !activity.accountName) return;
-    const accountKey = activity.accountName.toUpperCase();
+    if (!activity || !activity.clientName) return;
+    const accountKey = activity.clientName.toUpperCase();
     clientActivityMap.set(accountKey, activity);
 
     var subEl = document.getElementById('sub-' + accountKey);
@@ -124,7 +124,7 @@ function renderDevices(clients) {
     }
 
     clients.forEach(function (item) {
-        var name = item.AccountName;
+        var name = item.ClientName;
         if (!name) return;
         var accountKey = name.toUpperCase();
 
@@ -206,7 +206,7 @@ function updateInfo(item) {
         if (el) el.textContent = val || '—';
     };
 
-    setElText('Username', item.AccountName ? item.AccountName.toUpperCase() : null);
+    setElText('Username', item.ClientName ? item.ClientName.toUpperCase() : null);
     setElText('MachineName', item.MachineName);
     setElText('Workgroup', item.WorkGroup);
     setElText('Windows', item.Windows);

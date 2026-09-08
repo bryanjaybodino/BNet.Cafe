@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace BNet.Cafe.Client
 {
@@ -115,7 +116,7 @@ namespace BNet.Cafe.Client
             if (count == _cachedScreenCount) return;
             _cachedScreenCount = count;
             var keys = new byte[count][];
-            string user = _deviceInfo.AccountName.ToUpper();
+            string user = _deviceInfo.ClientName.ToUpper();
             for (int i = 0; i < count; i++)
                 keys[i] = Utf8.GetBytes($"screen_{i + 1}_{user}");
             _screenKeyBytes = keys;
@@ -465,7 +466,7 @@ namespace BNet.Cafe.Client
                 }
                 var payloadObj = new
                 {
-                    accountName = _deviceInfo.AccountName,
+                    clientName = _deviceInfo.ClientName,
                     appName = info.AppName,
                     processName = info.ProcessName,
                     windowTitle = info.WindowTitle,
@@ -580,7 +581,7 @@ namespace BNet.Cafe.Client
                 OSArchitecture = arch,
                 SerialNumber = serial,
                 MachineName = Environment.MachineName,
-                AccountName = ConfigurationManager.AppSettings["ClientName"].ToUpper().Replace(" ", ""),
+                ClientName = ConfigurationManager.AppSettings["ClientName"].ToUpper().Replace(" ", ""),
                 WorkGroup = Environment.UserDomainName,
                 OSVersion = Environment.OSVersion.VersionString,
                 ProcessorCount = Environment.ProcessorCount.ToString(),
