@@ -261,18 +261,26 @@ function RangeMinTodayValidation(text1) {
 // =============================================================================
 // Input Filters & Formatters
 // =============================================================================
+//oninput="return NumberOnly(this);"
 function NumberOnly(e) {
     e.value = e.value.replace(/\D/g, '');
     e.value = e.value.replace(/^0+/, '');
 }
-
+//oninput="return DecimalOnly(this);"
 function DecimalOnly(e) {
-    e.value = e.value.replace(/[^0-9.]/g, '');
-    if ((e.value.match(/\./g) || []).length > 1) {
-        e.value = e.value.replace(/\.+$/, '');
+    // Determine whether 'e' is the HTML element or an Event object
+    var input = e.target || e.srcElement || e;
+    if (!input || typeof input.value === "undefined") return;
+
+    // Strip non-numeric and non-decimal characters
+    input.value = input.value.replace(/[^0-9.]/g, '');
+
+    // Allow only a single decimal point
+    if ((input.value.match(/\./g) || []).length > 1) {
+        input.value = input.value.replace(/\.+$/, '');
     }
 }
-
+//oninput="formatNumberWithComma(this)" 
 function formatNumberWithComma(e) {
     let value = e.value.replace(/,/g, '');
     if (value === '' || value === '.') return;
@@ -282,7 +290,7 @@ function formatNumberWithComma(e) {
     integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     e.value = decimalPart !== undefined ? `${integerPart}.${decimalPart}` : integerPart;
 }
-
+//oninput="limitTo24(this)"
 function limitTo24(el) {
     if (el.value === "") return;
     let value = Number(el.value);

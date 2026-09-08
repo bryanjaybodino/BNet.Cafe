@@ -145,6 +145,9 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ashx\CalculateRentalPrice.ashx.cs">
+      <DependentUpon>CalculateRentalPrice.ashx</DependentUpon>
+    </Compile>
     <Compile Include="BNetPage.aspx.cs">
       <DependentUpon>BNetPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -248,6 +251,7 @@
     <Content Include="Assets\fontawesome\webfonts\fa-regular-400.woff2" />
     <Content Include="Assets\fontawesome\webfonts\fa-solid-900.woff2" />
     <Content Include="Assets\fontawesome\webfonts\fa-v4compatibility.woff2" />
+    <Content Include="Ashx\CalculateRentalPrice.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

@@ -90,13 +90,7 @@ namespace BNet.Cafe.Client
             }
             else
             {
-                Timer_Countdown.Stop();
-                remainingSeconds = 0;
-                UpdateDisplay();
-                Button_Logout.Enabled = false;
-
                 ClearSessionFile();
-                MessageBox.Show("Your time has expired!", "Session Ended", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -170,6 +164,11 @@ namespace BNet.Cafe.Client
         {
             if (File.Exists(sessionFilePath))
             {
+                MainForm._timeStart = "";
+                MainForm._timeEnd = "";
+                Timer_Countdown.Stop();
+                remainingSeconds = 0;
+                this.Hide();
                 try { File.Delete(sessionFilePath); } catch { }
             }
         }
@@ -196,12 +195,7 @@ namespace BNet.Cafe.Client
             var result = MessageBox.Show("Are you sure you want to log out?", "Confirm Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                MainForm._timeStart = "";
-                MainForm._timeEnd = "";
-                Timer_Countdown.Stop();
                 ClearSessionFile();
-                remainingSeconds = 0;
-                this.Hide();
             }
         }
 

@@ -1,4 +1,4 @@
-﻿// Dynamic Time Formatter
+﻿// Dynamic Time Formatter (Fallback UI string helper)
 function formatMinutesToHours(totalMinutes) {
     if (!totalMinutes || totalMinutes <= 0) return "0 hrs 0 mins";
 
@@ -13,79 +13,65 @@ function formatMinutesToHours(totalMinutes) {
         return minutes + " mins";
     }
 }
-// Exact Linear/Decimal Rate Calculation Engine
-function calculateRentalPrice(totalMinutes) {
-    if (!totalMinutes || totalMinutes <= 0) return 0;
 
-    var totalAmount = 0;
-
-    // 0 to 30 mins: Linear scale based on ₱10.00 / 30 mins (₱0.3333/min)
-    if (totalMinutes <= 30) {
-        totalAmount = totalMinutes * (10 / 30);
-    }
-    // 30 to 60 mins (1 hr): Interpolate from ₱10.00 up to ₱15.00
-    else if (totalMinutes <= 60) {
-        var base = 10;
-        var extraMins = totalMinutes - 30;
-        var ratePerMin = (15 - 10) / 30; // ₱5 over 30 mins = ₱0.1667/min
-        totalAmount = base + (extraMins * ratePerMin);
-    }
-    // 60 to 120 mins (2 hrs): Interpolate from ₱15.00 up to ₱25.00
-    else if (totalMinutes <= 120) {
-        var base = 15;
-        var extraMins = totalMinutes - 60;
-        var ratePerMin = (25 - 15) / 60; // ₱10 over 60 mins = ₱0.1667/min
-        totalAmount = base + (extraMins * ratePerMin);
-    }
-    // 120 to 180 mins (3 hrs): Interpolate from ₱25.00 up to ₱40.00
-    else if (totalMinutes <= 180) {
-        var base = 25;
-        var extraMins = totalMinutes - 120;
-        var ratePerMin = (40 - 25) / 60; // ₱15 over 60 mins = ₱0.25/min
-        totalAmount = base + (extraMins * ratePerMin);
-    }
-    // 180 to 240 mins (4 hrs): Interpolate from ₱40.00 up to ₱50.00
-    else if (totalMinutes <= 240) {
-        var base = 40;
-        var extraMins = totalMinutes - 180;
-        var ratePerMin = (50 - 40) / 60; // ₱10 over 60 mins = ₱0.1667/min
-        totalAmount = base + (extraMins * ratePerMin);
-    }
-    // Beyond 4 Hours (240+ mins): ₱50.00 + ₱10.00/hr (₱0.1667/min)
-    else {
-        var base = 50;
-        var extraMins = totalMinutes - 240;
-        var ratePerMin = 10 / 60;
-        totalAmount = base + (extraMins * ratePerMin);
-    }
-
-    return totalAmount;
-}
-// Update calculated amount & formatted hours display in real-time
-function calculateAmount() {
-    var durationInput = document.querySelector('[id$="TextBox_Duration"]');
+// Asynchronously fetch exact rate calculation from the backend ASHX Handler
+function calculateRentalPriceBackend(totalMinutes) {
     var amountInput = document.querySelector('[id$="TextBox_Amount"]');
     var displayTime = document.getElementById('display_FormattedTime');
     var displayAmount = document.getElementById('display_TotalAmount');
 
+    if (!totalMinutes || totalMinutes <= 0) {
+        if (displayTime) displayTime.innerText = "0 hrs 0 mins";
+        if (displayAmount) displayAmount.innerText = "₱ 0.00";
+        if (amountInput) amountInput.value = "0.00";
+        return;
+    }
+
+
+
+
+
+    // Call the backend handler
+    var endpoint = /\.aspx$/i.test(window.location.pathname)
+        ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateRentalPrice.ashx')
+        : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateRentalPrice.ashx');
+    fetch(endpoint + '?minutes=' + totalMinutes)
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(function (data) {
+            if (data) {
+                // Sync values returned from the backend ASHX handler
+                if (displayTime) {
+                    displayTime.innerText = data.formattedTime;
+                }
+
+                if (displayAmount) {
+                    displayAmount.innerText = data.formattedAmount;
+                }
+
+                if (amountInput) {
+                    amountInput.value = data.totalAmount.toFixed(2);
+                }
+            }
+        })
+        .catch(function (error) {
+            console.error('Error fetching calculated price from handler:', error);
+        });
+}
+
+// Update calculated amount & formatted hours display in real-time
+function calculateAmount() {
+    var durationInput = document.querySelector('[id$="TextBox_Duration"]');
     if (!durationInput) return;
 
     var minutes = parseInt(durationInput.value, 10) || 0;
-    var totalAmount = calculateRentalPrice(minutes);
 
-    // Sync values to UI displays
-    if (displayTime) {
-        displayTime.innerText = formatMinutesToHours(minutes);
-    }
-
-    if (displayAmount) {
-        displayAmount.innerText = "₱ " + totalAmount.toFixed(2);
-    }
-
-    // Sync hidden server control for postback submit
-    if (amountInput) {
-        amountInput.value = totalAmount.toFixed(2);
-    }
+    // Invoke backend ASHX API call
+    calculateRentalPriceBackend(minutes);
 }
 
 // Quick action buttons logic
@@ -119,10 +105,6 @@ function Validate() {
 
     var errors = [];
 
-    //if (!customerSelect || customerSelect.value === '0' || customerSelect.value === '') {
-    //    errors.push('Please select a customer.');
-    //}
-
     if (!durationInput || parseInt(durationInput.value, 10) <= 0) {
         errors.push('Please select or input a valid duration.');
     }
@@ -140,14 +122,12 @@ function Validate() {
         return false;
     }
 
-
     var data = {
         customerName: customerSelect ? customerSelect.value : null,
         duration: durationInput ? parseInt(durationInput.value, 10) : 0,
         amount: amountInput ? parseFloat(amountInput.value) : 0,
         command: 'CREATE'
     };
-
 
     sendTextMessageToPC(computerInput.value, JSON.stringify(data));
     disableSubmitButton();

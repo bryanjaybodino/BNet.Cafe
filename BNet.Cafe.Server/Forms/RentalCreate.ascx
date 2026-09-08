@@ -44,7 +44,7 @@
 
                 <div class="form-group" style="margin-top: 15px;">
                     <label for="<%= TextBox_Duration.ClientID %>">Total Input (Minutes)</label>
-                    <asp:TextBox ID="TextBox_Duration" runat="server" CssClass="form-control" Text="0" TextMode="Number" min="0" oninput="calculateAmount()"></asp:TextBox>
+                    <asp:TextBox ID="TextBox_Duration" runat="server" CssClass="form-control" Text="0" TextMode="Number" min="0" oninput="NumberOnly(this); calculateAmount();"></asp:TextBox>
                 </div>
             </div>
 

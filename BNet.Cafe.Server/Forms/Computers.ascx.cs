@@ -38,9 +38,25 @@ namespace BNet.Cafe.Server.Forms
                         DateTime.TryParse(fetchData.TimeEnd, out DateTime end);
                         double totalHours = (end - start).TotalHours;
 
+                        TimeSpan duration = end - start;
+                        int hours = (int)duration.TotalHours;
+                        int minutes = duration.Minutes;
+
+                        if (hours > 0 && minutes > 0)
+                        {
+                            Label_TotalHours.Text = $"{hours} {(hours == 1 ? "hr" : "hrs")} {minutes} mins";
+                        }
+                        else if (hours > 0)
+                        {
+                            Label_TotalHours.Text = $"{hours} {(hours == 1 ? "hr" : "hrs")}";
+                        }
+                        else
+                        {
+                            Label_TotalHours.Text = $"{minutes} mins"; // Outputs: "15 mins"
+                        }
+
                         Label_TimeStart.Text = start.ToString("MMM dd, yyyy – hh:mm tt");
                         Label_TimeEnd.Text = end.ToString("MMM dd, yyyy – hh:mm tt");
-                        Label_TotalHours.Text = $"{totalHours:F2}";
                         Label_Status.Text = "Occupied";
                         Label_Status.CssClass = "badge-status occupied";
                     }
