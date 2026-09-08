@@ -57,6 +57,6 @@
     function sendRemoteMessageModal() {
         var message = document.getElementById('<%= TextBox_MessageContent.ClientID %>').value;
         var clientName = document.getElementById('<%= HiddenField_ClientName.ClientID %>').value;
-        sendTextMessageToPC(clientName, 'MESSAGE', message);
+        sendTextMessageToPC(clientName, message);
     }
 </script>

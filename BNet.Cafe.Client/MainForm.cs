@@ -388,7 +388,7 @@ namespace BNet.Cafe.Client
         // ─────────────────────────────────────────────────────────────────────
         // MESSAGE HANDLER
         // ─────────────────────────────────────────────────────────────────────
-
+        private static BNetCafeTimer _activeTimerForm = null;
         private void HandleIncomingTextMessage(string textMessage)
         {
             // Ensure thread-safe execution on the WinForms UI thread
@@ -398,21 +398,42 @@ namespace BNet.Cafe.Client
                 return;
             }
 
-
             if (Repositories.JsonValidation.IsValidJson(textMessage))
             {
-                // Parse and process JSON payload
+                // Parse JSON payload
                 var jsonObject = JObject.Parse(textMessage);
 
-                BNetCafeTimer bNetCafeTimer = new BNetCafeTimer();
-                bNetCafeTimer.Show();
+                string customerName = jsonObject["customerName"]?.ToString() ?? "Unknown";
+                string duration = jsonObject["duration"]?.ToString() ?? "0";
+                string amount = jsonObject["amount"]?.ToString() ?? "0";
+                string command = jsonObject["command"]?.ToString() ?? "0";
+
+                // Check if the form is already open
+                if (_activeTimerForm == null || _activeTimerForm.IsDisposed)
+                {
+                    // Instantiate with the required parameters matching your constructor
+                    _activeTimerForm = new BNetCafeTimer(customerName, duration, amount);
+
+                    // Clear reference when the form closes
+                    _activeTimerForm.FormClosed += (s, args) => _activeTimerForm = null;
+                    _activeTimerForm.Show();
+                }
+                else
+                {
+                    // Bring the existing form to the front instead of creating a new one
+                    if (_activeTimerForm.WindowState == FormWindowState.Minimized)
+                    {
+                        _activeTimerForm.WindowState = FormWindowState.Normal;
+                    }
+                    _activeTimerForm.BringToFront();
+                    _activeTimerForm.Activate();
+                }
             }
             else
             {
                 // Action implementation example: display a native system notification dialog
                 MessageBox.Show(this, textMessage, "Server Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
         }
         // ─────────────────────────────────────────────────────────────────────
         // ACTIVITY SENDER

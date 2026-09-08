@@ -138,7 +138,17 @@ function Validate() {
         }
         return false;
     }
-    sendTextMessageToPC('PC-01', "Hello PC 1, please restart your app.");
+
+
+    var data = {
+        customerName: customerSelect ? customerSelect.value : null,
+        duration: durationInput ? parseInt(durationInput.value, 10) : 0,
+        amount: amountInput ? parseFloat(amountInput.value) : 0,
+        command: 'CREATE'
+    };
+
+
+    sendTextMessageToPC('PC-01', JSON.stringify(data));
     //disableSubmitButton();
     return true;
 }
