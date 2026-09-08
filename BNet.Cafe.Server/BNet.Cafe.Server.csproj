@@ -233,6 +233,7 @@
     <Compile Include="OAuth\GoogleUserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Computers.cs" />
+    <Compile Include="Repositories\ClientData.cs" />
     <Compile Include="Repositories\Rentals.cs" />
     <Compile Include="Services\ErrorLogService.cs" />
     <Compile Include="Services\GridViewTemplateService.cs" />

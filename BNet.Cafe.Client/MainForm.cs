@@ -437,7 +437,8 @@ namespace BNet.Cafe.Client
         // ─────────────────────────────────────────────────────────────────────
 
         private string _lastSentTitle = string.Empty;
-        string timeOut = string.Empty;
+        string timeStart = string.Empty;
+        string timeEnd = string.Empty;
         private async Task SendActivityInfo(AgentSession session, UserActivity.ActiveWindowInfo info)
         {
             try
@@ -448,7 +449,7 @@ namespace BNet.Cafe.Client
 
 
 
-                if (timeOut == string.Empty)
+                if (timeEnd == string.Empty)
                 {
                     string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
                     if (File.Exists(sessionFilePath))
@@ -459,7 +460,7 @@ namespace BNet.Cafe.Client
                         if (parts.Length >= 3 && long.TryParse(parts[0], out long ticks))
                         {
                             DateTime endTime = new DateTime(ticks);
-                            timeOut = endTime.ToString("yyyy-MM-dd HH:mm:ss");
+                            timeEnd = endTime.ToString("yyyy-MM-dd HH:mm:ss");
                         }
                     }
 
@@ -473,7 +474,8 @@ namespace BNet.Cafe.Client
                     url = info.Url,
                     isBrowser = info.IsBrowser,
                     capturedAt = info.CapturedAt.ToString("o"),
-                    timeOut = timeOut,
+                    timeStart = timeStart,
+                    timeEnd = timeEnd,
 
                     // Included device details in the activity packet
                     windows = _deviceInfo.Windows,

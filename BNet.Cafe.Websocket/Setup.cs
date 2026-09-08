@@ -619,23 +619,6 @@ namespace BNet.Cafe.Websocket
                     _connectedClients.Add(info.ClientName);
                     _clientList.Add(info);
                 }
-                else
-                {
-                    var ex = _clientList.FirstOrDefault(c =>
-                        string.Equals(c.ClientName, info.ClientName, StringComparison.OrdinalIgnoreCase));
-                    if (ex != null)
-                    {
-                        ex.ScreenCount = info.ScreenCount;
-                        ex.Windows = info.Windows;
-                        ex.WindowsVersion = info.WindowsVersion;
-                        ex.OSArchitecture = info.OSArchitecture;
-                        ex.SerialNumber = info.SerialNumber;
-                        ex.MachineName = info.MachineName;
-                        ex.WorkGroup = info.WorkGroup;
-                        ex.OSVersion = info.OSVersion;
-                        ex.ProcessorCount = info.ProcessorCount;
-                    }
-                }
                 _clientListJson = JsonConvert.SerializeObject(_clientList, Formatting.Indented);
             }
         }
