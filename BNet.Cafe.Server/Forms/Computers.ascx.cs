@@ -1,4 +1,5 @@
-﻿using BNet.Cafe.Server.Repositories;
+﻿using BNet.Cafe.Server.Ashx;
+using BNet.Cafe.Server.Repositories;
 using BNet.Cafe.Server.Services;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,7 @@ namespace BNet.Cafe.Server.Forms
                 Label Label_TimeEnd = (Label)GridViewTable.Rows[i].FindControl("Label_TimeEnd");
                 Label Label_TotalHours = (Label)GridViewTable.Rows[i].FindControl("Label_TotalHours");
                 Label Label_Status = (Label)GridViewTable.Rows[i].FindControl("Label_Status");
+                Label Label_Billing = (Label)GridViewTable.Rows[i].FindControl("Label_Billing");
                 var fetchData = liveData.FirstOrDefault(x => x.ClientName == Label_DBComputerName.Text);
 
                 if (fetchData != null)
@@ -39,6 +41,11 @@ namespace BNet.Cafe.Server.Forms
                         TimeSpan duration = end - start;
                         int hours = (int)duration.TotalHours;
                         int minutes = duration.Minutes;
+
+
+                        double billing = CalculateRentalPrice.CalculatePrice((int)duration.TotalMinutes);
+
+
 
                         string hrLabel = hours == 1 ? "hr" : "hrs";
                         string minLabel = minutes == 1 ? "min" : "mins";
@@ -63,15 +70,17 @@ namespace BNet.Cafe.Server.Forms
                         Label_TimeStart.Text = start.ToString("MMM dd, yyyy – hh:mm tt");
                         Label_TimeEnd.Text = end.ToString("MMM dd, yyyy – hh:mm tt");
                         Label_Status.Text = "Occupied";
-                        Label_Status.CssClass = "badge-status occupied";
+                        Label_Status.CssClass = "badge-status red";
+                        Label_Billing.Text = $"₱{billing:N2}";  
                     }
                     else
                     {
                         Label_TimeStart.Text = "-";
                         Label_TimeEnd.Text = "-";
                         Label_TotalHours.Text = "-";
+                        Label_Billing.Text = "-";
                         Label_Status.Text = "Available";
-                        Label_Status.CssClass = "badge-status available";
+                        Label_Status.CssClass = "badge-status green";
                     }
                 }
                 else
@@ -79,8 +88,9 @@ namespace BNet.Cafe.Server.Forms
                     Label_TimeStart.Text = "-";
                     Label_TimeEnd.Text = "-";
                     Label_TotalHours.Text = "-";
+                    Label_Billing.Text = "-";
                     Label_Status.Text = "Offline";
-                    Label_Status.CssClass = "badge-status offline";
+                    Label_Status.CssClass = "badge-status gray";
                 }
             }
         }

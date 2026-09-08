@@ -34,7 +34,7 @@ namespace BNet.Cafe.Server.Ashx
             context.Response.Write(JsonConvert.SerializeObject(responsePayload));
         }
 
-        private double CalculatePrice(int totalMinutes)
+        public static double CalculatePrice(int totalMinutes)
         {
             if (totalMinutes <= 0) return 0.0;
 

@@ -91,37 +91,37 @@ body {font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen
     }
 
     /* Occupied State (Red/Pulsing) */
-    .badge-status.occupied {
+    .badge-status.red {
         background-color: rgba(239, 68, 68, 0.12);
         color: #dc2626;
         border: 1px solid rgba(239, 68, 68, 0.25);
     }
 
-        .badge-status.occupied::before {
+        .badge-status.red::before {
             background-color: #dc2626;
             box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
             animation: status-pulse-red 1.6s infinite;
         }
 
     /* Available State (Green) */
-    .badge-status.available {
+    .badge-status.green {
         background-color: rgba(34, 197, 94, 0.12);
         color: #16a34a;
         border: 1px solid rgba(34, 197, 94, 0.25);
     }
 
-        .badge-status.available::before {
+        .badge-status.green::before {
             background-color: #16a34a;
         }
 
     /* Offline State (Gray) */
-    .badge-status.offline {
+    .badge-status.gray {
         background-color: rgba(107, 114, 128, 0.12);
         color: #4b5563;
         border: 1px solid rgba(107, 114, 128, 0.25);
     }
 
-        .badge-status.offline::before {
+        .badge-status.gray::before {
             background-color: #9ca3af;
         }
 

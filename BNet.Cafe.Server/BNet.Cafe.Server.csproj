@@ -126,6 +126,7 @@
     <Content Include="Databases\Queries\Computers\GetAll.sql" />
     <Content Include="Databases\Queries\Computers\Update.sql" />
     <Content Include="Databases\Queries\Computers\UpdateCount.sql" />
+    <Content Include="Databases\Queries\Rentals\Create.sql" />
     <Content Include="Forms\ComputerCreate.ascx" />
     <Content Include="Forms\ComputerEdit.ascx" />
     <Content Include="Forms\Computers.ascx" />
@@ -242,6 +243,7 @@
     <Compile Include="Services\GridViewTemplateService.cs" />
     <Compile Include="Services\GridviewPaginationService.cs" />
     <Compile Include="Services\AlertService.cs" />
+    <Compile Include="Services\RemoteMessagingService.cs" />
     <Compile Include="Services\SecuredDataService.cs" />
     <Compile Include="Services\TimeService.cs" />
     <Compile Include="Sessions\User.cs" />
@@ -260,9 +262,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Databases\Queries\Rentals\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

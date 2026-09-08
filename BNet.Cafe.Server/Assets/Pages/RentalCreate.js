@@ -121,15 +121,6 @@ function Validate() {
         }
         return false;
     }
-
-    var data = {
-        customerName: customerSelect ? customerSelect.value : null,
-        duration: durationInput ? parseInt(durationInput.value, 10) : 0,
-        amount: amountInput ? parseFloat(amountInput.value) : 0,
-        command: 'CREATE'
-    };
-
-    sendTextMessageToPC(computerInput.value, JSON.stringify(data));
     disableSubmitButton();
     return true;
 }
