@@ -112,6 +112,7 @@ function resetDuration() {
 
 // Client validation before submission
 function Validate() {
+    var computerInput = document.querySelector('[id$="TextBox_ComputerName"]');
     var customerSelect = document.querySelector('[id$="DropDownList_Customer"]');
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
     var amountInput = document.querySelector('[id$="TextBox_Amount"]');
@@ -148,7 +149,7 @@ function Validate() {
     };
 
 
-    sendTextMessageToPC('PC-01', JSON.stringify(data));
+    sendTextMessageToPC(computerInput.value, JSON.stringify(data));
     //disableSubmitButton();
     return true;
 }

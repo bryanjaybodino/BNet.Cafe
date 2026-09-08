@@ -23,7 +23,7 @@
             this.Label_TotalHours = new System.Windows.Forms.Label();
             this.Label_TimerDisplay = new System.Windows.Forms.Label();
             this.Button_Logout = new System.Windows.Forms.Button();
-            this.countdownTimer = new System.Windows.Forms.Timer(this.components);
+            this.Timer_Countdown = new System.Windows.Forms.Timer(this.components);
             this.label_TotalAmount = new System.Windows.Forms.Label();
             this.Label_TimeoutDisplay = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -89,10 +89,10 @@
             this.Button_Logout.UseVisualStyleBackColor = false;
             this.Button_Logout.Click += new System.EventHandler(this.Button_Logout_Click);
             // 
-            // countdownTimer
+            // Timer_Countdown
             // 
-            this.countdownTimer.Interval = 1000;
-            this.countdownTimer.Tick += new System.EventHandler(this.CountdownTimer_Tick);
+            this.Timer_Countdown.Interval = 1000;
+            this.Timer_Countdown.Tick += new System.EventHandler(this.Timer_Countdown_Tick);
             // 
             // label_TotalAmount
             // 
@@ -139,7 +139,6 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "BNetCafe";
-            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BNetCafeTimer_FormClosing);
             this.Load += new System.EventHandler(this.BNetCafeTimer_Load);
             this.ResumeLayout(false);
@@ -152,7 +151,7 @@
         private System.Windows.Forms.Label Label_TotalHours;
         private System.Windows.Forms.Label Label_TimerDisplay;
         private System.Windows.Forms.Button Button_Logout;
-        private System.Windows.Forms.Timer countdownTimer;
+        private System.Windows.Forms.Timer Timer_Countdown;
         private System.Windows.Forms.Label label_TotalAmount;
         private System.Windows.Forms.Label Label_TimeoutDisplay;
     }

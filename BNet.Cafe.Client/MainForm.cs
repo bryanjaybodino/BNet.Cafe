@@ -90,8 +90,7 @@ namespace BNet.Cafe.Client
 
             if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt")))
             {
-                BNetCafeTimer restoredTimer = new BNetCafeTimer();
-                restoredTimer.Show();
+                _activeTimerForm.Show();
             }
 
             RebuildScreenKeyCache(ScreenCaptured.GetScreenCount());
@@ -156,12 +155,6 @@ namespace BNet.Cafe.Client
 
                         var session = new AgentSession(ws, SendTimeoutMs);
                         _currentSession = session;
-
-                        _ = Task.Run(async () =>
-                        {
-                            var info = UserActivity.ActiveWindowMonitor.GetCurrent();
-                            await SendActivityInfo(session, info);
-                        });
 
                         var captureTask = CaptureLoop(session);
                         var sendTask = SendLoop(session);
@@ -394,7 +387,7 @@ namespace BNet.Cafe.Client
         // ─────────────────────────────────────────────────────────────────────
         // MESSAGE HANDLER
         // ─────────────────────────────────────────────────────────────────────
-        private static BNetCafeTimer _activeTimerForm = null;
+        private static BNetCafeTimer _activeTimerForm = new BNetCafeTimer();
         private void HandleIncomingTextMessage(string textMessage)
         {
             // Ensure thread-safe execution on the WinForms UI thread
@@ -408,31 +401,21 @@ namespace BNet.Cafe.Client
             {
                 // Parse JSON payload
                 var jsonObject = JObject.Parse(textMessage);
-
                 string customerName = jsonObject["customerName"]?.ToString() ?? "Unknown";
                 string duration = jsonObject["duration"]?.ToString() ?? "0";
                 string amount = jsonObject["amount"]?.ToString() ?? "0";
                 string command = jsonObject["command"]?.ToString() ?? "0";
 
                 // Check if the form is already open
-                if (_activeTimerForm == null || _activeTimerForm.IsDisposed)
+                if (!File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt")))
                 {
-                    // Instantiate with the required parameters matching your constructor
-                    _activeTimerForm = new BNetCafeTimer(customerName, duration, amount);
-
+                    _activeTimerForm.CreateTimerData(customerName, duration, amount);
                     // Clear reference when the form closes
                     _activeTimerForm.FormClosed += (s, args) => _activeTimerForm = null;
                     _activeTimerForm.Show();
                 }
                 else
                 {
-                    // Bring the existing form to the front instead of creating a new one
-                    if (_activeTimerForm.WindowState == FormWindowState.Minimized)
-                    {
-                        _activeTimerForm.WindowState = FormWindowState.Normal;
-                    }
-                    _activeTimerForm.BringToFront();
-                    _activeTimerForm.Activate();
                 }
             }
             else
@@ -453,7 +436,7 @@ namespace BNet.Cafe.Client
         // ─────────────────────────────────────────────────────────────────────
 
         private string _lastSentTitle = string.Empty;
-
+        string timeOut = string.Empty;
         private async Task SendActivityInfo(AgentSession session, UserActivity.ActiveWindowInfo info)
         {
             try
@@ -462,6 +445,24 @@ namespace BNet.Cafe.Client
                 if (info.WindowTitle == _lastSentTitle) return;
                 _lastSentTitle = info.WindowTitle;
 
+
+
+                if (timeOut == string.Empty)
+                {
+                    string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
+                    if (File.Exists(sessionFilePath))
+                    {
+                        string content = File.ReadAllText(sessionFilePath);
+                        string[] parts = content.Split('|');
+
+                        if (parts.Length >= 3 && long.TryParse(parts[0], out long ticks))
+                        {
+                            DateTime endTime = new DateTime(ticks);
+                            timeOut = endTime.ToString("yyyy-MM-dd HH:mm:ss");
+                        }
+                    }
+
+                }
                 var payloadObj = new
                 {
                     accountName = _deviceInfo.AccountName,
@@ -471,6 +472,7 @@ namespace BNet.Cafe.Client
                     url = info.Url,
                     isBrowser = info.IsBrowser,
                     capturedAt = info.CapturedAt.ToString("o"),
+                    timeOut = timeOut,
 
                     // Included device details in the activity packet
                     windows = _deviceInfo.Windows,
@@ -578,11 +580,11 @@ namespace BNet.Cafe.Client
                 OSArchitecture = arch,
                 SerialNumber = serial,
                 MachineName = Environment.MachineName,
-                AccountName = ConfigurationManager.AppSettings["ClientName"].ToUpper().Replace(" ",""),
+                AccountName = ConfigurationManager.AppSettings["ClientName"].ToUpper().Replace(" ", ""),
                 WorkGroup = Environment.UserDomainName,
                 OSVersion = Environment.OSVersion.VersionString,
                 ProcessorCount = Environment.ProcessorCount.ToString(),
-                ScreenCount = ScreenCaptured.GetScreenCount().ToString()
+                ScreenCount = ScreenCaptured.GetScreenCount().ToString(),
             };
         }
     }

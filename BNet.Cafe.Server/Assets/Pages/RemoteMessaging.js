@@ -31,7 +31,7 @@ function connectServerWebSocket() {
 
 /**
  * Send a text message to a specific client PC
- * @param {string} targetClient - The AccountName/Machine identifier (e.g. "pc1")
+ * @param {string} targetClient - The ClientName/Machine identifier (e.g. "pc1")
  * @param {string} messageContent - The message string to send
  */
 function sendTextMessageToPC(targetClient, messageContent) {

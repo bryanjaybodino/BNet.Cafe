@@ -192,6 +192,14 @@ namespace BNet.Cafe.Websocket
                     }
                     ctx.Response.StatusCode = 400; ctx.Response.Close(); return;
                 }
+                if (path == "/text" && ctx.Request.HttpMethod == "GET")
+                {
+                    byte[] b = Utf8.GetBytes(_clientListJson);
+                    ctx.Response.ContentType = "application/json";
+                    ctx.Response.ContentLength64 = b.Length;
+                    await ctx.Response.OutputStream.WriteAsync(b, 0, b.Length);
+                    ctx.Response.Close(); return;
+                }
                 ctx.Response.StatusCode = 404; ctx.Response.Close();
             }
             catch { try { ctx.Response.Close(); } catch { } }

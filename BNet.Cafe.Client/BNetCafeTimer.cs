@@ -12,13 +12,6 @@ namespace BNet.Cafe.Client
         private DateTime endTime;
         private readonly string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
 
-        // Constructor for NEW transactions
-        public BNetCafeTimer(string clientName, string duration, string amount)
-        {
-            InitializeComponent();
-            ConfigureFormStyle();
-            UpdateTimerData(clientName, duration, amount);
-        }
 
         // Constructor to RESUME session on application restart
         public BNetCafeTimer()
@@ -31,14 +24,14 @@ namespace BNet.Cafe.Client
         private void ConfigureFormStyle()
         {
             this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-            this.TopMost = true;
+            this.TopMost = false;
             this.ShowInTaskbar = false;
         }
 
         /// <summary>
         /// Updates or top-ups existing timer data and persists the new end time to disk.
         /// </summary>
-        public void UpdateTimerData(string customerName, string duration, string amount)
+        public void CreateTimerData(string customerName, string duration, string amount)
         {
             double.TryParse(duration, out double parsedDurationMinutes);
             double.TryParse(amount, out double parsedAmount);
@@ -71,13 +64,12 @@ namespace BNet.Cafe.Client
             UpdateDisplay();
             Button_Logout.Enabled = true;
 
-            if (!countdownTimer.Enabled)
+            if (!Timer_Countdown.Enabled)
             {
-                countdownTimer.Start();
+                Timer_Countdown.Start();
             }
         }
-
-        private void CountdownTimer_Tick(object sender, EventArgs e)
+        private void Timer_Countdown_Tick(object sender, EventArgs e)
         {
             // Compute live remaining seconds relative to actual system time
             remainingSeconds = (endTime - DateTime.Now).TotalSeconds;
@@ -88,7 +80,7 @@ namespace BNet.Cafe.Client
             }
             else
             {
-                countdownTimer.Stop();
+                Timer_Countdown.Stop();
                 remainingSeconds = 0;
                 UpdateDisplay();
                 Button_Logout.Enabled = false;
@@ -147,7 +139,7 @@ namespace BNet.Cafe.Client
                             Label_TimeoutDisplay.Text = $"Timeout : {endTime:hh:mm tt}";
 
                             UpdateDisplay();
-                            countdownTimer.Start();
+                            Timer_Countdown.Start();
                             return;
                         }
                     }
@@ -175,7 +167,7 @@ namespace BNet.Cafe.Client
         {
             Rectangle workingArea = Screen.PrimaryScreen.WorkingArea;
             this.Location = new Point(workingArea.Right - this.Width - 15, workingArea.Top + 15);
-            countdownTimer.Interval = 1000;
+            Timer_Countdown.Interval = 1000;
         }
 
         private void BNetCafeTimer_FormClosing(object sender, FormClosingEventArgs e)
@@ -191,7 +183,7 @@ namespace BNet.Cafe.Client
             var result = MessageBox.Show("Are you sure you want to log out?", "Confirm Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                countdownTimer.Stop();
+                Timer_Countdown.Stop();
                 ClearSessionFile();
                 this.FormClosing -= BNetCafeTimer_FormClosing;
                 this.Close();
