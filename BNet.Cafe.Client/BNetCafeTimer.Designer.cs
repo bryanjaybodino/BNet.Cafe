@@ -25,6 +25,7 @@
             this.Button_Logout = new System.Windows.Forms.Button();
             this.countdownTimer = new System.Windows.Forms.Timer(this.components);
             this.label_TotalAmount = new System.Windows.Forms.Label();
+            this.Label_TimeoutDisplay = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Label_ClientName
@@ -41,7 +42,7 @@
             // Label_CustomerName
             // 
             this.Label_CustomerName.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.Label_CustomerName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
+            this.Label_CustomerName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.Label_CustomerName.Location = new System.Drawing.Point(20, 180);
             this.Label_CustomerName.Name = "Label_CustomerName";
             this.Label_CustomerName.Size = new System.Drawing.Size(250, 18);
@@ -104,6 +105,17 @@
             this.label_TotalAmount.Text = "Total Amount : 0.00";
             this.label_TotalAmount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // Label_TimeoutDisplay
+            // 
+            this.Label_TimeoutDisplay.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.Label_TimeoutDisplay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.Label_TimeoutDisplay.Location = new System.Drawing.Point(21, 130);
+            this.Label_TimeoutDisplay.Name = "Label_TimeoutDisplay";
+            this.Label_TimeoutDisplay.Size = new System.Drawing.Size(250, 18);
+            this.Label_TimeoutDisplay.TabIndex = 8;
+            this.Label_TimeoutDisplay.Text = "Timeout : 00:00";
+            this.Label_TimeoutDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // BNetCafeTimer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -111,6 +123,7 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.ClientSize = new System.Drawing.Size(282, 265);
             this.ControlBox = false;
+            this.Controls.Add(this.Label_TimeoutDisplay);
             this.Controls.Add(this.label_TotalAmount);
             this.Controls.Add(this.Button_Logout);
             this.Controls.Add(this.Label_TimerDisplay);
@@ -141,5 +154,6 @@
         private System.Windows.Forms.Button Button_Logout;
         private System.Windows.Forms.Timer countdownTimer;
         private System.Windows.Forms.Label label_TotalAmount;
+        private System.Windows.Forms.Label Label_TimeoutDisplay;
     }
 }

@@ -88,6 +88,12 @@ namespace BNet.Cafe.Client
             await Task.Delay(1000);
             _deviceInfo = await GatherDeviceInfo();
 
+            if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt")))
+            {
+                BNetCafeTimer restoredTimer = new BNetCafeTimer();
+                restoredTimer.Show();
+            }
+
             RebuildScreenKeyCache(ScreenCaptured.GetScreenCount());
 
             UserActivity.ActiveWindowMonitor.OnPolled += async info =>
@@ -432,7 +438,14 @@ namespace BNet.Cafe.Client
             else
             {
                 // Action implementation example: display a native system notification dialog
-                MessageBox.Show(this, textMessage, "Server Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    textMessage,
+                    "Server Message",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
             }
         }
         // ─────────────────────────────────────────────────────────────────────
