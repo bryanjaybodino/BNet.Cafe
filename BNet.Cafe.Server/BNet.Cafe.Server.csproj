@@ -106,13 +106,12 @@
     <Content Include="Assets\BNetSelect\Script.js" />
     <Content Include="Assets\BNetSelect\Style.css" />
     <Content Include="Assets\BNetTable\Style.css" />
-    <Content Include="Assets\Pages\RentalCreate.css" />
+    <Content Include="Assets\Pages\RentalManage.css" />
     <Content Include="Assets\fontawesome\font-awesome.min.css" />
     <Content Include="Assets\Pages\Remote.css" />
     <Content Include="Assets\Pages\Style.css" />
-    <Content Include="Assets\Pages\RentalCreate.js" />
-    <Content Include="Assets\Pages\ComputerEdit.js" />
-    <Content Include="Assets\Pages\ComputerCreate.js" />
+    <Content Include="Assets\Pages\RentalManage.js" />
+    <Content Include="Assets\Pages\ComputerManage.js" />
     <Content Include="Assets\Pages\Remote.js" />
     <Content Include="Assets\Pages\Script.js" />
     <Content Include="Assets\BNetModal\Script.js" />
@@ -133,7 +132,7 @@
     <Content Include="Forms\Modals\ComputerDelete.ascx" />
     <Content Include="Forms\Modals\RemoteMessage.ascx" />
     <Content Include="Forms\Remote.ascx" />
-    <Content Include="Forms\RentalCreate.ascx" />
+    <Content Include="Forms\RentalManage.ascx" />
     <Content Include="Forms\SampleModal.ascx" />
     <Content Include="Offline Packages\Newtonsoft.Json\Newtonsoft.Json.dll" />
     <Content Include="Offline Packages\RestSharp\RestSharp.dll" />
@@ -210,12 +209,12 @@
     <Compile Include="Forms\Remote.ascx.designer.cs">
       <DependentUpon>Remote.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Forms\RentalCreate.ascx.cs">
-      <DependentUpon>RentalCreate.ascx</DependentUpon>
+    <Compile Include="Forms\RentalManage.ascx.cs">
+      <DependentUpon>RentalManage.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Forms\RentalCreate.ascx.designer.cs">
-      <DependentUpon>RentalCreate.ascx</DependentUpon>
+    <Compile Include="Forms\RentalManage.ascx.designer.cs">
+      <DependentUpon>RentalManage.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\SampleModal.ascx.cs">
       <DependentUpon>SampleModal.ascx</DependentUpon>

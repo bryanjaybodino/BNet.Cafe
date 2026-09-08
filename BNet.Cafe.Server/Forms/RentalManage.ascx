@@ -1,8 +1,8 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="RentalCreate.ascx.cs" Inherits="BNet.Cafe.Server.Forms.RentalCreate" %>
-<link href="Assets/Pages/RentalCreate.css" rel="stylesheet" />
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="RentalManage.ascx.cs" Inherits="BNet.Cafe.Server.Forms.RentalManage" %>
+<link href="Assets/Pages/RentalManage.css" rel="stylesheet" />
 <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
     <Scripts>
-        <asp:ScriptReference Path="~/Assets/Pages/RentalCreate.js" />
+        <asp:ScriptReference Path="~/Assets/Pages/RentalManage.js" />
         <asp:ScriptReference Path="~/Assets/Pages/RemoteMessaging.js" />
     </Scripts>
 </asp:ScriptManagerProxy>

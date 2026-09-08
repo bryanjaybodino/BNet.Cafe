@@ -33,7 +33,7 @@
                                         Command <i class="fa-solid fa-chevron-down"></i>
                                     </button>
                                     <div class="bnet-dropdown-menu">
-                                        <a onclick="navigateTo('BNetPage.aspx?Form=RentalCreate&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
+                                        <a onclick="navigateTo('BNetPage.aspx?Form=RentalManage&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                             <i class="fa-regular fa-clock"></i>Start Rental Session
                                         </a>
                                         <a class="bnet-dropdown-item">

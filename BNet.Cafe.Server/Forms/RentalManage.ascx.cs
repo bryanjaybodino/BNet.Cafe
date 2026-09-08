@@ -5,7 +5,7 @@ using System.Web.UI;
 
 namespace BNet.Cafe.Server.Forms
 {
-    public partial class RentalCreate : System.Web.UI.UserControl
+    public partial class RentalManage : System.Web.UI.UserControl
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -23,7 +23,7 @@ namespace BNet.Cafe.Server.Forms
                     Label_Status.Text = status;
                     if (status == "Occupied")
                     {
-                        Response.Redirect("BNetPage.aspx?Form=RentalEdit");
+                        Label_Status.CssClass = "badge-status red";
                     }
                     else if (status == "Offline")
                     {

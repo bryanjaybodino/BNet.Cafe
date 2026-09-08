@@ -11,7 +11,7 @@ namespace BNet.Cafe.Server.Forms
 {
 
 
-    public partial class RentalCreate
+    public partial class RentalManage
     {
 
         /// <summary>
