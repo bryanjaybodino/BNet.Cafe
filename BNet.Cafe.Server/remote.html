@@ -306,6 +306,7 @@
 
         var canvas = document.getElementById('screen');
         var ctx2d = canvas.getContext('2d', { alpha: false });
+        ctx2d.imageSmoothingEnabled = false;
         var frameNaturalW = 1920, frameNaturalH = 1080;
         var pendingFrame = null, decodeInFlight = 0, lastFrameAt = 0, frameCount = 0, lastFpsTime = performance.now();
 
