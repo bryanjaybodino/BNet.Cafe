@@ -34,9 +34,8 @@ namespace BNet.Cafe.Server.Forms
                             string customerId = rental.Rows[ii]["DBCustomerId"].ToString();
                             TextBox_Duration.Text = duration;
                             Label_RentalId.Text = rentalId;
+                            Label_HeaderText.Text = "Rental ID # : ";
                         }
-
-
                         Label_Status.CssClass = "badge-status red";
                     }
                     else if (status == "Offline")
@@ -44,9 +43,11 @@ namespace BNet.Cafe.Server.Forms
                         Label_Status.CssClass = "badge-status gray";
                         AlertService.ShowAlert(UpdatePanel1, "The selected computer is currently offline. Please ensure the computer is online before creating a rental session.", "warning");
                         Panel_Form.Enabled = false;
+                        Label_HeaderText.Text = "Currently Down";
                     }
                     else
                     {
+                        Label_HeaderText.Text = "Add New Rental";
                         Label_Status.CssClass = "badge-status green";
                     }
                 }

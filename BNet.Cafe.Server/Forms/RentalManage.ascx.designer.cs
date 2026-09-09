@@ -42,13 +42,13 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.Panel Panel_Form;
 
         /// <summary>
-        /// Label_Status control.
+        /// Label_HeaderText control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label_Status;
+        protected global::System.Web.UI.WebControls.Label Label_HeaderText;
 
         /// <summary>
         /// Label_RentalId control.
@@ -58,6 +58,15 @@ namespace BNet.Cafe.Server.Forms
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label_RentalId;
+
+        /// <summary>
+        /// Label_Status control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label_Status;
 
         /// <summary>
         /// TextBox_ComputerName control.

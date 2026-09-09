@@ -13,12 +13,12 @@
             <div class="bnet-table-wrapper">
                 <div class="content-header" style="margin-bottom: 20px;">
                     <h1 style="font-size: 20px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-clock" style="color: var(--primary);"></i>Add New Rental
-
-                     <asp:Label ID="Label_Status" runat="server" Text=""></asp:Label>
+                        <i class="fa-solid fa-clock" style="color: var(--primary);"></i>
+                        <asp:Label ID="Label_HeaderText" runat="server" Text=""></asp:Label>
+                        <asp:Label ID="Label_RentalId" runat="server" Text=""></asp:Label>
+                        <asp:Label ID="Label_Status" runat="server" Text=""></asp:Label>
                     </h1>
                     <p>Select customer details, manage rental duration, and calculate charges.</p>
-                    <asp:Label ID="Label_RentalId" runat="server" Text=""></asp:Label>
                 </div>
 
                 <div class="form-grid">

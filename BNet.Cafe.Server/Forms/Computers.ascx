@@ -37,7 +37,7 @@
                                             <i class="fa-regular fa-clock"></i>Manage Rental Session
                                         </a>
                                         <a class="bnet-dropdown-item">
-                                            <i class="fa-solid fa-file-invoice-dollar"></i>Billing & Invoices
+                                            <i class="fa-solid fa-right-from-bracket"></i>Log Out
                                         </a>
                                         <a class="bnet-dropdown-item">
                                             <i class="fa-solid fa-clock-rotate-left"></i>Session History
@@ -53,13 +53,6 @@
                                 </div>
                             </ItemTemplate>
                         </asp:TemplateField>
-
-                        <asp:TemplateField HeaderText="Id" ItemStyle-Width="100px">
-                            <ItemTemplate>
-                                <asp:Label ID="Label_DBId" runat="server" Text='<%#Eval("DBId") %>'></asp:Label>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-
                         <asp:TemplateField HeaderText="Computer Name" ItemStyle-Width="200px">
                             <ItemTemplate>
                                 <asp:Label ID="Label_DBComputerName" runat="server" Text='<%#Eval("DBComputerName") %>'></asp:Label>
