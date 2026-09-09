@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace BNet.Cafe.Client
 {
-    // ─────────────────────────────────────────────────────────────────────────
-    // Thread-safe send wrapper with HARD TIMEOUT.
-    // ALL frames are sent as Binary — WebSocketMessageType.Binary is always used.
-    // ─────────────────────────────────────────────────────────────────────────
     public class AgentSession
     {
         public readonly WebSocket WebSocket;
@@ -26,12 +19,7 @@ namespace BNet.Cafe.Client
 
         public bool IsOpen => WebSocket.State == WebSocketState.Open;
 
-        /// <summary>
-        /// Sends data as a binary WebSocket frame with a hard timeout.
-        /// Returns true on success, false on timeout or error.
-        /// </summary>
-        public async Task<bool> SendAsync(byte[] data,
-            WebSocketMessageType type = WebSocketMessageType.Binary)
+        public async Task<bool> SendAsync(byte[] data, WebSocketMessageType type = WebSocketMessageType.Binary)
         {
             await _lock.WaitAsync();
             try

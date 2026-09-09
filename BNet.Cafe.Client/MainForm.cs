@@ -5,82 +5,44 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Management;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace BNet.Cafe.Client
 {
-    /// <summary>
-    /// Agent (client machine) — connects to the server via WebSocket.
-    /// ALL WebSocket frames are now sent as Binary (WebSocketMessageType.Binary).
-    /// Text payloads (JSON / strings) are UTF-8 encoded into the binary frame body.
-    ///
-    /// PERFORMANCE CHANGES:
-    ///  • Dirty-region detection — unchanged frames are skipped entirely (saves 70-90% bandwidth on idle screens).
-    ///  • Adaptive quality/scale — drops temporarily under backlog instead of going dark.
-    ///  • Single-copy frame building — header written into one MemoryStream; no intermediate jpeg[] array.
-    ///  • Fast-path ReceiveFullMessage — avoids MemoryStream allocation for single-chunk messages.
-    ///  • WebSocket send/recv buffer raised to 256 KB to handle large frames without kernel splits.
-    ///  • ImageCompressor.CompressInto() used to write JPEG directly into the payload stream.
-    /// </summary>
     public partial class MainForm : Form
     {
-        public MainForm() { InitializeComponent(); }
-        private const int ReconnectDelayMs = 500;    // was 1000 — near-instant recovery
-        private const int TargetFrameMs = 25;     // was 33  — aims for 40fps, lands ~30fps after OS timer jitter
-        private const int TextInfoEveryNFrames = 300;  // was 120 — device info every ~7.5s; it almost never changes
-        private const long JpegQuality = 22L;    // was 25  — imperceptible drop, measurable bandwidth saving
-        private const long JpegQualityBacklog = 8L;    // was 10  — squeeze harder under pressure
-        private const double ImageScale = 0.70;   // was 0.75 — saves ~13% more pixels vs 0.75, still sharp on HD
-        private const double ImageScaleBacklog = 0.40; // was 0.5  — real pressure relief without going unreadable
-        private const int ActivityIntervalMs = 1000;   // was 5000 — low-value poll, no reason to run it often
-        private const int SendTimeoutMs = 600;    // was 800  — faster failure detection; 600ms is still generous
-        // Shared UTF-8 encoder — used for all JSON/string payloads
+        private const int ReconnectDelayMs = 500;
+        private const int ActivityIntervalMs = 1000;
+        private const int SendTimeoutMs = 600;
         private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
 
-        // ── Pause / resume ────────────────────────────────────────────────────
         private volatile bool _paused = true;
         private readonly SemaphoreSlim _resumeSignal = new SemaphoreSlim(0, 1);
-
-        // ── Per-screen LATEST frame slot ──────────────────────────────────────
-        private readonly ConcurrentDictionary<int, byte[]> _pendingFrames
-            = new ConcurrentDictionary<int, byte[]>();
-
+        private readonly ConcurrentDictionary<int, byte[]> _pendingFrames = new ConcurrentDictionary<int, byte[]>();
         private readonly SemaphoreSlim _framePending = new SemaphoreSlim(0, 1);
 
-        // ── Backlog indicator set by the sender when a send takes too long ────
         private volatile bool _isBacklogged = false;
-
-        // ── Which screen indices the server wants streamed (0-based set) ───────
         private volatile int[] _requestedScreenIndices = new int[0];
 
         private TextContent _deviceInfo;
-
-        // Pre-baked screen key bytes indexed by screen number (0-based).
-        private byte[][] _screenKeyBytes;
-        private int _cachedScreenCount = 0;
-
-        // ── Dirty-region detection — last sampled hash per screen index ───────
-        // Uses a fast FNV-1a sampling hash over every 64th byte of the JPEG.
-        // Identical hash → screen content unchanged → skip send.
-        private readonly ConcurrentDictionary<int, uint> _lastFrameHash
-            = new ConcurrentDictionary<int, uint>();
-
-        // ── Activity monitoring ───────────────────────────────────────────────
         private volatile AgentSession _currentSession;
+        private static BNetCafeTimer _activeTimerForm = new BNetCafeTimer();
 
+        private readonly ScreenStreamer _screenStreamer = new ScreenStreamer();
+        private readonly ActivityReporter _activityReporter = new ActivityReporter();
+
+        public MainForm()
+        {
+            InitializeComponent();
+        }
 
         public void LockScreen()
         {
@@ -88,7 +50,6 @@ namespace BNet.Cafe.Client
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
             this.TopMost = false;
-
             this.ControlBox = true;
             this.MaximizeBox = true;
             this.MinimizeBox = true;
@@ -105,83 +66,53 @@ namespace BNet.Cafe.Client
             this.Hide();
         }
 
-
-        // ─────────────────────────────────────────────────────────────────────
-        // FORM LOAD
-        // ─────────────────────────────────────────────────────────────────────
-
         private async void MainForm_Load(object sender, EventArgs e)
         {
             LockScreen();
             await Task.Delay(1000);
-            _deviceInfo = await GatherDeviceInfo();
+            _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
 
             string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
             if (File.Exists(sessionFilePath))
             {
                 this.Hide();
                 _activeTimerForm.Show();
-                ClearTitleCache(); 
+                ClearTitleCache();
                 UnlockScreen();
             }
 
-            RebuildScreenKeyCache(ScreenCaptured.GetScreenCount());
+            _screenStreamer.RebuildScreenKeyCache(ScreenCaptured.GetScreenCount(), _deviceInfo.ClientName);
 
             UserActivity.ActiveWindowMonitor.OnPolled += async info =>
             {
-                // Extract and validate properties safely
                 string processName = info?.ProcessName ?? string.Empty;
                 string windowTitle = info?.WindowTitle ?? string.Empty;
 
-                // Check for targeted window titles or processes
                 bool isTaskManager = processName.Equals("Taskmgr", StringComparison.OrdinalIgnoreCase);
                 bool isControlPanel = windowTitle.IndexOf("Programs and Features", StringComparison.OrdinalIgnoreCase) >= 0;
+
                 if (isTaskManager || isControlPanel)
                 {
                     try
                     {
-                        foreach (var proc in Process.GetProcessesByName("Taskmgr"))
-                        {
-                            proc.Kill();
-                        }
+                        foreach (var proc in Process.GetProcessesByName("Taskmgr")) proc.Kill();
                         foreach (var proc in Process.GetProcessesByName("explorer"))
                         {
-                            if (proc.MainWindowTitle.Contains("Programs and Features"))
-                            {
-                                proc.Kill();
-                            }
+                            if (proc.MainWindowTitle.Contains("Programs and Features")) proc.Kill();
                         }
                     }
-                    catch { } // Ignore permission errors if already closing
-                    return; // Don't send activity telemetry for Task Manager
+                    catch { }
+                    return;
                 }
-                // 2. Existing activity monitoring code
+
                 var sess = _currentSession;
                 if (sess == null || !sess.IsOpen) return;
-                await SendActivityInfo(sess, info);
+                await _activityReporter.SendActivityInfoAsync(sess, info, _deviceInfo);
             };
+
             UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
             _ = Task.Run(RunAgentLoop);
         }
-
-        // ─────────────────────────────────────────────────────────────────────
-        // SCREEN KEY CACHE
-        // ─────────────────────────────────────────────────────────────────────
-
-        private void RebuildScreenKeyCache(int count)
-        {
-            if (count == _cachedScreenCount) return;
-            _cachedScreenCount = count;
-            var keys = new byte[count][];
-            string user = _deviceInfo.ClientName.ToUpper();
-            for (int i = 0; i < count; i++)
-                keys[i] = Utf8.GetBytes($"screen_{i + 1}_{user}");
-            _screenKeyBytes = keys;
-        }
-
-        // ─────────────────────────────────────────────────────────────────────
-        // MAIN LOOP
-        // ─────────────────────────────────────────────────────────────────────
 
         private async Task RunAgentLoop()
         {
@@ -195,7 +126,7 @@ namespace BNet.Cafe.Client
                     _paused = true;
                     _requestedScreenIndices = new int[0];
                     _pendingFrames.Clear();
-                    _lastFrameHash.Clear();   // reset dirty-detection on reconnect
+                    _screenStreamer.ClearCache();
                     _isBacklogged = false;
 
                     while (_resumeSignal.CurrentCount > 0) _resumeSignal.Wait(0);
@@ -204,9 +135,6 @@ namespace BNet.Cafe.Client
                     using (var ws = new ClientWebSocket())
                     {
                         ws.Options.KeepAliveInterval = TimeSpan.FromSeconds(20);
-                        // ClientWebSocket is capped at 65536 by the runtime —
-                        // keep at 64 KB. The server-side HttpListener socket
-                        // has no such cap and uses 256 KB.
                         ws.Options.SetBuffer(64 * 1024, 64 * 1024);
 
                         await ws.ConnectAsync(agentWsUri, CancellationToken.None);
@@ -214,7 +142,17 @@ namespace BNet.Cafe.Client
                         var session = new AgentSession(ws, SendTimeoutMs);
                         _currentSession = session;
 
-                        var captureTask = CaptureLoop(session);
+                        var captureTask = _screenStreamer.CaptureLoopAsync(
+                            session,
+                            () => _paused,
+                            () => _isBacklogged,
+                            () => _requestedScreenIndices,
+                            _pendingFrames,
+                            _resumeSignal,
+                            _framePending,
+                            _deviceInfo.ClientName
+                        );
+
                         var sendTask = SendLoop(session);
                         var recvTask = ReceiveLoop(session);
 
@@ -229,124 +167,6 @@ namespace BNet.Cafe.Client
                 await Task.Delay(ReconnectDelayMs);
             }
         }
-
-        // ─────────────────────────────────────────────────────────────────────
-        // CAPTURE LOOP  (producer — runs independently of network)
-        //
-        // CHANGES:
-        //  • Adaptive quality/scale based on _isBacklogged.
-        //  • Single-copy payload building: header + JPEG written into one
-        //    MemoryStream via ImageCompressor.CompressInto() — no intermediate
-        //    jpeg[] allocation.
-        //  • Dirty-region skip: FNV-1a sample hash compared against last frame;
-        //    unchanged screens are dropped before touching the network.
-        // ─────────────────────────────────────────────────────────────────────
-
-        private async Task CaptureLoop(AgentSession session)
-        {
-            var compressor = new ImageCompressor();
-
-            while (session.IsOpen)
-            {
-                if (_paused)
-                {
-                    await _resumeSignal.WaitAsync(500);
-                    continue;
-                }
-
-                long frameStart = Environment.TickCount;
-
-                try
-                {
-                    int totalScreens = ScreenCaptured.GetScreenCount();
-                    RebuildScreenKeyCache(totalScreens);
-                    _deviceInfo.ScreenCount = totalScreens.ToString();
-
-
-                    int[] indices = _requestedScreenIndices;
-                    if (indices.Length == 0) goto NextFrame;
-
-                    if (_isBacklogged) goto NextFrame;
-
-                    // Pick quality/scale based on current network health.
-                    bool backlogged = _isBacklogged;
-                    long quality = backlogged ? JpegQualityBacklog : JpegQuality;
-                    double scale = backlogged ? ImageScaleBacklog : ImageScale;
-
-                    await Task.WhenAll(indices.Select(async screenIdx =>
-                    {
-                        if (screenIdx >= totalScreens) screenIdx = 0;
-
-                        List<Bitmap> captured = await Task.Run(
-                            () => ScreenCaptured.TakeScreenshot(
-                                isMouseVisible: true,
-                                screenIndex: screenIdx))
-                            .ConfigureAwait(false);
-
-                        if (captured == null || captured.Count == 0) return;
-                        Bitmap bmp = captured[0];
-
-                        if (_paused || !session.IsOpen) { bmp.Dispose(); return; }
-
-                        // ── Single-copy payload build ──────────────────────────
-                        // Layout: [0x01][4:nameLen][name bytes][jpeg bytes]
-                        // We write the header first, then stream the JPEG
-                        // directly into the same buffer — zero intermediate copies.
-                        byte[] nameBytes = _screenKeyBytes[screenIdx];
-
-                        byte[] payload;
-                        using (var ms = new MemoryStream(nameBytes.Length + 32 * 1024))
-                        {
-                            ms.WriteByte(0x01);
-                            ms.Write(BitConverter.GetBytes(nameBytes.Length), 0, 4);
-                            ms.Write(nameBytes, 0, nameBytes.Length);
-
-                            // GZip compress the JPEG before adding to payload
-                            using (var jpeg = new MemoryStream(32 * 1024))
-                            {
-                                compressor.CompressInto(bmp, jpeg, quality, scale);
-                                byte[] compressed = ByteCompressor.Compress(jpeg.ToArray());
-                                ms.Write(compressed, 0, compressed.Length);
-                            }
-
-                            payload = ms.ToArray();
-                        }
-                        bmp.Dispose();
-
-                        if (!session.IsOpen || _paused) return;
-
-                        // ── Dirty-region detection ─────────────────────────────
-                        // Hash only the JPEG portion (after the fixed header).
-                        int jpegOffset = 1 + 4 + nameBytes.Length;
-                        uint hash = SampleHash(payload, jpegOffset, payload.Length - jpegOffset);
-
-                        if (_lastFrameHash.TryGetValue(screenIdx, out uint prevHash)
-                            && prevHash == hash)
-                            return; // screen unchanged — skip this frame entirely
-
-                        _lastFrameHash[screenIdx] = hash;
-
-                        // Queue for the send loop
-                        _pendingFrames[screenIdx] = payload;
-
-                        if (_framePending.CurrentCount == 0)
-                            _framePending.Release();
-                    }));
-                }
-                catch (Exception ex) when (!(ex is WebSocketException)) { /* skip frame */ }
-                catch { return; }
-
-            NextFrame:
-                int elapsed = (int)(Environment.TickCount - frameStart);
-                int sleep = Math.Max(0, TargetFrameMs - elapsed);
-                if (_isBacklogged) sleep = Math.Max(sleep, 50);
-                if (sleep > 0) await Task.Delay(sleep);
-            }
-        }
-
-        // ─────────────────────────────────────────────────────────────────────
-        // SEND LOOP  (consumer — drains _pendingFrames over the network)
-        // ─────────────────────────────────────────────────────────────────────
 
         private async Task SendLoop(AgentSession session)
         {
@@ -372,10 +192,6 @@ namespace BNet.Cafe.Client
             }
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // RECEIVE LOOP
-        // ─────────────────────────────────────────────────────────────────────
-
         private async Task ReceiveLoop(AgentSession session)
         {
             var buf = new byte[64 * 1024];
@@ -390,7 +206,7 @@ namespace BNet.Cafe.Client
 
                     byte msgType = msg[0];
 
-                    if (msgType == 0x02) // TEXT_MESSAGE — direct message received from server
+                    if (msgType == 0x02)
                     {
                         try
                         {
@@ -399,36 +215,36 @@ namespace BNet.Cafe.Client
                         }
                         catch { }
                     }
-                    else if (msgType == 0x40) // PAUSE
+                    else if (msgType == 0x40)
                     {
                         _paused = true;
                         _pendingFrames.Clear();
-                        _lastFrameHash.Clear(); // force full re-send on resume
+                        _screenStreamer.ClearCache();
                     }
-                    else if (msgType == 0x41) // RESUME
+                    else if (msgType == 0x41)
                     {
                         _paused = false;
                         _isBacklogged = false;
                         if (_resumeSignal.CurrentCount == 0)
                             _resumeSignal.Release();
                     }
-                    else if (msgType == 0x43) // SET_SCREENS — binary frame, UTF-8 JSON body
+                    else if (msgType == 0x43)
                     {
                         try
                         {
                             string json = Utf8.GetString(msg, 1, msg.Length - 1);
                             int[] indices = JsonConvert.DeserializeObject<int[]>(json) ?? new int[0];
                             _requestedScreenIndices = indices;
+
                             var indexSet = new HashSet<int>(indices);
                             foreach (var key in _pendingFrames.Keys.ToArray())
                                 if (!indexSet.Contains(key)) _pendingFrames.TryRemove(key, out _);
 
-                            foreach (var key in _lastFrameHash.Keys.ToArray())
-                                if (!indexSet.Contains(key)) _lastFrameHash.TryRemove(key, out _);
+                            _screenStreamer.RemoveKeysNotIn(indexSet);
                         }
                         catch { }
                     }
-                    else if (msgType == 0x30) // INPUT_BATCH — binary frame, UTF-8 JSON body
+                    else if (msgType == 0x30)
                     {
                         string json = Utf8.GetString(msg, 1, msg.Length - 1);
                         var events = JsonConvert.DeserializeObject<List<RemoteInput>>(json);
@@ -436,32 +252,24 @@ namespace BNet.Cafe.Client
                             foreach (var evt in events)
                                 try { RemoteController.Dispatch(evt); } catch { }
                     }
-                    // 0x31 PONG — ignore
                 }
                 catch { return; }
             }
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // MESSAGE HANDLER
-        // ─────────────────────────────────────────────────────────────────────
         private void ClearTitleCache()
         {
-            // FORCE clear title cache and send immediate update to server
-            _lastSentTitle = string.Empty;
+            _activityReporter.ClearTitleCache();
 
-            // Grab active window info and send packet right away
             var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
             if (_currentSession != null)
             {
-                _ = SendActivityInfo(_currentSession, currentWindow);
+                _ = _activityReporter.SendActivityInfoAsync(_currentSession, currentWindow, _deviceInfo);
             }
         }
 
-        private static BNetCafeTimer _activeTimerForm = new BNetCafeTimer();
         private void HandleIncomingTextMessage(string textMessage)
         {
-            // Ensure thread-safe execution on the WinForms UI thread
             if (InvokeRequired)
             {
                 BeginInvoke(new Action(() => HandleIncomingTextMessage(textMessage)));
@@ -470,14 +278,11 @@ namespace BNet.Cafe.Client
 
             if (Repositories.JsonValidation.IsValidJson(textMessage))
             {
-                // Parse JSON payload
                 var jsonObject = JObject.Parse(textMessage);
                 string customerName = jsonObject["customerName"]?.ToString() ?? "Unknown";
                 string duration = jsonObject["duration"]?.ToString() ?? "0";
                 string amount = jsonObject["amount"]?.ToString() ?? "0";
-                string command = jsonObject["command"]?.ToString() ?? "0";
 
-                // Check if the form is already open
                 string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
                 if (!File.Exists(sessionFilePath))
                 {
@@ -500,7 +305,6 @@ namespace BNet.Cafe.Client
             }
             else
             {
-                // Action implementation example: display a native system notification dialog
                 MessageBox.Show(
                     textMessage,
                     "Server Message",
@@ -511,103 +315,18 @@ namespace BNet.Cafe.Client
                 );
             }
         }
-        // ─────────────────────────────────────────────────────────────────────
-        // ACTIVITY SENDER
-        // ─────────────────────────────────────────────────────────────────────
 
-        private string _lastSentTitle = string.Empty;
-
-        private async Task SendActivityInfo(AgentSession session, UserActivity.ActiveWindowInfo info)
-        {
-            try
-            {
-                // Skip sending if the window title hasn't changed
-                if (info.WindowTitle == _lastSentTitle)
-                {
-                    return;
-                }
-
-                _lastSentTitle = info.WindowTitle;
-                string _timeStart = string.Empty;
-                string _timeEnd = string.Empty;
-
-                string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
-                if (File.Exists(sessionFilePath))
-                {
-                    string content = File.ReadAllText(sessionFilePath);
-                    string[] parts = content.Split('|');
-
-                    // Check for 4 parts: createdTicks|endTicks|customerName|amount
-                    if (parts.Length >= 4
-                        && long.TryParse(parts[0], out long createdTicks)
-                        && long.TryParse(parts[1], out long endTicks))
-                    {
-                        DateTime startTime = new DateTime(createdTicks);
-                        DateTime endTime = new DateTime(endTicks);
-
-                        _timeStart = startTime.ToString("yyyy-MM-dd HH:mm:ss");
-                        _timeEnd = endTime.ToString("yyyy-MM-dd HH:mm:ss");
-                    }
-                }
-
-                var payloadObj = new
-                {
-                    clientName = _deviceInfo.ClientName,
-                    appName = info.AppName,
-                    processName = info.ProcessName,
-                    windowTitle = info.WindowTitle,
-                    url = info.Url,
-                    isBrowser = info.IsBrowser,
-                    capturedAt = info.CapturedAt.ToString("o"),
-                    timeStart = _timeStart,
-                    timeEnd = _timeEnd,
-
-                    // Included device details in the activity packet
-                    windows = _deviceInfo.Windows,
-                    windowsVersion = _deviceInfo.WindowsVersion,
-                    osArchitecture = _deviceInfo.OSArchitecture,
-                    serialNumber = _deviceInfo.SerialNumber,
-                    machineName = _deviceInfo.MachineName,
-                    workGroup = _deviceInfo.WorkGroup,
-                    osVersion = _deviceInfo.OSVersion,
-                    processorCount = _deviceInfo.ProcessorCount,
-                    screenCount = ScreenCaptured.GetScreenCount().ToString()
-                };
-
-                string json = JsonConvert.SerializeObject(payloadObj);
-                byte[] jsonBytes = Utf8.GetBytes(json);
-                byte[] frame = new byte[1 + jsonBytes.Length];
-                frame[0] = 0x03; // Using Activity opcode 0x03
-                Buffer.BlockCopy(jsonBytes, 0, frame, 1, jsonBytes.Length);
-                await session.SendAsync(frame, WebSocketMessageType.Binary);
-
-            }
-            catch { }
-        }
-
-        // ─────────────────────────────────────────────────────────────────────
-        // HELPERS
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// Fast-path ReceiveFullMessage.
-        /// Most messages arrive in a single WebSocket chunk — we skip the
-        /// MemoryStream allocation entirely for those.  Only multi-chunk
-        /// messages (rare) fall through to the slower path.
-        /// </summary>
         private static async Task<byte[]> ReceiveFullMessage(WebSocket ws, byte[] buffer)
         {
             WebSocketReceiveResult result;
             try
             {
-                result = await ws.ReceiveAsync(
-                    new ArraySegment<byte>(buffer), CancellationToken.None);
+                result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             }
             catch { return null; }
 
             if (result.MessageType == WebSocketMessageType.Close) return null;
 
-            // Fast path — entire message fits in first chunk (the common case)
             if (result.EndOfMessage)
             {
                 var single = new byte[result.Count];
@@ -615,7 +334,6 @@ namespace BNet.Cafe.Client
                 return single;
             }
 
-            // Slow path — message spans multiple chunks
             using (var ms = new MemoryStream())
             {
                 ms.Write(buffer, 0, result.Count);
@@ -623,8 +341,7 @@ namespace BNet.Cafe.Client
                 {
                     try
                     {
-                        result = await ws.ReceiveAsync(
-                            new ArraySegment<byte>(buffer), CancellationToken.None);
+                        result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                     }
                     catch { return null; }
                     if (result.MessageType == WebSocketMessageType.Close) return null;
@@ -632,49 +349,6 @@ namespace BNet.Cafe.Client
                 } while (!result.EndOfMessage);
                 return ms.ToArray();
             }
-        }
-
-        /// <summary>
-        /// Fast FNV-1a sample hash — reads every 64th byte of the JPEG data.
-        /// Fast enough to run every frame; accurate enough to catch any
-        /// real screen change (a single pixel difference shifts the hash).
-        /// </summary>
-        private static uint SampleHash(byte[] data, int offset, int length)
-        {
-            uint h = 2166136261u;
-            int end = offset + length;
-            for (int i = offset; i < end; i += 64)
-                h = (h ^ data[i]) * 16777619u;
-            return h;
-        }
-
-        private static async Task<TextContent> GatherDeviceInfo()
-        {
-            string caption = "", version = "", arch = "", serial = "";
-            try
-            {
-                var wmi = new ManagementObjectSearcher("select * from Win32_OperatingSystem")
-                    .Get().Cast<ManagementObject>().First();
-                caption = ((string)wmi["Caption"]).Trim();
-                version = (string)wmi["Version"];
-                arch = (string)wmi["OSArchitecture"];
-                serial = (string)wmi["SerialNumber"];
-            }
-            catch { }
-            await Task.CompletedTask;
-            return new TextContent
-            {
-                Windows = caption,
-                WindowsVersion = version,
-                OSArchitecture = arch,
-                SerialNumber = serial,
-                MachineName = Environment.MachineName,
-                ClientName = ConfigurationManager.AppSettings["ClientName"].ToUpper().Replace(" ", ""),
-                WorkGroup = Environment.UserDomainName,
-                OSVersion = Environment.OSVersion.VersionString,
-                ProcessorCount = Environment.ProcessorCount.ToString(),
-                ScreenCount = ScreenCaptured.GetScreenCount().ToString(),
-            };
         }
     }
 }
