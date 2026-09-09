@@ -1,0 +1,4 @@
+﻿SELECT * FROM rentals 
+WHERE DBComputerId = '{DBId}'
+ORDER BY DBId DESC 
+LIMIT 1

@@ -30,15 +30,15 @@ namespace BNet.Cafe.Server.Repositories
             return DBContext.SqlDataAdapterAsync(sql);
         }
 
-        public DataTable GetById(string id)
+        public DataTable GetByComputerId(string id)
         {
             var scripts = new Dictionary<string, string>
             {
-                { "DBId", id },
+                { "DBComputerId", id },
             };
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Rentals/GetById.sql");
+            string template = page.Server.MapPath("~/Databases/Queries/Rentals/GetByComputerId.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlDataAdapterAsync(sql);

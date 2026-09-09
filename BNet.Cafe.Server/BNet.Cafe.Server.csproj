@@ -126,6 +126,8 @@
     <Content Include="Databases\Queries\Computers\Update.sql" />
     <Content Include="Databases\Queries\Computers\UpdateCount.sql" />
     <Content Include="Databases\Queries\Rentals\Create.sql" />
+    <Content Include="Databases\Queries\Rentals\GetByComputerId.sql" />
+    <Content Include="Databases\Queries\Rentals\Update.sql" />
     <Content Include="Forms\ComputerCreate.ascx" />
     <Content Include="Forms\ComputerEdit.ascx" />
     <Content Include="Forms\Computers.ascx" />
@@ -133,7 +135,6 @@
     <Content Include="Forms\Modals\RemoteMessage.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Forms\RentalManage.ascx" />
-    <Content Include="Forms\SampleModal.ascx" />
     <Content Include="Offline Packages\Newtonsoft.Json\Newtonsoft.Json.dll" />
     <Content Include="Offline Packages\RestSharp\RestSharp.dll" />
     <Content Include="Offline Packages\System.Runtime.Caching\System.Configuration.ConfigurationManager.dll" />
@@ -162,6 +163,7 @@
     <Compile Include="Callback.aspx.designer.cs">
       <DependentUpon>Callback.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ConstantData\RentalCommand.cs" />
     <Compile Include="Databases\DBContext.cs" />
     <Compile Include="Databases\DBMigration.cs" />
     <Compile Include="Databases\DBScriptService.cs" />
@@ -215,13 +217,6 @@
     </Compile>
     <Compile Include="Forms\RentalManage.ascx.designer.cs">
       <DependentUpon>RentalManage.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\SampleModal.ascx.cs">
-      <DependentUpon>SampleModal.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Forms\SampleModal.ascx.designer.cs">
-      <DependentUpon>SampleModal.ascx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

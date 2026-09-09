@@ -46,12 +46,12 @@ namespace BNet.Cafe.Client
         /// <summary>
         /// Extends/top-ups an existing timer session with additional duration and amount.
         /// </summary>
-        public void UpdateTimerData(string additionalDuration, string additionalAmount)
+        public void UpdateTimerData(string newDuration, string newAmount)
         {
-            double.TryParse(additionalDuration, out double parsedDurationMinutes);
-            double.TryParse(additionalAmount, out double parsedAmount);
+            double.TryParse(newDuration, out double parsedDurationMinutes);
+            double.TryParse(newAmount, out double parsedAmount);
 
-            endTime = endTime.AddMinutes(parsedDurationMinutes);
+            endTime = createdTime.AddMinutes(parsedDurationMinutes);
 
             string currentCustomerName = Label_CustomerName.Text.Replace("User : ", "");
 
@@ -98,6 +98,8 @@ namespace BNet.Cafe.Client
         {
             TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
             Label_TimerDisplay.Text = time.ToString(@"hh\:mm\:ss");
+            MainForm._timeStart = string.Empty;
+            MainForm._timeEnd = string.Empty;
         }
 
         #region Session Persistence (Text File)

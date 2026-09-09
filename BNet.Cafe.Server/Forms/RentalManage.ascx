@@ -18,6 +18,7 @@
                      <asp:Label ID="Label_Status" runat="server" Text=""></asp:Label>
                     </h1>
                     <p>Select customer details, manage rental duration, and calculate charges.</p>
+                    <asp:Label ID="Label_RentalId" runat="server" Text=""></asp:Label>
                 </div>
 
                 <div class="form-grid">

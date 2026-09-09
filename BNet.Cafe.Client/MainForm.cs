@@ -430,16 +430,20 @@ namespace BNet.Cafe.Client
                     _activeTimerForm.CreateTimerData(customerName, duration, amount);
                     _activeTimerForm.FormClosed += (s, args) => _activeTimerForm = null;
                     _activeTimerForm.Show();
+                }
+                else
+                {
+                    _activeTimerForm.UpdateTimerData(duration, amount);
+                }
 
-                    // FORCE clear title cache and send immediate update to server
-                    _lastSentTitle = string.Empty;
+                // FORCE clear title cache and send immediate update to server
+                _lastSentTitle = string.Empty;
 
-                    // Grab active window info and send packet right away
-                    var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
-                    if (_currentSession != null)
-                    {
-                        _ = SendActivityInfo(_currentSession, currentWindow);
-                    }
+                // Grab active window info and send packet right away
+                var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
+                if (_currentSession != null)
+                {
+                    _ = SendActivityInfo(_currentSession, currentWindow);
                 }
             }
             else
