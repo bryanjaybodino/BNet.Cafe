@@ -34,7 +34,7 @@
                                     </button>
                                     <div class="bnet-dropdown-menu">
                                         <a onclick="navigateTo('BNetPage.aspx?Form=RentalManage&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
-                                            <i class="fa-regular fa-clock"></i>Start Rental Session
+                                            <i class="fa-regular fa-clock"></i>Manage Rental Session
                                         </a>
                                         <a class="bnet-dropdown-item">
                                             <i class="fa-solid fa-file-invoice-dollar"></i>Billing & Invoices

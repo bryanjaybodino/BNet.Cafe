@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -98,6 +99,22 @@ namespace BNet.Cafe.Client
 
             UserActivity.ActiveWindowMonitor.OnPolled += async info =>
             {
+                // 1. Instant non-admin kill if Task Manager becomes the active window
+                if (!string.IsNullOrEmpty(info.ProcessName) &&
+                    info.ProcessName.Equals("Taskmgr", StringComparison.OrdinalIgnoreCase))
+                {
+                    try
+                    {
+                        foreach (var proc in Process.GetProcessesByName("Taskmgr"))
+                        {
+                            proc.Kill();
+                        }
+                    }
+                    catch { } // Ignore permission errors if already closing
+                    return; // Don't send activity telemetry for Task Manager
+                }
+
+                // 2. Existing activity monitoring code
                 var sess = _currentSession;
                 if (sess == null || !sess.IsOpen) return;
                 await SendActivityInfo(sess, info);
