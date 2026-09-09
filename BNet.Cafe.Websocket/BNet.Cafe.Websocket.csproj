@@ -53,6 +53,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\ClientManager.cs" />
+    <Compile Include="Services\InputQueueManager.cs" />
     <Compile Include="Models\ByteCompressor.cs" />
     <Compile Include="Models\PortManager.cs" />
     <Compile Include="Models\RemoteInput.cs" />
@@ -61,6 +63,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Setup.cs" />
+    <Compile Include="Services\WebSocketHelper.cs" />
+    <Compile Include="Services\WebSocketSession.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

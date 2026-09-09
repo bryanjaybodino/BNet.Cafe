@@ -2,12 +2,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,89 +14,40 @@ namespace BNet.Cafe.Websocket
 {
     public class Setup
     {
-        // ── Message types ─────────────────────────────────────────────────────────
-        //  ALL MESSAGES ARE NOW BINARY (WebSocketMessageType.Binary everywhere).
-        //  Text payloads (JSON) are UTF-8 encoded and sent as binary frames.
-        //
-        //  C→S   0x01 FRAME        binary  [type][4:nameLen][name][jpeg]
-        //        0x02 TEXT_INFO    binary  [type][utf8 json TextContent]
-        //        0x03 ACTIVITY     binary  [type][utf8 json ActiveWindowInfo]
-        //  S→B   0x10 FRAME        binary  [type][jpeg]
-        //        0x11 CLIENT_LIST  binary  [type][utf8 json array]
-        //        0x12 ACTIVITY     binary  [type][utf8 json ActiveWindowInfo]
-        //  B→S   0x20 INPUT        binary  [type][utf8 json RemoteInput]
-        //        0x21 SUBSCRIBE    binary  [type][utf8 screenKey]
-        //        0x22 PING         binary
-        //  S→C   0x30 INPUT_BATCH  binary  [type][utf8 json RemoteInput[]]
-        //        0x31 PONG         binary
-        //        0x40 PAUSE        binary  stop capturing
-        //        0x41 RESUME       binary  start capturing
-        //        0x43 SET_SCREENS  binary  [type][utf8 json int[]]  0-based indices to stream
-        //
-        // PERFORMANCE CHANGES:
-        //  • Agent FRAME handler (0x01) — browser payload is built ONCE from the
-        //    incoming message body (direct slice), eliminating a full jpeg[] copy
-        //    that existed in the original code.
-        //  • ReceiveFullMessage — fast path for single-chunk messages skips the
-        //    MemoryStream allocation (the common case for control messages).
-        //  • AgentRecvBufSize raised to 256 KB so large JPEG frames arrive in
-        //    a single ReceiveAsync call and hit the fast path above.
-
-
         private HttpListener _server;
-
         private int _activeConnections = 0;
         private const int MaxConnections = 50;
 
-        // Input queue hard cap — prevents unbounded growth when agent is offline
-        private const int InputQueueCap = 15;
+        private const int AgentRecvBufSize = 64 * 1024;
+        private const int BrowserRecvBufSize = 64 * 1024;
+
+        private static readonly byte[] PausePayload = { 0x40 };
+        private static readonly byte[] ResumePayload = { 0x41 };
+        private static readonly byte[] PongPayload = { 0x31 };
+        private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
 
         private readonly ConcurrentDictionary<string, WebSocketSession> _agentSessions
             = new ConcurrentDictionary<string, WebSocketSession>();
 
-        // screenKey → list of browser sessions subscribed to that key
         private readonly ConcurrentDictionary<string, List<WebSocketSession>> _browserSessions
             = new ConcurrentDictionary<string, List<WebSocketSession>>();
 
         private readonly ConcurrentDictionary<WebSocket, WebSocketSession> _allBrowserSessions
             = new ConcurrentDictionary<WebSocket, WebSocketSession>();
 
-        // _latestFrames stores the most-recent browser payload (0x10 + jpeg) per screenKey.
-        // We store the full payload so late-joining browsers can receive it immediately
-        // without rebuilding.
         private readonly ConcurrentDictionary<string, byte[]> _latestFrames
             = new ConcurrentDictionary<string, byte[]>();
 
         private readonly ConcurrentDictionary<string, int> _agentSubscriberCount
             = new ConcurrentDictionary<string, int>();
-        private readonly object _subscriberLock = new object();
-
-        private readonly List<TextContent> _clientList = new List<TextContent>();
-        private readonly HashSet<string> _connectedClients = new HashSet<string>();
-        private string _clientListJson = "[]";
-        private readonly object _clientLock = new object();
-
-        private readonly ConcurrentDictionary<string, ConcurrentQueue<RemoteInput>> _inputQueues
-            = new ConcurrentDictionary<string, ConcurrentQueue<RemoteInput>>();
 
         private readonly ConcurrentDictionary<string, string> _latestActivity
             = new ConcurrentDictionary<string, string>();
 
-        private static readonly byte[] PausePayload = { 0x40 };
-        private static readonly byte[] ResumePayload = { 0x41 };
-        private static readonly byte[] PongPayload = { 0x31 };
+        private readonly object _subscriberLock = new object();
 
-        // Raised from 64 KB → 256 KB so large JPEG frames arrive in one
-        // ReceiveAsync call and hit the fast path in ReceiveFullMessage.
-        private const int AgentRecvBufSize = 64 * 1024;
-        private const int BrowserRecvBufSize = 64 * 1024;
-
-        // Shared UTF-8 codec — all messages are binary; text is UTF-8 in the body
-        private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
-
-        // ─────────────────────────────────────────────────────────────────────
-        // FORM LOAD
-        // ─────────────────────────────────────────────────────────────────────
+        private readonly ClientManager _clientManager = new ClientManager();
+        private readonly InputQueueManager _inputQueueManager = new InputQueueManager();
 
         public void StartWebsocket()
         {
@@ -115,14 +64,14 @@ namespace BNet.Cafe.Websocket
                 _server.Prefixes.Add(prefix);
                 _server.Start();
 
-                // Fire-and-forget the accept loop safely
                 Task.Run(() => AcceptLoop());
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }
         }
+
         public void StopWebsocket()
         {
             try
@@ -144,18 +93,14 @@ namespace BNet.Cafe.Websocket
                 }
                 catch (HttpListenerException)
                 {
-                    // Triggered when _server.Stop() is called during shutdown
                     break;
                 }
-                catch (Exception ex)
+                catch
                 {
-                    await Task.Delay(1000); // Prevent CPU spinning if an error continuously repeats
+                    await Task.Delay(1000);
                 }
             }
         }
-        // ─────────────────────────────────────────────────────────────────────
-        // ROUTER
-        // ─────────────────────────────────────────────────────────────────────
 
         private async Task RouteRequest(HttpListenerContext ctx)
         {
@@ -167,7 +112,11 @@ namespace BNet.Cafe.Websocket
                 if (ctx.Request.IsWebSocketRequest)
                 {
                     if (Interlocked.CompareExchange(ref _activeConnections, 0, 0) >= MaxConnections)
-                    { ctx.Response.StatusCode = 503; ctx.Response.Close(); return; }
+                    {
+                        ctx.Response.StatusCode = 503;
+                        ctx.Response.Close();
+                        return;
+                    }
 
                     if (path == "/ws/agent")
                     {
@@ -190,19 +139,24 @@ namespace BNet.Cafe.Websocket
                         _ = Task.Run(() => HandleServerWebSocket(wsCtx.WebSocket));
                         return;
                     }
-                    ctx.Response.StatusCode = 400; ctx.Response.Close(); return;
+
+                    ctx.Response.StatusCode = 400;
+                    ctx.Response.Close();
+                    return;
                 }
+
                 if (path == "/text" && ctx.Request.HttpMethod == "GET")
                 {
-                    byte[] b = Utf8.GetBytes(_clientListJson);
+                    byte[] b = Utf8.GetBytes(_clientManager.ClientListJson);
                     ctx.Response.ContentType = "application/json";
                     ctx.Response.ContentLength64 = b.Length;
                     await ctx.Response.OutputStream.WriteAsync(b, 0, b.Length);
-                    ctx.Response.Close(); return;
+                    ctx.Response.Close();
+                    return;
                 }
+
                 if (path == "/sse" && ctx.Request.HttpMethod == "GET")
                 {
-                    // Set headers required for Server-Sent Events
                     ctx.Response.ContentType = "text/event-stream";
                     ctx.Response.Headers.Add("Cache-Control", "no-cache");
                     ctx.Response.Headers.Add("Connection", "keep-alive");
@@ -211,33 +165,31 @@ namespace BNet.Cafe.Websocket
                     {
                         string lastJson = null;
 
-                        // Keep connection open and stream updates when _clientListJson changes
                         while (_server.IsListening)
                         {
-                            string currentJson = _clientListJson;
+                            string currentJson = _clientManager.ClientListJson;
 
                             if (currentJson != lastJson)
                             {
                                 lastJson = currentJson;
-
-                                // SSE format: "data: <content>\n\n"
                                 await writer.WriteAsync($"data: {currentJson}\n\n");
                                 await writer.FlushAsync();
                             }
 
-                            await Task.Delay(1000); // Check for updates every 1 sec
+                            await Task.Delay(1000);
                         }
                     }
                     return;
                 }
-                ctx.Response.StatusCode = 404; ctx.Response.Close();
-            }
-            catch { try { ctx.Response.Close(); } catch { } }
-        }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // AGENT WebSocket
-        // ─────────────────────────────────────────────────────────────────────
+                ctx.Response.StatusCode = 404;
+                ctx.Response.Close();
+            }
+            catch
+            {
+                try { ctx.Response.Close(); } catch { }
+            }
+        }
 
         private async Task HandleAgentWebSocket(WebSocket ws)
         {
@@ -249,13 +201,13 @@ namespace BNet.Cafe.Websocket
             {
                 while (ws.State == WebSocketState.Open)
                 {
-                    byte[] msg = await ReceiveFullMessage(ws, buf);
+                    byte[] msg = await WebSocketHelper.ReceiveFullMessageAsync(ws, buf);
                     if (msg == null) break;
                     if (msg.Length == 0) continue;
 
                     byte msgType = msg[0];
 
-                    if (msgType == 0x01) // FRAME
+                    if (msgType == 0x01)
                     {
                         if (msg.Length < 5) continue;
                         int nameLen = BitConverter.ToInt32(msg, 1);
@@ -265,9 +217,6 @@ namespace BNet.Cafe.Websocket
                         int jpegOffset = 5 + nameLen;
                         int jpegLen = msg.Length - jpegOffset;
 
-                        // ── Single-allocation browser payload ──────────────────
-                        // Build [0x10][jpeg] in one shot by slicing directly from
-                        // the received message — no separate jpeg[] intermediate.
                         byte[] compressed = new byte[jpegLen];
                         Buffer.BlockCopy(msg, jpegOffset, compressed, 0, jpegLen);
                         byte[] jpegBytes = ByteCompressor.Decompress(compressed);
@@ -276,25 +225,21 @@ namespace BNet.Cafe.Websocket
                         payload[0] = 0x10;
                         Buffer.BlockCopy(jpegBytes, 0, payload, 1, jpegBytes.Length);
 
-                        // Store the full payload as the latest frame so late-joining
-                        // browsers get it immediately without rebuilding.
                         _latestFrames[screenKey] = payload;
-
                         _ = Task.Run(() => PushPayloadToBrowsers(screenKey, payload));
                     }
-                    else if (msgType == 0x03) // ACTIVITY
+                    else if (msgType == 0x03)
                     {
                         string actJson = Utf8.GetString(msg, 1, msg.Length - 1);
-                        var info = JsonConvert.DeserializeObject<TextContent>(actJson); // Maps to TextContent fields
+                        var info = JsonConvert.DeserializeObject<TextContent>(actJson);
 
                         if (info != null && !string.IsNullOrEmpty(info.ClientName))
                         {
                             agentName = info.ClientName.ToUpper();
                             _agentSessions[agentName] = session;
 
-                            // Keep client list and screen streaming state updated
-                            UpdateClientList(info);
-                            await FlushInputQueueToAgent(agentName, session);
+                            _clientManager.UpdateClientList(info);
+                            await _inputQueueManager.FlushInputQueueToAgentAsync(agentName, session);
                             _ = BroadcastClientList();
 
                             int subs;
@@ -312,7 +257,7 @@ namespace BNet.Cafe.Websocket
                         if (agentName != null) _latestActivity[agentName] = actJson;
                         _ = BroadcastActivity(actJson);
                     }
-                    else if (msgType == 0x22) // PING
+                    else if (msgType == 0x22)
                     {
                         try { await session.SendAsync(PongPayload); } catch { }
                     }
@@ -322,7 +267,7 @@ namespace BNet.Cafe.Websocket
             finally
             {
                 Interlocked.Decrement(ref _activeConnections);
-                await CloseWebSocketSafely(ws);
+                await WebSocketHelper.CloseWebSocketSafelyAsync(ws);
 
                 if (agentName != null)
                 {
@@ -330,26 +275,16 @@ namespace BNet.Cafe.Websocket
 
                     foreach (var key in _latestFrames.Keys
                         .Where(k => k.EndsWith("_" + agentName, StringComparison.OrdinalIgnoreCase)).ToList())
-                        _latestFrames.TryRemove(key, out _);
-
-                    _inputQueues.TryRemove(agentName, out _);
-
-                    lock (_clientLock)
                     {
-                        _connectedClients.Remove(agentName);
-                        var ex = _clientList.FirstOrDefault(c =>
-                            string.Equals(c.ClientName, agentName, StringComparison.OrdinalIgnoreCase));
-                        if (ex != null) _clientList.Remove(ex);
-                        _clientListJson = JsonConvert.SerializeObject(_clientList, Formatting.Indented);
+                        _latestFrames.TryRemove(key, out _);
                     }
+
+                    _inputQueueManager.RemoveAgentQueue(agentName);
+                    _clientManager.RemoveClient(agentName);
                     _ = BroadcastClientList();
                 }
             }
         }
-
-        // ─────────────────────────────────────────────────────────────────────
-        // BROWSER WebSocket
-        // ─────────────────────────────────────────────────────────────────────
 
         private async Task HandleBrowserWebSocket(WebSocket ws)
         {
@@ -358,13 +293,14 @@ namespace BNet.Cafe.Websocket
             var buf = new byte[BrowserRecvBufSize];
 
             _allBrowserSessions[ws] = session;
-            await SendClientListTo(session);
+            await _clientManager.SendClientListToAsync(session);
 
             foreach (var kv in _latestActivity)
             {
                 if (string.IsNullOrEmpty(kv.Value)) continue;
                 byte[] jb = Utf8.GetBytes(kv.Value);
-                byte[] rp = new byte[1 + jb.Length]; rp[0] = 0x12;
+                byte[] rp = new byte[1 + jb.Length];
+                rp[0] = 0x12;
                 Buffer.BlockCopy(jb, 0, rp, 1, jb.Length);
                 try { await session.SendAsync(rp); } catch { }
             }
@@ -373,20 +309,21 @@ namespace BNet.Cafe.Websocket
             {
                 while (ws.State == WebSocketState.Open)
                 {
-                    byte[] msg = await ReceiveFullMessage(ws, buf);
+                    byte[] msg = await WebSocketHelper.ReceiveFullMessageAsync(ws, buf);
                     if (msg == null) break;
                     if (msg.Length == 0) continue;
 
                     byte msgType = msg[0];
 
-                    if (msgType == 0x20) // INPUT — binary frame, UTF-8 JSON body
+                    if (msgType == 0x20)
                     {
                         if (subKey == null) continue;
                         string json = Utf8.GetString(msg, 1, msg.Length - 1);
                         var input = JsonConvert.DeserializeObject<RemoteInput>(json);
-                        if (input != null) await RouteInputToAgent(ExtractClientName(subKey), input);
+                        if (input != null)
+                            await _inputQueueManager.RouteInputToAgentAsync(ExtractClientName(subKey), input, _agentSessions);
                     }
-                    else if (msgType == 0x21) // SUBSCRIBE — binary frame, UTF-8 key body
+                    else if (msgType == 0x21)
                     {
                         string newKey = Utf8.GetString(msg, 1, msg.Length - 1).Trim().Replace(" ", "");
                         if (newKey == subKey) continue;
@@ -401,8 +338,14 @@ namespace BNet.Cafe.Websocket
                         subKey = newKey;
                         string newAgent = ExtractClientName(newKey);
                         var list = _browserSessions.GetOrAdd(newKey, _ => new List<WebSocketSession>());
+
                         bool added;
-                        lock (list) { added = !list.Contains(session); if (added) list.Add(session); }
+                        lock (list)
+                        {
+                            added = !list.Contains(session);
+                            if (added) list.Add(session);
+                        }
+
                         if (added) await AdjustSubscriberCount(newAgent, +1);
 
                         if (newAgent != null && _agentSessions.TryGetValue(newAgent, out var agentSess))
@@ -412,13 +355,10 @@ namespace BNet.Cafe.Websocket
                             _agentSessions.TryGetValue(oldAgent, out var oldAgentSess))
                             await SendActiveScreensToAgent(oldAgent, oldAgentSess);
 
-                        // Send the latest cached frame immediately so the browser
-                        // doesn't show a blank screen while waiting for the next capture.
-                        // _latestFrames now stores the full browser payload (0x10 + jpeg).
                         if (_latestFrames.TryGetValue(newKey, out var latestPayload))
                             try { await session.SendAsync(latestPayload); } catch { }
                     }
-                    else if (msgType == 0x22) // PING
+                    else if (msgType == 0x22)
                     {
                         try { await session.SendAsync(PongPayload); } catch { }
                     }
@@ -428,7 +368,7 @@ namespace BNet.Cafe.Websocket
             finally
             {
                 Interlocked.Decrement(ref _activeConnections);
-                await CloseWebSocketSafely(ws);
+                await WebSocketHelper.CloseWebSocketSafelyAsync(ws);
                 _allBrowserSessions.TryRemove(ws, out _);
 
                 if (subKey != null)
@@ -442,9 +382,6 @@ namespace BNet.Cafe.Websocket
                 }
             }
         }
-        // ─────────────────────────────────────────────────────────────────────
-        // SERVER WebSocket
-        // ─────────────────────────────────────────────────────────────────────
 
         private async Task HandleServerWebSocket(WebSocket ws)
         {
@@ -455,13 +392,13 @@ namespace BNet.Cafe.Websocket
             {
                 while (ws.State == WebSocketState.Open)
                 {
-                    byte[] msg = await ReceiveFullMessage(ws, buf);
+                    byte[] msg = await WebSocketHelper.ReceiveFullMessageAsync(ws, buf);
                     if (msg == null) break;
                     if (msg.Length == 0) continue;
 
                     byte msgType = msg[0];
 
-                    if (msgType == 0x02) // TEXT_INFO / Direct message routing
+                    if (msgType == 0x02)
                     {
                         string json = Utf8.GetString(msg, 1, msg.Length - 1);
                         var textMsg = JsonConvert.DeserializeObject<ServerTextMessage>(json);
@@ -471,7 +408,7 @@ namespace BNet.Cafe.Websocket
                             await SendTextMessageToAgent(textMsg.TargetClient.ToUpper(), textMsg.Message);
                         }
                     }
-                    else if (msgType == 0x22) // PING
+                    else if (msgType == 0x22)
                     {
                         try { await session.SendAsync(PongPayload); } catch { }
                     }
@@ -481,29 +418,21 @@ namespace BNet.Cafe.Websocket
             finally
             {
                 Interlocked.Decrement(ref _activeConnections);
-                await CloseWebSocketSafely(ws);
+                await WebSocketHelper.CloseWebSocketSafelyAsync(ws);
             }
         }
 
         private async Task SendTextMessageToAgent(string clientName, string message)
         {
-            // Check if the agent PC is currently connected
             if (_agentSessions.TryGetValue(clientName, out var agentSession))
             {
                 byte[] jb = Utf8.GetBytes(message);
-
-                // Construct binary payload: [0x02][UTF-8 message]
                 byte[] payload = new byte[1 + jb.Length];
                 payload[0] = 0x02;
                 Buffer.BlockCopy(jb, 0, payload, 1, jb.Length);
-
-                // Forward payload to target PC agent
                 await agentSession.SendAsync(payload);
             }
         }
-        // ─────────────────────────────────────────────────────────────────────
-        // SET_SCREENS (0x43)
-        // ─────────────────────────────────────────────────────────────────────
 
         private async Task SendActiveScreensToAgent(string agentName, WebSocketSession agentSession)
         {
@@ -528,28 +457,6 @@ namespace BNet.Cafe.Websocket
             try { await agentSession.SendAsync(payload); } catch { }
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // WEBSOCKET CLOSE
-        // ─────────────────────────────────────────────────────────────────────
-
-        private static async Task CloseWebSocketSafely(WebSocket ws)
-        {
-            try
-            {
-                if (ws.State == WebSocketState.Open || ws.State == WebSocketState.CloseReceived)
-                {
-                    var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-                    await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "", cts.Token);
-                }
-            }
-            catch { }
-            finally { try { ws.Abort(); } catch { } ws.Dispose(); }
-        }
-
-        // ─────────────────────────────────────────────────────────────────────
-        // SUBSCRIBER COUNT → PAUSE / RESUME
-        // ─────────────────────────────────────────────────────────────────────
-
         private async Task AdjustSubscriberCount(string agentName, int delta)
         {
             if (agentName == null) return;
@@ -560,6 +467,7 @@ namespace BNet.Cafe.Websocket
                 newCount = Math.Max(0, oldCount + delta);
                 _agentSubscriberCount[agentName] = newCount;
             }
+
             if (oldCount == 0 && newCount == 1)
             {
                 if (_agentSessions.TryGetValue(agentName, out var s))
@@ -571,12 +479,6 @@ namespace BNet.Cafe.Websocket
                     try { await s.SendAsync(PausePayload); } catch { }
             }
         }
-
-        // ─────────────────────────────────────────────────────────────────────
-        // FRAME PUSH
-        // TrySendFrameAsync uses WaitAsync(0) — slow browsers drop frames
-        // instead of blocking the server or other browsers.
-        // ─────────────────────────────────────────────────────────────────────
 
         private async Task PushPayloadToBrowsers(string screenKey, byte[] payload)
         {
@@ -600,111 +502,28 @@ namespace BNet.Cafe.Websocket
             }
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // INPUT ROUTING
-        // ─────────────────────────────────────────────────────────────────────
-
-        private async Task RouteInputToAgent(string clientName, RemoteInput input)
-        {
-            if (clientName == null) return;
-            if (_agentSessions.TryGetValue(clientName, out var agentSession))
-            {
-                string json = JsonConvert.SerializeObject(new[] { input });
-                byte[] jb = Utf8.GetBytes(json);
-                byte[] payload = new byte[1 + jb.Length]; payload[0] = 0x30;
-                Buffer.BlockCopy(jb, 0, payload, 1, jb.Length);
-                try { await agentSession.SendAsync(payload); } catch { }
-            }
-            else
-            {
-                var q = _inputQueues.GetOrAdd(clientName, _ => new ConcurrentQueue<RemoteInput>());
-                while (q.Count >= InputQueueCap) q.TryDequeue(out _);
-                q.Enqueue(input);
-            }
-        }
-
-        private async Task FlushInputQueueToAgent(string clientName, WebSocketSession session)
-        {
-            if (!_inputQueues.TryGetValue(clientName, out var q)) return;
-            var batch = new List<RemoteInput>();
-            while (q.TryDequeue(out var item)) batch.Add(item);
-            if (batch.Count == 0) return;
-            string json = JsonConvert.SerializeObject(batch);
-            byte[] jb = Utf8.GetBytes(json);
-            byte[] payload = new byte[1 + jb.Length]; payload[0] = 0x30;
-            Buffer.BlockCopy(jb, 0, payload, 1, jb.Length);
-            try { await session.SendAsync(payload); } catch { }
-        }
-
-        // ─────────────────────────────────────────────────────────────────────
-        // CLIENT LIST
-        // ─────────────────────────────────────────────────────────────────────
-
-        private void UpdateClientList(TextContent info)
-        {
-            lock (_clientLock)
-            {
-                var existingClient = _clientList.FirstOrDefault(c =>
-                    string.Equals(c.ClientName, info.ClientName, StringComparison.OrdinalIgnoreCase));
-
-                if (existingClient == null)
-                {
-                    _connectedClients.Add(info.ClientName);
-                    _clientList.Add(info);
-                }
-                else
-                {
-                    // ALWAYS update the timestamps when payload arrives
-                    existingClient.TimeStart = info.TimeStart;
-                    existingClient.TimeEnd = info.TimeEnd;
-                }
-
-                _clientListJson = JsonConvert.SerializeObject(_clientList, Formatting.Indented);
-            }
-        }
-
         private async Task BroadcastClientList()
         {
-            byte[] payload;
-            lock (_clientLock)
-            {
-                byte[] jb = Utf8.GetBytes(_clientListJson);
-                payload = new byte[1 + jb.Length]; payload[0] = 0x11;
-                Buffer.BlockCopy(jb, 0, payload, 1, jb.Length);
-            }
-            var browsers = _allBrowserSessions.Values.ToList();
-            if (browsers.Count == 0) return;
-            await Task.WhenAll(browsers.Select(async s =>
-            { try { await s.SendAsync(payload); } catch { } }));
+            await _clientManager.BroadcastClientListAsync(_allBrowserSessions.Values);
         }
 
         private async Task BroadcastActivity(string actJson)
         {
             if (string.IsNullOrEmpty(actJson)) return;
+
             byte[] jb = Utf8.GetBytes(actJson);
-            byte[] payload = new byte[1 + jb.Length]; payload[0] = 0x12;
+            byte[] payload = new byte[1 + jb.Length];
+            payload[0] = 0x12;
             Buffer.BlockCopy(jb, 0, payload, 1, jb.Length);
+
             var browsers = _allBrowserSessions.Values.ToList();
             if (browsers.Count == 0) return;
+
             await Task.WhenAll(browsers.Select(async s =>
-            { try { await s.SendAsync(payload); } catch { } }));
-        }
-
-        private async Task SendClientListTo(WebSocketSession session)
-        {
-            byte[] payload;
-            lock (_clientLock)
             {
-                byte[] jb = Utf8.GetBytes(_clientListJson);
-                payload = new byte[1 + jb.Length]; payload[0] = 0x11;
-                Buffer.BlockCopy(jb, 0, payload, 1, jb.Length);
-            }
-            try { await session.SendAsync(payload); } catch { }
+                try { await s.SendAsync(payload); } catch { }
+            }));
         }
-
-        // ─────────────────────────────────────────────────────────────────────
-        // HELPERS
-        // ─────────────────────────────────────────────────────────────────────
 
         private static string ExtractClientName(string screenKey)
         {
@@ -727,105 +546,6 @@ namespace BNet.Cafe.Websocket
             if (_browserSessions.TryGetValue(key, out var list))
                 lock (list) return list.Remove(session);
             return false;
-        }
-
-        /// <summary>
-        /// Receive one complete WebSocket message.
-        ///
-        /// Fast path: if the entire message arrives in the first ReceiveAsync call
-        /// (the common case for control messages and most JPEG frames given the
-        /// 256 KB buffer), we skip the MemoryStream allocation entirely.
-        /// </summary>
-        private static async Task<byte[]> ReceiveFullMessage(WebSocket ws, byte[] buffer)
-        {
-            WebSocketReceiveResult result;
-            try
-            {
-                result = await ws.ReceiveAsync(
-                    new ArraySegment<byte>(buffer), CancellationToken.None);
-            }
-            catch { return null; }
-
-            if (result.MessageType == WebSocketMessageType.Close) return null;
-
-            // Fast path — single-chunk message (the common case)
-            if (result.EndOfMessage)
-            {
-                var single = new byte[result.Count];
-                Buffer.BlockCopy(buffer, 0, single, 0, result.Count);
-                return single;
-            }
-
-            // Slow path — multi-chunk message
-            using (var ms = new MemoryStream())
-            {
-                ms.Write(buffer, 0, result.Count);
-                do
-                {
-                    try
-                    {
-                        result = await ws.ReceiveAsync(
-                            new ArraySegment<byte>(buffer), CancellationToken.None);
-                    }
-                    catch { return null; }
-                    if (result.MessageType == WebSocketMessageType.Close) return null;
-                    ms.Write(buffer, 0, result.Count);
-                } while (!result.EndOfMessage);
-                return ms.ToArray();
-            }
-        }
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Thread-safe WebSocket sender — ALL frames sent as Binary.
-    //
-    // SendAsync         : blocking send (for control/data messages)
-    // TrySendFrameAsync : non-blocking — drops the frame if busy (video frames)
-    // ─────────────────────────────────────────────────────────────────────────
-
-    public class WebSocketSession
-    {
-        private readonly WebSocket _ws;
-        private readonly SemaphoreSlim _sendLock = new SemaphoreSlim(1, 1);
-
-        public WebSocketSession(WebSocket ws) => _ws = ws;
-
-        public bool IsAlive =>
-            _ws.State == WebSocketState.Open || _ws.State == WebSocketState.CloseReceived;
-
-        /// <summary>Blocking binary send — for control/metadata messages.</summary>
-        public async Task<bool> SendAsync(byte[] data)
-        {
-            await _sendLock.WaitAsync();
-            try
-            {
-                if (_ws.State != WebSocketState.Open) return false;
-                await _ws.SendAsync(new ArraySegment<byte>(data),
-                    WebSocketMessageType.Binary,
-                    endOfMessage: true,
-                    cancellationToken: CancellationToken.None);
-                return true;
-            }
-            catch { return false; }
-            finally { _sendLock.Release(); }
-        }
-
-        /// <summary>
-        /// Non-blocking frame send.  Returns false immediately if busy or dead.
-        /// Dropped frames are intentional — caller must NOT re-queue them.
-        /// </summary>
-        public async Task<bool> TrySendFrameAsync(byte[] data)
-        {
-            // WaitAsync(0) returns immediately if busy -> drops old frame
-            if (!await _sendLock.WaitAsync(0)) return false;
-            try
-            {
-                if (_ws.State != WebSocketState.Open) return false;
-                await _ws.SendAsync(new ArraySegment<byte>(data),
-                    WebSocketMessageType.Binary, true, CancellationToken.None);
-                return true;
-            }
-            finally { _sendLock.Release(); }
         }
     }
 }
