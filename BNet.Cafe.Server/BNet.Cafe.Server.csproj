@@ -132,6 +132,7 @@
     <Content Include="Forms\ComputerEdit.ascx" />
     <Content Include="Forms\Computers.ascx" />
     <Content Include="Forms\Modals\ComputerDelete.ascx" />
+    <Content Include="Forms\Modals\RemoteLogout.ascx" />
     <Content Include="Forms\Modals\RemoteMessage.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Forms\RentalManage.ascx" />
@@ -196,6 +197,13 @@
     </Compile>
     <Compile Include="Forms\Modals\ComputerDelete.ascx.designer.cs">
       <DependentUpon>ComputerDelete.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\RemoteLogout.ascx.cs">
+      <DependentUpon>RemoteLogout.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\RemoteLogout.ascx.designer.cs">
+      <DependentUpon>RemoteLogout.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Modals\RemoteMessage.ascx.cs">
       <DependentUpon>RemoteMessage.ascx</DependentUpon>

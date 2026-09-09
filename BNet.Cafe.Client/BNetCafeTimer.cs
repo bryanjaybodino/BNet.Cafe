@@ -58,6 +58,14 @@ namespace BNet.Cafe.Client
             ApplyTimerData(currentCustomerName, parsedAmount);
         }
 
+        public void Logout()
+        {
+            endTime = createdTime.AddMinutes(0);
+            ApplyTimerData("", 0);
+            ClearSessionFile();
+        }
+
+
         private void ApplyTimerData(string customerName, double amount)
         {
             remainingSeconds = (endTime - TimeService.Get()).TotalSeconds;
@@ -98,8 +106,6 @@ namespace BNet.Cafe.Client
         {
             TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
             Label_TimerDisplay.Text = time.ToString(@"hh\:mm\:ss");
-            MainForm._timeStart = string.Empty;
-            MainForm._timeEnd = string.Empty;
         }
 
         #region Session Persistence (Text File)
@@ -149,6 +155,7 @@ namespace BNet.Cafe.Client
 
                             UpdateDisplay();
                             Timer_Countdown.Start();
+                            KeyboardHook.Stop();
                             return;
                         }
                     }
@@ -166,8 +173,6 @@ namespace BNet.Cafe.Client
         {
             if (File.Exists(sessionFilePath))
             {
-                MainForm._timeStart = "";
-                MainForm._timeEnd = "";
                 Timer_Countdown.Stop();
                 remainingSeconds = 0;
                 this.Hide();

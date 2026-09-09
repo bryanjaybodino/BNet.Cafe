@@ -9,9 +9,5 @@ namespace BNet.Cafe.Server.Forms.Modals
 {
     public partial class RemoteMessage : System.Web.UI.UserControl
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }

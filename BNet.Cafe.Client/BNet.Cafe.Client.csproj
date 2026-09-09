@@ -57,12 +57,14 @@
     <Reference Include="UIAutomationTypes" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AgentSession.cs" />
     <Compile Include="BNetCafeTimer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="BNetCafeTimer.Designer.cs">
       <DependentUpon>BNetCafeTimer.cs</DependentUpon>
     </Compile>
+    <Compile Include="KeyboardHook.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

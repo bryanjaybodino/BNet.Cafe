@@ -44,5 +44,23 @@ namespace BNet.Cafe.Server.Services
             // 5. Register startup script context for ASP.NET WebForms / UpdatePanel
             ScriptManager.RegisterStartupScript(control, control.GetType(), "SendToPCScript", script, true);
         }
+
+        public static void LogoutPC(Control control, string targetClient)
+        {
+            if (control == null)
+            {
+                throw new ArgumentNullException(nameof(control), "Control parameter cannot be null.");
+            }
+
+            // 1. Serialize both parameters so they format properly for JS execution
+            string safeTargetClient = JsonConvert.SerializeObject(targetClient ?? string.Empty);
+
+            // 2. Construct JS call matching sendTextMessageToPC(targetClient, messageContent)
+            string script = $"sendTextMessageToPC({safeTargetClient}, '{ConstantData.RentalCommand.LOGOUT}');";
+
+            // 3. Register startup script context for ASP.NET WebForms / UpdatePanel
+            ScriptManager.RegisterStartupScript(control, control.GetType(), "SendToPCScript", script, true);
+        }
+
     }
 }

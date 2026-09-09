@@ -81,27 +81,62 @@ namespace BNet.Cafe.Client
         // ── Activity monitoring ───────────────────────────────────────────────
         private volatile AgentSession _currentSession;
 
+
+        public void LockScreen()
+        {
+            KeyboardHook.Start();
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
+            this.TopMost = false;
+
+            this.ControlBox = true;
+            this.MaximizeBox = true;
+            this.MinimizeBox = true;
+
+            this.Show();
+            this.BringToFront();
+            this.Activate();
+            this.Focus();
+        }
+
+        public void UnlockScreen()
+        {
+            KeyboardHook.Stop();
+            this.Hide();
+        }
+
+
         // ─────────────────────────────────────────────────────────────────────
         // FORM LOAD
         // ─────────────────────────────────────────────────────────────────────
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
+            LockScreen();
             await Task.Delay(1000);
             _deviceInfo = await GatherDeviceInfo();
 
-            if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt")))
+            string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
+            if (File.Exists(sessionFilePath))
             {
+                this.Hide();
                 _activeTimerForm.Show();
+                ClearTitleCache(); 
+                UnlockScreen();
             }
 
             RebuildScreenKeyCache(ScreenCaptured.GetScreenCount());
 
             UserActivity.ActiveWindowMonitor.OnPolled += async info =>
             {
-                // 1. Instant non-admin kill if Task Manager becomes the active window
-                if (!string.IsNullOrEmpty(info.ProcessName) &&
-                    info.ProcessName.Equals("Taskmgr", StringComparison.OrdinalIgnoreCase))
+                // Extract and validate properties safely
+                string processName = info?.ProcessName ?? string.Empty;
+                string windowTitle = info?.WindowTitle ?? string.Empty;
+
+                // Check for targeted window titles or processes
+                bool isTaskManager = processName.Equals("Taskmgr", StringComparison.OrdinalIgnoreCase);
+                bool isControlPanel = windowTitle.IndexOf("Programs and Features", StringComparison.OrdinalIgnoreCase) >= 0;
+                if (isTaskManager || isControlPanel)
                 {
                     try
                     {
@@ -109,18 +144,23 @@ namespace BNet.Cafe.Client
                         {
                             proc.Kill();
                         }
+                        foreach (var proc in Process.GetProcessesByName("explorer"))
+                        {
+                            if (proc.MainWindowTitle.Contains("Programs and Features"))
+                            {
+                                proc.Kill();
+                            }
+                        }
                     }
                     catch { } // Ignore permission errors if already closing
                     return; // Don't send activity telemetry for Task Manager
                 }
-
                 // 2. Existing activity monitoring code
                 var sess = _currentSession;
                 if (sess == null || !sess.IsOpen) return;
                 await SendActivityInfo(sess, info);
             };
             UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
-
             _ = Task.Run(RunAgentLoop);
         }
 
@@ -405,6 +445,19 @@ namespace BNet.Cafe.Client
         // ─────────────────────────────────────────────────────────────────────
         // MESSAGE HANDLER
         // ─────────────────────────────────────────────────────────────────────
+        private void ClearTitleCache()
+        {
+            // FORCE clear title cache and send immediate update to server
+            _lastSentTitle = string.Empty;
+
+            // Grab active window info and send packet right away
+            var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
+            if (_currentSession != null)
+            {
+                _ = SendActivityInfo(_currentSession, currentWindow);
+            }
+        }
+
         private static BNetCafeTimer _activeTimerForm = new BNetCafeTimer();
         private void HandleIncomingTextMessage(string textMessage)
         {
@@ -425,7 +478,8 @@ namespace BNet.Cafe.Client
                 string command = jsonObject["command"]?.ToString() ?? "0";
 
                 // Check if the form is already open
-                if (!File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt")))
+                string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
+                if (!File.Exists(sessionFilePath))
                 {
                     _activeTimerForm.CreateTimerData(customerName, duration, amount);
                     _activeTimerForm.FormClosed += (s, args) => _activeTimerForm = null;
@@ -435,16 +489,14 @@ namespace BNet.Cafe.Client
                 {
                     _activeTimerForm.UpdateTimerData(duration, amount);
                 }
-
-                // FORCE clear title cache and send immediate update to server
-                _lastSentTitle = string.Empty;
-
-                // Grab active window info and send packet right away
-                var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
-                if (_currentSession != null)
-                {
-                    _ = SendActivityInfo(_currentSession, currentWindow);
-                }
+                UnlockScreen();
+                ClearTitleCache();
+            }
+            else if (textMessage == "LOGOUT")
+            {
+                _activeTimerForm.Logout();
+                LockScreen();
+                ClearTitleCache();
             }
             else
             {
@@ -464,39 +516,40 @@ namespace BNet.Cafe.Client
         // ─────────────────────────────────────────────────────────────────────
 
         private string _lastSentTitle = string.Empty;
-        public static string _timeStart = string.Empty;
-        public static string _timeEnd = string.Empty;
+
         private async Task SendActivityInfo(AgentSession session, UserActivity.ActiveWindowInfo info)
         {
             try
             {
                 // Skip sending if the window title hasn't changed
-                if (info.WindowTitle == _lastSentTitle) return;
-                _lastSentTitle = info.WindowTitle;
-
-
-
-                if (_timeStart == string.Empty && _timeEnd == string.Empty)
+                if (info.WindowTitle == _lastSentTitle)
                 {
-                    string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
-                    if (File.Exists(sessionFilePath))
+                    return;
+                }
+
+                _lastSentTitle = info.WindowTitle;
+                string _timeStart = string.Empty;
+                string _timeEnd = string.Empty;
+
+                string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
+                if (File.Exists(sessionFilePath))
+                {
+                    string content = File.ReadAllText(sessionFilePath);
+                    string[] parts = content.Split('|');
+
+                    // Check for 4 parts: createdTicks|endTicks|customerName|amount
+                    if (parts.Length >= 4
+                        && long.TryParse(parts[0], out long createdTicks)
+                        && long.TryParse(parts[1], out long endTicks))
                     {
-                        string content = File.ReadAllText(sessionFilePath);
-                        string[] parts = content.Split('|');
+                        DateTime startTime = new DateTime(createdTicks);
+                        DateTime endTime = new DateTime(endTicks);
 
-                        // Check for 4 parts: createdTicks|endTicks|customerName|amount
-                        if (parts.Length >= 4
-                            && long.TryParse(parts[0], out long createdTicks)
-                            && long.TryParse(parts[1], out long endTicks))
-                        {
-                            DateTime startTime = new DateTime(createdTicks);
-                            DateTime endTime = new DateTime(endTicks);
-
-                            _timeStart = startTime.ToString("yyyy-MM-dd HH:mm:ss");
-                            _timeEnd = endTime.ToString("yyyy-MM-dd HH:mm:ss");
-                        }
+                        _timeStart = startTime.ToString("yyyy-MM-dd HH:mm:ss");
+                        _timeEnd = endTime.ToString("yyyy-MM-dd HH:mm:ss");
                     }
                 }
+
                 var payloadObj = new
                 {
                     clientName = _deviceInfo.ClientName,
@@ -527,6 +580,7 @@ namespace BNet.Cafe.Client
                 frame[0] = 0x03; // Using Activity opcode 0x03
                 Buffer.BlockCopy(jsonBytes, 0, frame, 1, jsonBytes.Length);
                 await session.SendAsync(frame, WebSocketMessageType.Binary);
+
             }
             catch { }
         }
@@ -621,51 +675,6 @@ namespace BNet.Cafe.Client
                 ProcessorCount = Environment.ProcessorCount.ToString(),
                 ScreenCount = ScreenCaptured.GetScreenCount().ToString(),
             };
-        }
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Thread-safe send wrapper with HARD TIMEOUT.
-    // ALL frames are sent as Binary — WebSocketMessageType.Binary is always used.
-    // ─────────────────────────────────────────────────────────────────────────
-
-    public class AgentSession
-    {
-        public readonly WebSocket WebSocket;
-        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
-        private readonly int _timeoutMs;
-
-        public AgentSession(WebSocket ws, int timeoutMs = 500)
-        {
-            WebSocket = ws;
-            _timeoutMs = timeoutMs;
-        }
-
-        public bool IsOpen => WebSocket.State == WebSocketState.Open;
-
-        /// <summary>
-        /// Sends data as a binary WebSocket frame with a hard timeout.
-        /// Returns true on success, false on timeout or error.
-        /// </summary>
-        public async Task<bool> SendAsync(byte[] data,
-            WebSocketMessageType type = WebSocketMessageType.Binary)
-        {
-            await _lock.WaitAsync();
-            try
-            {
-                if (!IsOpen) return false;
-                using (var cts = new CancellationTokenSource(_timeoutMs))
-                {
-                    await WebSocket.SendAsync(
-                        new ArraySegment<byte>(data),
-                        WebSocketMessageType.Binary,
-                        endOfMessage: true,
-                        cancellationToken: cts.Token);
-                }
-                return true;
-            }
-            catch { return false; }
-            finally { _lock.Release(); }
         }
     }
 }

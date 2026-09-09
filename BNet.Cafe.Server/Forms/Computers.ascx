@@ -1,6 +1,12 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Computers.ascx.cs" Inherits="BNet.Cafe.Server.Forms.Computers" %>
 <%@ Register Src="~/Forms/Modals/ComputerDelete.ascx" TagPrefix="uc1" TagName="ComputerDelete" %>
+<%@ Register Src="~/Forms/Modals/RemoteLogout.ascx" TagPrefix="uc1" TagName="RemoteLogout" %>
 
+<asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
+    <Scripts>
+        <asp:ScriptReference Path="~/Assets/Pages/RemoteMessaging.js" />
+    </Scripts>
+</asp:ScriptManagerProxy>
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
@@ -36,7 +42,7 @@
                                         <a onclick="navigateTo('BNetPage.aspx?Form=RentalManage&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                             <i class="fa-regular fa-clock"></i>Manage Rental Session
                                         </a>
-                                        <a class="bnet-dropdown-item">
+                                        <a class="bnet-dropdown-item" onclick="openLogoutModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
                                             <i class="fa-solid fa-right-from-bracket"></i>Log Out
                                         </a>
                                         <a class="bnet-dropdown-item">
@@ -89,6 +95,7 @@
             <asp:Panel ID="Panel_Pagination" runat="server" />
         </div>
         <uc1:ComputerDelete runat="server" ID="ComputerDelete" />
+        <uc1:RemoteLogout runat="server" id="RemoteLogout" />
     </ContentTemplate>
 </asp:UpdatePanel>
 
