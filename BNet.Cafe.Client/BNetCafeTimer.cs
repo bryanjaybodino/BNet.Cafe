@@ -133,7 +133,6 @@ namespace BNet.Cafe.Client
                     string content = File.ReadAllText(sessionFilePath);
                     string[] parts = content.Split('|');
 
-                    // 4. Added support to read 4 pipe-separated values
                     if (parts.Length >= 4 &&
                         long.TryParse(parts[0], out long createdTicks) &&
                         long.TryParse(parts[1], out long endTicks))
@@ -147,11 +146,16 @@ namespace BNet.Cafe.Client
 
                         if (remainingSeconds > 0)
                         {
+                            // Fix: Calculate total purchased time from creation to end time (not remaining time)
+                            double totalPurchasedSeconds = (endTime - createdTime).TotalSeconds;
+
                             Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
                             Label_CustomerName.Text = $"User : {(string.IsNullOrWhiteSpace(customerName) ? "GUEST" : customerName.ToUpper())}";
-                            Label_TotalHours.Text = $"Purchased : {FormatPurchasedTime(remainingSeconds)}";
+                            Label_TotalHours.Text = $"Purchased : {FormatPurchasedTime(totalPurchasedSeconds)}";
                             label_TotalAmount.Text = $"Amount : ₱{amount:N2}";
-                            Label_TimeoutDisplay.Text = $"Timeout : {endTime:hh:mm tt}";
+
+                            // Fix: Include date if session ends past today
+                            Label_TimeoutDisplay.Text = FormatTimeoutDisplay(endTime);
 
                             UpdateDisplay();
                             Timer_Countdown.Start();
@@ -210,14 +214,28 @@ namespace BNet.Cafe.Client
         {
             TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, totalSeconds));
 
-            if (time.TotalHours < 1)
+            // Fix: Use (int)time.TotalHours instead of time.Hours
+            int totalHours = (int)time.TotalHours;
+
+            if (totalHours < 1)
             {
                 return $"{time.Minutes} mins";
             }
 
             return time.Minutes > 0
-                ? $"{time.Hours} hr {time.Minutes} mins"
-                : $"{time.Hours} hrs";
+                ? $"{totalHours} hr {time.Minutes} mins"
+                : $"{totalHours} hrs";
+        }
+
+        private string FormatTimeoutDisplay(DateTime targetEndTime)
+        {
+            // If the timeout is on a different day, append the date (e.g., "03:30 PM (Sep 12)")
+            if (targetEndTime.Date > TimeService.Get().Date)
+            {
+                return $"Timeout : {targetEndTime:hh:mm tt (MMM dd)}";
+            }
+
+            return $"Timeout : {targetEndTime:hh:mm tt}";
         }
     }
 }

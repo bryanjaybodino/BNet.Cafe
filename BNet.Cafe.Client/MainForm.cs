@@ -34,7 +34,7 @@ namespace BNet.Cafe.Client
 
         private TextContent _deviceInfo;
         private volatile AgentSession _currentSession;
-        private static BNetCafeTimer _activeTimerForm = new BNetCafeTimer();
+        private static BNetCafeTimer _BNetCafeTimer = new BNetCafeTimer();
 
         private readonly ScreenStreamer _screenStreamer = new ScreenStreamer();
         private readonly ActivityReporter _activityReporter = new ActivityReporter();
@@ -49,12 +49,10 @@ namespace BNet.Cafe.Client
             KeyboardHook.Start();
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
-            this.TopMost = false;
-            this.ControlBox = true;
-            this.MaximizeBox = true;
-            this.MinimizeBox = true;
-
-            this.Show();
+            this.TopMost = true;
+            this.ControlBox = false;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.BringToFront();
             this.Activate();
             this.Focus();
@@ -63,28 +61,68 @@ namespace BNet.Cafe.Client
         public void UnlockScreen()
         {
             KeyboardHook.Stop();
-            this.Hide();
         }
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
-            LockScreen();
+            string clientName = ConfigurationManager.AppSettings["ClientName"]; 
+            lblBigPcName.Text = clientName;
+            lblStatusBadge.Text = $"● Station {clientName} Online";
             await Task.Delay(1000);
             _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
-
             string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
             if (File.Exists(sessionFilePath))
             {
                 this.Hide();
-                _activeTimerForm.Show();
+                _BNetCafeTimer.Show();
                 ClearTitleCache();
-                UnlockScreen();
+
             }
 
             _screenStreamer.RebuildScreenKeyCache(ScreenCaptured.GetScreenCount(), _deviceInfo.ClientName);
 
             UserActivity.ActiveWindowMonitor.OnPolled += async info =>
             {
+                // 1. Check disk on background thread
+                bool fileExists = File.Exists(sessionFilePath);
+
+                // 2. Safe UI update on the UI thread
+                this.BeginInvoke((Action)(() =>
+                {
+                    if (!fileExists)
+                    {
+                        // NO ACTIVE SESSION: Show MainForm (login screen), Hide Timer
+                        if (!_BNetCafeTimer.Visible && !this.Visible)
+                        {
+                            // Unlocks keyboard so user can type in username/password
+                            LockScreen();
+                            this.Show();
+                            this.BringToFront();
+                            this.Activate();
+                        }
+
+                        if (_BNetCafeTimer.Visible)
+                        {
+                            _BNetCafeTimer.Hide();
+                        }
+                    }
+                    else
+                    {
+                        // ACTIVE SESSION RUNNING: Hide MainForm, Show Timer
+                        if (this.Visible)
+                        {
+                            this.Hide();
+                        }
+
+                        if (!_BNetCafeTimer.Visible)
+                        {
+                            _BNetCafeTimer.Show();
+                            // Stops hook during active session as well
+                            UnlockScreen();
+                        }
+                    }
+                }));
+
                 string processName = info?.ProcessName ?? string.Empty;
                 string windowTitle = info?.WindowTitle ?? string.Empty;
 
@@ -286,21 +324,18 @@ namespace BNet.Cafe.Client
                 string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
                 if (!File.Exists(sessionFilePath))
                 {
-                    _activeTimerForm.CreateTimerData(customerName, duration, amount);
-                    _activeTimerForm.FormClosed += (s, args) => _activeTimerForm = null;
-                    _activeTimerForm.Show();
+                    _BNetCafeTimer.CreateTimerData(customerName, duration, amount);
+                    _BNetCafeTimer.FormClosed += (s, args) => _BNetCafeTimer = null;
                 }
                 else
                 {
-                    _activeTimerForm.UpdateTimerData(duration, amount);
+                    _BNetCafeTimer.UpdateTimerData(duration, amount);
                 }
-                UnlockScreen();
                 ClearTitleCache();
             }
             else if (textMessage == "LOGOUT")
             {
-                _activeTimerForm.Logout();
-                LockScreen();
+                _BNetCafeTimer.Logout();
                 ClearTitleCache();
             }
             else
@@ -348,6 +383,28 @@ namespace BNet.Cafe.Client
                     ms.Write(buffer, 0, result.Count);
                 } while (!result.EndOfMessage);
                 return ms.ToArray();
+            }
+        }
+
+        private void Button_Login_Click(object sender, EventArgs e)
+        {
+            if (TextBox_Username.Text == "BNet" && TextBox_Password.Text == "@123")
+            {
+                _BNetCafeTimer.CreateTimerData("ADMIN", "1440", "0");
+                TextBox_Username.Text = string.Empty;
+                TextBox_Password.Text = string.Empty;
+            }
+            else
+            {
+                MessageBox.Show(
+                    "Invalid username or password. Please try again.",
+                    "Login Failed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+
+                TextBox_Password.Text = string.Empty;
+                TextBox_Password.Focus();
             }
         }
     }

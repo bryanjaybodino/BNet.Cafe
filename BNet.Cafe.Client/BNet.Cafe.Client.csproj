@@ -57,6 +57,15 @@
     <Reference Include="UIAutomationTypes" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Design\ModernBadge.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Design\ModernButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Design\ModernTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Starter\EnvironmentHelper.cs" />
     <Compile Include="Starter\NativeMethods.cs" />
     <Compile Include="Services\ActivityReporter.cs" />
