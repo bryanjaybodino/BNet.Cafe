@@ -57,16 +57,18 @@
     <Reference Include="UIAutomationTypes" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActivityReporter.cs" />
-    <Compile Include="AgentSession.cs" />
+    <Compile Include="Starter\EnvironmentHelper.cs" />
+    <Compile Include="Starter\NativeMethods.cs" />
+    <Compile Include="Services\ActivityReporter.cs" />
+    <Compile Include="Services\AgentSession.cs" />
     <Compile Include="BNetCafeTimer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="BNetCafeTimer.Designer.cs">
       <DependentUpon>BNetCafeTimer.cs</DependentUpon>
     </Compile>
-    <Compile Include="DeviceInfoCollector.cs" />
-    <Compile Include="KeyboardHook.cs" />
+    <Compile Include="Services\DeviceInfoCollector.cs" />
+    <Compile Include="Services\KeyboardHook.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,7 +90,8 @@
     <Compile Include="Repositories\ScreenScale.cs" />
     <Compile Include="Repositories\TimeService.cs" />
     <Compile Include="Repositories\UserActivity.cs" />
-    <Compile Include="ScreenStreamer.cs" />
+    <Compile Include="Services\ScreenStreamer.cs" />
+    <Compile Include="Starter\WatchdogManager.cs" />
     <EmbeddedResource Include="BNetCafeTimer.resx">
       <DependentUpon>BNetCafeTimer.cs</DependentUpon>
     </EmbeddedResource>
