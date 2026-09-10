@@ -65,7 +65,8 @@ namespace BNet.Cafe.Client
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
-            string clientName = ConfigurationManager.AppSettings["ClientName"]; 
+            string clientName = ConfigurationManager.AppSettings["ClientName"];
+            bool isAdministrator = false;
             lblBigPcName.Text = clientName;
             lblStatusBadge.Text = $"● Station {clientName} Online";
             await Task.Delay(1000);
@@ -73,6 +74,18 @@ namespace BNet.Cafe.Client
             string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
             if (File.Exists(sessionFilePath))
             {
+
+                string[] parts = File.ReadAllText(sessionFilePath).Split('|');
+
+                if (parts.Length >= 4 &&
+                    long.TryParse(parts[0], out long createdTicks) &&
+                    long.TryParse(parts[1], out long endTicks))
+                {
+                    string customerName = parts[2];
+                    double.TryParse(parts[3], out double amount);
+                    isAdministrator = customerName == "Administrator" && amount == 0;
+                }
+
                 this.Hide();
                 _BNetCafeTimer.Show();
                 ClearTitleCache();
@@ -83,69 +96,72 @@ namespace BNet.Cafe.Client
 
             UserActivity.ActiveWindowMonitor.OnPolled += async info =>
             {
-                // 1. Check disk on background thread
-                bool fileExists = File.Exists(sessionFilePath);
-
-                // 2. Safe UI update on the UI thread
-                this.BeginInvoke((Action)(() =>
+                if (!isAdministrator)
                 {
-                    if (!fileExists)
+                    // 1. Check disk on background thread
+                    bool fileExists = File.Exists(sessionFilePath);
+
+                    // 2. Safe UI update on the UI thread
+                    this.BeginInvoke((Action)(() =>
                     {
-                        // NO ACTIVE SESSION: Show MainForm (login screen), Hide Timer
-                        if (!_BNetCafeTimer.Visible && !this.Visible)
+                        if (!fileExists)
                         {
-                            // Unlocks keyboard so user can type in username/password
-                            LockScreen();
-                            this.Show();
-                            this.BringToFront();
-                            this.Activate();
-                        }
+                            // NO ACTIVE SESSION: Show MainForm (login screen), Hide Timer
+                            if (!_BNetCafeTimer.Visible && !this.Visible)
+                            {
+                                // Unlocks keyboard so user can type in username/password
+                                LockScreen();
+                                this.Show();
+                                this.BringToFront();
+                                this.Activate();
+                            }
 
-                        if (_BNetCafeTimer.Visible)
-                        {
-                            _BNetCafeTimer.Hide();
+                            if (_BNetCafeTimer.Visible)
+                            {
+                                _BNetCafeTimer.Hide();
+                            }
                         }
-                    }
-                    else
+                        else
+                        {
+                            // ACTIVE SESSION RUNNING: Hide MainForm, Show Timer
+                            if (this.Visible)
+                            {
+                                this.Hide();
+                            }
+
+                            if (!_BNetCafeTimer.Visible)
+                            {
+                                _BNetCafeTimer.Show();
+                                // Stops hook during active session as well
+                                UnlockScreen();
+                            }
+                        }
+                    }));
+
+                    string processName = info?.ProcessName ?? string.Empty;
+                    string windowTitle = info?.WindowTitle ?? string.Empty;
+
+                    bool isTaskManager = processName.Equals("Taskmgr", StringComparison.OrdinalIgnoreCase);
+                    bool isControlPanel = windowTitle.IndexOf("Programs and Features", StringComparison.OrdinalIgnoreCase) >= 0;
+
+                    if (isTaskManager || isControlPanel)
                     {
-                        // ACTIVE SESSION RUNNING: Hide MainForm, Show Timer
-                        if (this.Visible)
+                        try
                         {
-                            this.Hide();
+                            foreach (var proc in Process.GetProcessesByName("Taskmgr")) proc.Kill();
+                            foreach (var proc in Process.GetProcessesByName("explorer"))
+                            {
+                                if (proc.MainWindowTitle.Contains("Programs and Features")) proc.Kill();
+                            }
                         }
-
-                        if (!_BNetCafeTimer.Visible)
-                        {
-                            _BNetCafeTimer.Show();
-                            // Stops hook during active session as well
-                            UnlockScreen();
-                        }
+                        catch { }
+                        return;
                     }
-                }));
 
-                string processName = info?.ProcessName ?? string.Empty;
-                string windowTitle = info?.WindowTitle ?? string.Empty;
-
-                bool isTaskManager = processName.Equals("Taskmgr", StringComparison.OrdinalIgnoreCase);
-                bool isControlPanel = windowTitle.IndexOf("Programs and Features", StringComparison.OrdinalIgnoreCase) >= 0;
-
-                if (isTaskManager || isControlPanel)
-                {
-                    try
-                    {
-                        foreach (var proc in Process.GetProcessesByName("Taskmgr")) proc.Kill();
-                        foreach (var proc in Process.GetProcessesByName("explorer"))
-                        {
-                            if (proc.MainWindowTitle.Contains("Programs and Features")) proc.Kill();
-                        }
-                    }
-                    catch { }
-                    return;
+                    var sess = _currentSession;
+                    if (sess == null || !sess.IsOpen) return;
+                    await _activityReporter.SendActivityInfoAsync(sess, info, _deviceInfo);
                 }
-
-                var sess = _currentSession;
-                if (sess == null || !sess.IsOpen) return;
-                await _activityReporter.SendActivityInfoAsync(sess, info, _deviceInfo);
             };
 
             UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
@@ -323,20 +339,36 @@ namespace BNet.Cafe.Client
                 string dateTime = jsonObject["dateTime"]?.ToString() ?? TimeService.Get().ToString();
 
                 string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
+
+                // 1. Instantiate timer if null or disposed
+                if (_BNetCafeTimer == null || _BNetCafeTimer.IsDisposed)
+                {
+                    _BNetCafeTimer = new BNetCafeTimer();
+                }
+
+                // 2. Update or Create Timer Data
                 if (!File.Exists(sessionFilePath))
                 {
                     _BNetCafeTimer.CreateTimerData(dateTime, customerName, duration, amount);
-                    _BNetCafeTimer.FormClosed += (s, args) => _BNetCafeTimer = null;
                 }
                 else
                 {
                     _BNetCafeTimer.UpdateTimerData(duration, amount);
                 }
+
+                // 3. Immediately reflect UI changes and unlock PC
+                UnlockScreen();
+                this.Hide();
                 ClearTitleCache();
             }
             else if (textMessage == "LOGOUT")
             {
-                _BNetCafeTimer.Logout();
+                _BNetCafeTimer?.Logout();
+
+                // Show login form and relock PC on logout
+                LockScreen();
+                this.Show();
+                this.BringToFront();
                 ClearTitleCache();
             }
             else
@@ -391,7 +423,7 @@ namespace BNet.Cafe.Client
         {
             if (TextBox_Username.Text == "BNet" && TextBox_Password.Text == "@123")
             {
-                _BNetCafeTimer.CreateTimerData(TimeService.Get().ToString(),"ADMINISTRATOR", "1440", "0");
+                _BNetCafeTimer.CreateTimerData(TimeService.Get().ToString(), "Administrator", "6000", "0");
                 TextBox_Username.Text = string.Empty;
                 TextBox_Password.Text = string.Empty;
             }

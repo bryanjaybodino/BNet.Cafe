@@ -15,6 +15,7 @@ namespace BNet.Cafe.Client
         private DateTime endTime;
         private bool isOpenTime = false; // Track open time mode
         private readonly string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
+        public bool isAdministrator = false;
 
         public BNetCafeTimer()
         {
@@ -33,7 +34,7 @@ namespace BNet.Cafe.Client
         /// <summary>
         /// Initializes a brand-new timer session for a customer.
         /// </summary>
-        public void CreateTimerData(string serverTime,string customerName, string duration, string amount)
+        public void CreateTimerData(string serverTime, string customerName, string duration, string amount)
         {
             double.TryParse(duration, out double parsedDurationMinutes);
             double.TryParse(amount, out double parsedAmount);
@@ -42,6 +43,7 @@ namespace BNet.Cafe.Client
 
             // Check if open time (duration is 0)
             isOpenTime = (parsedDurationMinutes == 0);
+            isAdministrator = (customerName == "Administrator" && parsedDurationMinutes == 6000);
 
             if (isOpenTime)
             {
@@ -103,21 +105,25 @@ namespace BNet.Cafe.Client
             SaveSessionToFile(customerName, amount);
 
             Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
-            Label_CustomerName.Text = $"User : {(string.IsNullOrWhiteSpace(customerName) ? "GUEST" : customerName.ToUpper())}";
+            Label_CustomerName.Text = $"User : {(string.IsNullOrWhiteSpace(customerName) ? "GUEST" : customerName)}";
 
             if (isOpenTime)
             {
                 Label_TotalHours.Text = "Purchased : ∞";
                 Label_TimeoutDisplay.Text = "Timeout : ∞";
             }
+            else if (isAdministrator)
+            {
+                Label_TotalHours.Text = $"Purchased : --";
+                Label_TimeoutDisplay.Text = $"Timeout : --";
+                label_TotalAmount.Text = $"Amount : --";
+            }
             else
             {
                 Label_TotalHours.Text = $"Purchased : {FormatPurchasedTime((endTime - createdTime).TotalSeconds)}";
                 Label_TimeoutDisplay.Text = $"Timeout : {endTime:hh:mm tt}";
-                            label_TotalAmount.Text = $"Amount : ₱{amount:N2}";
+                label_TotalAmount.Text = $"Amount : ₱{amount:N2}";
             }
-
-
 
             UpdateDisplay();
             Button_Logout.Enabled = true;
@@ -166,6 +172,10 @@ namespace BNet.Cafe.Client
                     Button_Logout.Enabled = false;
                 }
             }
+            else if (isAdministrator)
+            {
+                Label_TimerDisplay.Text = "Unlimited";
+            }
             else
             {
                 if (!Button_Logout.Enabled)
@@ -190,79 +200,72 @@ namespace BNet.Cafe.Client
                 Console.WriteLine($"Error saving session: {ex.Message}");
             }
         }
-
         private void ResumeExistingSession()
         {
-            if (File.Exists(sessionFilePath))
+            if (!File.Exists(sessionFilePath)) return;
+
+            try
             {
-                try
+                string[] parts = File.ReadAllText(sessionFilePath).Split('|');
+
+                if (parts.Length >= 4 &&
+                    long.TryParse(parts[0], out long createdTicks) &&
+                    long.TryParse(parts[1], out long endTicks))
                 {
-                    string content = File.ReadAllText(sessionFilePath);
-                    string[] parts = content.Split('|');
+                    createdTime = new DateTime(createdTicks);
+                    endTime = new DateTime(endTicks);
 
-                    if (parts.Length >= 4 &&
-                        long.TryParse(parts[0], out long createdTicks) &&
-                        long.TryParse(parts[1], out long endTicks))
+                    string customerName = parts[2];
+                    double.TryParse(parts[3], out double amount);
+
+                    isOpenTime = parts.Length >= 5 && bool.TryParse(parts[4], out bool parsed) && parsed;
+                    isAdministrator = customerName == "Administrator" && amount == 0;
+
+                    DateTime now = TimeService.Get();
+                    remainingSeconds = isOpenTime ? (now - createdTime).TotalSeconds : (endTime - now).TotalSeconds;
+
+                    // Only proceed if session is active (Admin, OpenTime, or remaining time > 0)
+                    if (isAdministrator || isOpenTime || remainingSeconds > 0)
                     {
-                        createdTime = new DateTime(createdTicks);
-                        endTime = new DateTime(endTicks);
-                        string customerName = parts[2];
-                        double.TryParse(parts[3], out double amount);
+                        string displayUser = string.IsNullOrWhiteSpace(customerName) ? "GUEST" : customerName;
+                        string clientName = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
 
-                        // Load IsOpenTime flag if available (backwards compatible)
-                        if (parts.Length >= 5 && bool.TryParse(parts[4], out bool parsedIsOpenTime))
-                        {
-                            isOpenTime = parsedIsOpenTime;
-                        }
-                        else
-                        {
-                            isOpenTime = false;
-                        }
+                        Label_ClientName.Text = clientName;
+                        Label_CustomerName.Text = $"User : {displayUser}";
 
-                        if (isOpenTime)
+                        if (isAdministrator)
                         {
-                            remainingSeconds = (TimeService.Get() - createdTime).TotalSeconds;
-                            Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
-                            Label_CustomerName.Text = $"User : {(string.IsNullOrWhiteSpace(customerName) ? "GUEST" : customerName.ToUpper())}";
+                            Label_TotalHours.Text = "Purchased : --";
+                            Label_TimeoutDisplay.Text = "Timeout : --";
+                            label_TotalAmount.Text = "Amount : --";
+                        }
+                        else if (isOpenTime)
+                        {
                             Label_TotalHours.Text = "Purchased : ∞";
                             Label_TimeoutDisplay.Text = "Timeout : ∞";
-
-                            UpdateDisplay();
-                            Timer_Countdown.Start();
-                            KeyboardHook.Stop();
-                            return;
                         }
                         else
                         {
-                            remainingSeconds = (endTime - TimeService.Get()).TotalSeconds;
-
-                            if (remainingSeconds > 0)
-                            {
-                                double totalPurchasedSeconds = (endTime - createdTime).TotalSeconds;
-
-                                Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
-                                Label_CustomerName.Text = $"User : {(string.IsNullOrWhiteSpace(customerName) ? "GUEST" : customerName.ToUpper())}";
-                                Label_TotalHours.Text = $"Purchased : {FormatPurchasedTime(totalPurchasedSeconds)}";
-                                label_TotalAmount.Text = $"Amount : ₱ {amount:N2}";
-                                Label_TimeoutDisplay.Text = FormatTimeoutDisplay(endTime);
-
-                                UpdateDisplay();
-                                Timer_Countdown.Start();
-                                KeyboardHook.Stop();
-                                return;
-                            }
+                            double totalPurchasedSeconds = (endTime - createdTime).TotalSeconds;
+                            Label_TotalHours.Text = $"Purchased : {FormatPurchasedTime(totalPurchasedSeconds)}";
+                            Label_TimeoutDisplay.Text = FormatTimeoutDisplay(endTime);
+                            label_TotalAmount.Text = $"Amount : ₱ {amount:N2}";
                         }
+
+                        UpdateDisplay();
+                        Timer_Countdown.Start();
+                        KeyboardHook.Stop();
+                        return;
                     }
                 }
-                catch
-                {
-                    // If reading fails, clear corrupted session
-                }
+            }
+            catch
+            {
+                // Ignore read/parse errors and fall through to clear
             }
 
             ClearSessionFile();
         }
-
         private void ClearSessionFile()
         {
             isOpenTime = false;

@@ -124,13 +124,13 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.ClientSize = new System.Drawing.Size(282, 265);
             this.ControlBox = false;
+            this.Controls.Add(this.Label_ClientName);
             this.Controls.Add(this.Label_TimeoutDisplay);
             this.Controls.Add(this.label_TotalAmount);
             this.Controls.Add(this.Button_Logout);
             this.Controls.Add(this.Label_TimerDisplay);
             this.Controls.Add(this.Label_TotalHours);
             this.Controls.Add(this.Label_CustomerName);
-            this.Controls.Add(this.Label_ClientName);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
