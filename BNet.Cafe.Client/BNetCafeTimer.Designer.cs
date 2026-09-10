@@ -36,7 +36,7 @@
             this.Label_ClientName.Name = "Label_ClientName";
             this.Label_ClientName.Size = new System.Drawing.Size(100, 33);
             this.Label_ClientName.TabIndex = 1;
-            this.Label_ClientName.Text = "PC-01";
+            this.Label_ClientName.Text = "PC-00";
             this.Label_ClientName.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // Label_CustomerName
@@ -58,7 +58,7 @@
             this.Label_TotalHours.Name = "Label_TotalHours";
             this.Label_TotalHours.Size = new System.Drawing.Size(152, 20);
             this.Label_TotalHours.TabIndex = 3;
-            this.Label_TotalHours.Text = "Purchased: 0 hrs";
+            this.Label_TotalHours.Text = "Purchased: 0 hr";
             this.Label_TotalHours.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Label_TimerDisplay
@@ -103,7 +103,7 @@
             this.label_TotalAmount.Name = "label_TotalAmount";
             this.label_TotalAmount.Size = new System.Drawing.Size(152, 20);
             this.label_TotalAmount.TabIndex = 7;
-            this.label_TotalAmount.Text = "Total Amount : ₱0.00";
+            this.label_TotalAmount.Text = "Total Amount : ₱ 0.00";
             this.label_TotalAmount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Label_TimeoutDisplay

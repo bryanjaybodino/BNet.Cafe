@@ -390,7 +390,7 @@ namespace BNet.Cafe.Client
         {
             if (TextBox_Username.Text == "BNet" && TextBox_Password.Text == "@123")
             {
-                _BNetCafeTimer.CreateTimerData("ADMIN", "1440", "0");
+                _BNetCafeTimer.CreateTimerData("ADMINISTRATOR", "1440", "0");
                 TextBox_Username.Text = string.Empty;
                 TextBox_Password.Text = string.Empty;
             }

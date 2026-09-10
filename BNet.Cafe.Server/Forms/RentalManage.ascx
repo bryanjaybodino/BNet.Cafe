@@ -1,4 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="RentalManage.ascx.cs" Inherits="BNet.Cafe.Server.Forms.RentalManage" %>
+<%@ Register Src="~/Forms/Modals/RemoteOpenTime.ascx" TagPrefix="uc1" TagName="RemoteOpenTime" %>
+
 <link href="Assets/Pages/RentalManage.css" rel="stylesheet" />
 <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
     <Scripts>
@@ -87,11 +89,13 @@
                 <!-- Form Actions -->
                 <div class="form-grid-action">
                     <span onclick="navigateTo('BNetPage.aspx?Form=Computers')" class="btn btn-secondary">Back</span>
+                    <span class="btn btn-danger" onclick="openOpenTimeModal('<%= Label_RentalId.Text %>','<%= TextBox_ComputerName.Text %>','<%= DropDownList_Customer.SelectedValue %>','<%= Label_Status.Text %>')"><i class="fa fa-hourglass"></i>Open Time</span>
                     <asp:LinkButton ID="LinkButton_Submit" OnClick="LinkButton_Submit_Click" CssClass="btn btn-primary" OnClientClick="return Validate();" runat="server">
                     <i class="fa fa-save"></i>Add Rental
                     </asp:LinkButton>
                 </div>
             </div>
         </asp:Panel>
+        <uc1:RemoteOpenTime runat="server" id="RemoteOpenTime" />
     </ContentTemplate>
 </asp:UpdatePanel>
