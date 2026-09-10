@@ -1,4 +1,5 @@
 ﻿using BNet.Cafe.Server.Ashx;
+using BNet.Cafe.Server.Forms.Modals;
 using BNet.Cafe.Server.Repositories;
 using BNet.Cafe.Server.Services;
 using System;

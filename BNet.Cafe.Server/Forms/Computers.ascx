@@ -1,6 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Computers.ascx.cs" Inherits="BNet.Cafe.Server.Forms.Computers" %>
 <%@ Register Src="~/Forms/Modals/ComputerDelete.ascx" TagPrefix="uc1" TagName="ComputerDelete" %>
 <%@ Register Src="~/Forms/Modals/RemoteLogout.ascx" TagPrefix="uc1" TagName="RemoteLogout" %>
+<%@ Register Src="~/Forms/Modals/RemoteTimeTransfer.ascx" TagPrefix="uc1" TagName="RemoteTimeTransfer" %>
+
 
 <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
     <Scripts>
@@ -10,6 +12,9 @@
 </asp:ScriptManagerProxy>
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+<Triggers>
+    <asp:AsyncPostBackTrigger ControlID="LinkButton_Refresh" EventName="" />
+</Triggers>
     <ContentTemplate>
         <asp:LinkButton ID="LinkButton_Refresh" runat="server"></asp:LinkButton>
         <div class="bnet-table-wrapper">
@@ -51,6 +56,10 @@
                                                 <i class="fa-solid fa-right-from-bracket"></i>Log Out
                                             </a>
                                         </asp:Panel>
+                                        <a class="bnet-dropdown-item"
+                                            onclick="openTransferModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
+                                            <i class="fa-solid fa-right-left"></i>Transfer Session
+                                        </a>
                                         <a class="bnet-dropdown-item">
                                             <i class="fa-solid fa-clock-rotate-left"></i>Session History
                                         </a>
@@ -102,5 +111,6 @@
         </div>
         <uc1:ComputerDelete runat="server" ID="ComputerDelete" />
         <uc1:RemoteLogout runat="server" ID="RemoteLogout" />
+        <uc1:RemoteTimeTransfer runat="server" id="RemoteTimeTransfer" />
     </ContentTemplate>
 </asp:UpdatePanel>

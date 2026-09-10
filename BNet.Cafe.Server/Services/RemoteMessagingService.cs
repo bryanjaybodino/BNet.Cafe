@@ -15,7 +15,7 @@ namespace BNet.Cafe.Server.Services
         /// <param name="duration">Rental duration in minutes.</param>
         /// <param name="amount">Total rental amount charged.</param>
         /// <param name="command">Command directive (defaults to 'CREATE').</param>
-        public static void SendToPC(Control control ,string targetClient, string customerName, int duration, decimal amount, string command = "CREATE")
+        public static void SendToPC(Control control, string targetClient, string customerName, int duration, decimal amount, string command = "CREATE")
         {
             if (control == null)
             {
@@ -43,9 +43,40 @@ namespace BNet.Cafe.Server.Services
             string script = $"sendTextMessageToPC({safeTargetClient}, {safeJsonMessage});";
 
             // 5. Register startup script context for ASP.NET WebForms / UpdatePanel
-            ScriptManager.RegisterStartupScript(control, control.GetType(), "SendToPCScript", script, true);
+            ScriptManager.RegisterStartupScript(control, control.GetType(), "SendToPCScript" + Guid.NewGuid().ToString(), script, true);
         }
 
+
+        public static void TransferSession(Control control, string targetClient, string customerName, int duration, decimal amount, DateTime dateTime)
+        {
+            if (control == null)
+            {
+                throw new ArgumentNullException(nameof(control), "Control parameter cannot be null.");
+            }
+
+            // 1. Build message object
+            var dataPayload = new
+            {
+                customerName = !string.IsNullOrEmpty(customerName) ? customerName : null,
+                duration = duration,
+                amount = amount,
+                command = ConstantData.RentalCommand.CREATE,
+                dateTime = dateTime.ToString()
+            };
+
+            // 2. Convert data payload to JSON string
+            string jsonMessage = JsonConvert.SerializeObject(dataPayload);
+
+            // 3. Serialize both parameters so they format properly for JS execution
+            string safeTargetClient = JsonConvert.SerializeObject(targetClient ?? string.Empty);
+            string safeJsonMessage = JsonConvert.SerializeObject(jsonMessage);
+
+            // 4. Construct JS call matching sendTextMessageToPC(targetClient, messageContent)
+            string script = $"sendTextMessageToPC({safeTargetClient}, {safeJsonMessage});";
+
+            // 5. Register startup script context for ASP.NET WebForms / UpdatePanel
+            ScriptManager.RegisterStartupScript(control, control.GetType(), "SendToPCScript" + Guid.NewGuid().ToString(), script, true);
+        }
         public static void LogoutPC(Control control, string targetClient)
         {
             if (control == null)
@@ -60,7 +91,7 @@ namespace BNet.Cafe.Server.Services
             string script = $"sendTextMessageToPC({safeTargetClient}, '{ConstantData.RentalCommand.LOGOUT}');";
 
             // 3. Register startup script context for ASP.NET WebForms / UpdatePanel
-            ScriptManager.RegisterStartupScript(control, control.GetType(), "SendToPCScript", script, true);
+            ScriptManager.RegisterStartupScript(control, control.GetType(), "SendToPCScript" + Guid.NewGuid().ToString(), script, true);
         }
 
     }

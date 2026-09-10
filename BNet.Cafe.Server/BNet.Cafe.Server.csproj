@@ -136,6 +136,7 @@
     <Content Include="Forms\Modals\RemoteLogout.ascx" />
     <Content Include="Forms\Modals\RemoteMessage.ascx" />
     <Content Include="Forms\Modals\RemoteOpenTime.ascx" />
+    <Content Include="Forms\Modals\RemoteTimeTransfer.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Forms\RentalManage.ascx" />
     <Content Include="Offline Packages\Newtonsoft.Json\Newtonsoft.Json.dll" />
@@ -220,6 +221,13 @@
     </Compile>
     <Compile Include="Forms\Modals\RemoteOpenTime.ascx.designer.cs">
       <DependentUpon>RemoteOpenTime.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\RemoteTimeTransfer.ascx.cs">
+      <DependentUpon>RemoteTimeTransfer.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\RemoteTimeTransfer.ascx.designer.cs">
+      <DependentUpon>RemoteTimeTransfer.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Remote.ascx.cs">
       <DependentUpon>Remote.ascx</DependentUpon>
