@@ -33,6 +33,15 @@ namespace BNet.Cafe.Server.Forms.Modals
         protected global::System.Web.UI.WebControls.HiddenField HiddenField_LogoutClientId;
 
         /// <summary>
+        /// HiddenField_IsOpenTime control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField HiddenField_IsOpenTime;
+
+        /// <summary>
         /// LinkButton_ConfirmLogout control.
         /// </summary>
         /// <remarks>

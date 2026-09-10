@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="RemoteLogout.ascx.cs" Inherits="BNet.Cafe.Server.Forms.Modals.RemoteLogout" %>
 <asp:HiddenField ID="HiddenField_LogoutId" runat="server" />
 <asp:HiddenField ID="HiddenField_LogoutClientId" runat="server" />
+<asp:HiddenField ID="HiddenField_IsOpenTime" runat="server" />
 
 <!-- BNet Modal Template -->
 <div id="logoutModal" class="bnet-modal-overlay">
@@ -31,13 +32,20 @@
         return logoutModalInstance;
     }
 
-    function openLogoutModal(id, name) {
+    function openLogoutModal(element, id, name) {
+        var row = element.closest('tr');
+        var timeEndLabel = row.querySelector('[id*="Label_TimeEnd"]');
+        var timeEndValue = timeEndLabel ? (timeEndLabel.innerText || timeEndLabel.textContent).trim() : '';
+
+        var isOpenTime = (timeEndValue === '∞').toString().toUpperCase();
+
         document.getElementById('<%= HiddenField_LogoutId.ClientID %>').value = id;
         document.getElementById('<%= HiddenField_LogoutClientId.ClientID %>').value = name;
+        document.getElementById('<%= HiddenField_IsOpenTime.ClientID %>').value = isOpenTime;
         document.getElementById('logoutTargetName').innerText = name;
+
         getLogoutModal().open();
     }
-
     function closeLogoutModal() {
         getLogoutModal().close();
     }

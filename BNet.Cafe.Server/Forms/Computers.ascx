@@ -5,6 +5,7 @@
 <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
     <Scripts>
         <asp:ScriptReference Path="~/Assets/Pages/RemoteMessaging.js" />
+        <asp:ScriptReference Path="~/Assets/Pages/Computers.js" />
     </Scripts>
 </asp:ScriptManagerProxy>
 
@@ -42,7 +43,8 @@
                                         <a onclick="navigateTo('BNetPage.aspx?Form=RentalManage&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                             <i class="fa-regular fa-clock"></i>Manage Rental Session
                                         </a>
-                                        <a class="bnet-dropdown-item" onclick="openLogoutModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
+                                        <a class="bnet-dropdown-item"
+                                            onclick="openLogoutModal(this, '<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
                                             <i class="fa-solid fa-right-from-bracket"></i>Log Out
                                         </a>
                                         <a class="bnet-dropdown-item">
@@ -95,17 +97,6 @@
             <asp:Panel ID="Panel_Pagination" runat="server" />
         </div>
         <uc1:ComputerDelete runat="server" ID="ComputerDelete" />
-        <uc1:RemoteLogout runat="server" id="RemoteLogout" />
+        <uc1:RemoteLogout runat="server" ID="RemoteLogout" />
     </ContentTemplate>
 </asp:UpdatePanel>
-
-<script type="text/javascript">
-    (function () {
-        var endpoint = window.location.protocol + '//' + window.location.hostname + ':2050/sse';
-        const evtSource = new EventSource(endpoint);
-        evtSource.onmessage = function (event) {
-            var LinkButton_Refresh = document.querySelector('[id$="LinkButton_Refresh"]');
-            LinkButton_Refresh.click();
-        };
-    })();
-</script>
