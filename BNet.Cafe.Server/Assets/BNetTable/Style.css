@@ -31,6 +31,7 @@
     box-sizing: border-box;
     padding-bottom: 8px;
     padding-right: 1px;
+    min-height:450px;
 }
 
 .bnet-table {
