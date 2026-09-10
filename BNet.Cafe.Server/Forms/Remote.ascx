@@ -25,12 +25,7 @@
     </main>
 
     <aside class="details-sidebar" id="detailsSidebar">
-        <!-- Action Buttons Layout -->
-        <div class="sidebar-actions">
-            <a class="remote-launch-btn" id="remoteLaunchBtn" href="#">🖥 Launch Remote Control</a>
-            <button type="button" class="btn-sidebar-action" id="remoteMsgBtn" onclick="openRemoteMessageModal(currentClient)">💬 Message Client</button>
-        </div>
-
+        <br />
         <div class="info-panel" id="infoPanel">
             <div class="sec-label">Station Hardware & System</div>
             <div class="info-scroll">
@@ -74,10 +69,11 @@
                     <div class="info-key">Screen Count</div>
                     <div class="info-val" id="ScreenCount">—</div>
                 </div>
-                <div class="info-row">
-                    <div class="info-key">Active Window</div>
-                    <div class="info-val" id="ActiveWindow">—</div>
-                </div>
+            </div>
+            <!-- Action Buttons Layout -->
+            <div class="sidebar-actions">
+                <a class="remote-launch-btn" id="remoteLaunchBtn" href="#">🖥 Launch Remote Control</a>
+                <button type="button" class="btn-sidebar-action" id="remoteMsgBtn" onclick="openRemoteMessageModal(currentClient)">💬 Message Client</button>
             </div>
         </div>
         <div class="sidebar-foot">⬡ &nbsp;<span id="clock">--:--:--</span></div>

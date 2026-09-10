@@ -1,154 +1,131 @@
 ﻿'use strict';
-var currentClient = '';
-var clientDataMap = new Map();
-var clientActivityMap = new Map();
+let currentClient = '';
+const clientDataMap = new Map();
+const clientActivityMap = new Map();
+const textDecoder = new TextDecoder('utf-8');
 
-function tick() {
-    var clock = document.getElementById('clock');
+// UI & Clock Helpers
+const getEl = (id) => document.getElementById(id);
+setInterval(() => {
+    const clock = getEl('clock');
     if (clock) clock.textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
-}
-setInterval(tick, 1000);
+}, 1000);
 
-// Safe helper to get sidebar dynamically
-function getDetailsSidebar() {
-    return document.getElementById('detailsSidebar');
-}
-
-// Hide sidebar when clicking outside of it
-document.addEventListener('click', function (e) {
-    var detailsSidebar = getDetailsSidebar();
-    if (!detailsSidebar || !detailsSidebar.classList.contains('visible')) return;
-
-    var isClickInsideSidebar = detailsSidebar.contains(e.target);
-    var isClickOnDeviceCard = e.target.closest('.device-entry');
-
-    if (!isClickInsideSidebar && !isClickOnDeviceCard) {
+document.addEventListener('click', (e) => {
+    const sidebar = getEl('detailsSidebar');
+    if (sidebar?.classList.contains('visible') && !sidebar.contains(e.target) && !e.target.closest('.device-entry')) {
         deselectDevice();
     }
 });
 
-const textDecoder = new TextDecoder('utf-8');
-let ws = null;
-
-function connectWebSocket() {
-    var endpoint = 'ws://' + window.location.hostname + ':2050/ws/browser';
-    ws = new WebSocket(endpoint);
-    ws.binaryType = 'arraybuffer';
-
-    ws.onopen = function () {
-        console.log('Connected to server via WebSocket');
+// Unified Data Binding Function
+function updateInfo(data = {}) {
+    const getVal = (...keys) => {
+        for (const k of keys) if (data[k] !== undefined && data[k] !== null) return data[k];
+        return '—';
     };
 
-    ws.onmessage = function (event) {
-        if (event.data instanceof ArrayBuffer) {
-            const bytes = new Uint8Array(event.data);
-            if (bytes.length === 0) return;
+    const name = getVal('clientName', 'ClientName');
+    const fields = {
+        Username: name !== '—' ? name.toUpperCase() : '—',
+        MachineName: getVal('machineName', 'MachineName'),
+        Workgroup: getVal('workGroup', 'WorkGroup'),
+        Windows: getVal('windows', 'Windows'),
+        WindowsVersion: getVal('windowsVersion', 'WindowsVersion'),
+        OSVersion: getVal('osVersion', 'OSVersion'),
+        OSArchitecture: getVal('osArchitecture', 'OSArchitecture'),
+        SerialNumber: getVal('serialNumber', 'SerialNumber'),
+        ProcessorCount: getVal('processorCount', 'ProcessorCount'),
+        ScreenCount: getVal('screenCount', 'ScreenCount'),
+        ActiveWindow: getVal('windowTitle', 'WindowTitle')
+    };
 
-            const messageType = bytes[0];
-            const payloadBytes = bytes.subarray(1);
+    Object.entries(fields).forEach(([id, val]) => {
+        const el = getEl(id);
+        if (el) el.textContent = val;
+    });
+}
 
-            if (messageType === 0x11) {
-                try {
-                    const jsonString = textDecoder.decode(payloadBytes);
-                    const clients = JSON.parse(jsonString);
-                    handleClientListUpdate(clients);
-                } catch (err) {
-                    console.error('Failed to parse CLIENT_LIST JSON:', err);
-                }
-            } else if (messageType === 0x12) {
-                try {
-                    const jsonString = textDecoder.decode(payloadBytes);
-                    const activity = JSON.parse(jsonString);
-                    handleActivityUpdate(activity);
-                } catch (err) {
-                    console.error('Failed to parse ACTIVITY JSON:', err);
-                }
-            }
+// WebSocket Connection
+function connectWebSocket() {
+    const ws = new WebSocket(`ws://${window.location.hostname}:2050/ws/browser`);
+    ws.binaryType = 'arraybuffer';
+
+    ws.onmessage = (e) => {
+        if (!(e.data instanceof ArrayBuffer) || !e.data.byteLength) return;
+        const bytes = new Uint8Array(e.data);
+        const type = bytes[0];
+
+        try {
+            const data = JSON.parse(textDecoder.decode(bytes.subarray(1)));
+            if (type === 0x11) handleClientListUpdate(data);
+            if (type === 0x12) handleActivityUpdate(data);
+        } catch (err) {
+            console.error('WS Parse Error:', err);
         }
     };
 
-    ws.onclose = function () {
-        setTimeout(connectWebSocket, 3000);
-    };
-
-    ws.onerror = function (err) {
-        console.error('WebSocket error:', err);
-    };
+    ws.onclose = () => setTimeout(connectWebSocket, 3000);
 }
 
 function handleClientListUpdate(clients) {
     clientDataMap.clear();
-    clients.forEach(function (client) {
-        if (client.ClientName) {
-            clientDataMap.set(client.ClientName.toUpperCase(), client);
-        }
-    });
-
+    clients.forEach(c => c.ClientName && clientDataMap.set(c.ClientName.toUpperCase(), c));
     renderDevices(clients);
 
-    if (currentClient && clientDataMap.has(currentClient.toUpperCase())) {
-        updateInfo(clientDataMap.get(currentClient.toUpperCase()));
+    if (currentClient && clientDataMap.has(currentClient)) {
+        selectDevice(currentClient);
     }
 }
 
 function handleActivityUpdate(activity) {
-    if (!activity || !activity.clientName) return;
-    const accountKey = activity.clientName.toUpperCase();
+    const name = activity?.clientName || activity?.ClientName;
+    if (!name) return;
+    const accountKey = name.toUpperCase();
+
     clientActivityMap.set(accountKey, activity);
 
-    var subEl = document.getElementById('sub-' + accountKey);
-    if (subEl) {
-        subEl.textContent = activity.windowTitle || activity.appName || 'Online';
-    }
+    // Update active task label on device list item
+    const subEl = getEl(`sub-${accountKey}`);
+    if (subEl) subEl.textContent = activity.windowTitle || activity.appName || 'Online';
 
-    if (currentClient && currentClient.toUpperCase() === accountKey) {
-        var activeWinEl = document.getElementById('ActiveWindow');
-        if (activeWinEl) {
-            activeWinEl.textContent = activity.windowTitle || '—';
-        }
+    // Update sidebar instantly if this client is currently selected
+    if (currentClient === accountKey) {
+        selectDevice(currentClient);
     }
 }
 
 function renderDevices(clients) {
-    var list = document.getElementById('deviceList');
+    const list = getEl('deviceList');
     if (!list) return;
     list.innerHTML = '';
 
-    if (clients.length === 0) {
-        var ph = document.createElement('div');
-        ph.className = 'no-devices';
-        ph.id = 'noDevices';
-        ph.textContent = 'Waiting for connected PCs…';
-        list.appendChild(ph);
+    if (!clients.length) {
+        list.innerHTML = '<div class="no-devices" id="noDevices">Waiting for connected PCs…</div>';
         return;
     }
 
-    clients.forEach(function (item) {
-        var name = item.ClientName;
+    clients.forEach((item) => {
+        const name = item.ClientName;
         if (!name) return;
-        var accountKey = name.toUpperCase();
+        const key = name.toUpperCase();
+        const act = clientActivityMap.get(key);
+        const status = act ? (act.windowTitle || act.appName) : 'Idle / Online';
 
-        var el = document.createElement('div');
-        el.className = 'device-entry';
-        if (currentClient.toUpperCase() === accountKey) el.classList.add('active');
+        const el = document.createElement('div');
+        el.className = `device-entry ${currentClient === key ? 'active' : ''}`;
         el.dataset.name = name;
+        el.innerHTML = `
+            <div class="device-top">
+                <div class="device-avatar-wrap"><div class="avatar">${escapeHtml(name).toUpperCase()}</div></div>
+                <div class="status-badge"><span class="activity-dot"></span>Active</div>
+            </div>
+            <div class="device-body">
+                <div class="device-body-label">Active Task</div>
+                <div class="device-sub" id="sub-${key}">${escapeHtml(status)}</div>
+            </div>`;
 
-        var activity = clientActivityMap.get(accountKey);
-        var statusText = activity ? (activity.windowTitle || activity.appName) : 'Idle / Online';
-
-        el.innerHTML =
-            '<div class="device-top">' +
-            '<div class="device-avatar-wrap">' +
-            '<div class="avatar">' + escapeHtml(name).toUpperCase() + '</div>' +
-            '</div>' +
-            '<div class="status-badge"><span class="activity-dot"></span>Active</div>' +
-            '</div>' +
-            '<div class="device-body">' +
-            '<div class="device-body-label">Active Task</div>' +
-            '<div class="device-sub" id="sub-' + accountKey + '">' + escapeHtml(statusText) + '</div>' +
-            '</div>';
-
-        el.addEventListener('click', function (e) {
+        el.addEventListener('click', (e) => {
             e.stopPropagation();
             selectDevice(name);
         });
@@ -157,74 +134,37 @@ function renderDevices(clients) {
 }
 
 function selectDevice(name) {
-    currentClient = name ? name.toUpperCase() : ''; // Transform to uppercase
-    var accountKey = currentClient;
+    currentClient = name ? name.toUpperCase() : '';
 
-    document.querySelectorAll('.device-entry').forEach(function (el) {
-        el.classList.toggle('active', el.dataset.name.toUpperCase() === accountKey);
+    document.querySelectorAll('.device-entry').forEach(el => {
+        el.classList.toggle('active', el.dataset.name.toUpperCase() === currentClient);
     });
 
-    var detailsSidebar = getDetailsSidebar();
-    if (detailsSidebar) {
-        detailsSidebar.classList.add('visible');
-    }
+    getEl('detailsSidebar')?.classList.add('visible');
 
-    var launchBtn = document.getElementById('remoteLaunchBtn');
-    if (launchBtn) {
-        launchBtn.href = 'Remote.html?client=' + encodeURIComponent(currentClient);
-    }
+    const launchBtn = getEl('remoteLaunchBtn');
+    if (launchBtn) launchBtn.href = `Remote.html?client=${encodeURIComponent(currentClient)}`;
 
-    if (clientDataMap.has(accountKey)) {
-        updateInfo(clientDataMap.get(accountKey));
-    }
+    // Merge static list data with active JSON data
+    const combinedData = Object.assign(
+        {},
+        clientDataMap.get(currentClient),
+        clientActivityMap.get(currentClient)
+    );
 
-    var activeWinEl = document.getElementById('ActiveWindow');
-    if (activeWinEl) {
-        if (clientActivityMap.has(accountKey)) {
-            const act = clientActivityMap.get(accountKey);
-            activeWinEl.textContent = act.windowTitle || '—';
-        } else {
-            activeWinEl.textContent = '—';
-        }
-    }
+    updateInfo(combinedData);
 }
 
 function deselectDevice() {
     currentClient = '';
-    var detailsSidebar = getDetailsSidebar();
-    if (detailsSidebar) {
-        detailsSidebar.classList.remove('visible');
-    }
-    document.querySelectorAll('.device-entry').forEach(function (el) {
-        el.classList.remove('active');
-    });
-}
-
-function updateInfo(item) {
-    var setElText = function (id, val) {
-        var el = document.getElementById(id);
-        if (el) el.textContent = val || '—';
-    };
-
-    setElText('Username', item.ClientName ? item.ClientName.toUpperCase() : null);
-    setElText('MachineName', item.MachineName);
-    setElText('Workgroup', item.WorkGroup);
-    setElText('Windows', item.Windows);
-    setElText('WindowsVersion', item.WindowsVersion);
-    setElText('OSVersion', item.OSVersion);
-    setElText('OSArchitecture', item.OSArchitecture);
-    setElText('SerialNumber', item.SerialNumber);
-    setElText('ProcessorCount', item.ProcessorCount);
-    setElText('ScreenCount', item.ScreenCount);
+    getEl('detailsSidebar')?.classList.remove('visible');
+    document.querySelectorAll('.device-entry').forEach(el => el.classList.remove('active'));
 }
 
 function escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return str ? String(str).replace(/[&<>]/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[s])) : '';
 }
 
-// Ensure DOM and components are loaded before connecting
-document.addEventListener('DOMContentLoaded', function () {
-    tick();
+document.addEventListener('DOMContentLoaded', () => {
     connectWebSocket();
 });

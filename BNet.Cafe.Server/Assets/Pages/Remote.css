@@ -19,7 +19,7 @@
 
 .sec-label {
     padding: 0 0 12px 0;
-    font-size: 11px;
+    font-size: 15px;
     font-family: monospace;
     font-weight: 700;
     text-transform: uppercase;
@@ -154,7 +154,7 @@
     top: 0;
     left: 0;
     bottom: 0;
-    width: var(--sidebar-w, 340px);
+    width: var(--sidebar-w, 260px);
     background: var(--bg-light-secondary);
     border-right: 1px solid var(--border-light);
     display: flex;
