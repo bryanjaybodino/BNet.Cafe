@@ -160,6 +160,18 @@ namespace BNet.Cafe.Client
             {
                 double amount = CalculateRentalPrice.CalculatePrice((int)time.TotalMinutes);
                 label_TotalAmount.Text = $"Amount : ₱ {amount:N2}";
+
+                if (Button_Logout.Enabled)
+                {
+                    Button_Logout.Enabled = false;
+                }
+            }
+            else
+            {
+                if (!Button_Logout.Enabled)
+                {
+                    Button_Logout.Enabled = true;
+                }
             }
         }
 
