@@ -56,7 +56,7 @@
             this.Label_TotalHours.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.Label_TotalHours.Location = new System.Drawing.Point(12, 10);
             this.Label_TotalHours.Name = "Label_TotalHours";
-            this.Label_TotalHours.Size = new System.Drawing.Size(152, 20);
+            this.Label_TotalHours.Size = new System.Drawing.Size(176, 20);
             this.Label_TotalHours.TabIndex = 3;
             this.Label_TotalHours.Text = "Purchased: 0 hr";
             this.Label_TotalHours.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

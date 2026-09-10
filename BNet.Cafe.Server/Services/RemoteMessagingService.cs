@@ -15,7 +15,7 @@ namespace BNet.Cafe.Server.Services
         /// <param name="duration">Rental duration in minutes.</param>
         /// <param name="amount">Total rental amount charged.</param>
         /// <param name="command">Command directive (defaults to 'CREATE').</param>
-        public static void SendToPC(Control control, string targetClient, string customerName, int duration, decimal amount, string command = "CREATE")
+        public static void SendToPC(Control control ,string targetClient, string customerName, int duration, decimal amount, string command = "CREATE")
         {
             if (control == null)
             {
@@ -28,7 +28,8 @@ namespace BNet.Cafe.Server.Services
                 customerName = !string.IsNullOrEmpty(customerName) ? customerName : null,
                 duration = duration,
                 amount = amount,
-                command = command
+                command = command,
+                dateTime = TimeService.Get().ToString()
             };
 
             // 2. Convert data payload to JSON string

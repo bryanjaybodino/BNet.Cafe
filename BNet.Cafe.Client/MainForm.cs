@@ -320,11 +320,12 @@ namespace BNet.Cafe.Client
                 string customerName = jsonObject["customerName"]?.ToString() ?? "Unknown";
                 string duration = jsonObject["duration"]?.ToString() ?? "0";
                 string amount = jsonObject["amount"]?.ToString() ?? "0";
+                string dateTime = jsonObject["dateTime"]?.ToString() ?? TimeService.Get().ToString();
 
                 string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
                 if (!File.Exists(sessionFilePath))
                 {
-                    _BNetCafeTimer.CreateTimerData(customerName, duration, amount);
+                    _BNetCafeTimer.CreateTimerData(dateTime, customerName, duration, amount);
                     _BNetCafeTimer.FormClosed += (s, args) => _BNetCafeTimer = null;
                 }
                 else
@@ -390,7 +391,7 @@ namespace BNet.Cafe.Client
         {
             if (TextBox_Username.Text == "BNet" && TextBox_Password.Text == "@123")
             {
-                _BNetCafeTimer.CreateTimerData("ADMINISTRATOR", "1440", "0");
+                _BNetCafeTimer.CreateTimerData(TimeService.Get().ToString(),"ADMINISTRATOR", "1440", "0");
                 TextBox_Username.Text = string.Empty;
                 TextBox_Password.Text = string.Empty;
             }

@@ -33,12 +33,12 @@ namespace BNet.Cafe.Client
         /// <summary>
         /// Initializes a brand-new timer session for a customer.
         /// </summary>
-        public void CreateTimerData(string customerName, string duration, string amount)
+        public void CreateTimerData(string serverTime,string customerName, string duration, string amount)
         {
             double.TryParse(duration, out double parsedDurationMinutes);
             double.TryParse(amount, out double parsedAmount);
 
-            createdTime = TimeService.Get();
+            createdTime = Convert.ToDateTime(serverTime);
 
             // Check if open time (duration is 0)
             isOpenTime = (parsedDurationMinutes == 0);
@@ -308,8 +308,8 @@ namespace BNet.Cafe.Client
             int totalHours = (int)time.TotalHours;
             int minutes = time.Minutes;
 
-            string hourText = totalHours == 1 ? "1 hr" : $"{totalHours} hrs";
-            string minText = minutes == 1 ? "1 min" : $"{minutes} mins";
+            string hourText = totalHours == 1 ? "1hr" : $"{totalHours}hrs";
+            string minText = minutes == 1 ? "1min" : $"{minutes}mins";
 
             if (totalHours < 1)
             {
@@ -317,7 +317,7 @@ namespace BNet.Cafe.Client
             }
 
             return minutes > 0
-                ? $"{hourText} and {minText}"
+                ? $"{hourText} | {minText}"
                 : hourText;
         }
 
