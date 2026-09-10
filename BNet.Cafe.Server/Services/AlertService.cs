@@ -1,4 +1,5 @@
-﻿using System.Web.UI;
+﻿using System;
+using System.Web.UI;
 
 namespace BNet.Cafe.Server.Services
 {
@@ -6,21 +7,36 @@ namespace BNet.Cafe.Server.Services
     {
         public static void ShowAlert(Control control, string message, string type, string redirectUrl = null, int delayMs = 1500)
         {
+            // Sanitize string for safety
+            string safeMessage = message?.Replace(@"\", @"\\").Replace("'", @"\'").Replace("\r\n", " ").Replace("\n", " ");
+
             string redirectScript = string.IsNullOrEmpty(redirectUrl)
                 ? string.Empty
-                : $"setTimeout(function(){{ navigateTo('{redirectUrl}') }}, {delayMs});";
+                : $"setTimeout(function(){{ if(typeof navigateTo === 'function') navigateTo('{redirectUrl}'); else window.location.href = '{redirectUrl}'; }}, {delayMs});";
 
-            // Use an IIFE instead of Sys.Application.add_load to prevent re-execution on future postbacks
+            // Wait for DOM & JavaScript assets to load before calling custom functions
             string script = $@"
                 (function() {{
-                    ShowAlert('{message.Replace("'", "\\'")}', '{type}');
-                    {redirectScript}
+                    function triggerAlert() {{
+                        if (typeof ShowAlert === 'function') {{
+                            ShowAlert('{safeMessage}', '{type}');
+                            {redirectScript}
+                        }} else {{
+                            console.error('ShowAlert function is not defined. Ensure your JS file is loaded.');
+                        }}
+                    }}
+
+                    if (document.readyState === 'loading') {{
+                        document.addEventListener('DOMContentLoaded', triggerAlert);
+                    }} else {{
+                        triggerAlert();
+                    }}
                 }})();";
 
             ScriptManager.RegisterStartupScript(
                 control,
                 control.GetType(),
-                "AlertScript_" + System.Guid.NewGuid().ToString("N"), // Unique key to avoid script overwrites
+                "AlertScript_" + Guid.NewGuid().ToString("N"),
                 script,
                 true
             );

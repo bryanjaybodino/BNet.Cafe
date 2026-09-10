@@ -47,14 +47,15 @@ namespace BNet.Cafe.Server.Forms
                         int hours = (int)duration.TotalHours;
                         int minutes = duration.Minutes;
                         bool isOpenTime = (hours > 100000);
-
-                        if (isOpenTime)
+                        bool isAdministrator = (hours == 100);
+    
+                        if (isOpenTime && !isAdministrator)
                         {
                             duration = TimeService.Get() - start;
                             hours = (int)duration.TotalHours;
                             minutes = duration.Minutes;
                         }
-
+         
                         double billing = CalculateRentalPrice.CalculatePrice((int)duration.TotalMinutes);
                         string hrLabel = hours == 1 ? "hr" : "hrs";
                         string minLabel = minutes == 1 ? "min" : "mins";
@@ -86,6 +87,19 @@ namespace BNet.Cafe.Server.Forms
                         Panel_ManageRental.Visible = true;
                         Panel_Transfer.Visible = true;
 
+
+                        if (isAdministrator)
+                        {
+                            Label_Status.CssClass = "badge-status yellow";
+                            Label_Status.Text = "Administrator";
+                            Label_TimeStart.Text = "--";
+                            Label_TimeEnd.Text = "--";
+                            Label_Billing.Text = "--";
+                            Label_TotalHours.Text = "--";
+                            Panel_Logout.Visible = false;
+                            Panel_ManageRental.Visible = false;
+                            Panel_Transfer.Visible = false;
+                        }
                     }
                     else
                     {

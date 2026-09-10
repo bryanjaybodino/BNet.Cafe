@@ -96,48 +96,50 @@ namespace BNet.Cafe.Client
 
             UserActivity.ActiveWindowMonitor.OnPolled += async info =>
             {
+
+                // 1. Check disk on background thread
+                bool fileExists = File.Exists(sessionFilePath);
+
+                // 2. Safe UI update on the UI thread
+                this.BeginInvoke((Action)(() =>
+                {
+                    if (!fileExists)
+                    {
+                        // NO ACTIVE SESSION: Show MainForm (login screen), Hide Timer
+                        if (!_BNetCafeTimer.Visible && !this.Visible)
+                        {
+                            // Unlocks keyboard so user can type in username/password
+                            LockScreen();
+                            this.Show();
+                            this.BringToFront();
+                            this.Activate();
+                        }
+
+                        if (_BNetCafeTimer.Visible)
+                        {
+                            _BNetCafeTimer.Hide();
+                        }
+                    }
+                    else
+                    {
+                        // ACTIVE SESSION RUNNING: Hide MainForm, Show Timer
+                        if (this.Visible)
+                        {
+                            this.Hide();
+                        }
+
+                        if (!_BNetCafeTimer.Visible)
+                        {
+                            _BNetCafeTimer.Show();
+                            // Stops hook during active session as well
+                            UnlockScreen();
+                        }
+                    }
+                }));
+
+
                 if (!isAdministrator)
                 {
-                    // 1. Check disk on background thread
-                    bool fileExists = File.Exists(sessionFilePath);
-
-                    // 2. Safe UI update on the UI thread
-                    this.BeginInvoke((Action)(() =>
-                    {
-                        if (!fileExists)
-                        {
-                            // NO ACTIVE SESSION: Show MainForm (login screen), Hide Timer
-                            if (!_BNetCafeTimer.Visible && !this.Visible)
-                            {
-                                // Unlocks keyboard so user can type in username/password
-                                LockScreen();
-                                this.Show();
-                                this.BringToFront();
-                                this.Activate();
-                            }
-
-                            if (_BNetCafeTimer.Visible)
-                            {
-                                _BNetCafeTimer.Hide();
-                            }
-                        }
-                        else
-                        {
-                            // ACTIVE SESSION RUNNING: Hide MainForm, Show Timer
-                            if (this.Visible)
-                            {
-                                this.Hide();
-                            }
-
-                            if (!_BNetCafeTimer.Visible)
-                            {
-                                _BNetCafeTimer.Show();
-                                // Stops hook during active session as well
-                                UnlockScreen();
-                            }
-                        }
-                    }));
-
                     string processName = info?.ProcessName ?? string.Empty;
                     string windowTitle = info?.WindowTitle ?? string.Empty;
 
@@ -157,11 +159,11 @@ namespace BNet.Cafe.Client
                         catch { }
                         return;
                     }
-
-                    var sess = _currentSession;
-                    if (sess == null || !sess.IsOpen) return;
-                    await _activityReporter.SendActivityInfoAsync(sess, info, _deviceInfo);
                 }
+                var sess = _currentSession;
+                if (sess == null || !sess.IsOpen) return;
+                await _activityReporter.SendActivityInfoAsync(sess, info, _deviceInfo);
+
             };
 
             UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);

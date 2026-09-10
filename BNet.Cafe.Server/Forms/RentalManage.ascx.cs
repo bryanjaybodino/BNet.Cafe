@@ -41,9 +41,18 @@ namespace BNet.Cafe.Server.Forms
                     else if (status == "Offline")
                     {
                         Label_Status.CssClass = "badge-status gray";
-                        AlertService.ShowAlert(UpdatePanel1, "The selected computer is currently offline. Please ensure the computer is online before creating a rental session.", "warning");
+                        AlertService.ShowAlert(this, "The selected computer is currently offline. Please ensure the computer is online before creating a rental session.", "warning");
                         Panel_Form.Enabled = false;
+                        Panel_Buttons.Visible = false;
                         Label_HeaderText.Text = "Currently Down";
+                    }
+                    else if (status == "Administrator")
+                    {
+                        Label_Status.CssClass = "badge-status yellow";
+                        AlertService.ShowAlert(this, "The selected computer is currently maintenance. Please ensure the computer is online before creating a rental session.", "warning");
+                        Panel_Form.Enabled = false;
+                        Panel_Buttons.Visible = false;
+                        Label_HeaderText.Text = "Maintenance";
                     }
                     else
                     {

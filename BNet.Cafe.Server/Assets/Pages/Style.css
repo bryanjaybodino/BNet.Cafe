@@ -125,6 +125,16 @@ body {font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen
             background-color: #9ca3af;
         }
 
+    /* Warning / Pending State (Yellow) */
+    .badge-status.yellow {
+        background-color: rgba(245, 158, 11, 0.12);
+        color: #d97706;
+        border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+        .badge-status.yellow::before {
+            background-color: #d97706;
+        }
 
 /* Pulse Keyframes */
 @keyframes status-pulse-red {
@@ -143,6 +153,20 @@ body {font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen
         box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
     }
 }
+@keyframes status-pulse-yellow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 6px rgba(217, 119, 6, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(217, 119, 6, 0);
+    }
+}
+
 
 
 

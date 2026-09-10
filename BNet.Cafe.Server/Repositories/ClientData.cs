@@ -56,10 +56,23 @@ namespace BNet.Cafe.Server.Repositories
 
                     if (clientData != null)
                     {
-                        if (!string.IsNullOrEmpty(clientData.TimeStart) && DateTime.TryParse(clientData.TimeStart, out _))
+                        if (!string.IsNullOrEmpty(clientData.TimeStart) && DateTime.TryParse(clientData.TimeStart, out DateTime start))
                         {
-                            return "Occupied";
+                            DateTime.TryParse(clientData.TimeEnd, out DateTime end);
+                            TimeSpan duration = end - start;
+                            int hours = (int)duration.TotalHours;
+                            bool isAdministrator = (hours == 100);
+
+                            if (isAdministrator)
+                            {
+                                return "Administrator";
+                            }
+                            else
+                            {
+                                return "Occupied";
+                            }
                         }
+
                         return "Available";
                     }
 
