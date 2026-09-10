@@ -89,6 +89,7 @@ namespace BNet.Cafe.Server.Forms
                     }
                     else
                     {
+                        Label_IPAddress.Text = fetchData.IPAddress;
                         Panel_Logout.Visible = false;
                         Panel_ManageRental.Visible = true;
                         Panel_Transfer.Visible = false;
