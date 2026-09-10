@@ -254,6 +254,7 @@
     <Compile Include="Services\GridViewTemplateService.cs" />
     <Compile Include="Services\GridviewPaginationService.cs" />
     <Compile Include="Services\AlertService.cs" />
+    <Compile Include="Services\NetworkUtility.cs" />
     <Compile Include="Services\RemoteMessagingService.cs" />
     <Compile Include="Services\SecuredDataService.cs" />
     <Compile Include="Services\TimeService.cs" />

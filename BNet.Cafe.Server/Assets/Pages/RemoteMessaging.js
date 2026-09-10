@@ -4,7 +4,6 @@
  * Server Messaging Client
  * Handles dedicated text messaging outbound to target PCs via /ws/server
  */
-const SERVER_WS_URL = 'ws://192.168.1.2:2050/ws/server';
 const textEncoder = new TextEncoder();
 let serverWs = null;
 
@@ -12,7 +11,9 @@ let serverWs = null;
  * Initialize and manage the connection to /ws/server
  */
 function connectServerWebSocket() {
-    serverWs = new WebSocket(SERVER_WS_URL);
+
+    var endpoint = 'ws://' + window.location.hostname + ':2050/ws/server';
+    serverWs = new WebSocket(endpoint);
     serverWs.binaryType = 'arraybuffer';
 
     serverWs.onopen = function () {

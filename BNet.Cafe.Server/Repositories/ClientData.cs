@@ -19,7 +19,7 @@ namespace BNet.Cafe.Server.Repositories
         {
             try
             {
-                string apiUrl = "http://localhost:2050/text";
+                string apiUrl = $"http://{Services.NetworkUtility.GetLocalIPAddress()}:2050/text";
                 using (WebClient client = new WebClient())
                 {
                     // Synchronously download the JSON string from the API
@@ -42,7 +42,7 @@ namespace BNet.Cafe.Server.Repositories
         {
             try
             {
-                string apiUrl = "http://localhost:2050/text";
+                string apiUrl = $"http://{Services.NetworkUtility.GetLocalIPAddress()}:2050/text";
                 using (WebClient client = new WebClient())
                 {
                     string jsonResult = client.DownloadString(apiUrl);

@@ -27,12 +27,12 @@ document.addEventListener('click', function (e) {
     }
 });
 
-const socketUrl = 'ws://192.168.1.2:2050/ws/browser';
 const textDecoder = new TextDecoder('utf-8');
 let ws = null;
 
 function connectWebSocket() {
-    ws = new WebSocket(socketUrl);
+    var endpoint = 'ws://' + window.location.hostname + ':2050/ws/browser';
+    ws = new WebSocket(endpoint);
     ws.binaryType = 'arraybuffer';
 
     ws.onopen = function () {
