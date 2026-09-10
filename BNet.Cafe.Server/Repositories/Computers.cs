@@ -1,8 +1,10 @@
-﻿using BNet.Cafe.Server.Databases;
+﻿using BNet.Cafe.Server.Ashx;
+using BNet.Cafe.Server.Databases;
 using BNet.Cafe.Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 
@@ -91,6 +93,63 @@ namespace BNet.Cafe.Server.Repositories
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlExecuteAsync(sql);
+        }
+
+
+        public CountComputers Count()
+        {
+            CountComputers countValue = new CountComputers();
+            var scripts = new Dictionary<string, string>
+            {
+                { "DBIsDeleted", "FALSE" }
+            };
+            Page page = HttpContext.Current.Handler as Page;
+            string template = page.Server.MapPath("~/Databases/Queries/Computers/GetAll.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+            DataTable dataTable = DBContext.SqlDataAdapterAsync(sql);
+
+            ClientData clientData = new ClientData();
+            var liveData = clientData.FetchData();
+
+
+            int occupied = 0;
+            int available = 0;
+            int offline = 0;
+
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                string DBComputerName = dataTable.Rows[i]["DBComputerName"].ToString();
+                var fetchData = liveData.FirstOrDefault(x => x.ClientName == DBComputerName);
+                if (fetchData != null)
+                {
+                    if (!string.IsNullOrEmpty(fetchData.TimeStart) && DateTime.TryParse(fetchData.TimeStart, out DateTime start))
+                    {
+                        occupied++;
+                    }
+                    else
+                    {
+                        available++;
+                    }
+                }
+                else
+                {
+                    offline++;
+                }
+
+            }
+            countValue.Total = dataTable.Rows.Count.ToString();
+            countValue.Available = available.ToString();
+            countValue.Occupied = occupied.ToString();
+            countValue.Offline = offline.ToString();
+            return countValue;
+        }
+
+        public class CountComputers
+        {
+            public string Total { get; set; }
+            public string Occupied { get; set; }
+            public string Available { get; set; }
+            public string Offline { get; set; }
         }
     }
 }

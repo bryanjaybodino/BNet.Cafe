@@ -15,6 +15,7 @@
     <link href="Assets/BNetPageLoader/Style.css" rel="stylesheet" />
     <link href="Assets/BNetTable/Style.css" rel="stylesheet" />
     <link href="Assets/BNetDropdown/Style.css" rel="stylesheet" />
+    <link href="Assets/BNetBadge/Style.css" rel="stylesheet" />
 </head>
 <body>
     <div id="pageLoadingOverlay" class="loading-overlay">

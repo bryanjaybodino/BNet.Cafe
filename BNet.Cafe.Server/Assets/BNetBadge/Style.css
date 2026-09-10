@@ -1,0 +1,142 @@
+﻿/* ==========================================
+   BNet Badge Status
+   ========================================== */
+.bnet-badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+    .bnet-badge-status::before {
+        content: '';
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+    }
+
+    /* Red Variant */
+    .bnet-badge-status.red {
+        background-color: rgba(239, 68, 68, 0.12);
+        color: #dc2626;
+        border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+        .bnet-badge-status.red::before {
+            background-color: #dc2626;
+            box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+            animation: bnet-status-pulse-red 1.6s infinite;
+        }
+
+    /* Green Variant */
+    .bnet-badge-status.green {
+        background-color: rgba(34, 197, 94, 0.12);
+        color: #16a34a;
+        border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+
+        .bnet-badge-status.green::before {
+            background-color: #16a34a;
+            box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+            animation: bnet-status-pulse-green 1.6s infinite;
+        }
+
+    /* Gray Variant */
+    .bnet-badge-status.gray {
+        background-color: rgba(107, 114, 128, 0.12);
+        color: #4b5563;
+        border: 1px solid rgba(107, 114, 128, 0.25);
+    }
+
+        .bnet-badge-status.gray::before {
+            background-color: #9ca3af;
+            box-shadow: 0 0 0 0 rgba(156, 163, 175, 0.7);
+            animation: bnet-status-pulse-gray 2s infinite;
+        }
+
+    /* Yellow Variant */
+    .bnet-badge-status.yellow {
+        background-color: rgba(245, 158, 11, 0.12);
+        color: #d97706;
+        border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+        .bnet-badge-status.yellow::before {
+            background-color: #d97706;
+            box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.7);
+            animation: bnet-status-pulse-yellow 1.6s infinite;
+        }
+
+/* Animations */
+@keyframes bnet-status-pulse-red {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(255, 255, 255, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+@keyframes bnet-status-pulse-green {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(255, 255, 255, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+@keyframes bnet-status-pulse-yellow {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(255, 255, 255, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+@keyframes bnet-status-pulse-gray {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(156, 163, 175, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(255, 255, 255, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}

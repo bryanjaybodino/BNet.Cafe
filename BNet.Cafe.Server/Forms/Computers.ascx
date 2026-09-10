@@ -14,6 +14,72 @@
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <asp:LinkButton ID="LinkButton_Refresh" OnClick="LinkButton_Refresh_Click" runat="server"></asp:LinkButton>
+
+        <div class="cards-grid cards-grid-compact">
+            <!-- Total Computers Card -->
+            <div class="card card-compact">
+                <div class="card-inline-content">
+                    <div class="card-icon-sm">
+                        <i class="fa-solid fa-desktop"></i>
+                    </div>
+                    <div class="card-details">
+                        <span class="card-title-sm">Total Computers</span>
+                        <span class="card-value-sm">
+                            <asp:Label ID="Label_Total" runat="server" Text="0"></asp:Label>
+                        </span>
+                    </div>
+                </div>
+                <span class="positive-sm">100% Total</span>
+            </div>
+
+            <!-- Offline Computers Card -->
+            <div class="card card-compact">
+                <div class="card-inline-content">
+                    <div class="card-icon-sm">
+                        <i class="fa-solid fa-power-off"></i>
+                    </div>
+                    <div class="card-details">
+                        <span class="card-title-sm">Offline</span>
+                        <span class="card-value-sm">
+                            <asp:Label ID="Label_Offline" runat="server" Text="0"></asp:Label>
+                        </span>
+                    </div>
+                </div>
+                <span class="bnet-badge-status gray">Offline</span>
+            </div>
+
+            <!-- Occupied Computers Card -->
+            <div class="card card-compact">
+                <div class="card-inline-content">
+                    <div class="card-icon-sm">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div class="card-details">
+                        <span class="card-title-sm">Occupied</span>
+                        <span class="card-value-sm">
+                            <asp:Label ID="Label_Occupied" runat="server" Text="0"></asp:Label>
+                        </span>
+                    </div>
+                </div>
+                <span class="bnet-badge-status red">In Use</span>
+            </div>
+
+            <!-- Available Computers Card -->
+            <div class="card card-compact">
+                <div class="card-inline-content">
+                    <div class="card-icon-sm">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div class="card-details">
+                        <span class="card-title-sm">Available</span>
+                        <span class="card-value-sm">
+                            <asp:Label ID="Label_Available" runat="server" Text="0"></asp:Label>
+                        </span>
+                    </div>
+                </div>
+                <span class="bnet-badge-status green">Ready</span>
+            </div>
+        </div>
         <div class="bnet-table-wrapper">
             <div class="bnet-table-toolbar">
                 <div class="search-box">

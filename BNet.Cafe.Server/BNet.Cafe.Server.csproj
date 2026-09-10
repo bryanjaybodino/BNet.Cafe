@@ -100,6 +100,7 @@
   <ItemGroup>
     <Content Include="Assets\BNetAlert\Script.js" />
     <Content Include="Assets\BNetAlert\Style.css" />
+    <Content Include="Assets\BNetBadge\Style.css" />
     <Content Include="Assets\BNetDropdown\Style.css" />
     <Content Include="Assets\BNetPageLoader\Script.js" />
     <Content Include="Assets\BNetPageLoader\Style.css" />

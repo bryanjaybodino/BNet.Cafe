@@ -17,6 +17,12 @@ namespace BNet.Cafe.Server.Forms
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
+            var count = computers.Count();
+            Label_Total.Text = count.Total;
+            Label_Offline.Text = count.Offline;    
+            Label_Occupied.Text = count.Occupied;
+            Label_Available.Text = count.Available;
+
             var data = computers.GetAll(TextBox_Search.Text, GridViewTemplateService.GetPaginationIndex(GridViewTable));
             GridViewTemplateService.SetGridView(GridViewTable, data, Panel_Pagination);
 
@@ -48,14 +54,14 @@ namespace BNet.Cafe.Server.Forms
                         int minutes = duration.Minutes;
                         bool isOpenTime = (hours > 100000);
                         bool isAdministrator = (hours == 100);
-    
+
                         if (isOpenTime && !isAdministrator)
                         {
                             duration = TimeService.Get() - start;
                             hours = (int)duration.TotalHours;
                             minutes = duration.Minutes;
                         }
-         
+
                         double billing = CalculateRentalPrice.CalculatePrice((int)duration.TotalMinutes);
                         string hrLabel = hours == 1 ? "hr" : "hrs";
                         string minLabel = minutes == 1 ? "min" : "mins";
@@ -81,7 +87,7 @@ namespace BNet.Cafe.Server.Forms
                         Label_TimeStart.Text = start.ToString("MMM dd – hh:mm tt");
                         Label_TimeEnd.Text = isOpenTime ? "∞" : end.ToString("MMM dd – hh:mm tt");
                         Label_Status.Text = "Occupied";
-                        Label_Status.CssClass = "badge-status red";
+                        Label_Status.CssClass = "bnet-badge-status red";
                         Label_Billing.Text = $"₱{billing:N2}";
                         Panel_Logout.Visible = true;
                         Panel_ManageRental.Visible = true;
@@ -90,7 +96,7 @@ namespace BNet.Cafe.Server.Forms
 
                         if (isAdministrator)
                         {
-                            Label_Status.CssClass = "badge-status yellow";
+                            Label_Status.CssClass = "bnet-badge-status yellow";
                             Label_Status.Text = "Administrator";
                             Label_TimeStart.Text = "--";
                             Label_TimeEnd.Text = "--";
@@ -107,7 +113,7 @@ namespace BNet.Cafe.Server.Forms
                         Panel_Logout.Visible = false;
                         Panel_ManageRental.Visible = true;
                         Panel_Transfer.Visible = false;
-                        SetDefaultUiState("-", "Available", "badge-status green");
+                        SetDefaultUiState("-", "Available", "bnet-badge-status green");
                     }
                 }
                 else
@@ -115,7 +121,7 @@ namespace BNet.Cafe.Server.Forms
                     Panel_Logout.Visible = false;
                     Panel_ManageRental.Visible = false;
                     Panel_Transfer.Visible = false;
-                    SetDefaultUiState("-", "Offline", "badge-status gray");
+                    SetDefaultUiState("-", "Offline", "bnet-badge-status gray");
                 }
                 void SetDefaultUiState(string textValue, string statusText, string cssClass)
                 {

@@ -42,6 +42,42 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.LinkButton LinkButton_Refresh;
 
         /// <summary>
+        /// Label_Total control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label_Total;
+
+        /// <summary>
+        /// Label_Offline control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label_Offline;
+
+        /// <summary>
+        /// Label_Occupied control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label_Occupied;
+
+        /// <summary>
+        /// Label_Available control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label_Available;
+
+        /// <summary>
         /// TextBox_Search control.
         /// </summary>
         /// <remarks>

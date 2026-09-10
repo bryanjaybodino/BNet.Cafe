@@ -36,11 +36,11 @@ namespace BNet.Cafe.Server.Forms
                             Label_RentalId.Text = rentalId;
                             Label_HeaderText.Text = "Rental ID # : ";
                         }
-                        Label_Status.CssClass = "badge-status red";
+                        Label_Status.CssClass ="bnet-badge-status red";
                     }
                     else if (status == "Offline")
                     {
-                        Label_Status.CssClass = "badge-status gray";
+                        Label_Status.CssClass ="bnet-badge-status gray";
                         AlertService.ShowAlert(this, "The selected computer is currently offline. Please ensure the computer is online before creating a rental session.", "warning");
                         Panel_Form.Enabled = false;
                         Panel_Buttons.Visible = false;
@@ -48,7 +48,7 @@ namespace BNet.Cafe.Server.Forms
                     }
                     else if (status == "Administrator")
                     {
-                        Label_Status.CssClass = "badge-status yellow";
+                        Label_Status.CssClass ="bnet-badge-status yellow";
                         AlertService.ShowAlert(this, "The selected computer is currently maintenance. Please ensure the computer is online before creating a rental session.", "warning");
                         Panel_Form.Enabled = false;
                         Panel_Buttons.Visible = false;
@@ -57,7 +57,7 @@ namespace BNet.Cafe.Server.Forms
                     else
                     {
                         Label_HeaderText.Text = "Add New Rental";
-                        Label_Status.CssClass = "badge-status green";
+                        Label_Status.CssClass ="bnet-badge-status green";
                     }
                 }
                 LoadDropdowns();
