@@ -31,7 +31,7 @@ namespace BNet.Cafe.Server.Forms
                         {
                             string rentalId = rental.Rows[ii]["DBId"].ToString();
                             string duration = rental.Rows[ii]["DBDuration"].ToString();
-                            string customerId = rental.Rows[ii]["DBCustomerId"].ToString();
+                            string customerId = rental.Rows[ii]["DBUserId"].ToString();
                             TextBox_Duration.Text = duration;
                             Label_RentalId.Text = rentalId;
                             Label_HeaderText.Text = "Rental ID # : ";

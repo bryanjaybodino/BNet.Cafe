@@ -103,7 +103,7 @@ namespace BNet.Cafe.Server.Forms.Modals
             for (int i = 0; i < rental.Rows.Count; i++)
             {
                 string rentalId = rental.Rows[i]["DBId"].ToString();
-                string customerId = rental.Rows[i]["DBCustomerId"].ToString();
+                string customerId = rental.Rows[i]["DBUserId"].ToString();
                 bool isSuccess = rentals.Update(rentalId, targetPcId, customerId, totalTime.ToString().Replace(",", ""), billing.ToString().Replace(",", ""));
                 if (isSuccess)
                 {

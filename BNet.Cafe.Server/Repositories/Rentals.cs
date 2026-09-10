@@ -49,7 +49,7 @@ namespace BNet.Cafe.Server.Repositories
             var scripts = new Dictionary<string, string>
             {
                 { "DBComputerId", computerId },
-                { "DBCustomerId", customerId },
+                { "DBUserId", customerId },
                 { "DBDuration", duration },
                 { "DBAmount", amount },
                 { "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd") },
@@ -70,7 +70,7 @@ namespace BNet.Cafe.Server.Repositories
             {
                 { "DBId", id },
                 { "DBComputerId", computerId },
-                { "DBCustomerId", customerId },
+                { "DBUserId", customerId },
                 { "DBDuration", duration },
                 { "DBAmount", amount }
             };
@@ -94,6 +94,51 @@ namespace BNet.Cafe.Server.Repositories
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlExecuteAsync(sql);
+        }
+
+
+
+
+        public CountRentals GetCount()
+        {
+            CountRentals countRentals = new CountRentals();
+            var scripts = new Dictionary<string, string>
+            {
+                { "DBIsDeleted", "FALSE" },
+            };
+            Page page = HttpContext.Current.Handler as Page;
+            string template = page.Server.MapPath("~/Databases/Queries/Rentals/GetCount.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+            var data = DBContext.SqlDataAdapterAsync(sql);
+
+            string total = "0";
+            string users = "0";
+            string walkIn = "0";
+            string income = "0";
+            string duration = "0";
+
+            for (int i = 0; i < data.Rows.Count; i++)
+            {
+                total = data.Rows[i]["DBTotalTransactions"].ToString();
+                users = data.Rows[i]["DBTotalUsers"].ToString();
+                walkIn = data.Rows[i]["DBTotalWalkIn"].ToString();
+                income = data.Rows[i]["DBTotalIncome"].ToString();
+                duration = data.Rows[i]["DBTotalFormattedDuration"].ToString();
+            }
+            countRentals.Total = total;
+            countRentals.Users = users;
+            countRentals.WalkIn = walkIn;
+            countRentals.Income = income;
+            countRentals.Duration = duration;
+            return countRentals;
+        }
+        public class CountRentals
+        {
+            public string Total { get; set; }
+            public string Users { get; set; }
+            public string WalkIn { get; set; }
+            public string Income { get; set; }
+            public string Duration { get; set; }
         }
     }
 }

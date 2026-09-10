@@ -1,7 +1,7 @@
 ﻿INSERT INTO `rentals`
 (
 	DBComputerId,
-	DBCustomerId,
+	DBUserId,
 	DBDuration,
 	DBAmount,
 	DBDateCreated,
@@ -11,7 +11,7 @@
 VALUES 
 (
 	'{DBComputerId}',
-	'{DBCustomerId}',
+	'{DBUserId}',
 	'{DBDuration}',
 	'{DBAmount}',
 	'{DBDateCreated}',

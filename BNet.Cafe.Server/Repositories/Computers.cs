@@ -96,7 +96,7 @@ namespace BNet.Cafe.Server.Repositories
         }
 
 
-        public CountComputers Count()
+        public CountComputers GetCount()
         {
             CountComputers countValue = new CountComputers();
             var scripts = new Dictionary<string, string>

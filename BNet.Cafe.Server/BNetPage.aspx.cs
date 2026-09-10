@@ -68,7 +68,7 @@ namespace BNet.Cafe.Server
                 HyperLink_Computers.CssClass = "";
                 HyperLink_Users.CssClass = "";
                 HyperLink_Remote.CssClass = "";
-                HyperLink_BillingHistory.CssClass = "";
+                HyperLink_Billings.CssClass = "";
 
 
                 if (formName.Contains(HyperLink_Dashboard.ToolTip))
@@ -87,9 +87,9 @@ namespace BNet.Cafe.Server
                 {
                     HyperLink_Remote.CssClass = "active";
                 }
-                else if (formName.Contains(HyperLink_BillingHistory.ToolTip))
+                else if (formName.Contains(HyperLink_Billings.ToolTip))
                 {
-                    HyperLink_BillingHistory.CssClass = "active";
+                    HyperLink_Billings.CssClass = "active";
                 }
             }
         }

@@ -7,101 +7,92 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BNet.Cafe.Server
+namespace BNet.Cafe.Server.Forms
 {
 
 
-    public partial class BNetPage
+    public partial class Billings
     {
 
         /// <summary>
-        /// HyperLink_Dashboard control.
+        /// UpdatePanel1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Dashboard;
+        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
-        /// HyperLink_Computers control.
+        /// LinkButton_Refresh control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Computers;
+        protected global::System.Web.UI.WebControls.LinkButton LinkButton_Refresh;
 
         /// <summary>
-        /// HyperLink_Remote control.
+        /// Label_TotalTransactions control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Remote;
+        protected global::System.Web.UI.WebControls.Label Label_TotalTransactions;
 
         /// <summary>
-        /// HyperLink_Billings control.
+        /// Label_Users control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Billings;
+        protected global::System.Web.UI.WebControls.Label Label_Users;
 
         /// <summary>
-        /// HyperLink_Users control.
+        /// Label_WalkIn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Users;
+        protected global::System.Web.UI.WebControls.Label Label_WalkIn;
 
         /// <summary>
-        /// Label_InitialName control.
+        /// Label_Income control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label_InitialName;
+        protected global::System.Web.UI.WebControls.Label Label_Income;
 
         /// <summary>
-        /// label_FullName control.
+        /// TextBox_Search control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label label_FullName;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Search;
 
         /// <summary>
-        /// MainForm control.
+        /// GridViewTable control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm MainForm;
+        protected global::System.Web.UI.WebControls.GridView GridViewTable;
 
         /// <summary>
-        /// ScriptManager1 control.
+        /// Panel_Pagination control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.ScriptManager ScriptManager1;
-
-        /// <summary>
-        /// PlaceHolder_Container control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder PlaceHolder_Container;
+        protected global::System.Web.UI.WebControls.Panel Panel_Pagination;
     }
 }

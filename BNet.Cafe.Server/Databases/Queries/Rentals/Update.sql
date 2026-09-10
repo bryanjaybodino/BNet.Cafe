@@ -1,7 +1,7 @@
 ﻿UPDATE `rentals` 
 SET 
 	`DBComputerId` = '{DBComputerId}',
-	`DBCustomerId` = '{DBCustomerId}',
+	`DBUserId` = '{DBUserId}',
 	`DBDuration` = '{DBDuration}',
 	`DBAmount` = '{DBAmount}'
 WHERE `DBId` = '{DBId}'

@@ -18,7 +18,7 @@ namespace BNet.Cafe.Server.Databases.Tables
             });
             list.Add(new DBMigration.DBColumns
             {
-                ColumnName = "DBCustomerId",
+                ColumnName = "DBUserId",
                 Length = 5,
                 Type = DBMigration.DBColumns.type.VARCHAR
             });

@@ -17,7 +17,7 @@ namespace BNet.Cafe.Server.Forms
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
-            var count = computers.Count();
+            var count = computers.GetCount();
             Label_Total.Text = count.Total;
             Label_Offline.Text = count.Offline;    
             Label_Occupied.Text = count.Occupied;

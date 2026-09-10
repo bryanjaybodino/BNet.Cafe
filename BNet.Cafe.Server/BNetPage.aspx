@@ -45,8 +45,8 @@
                     </asp:HyperLink>
                 </li>
                 <li>
-                    <asp:HyperLink ID="HyperLink_BillingHistory" runat="server" ToolTip="BillingHistory" onclick="navigateTo('?Form=BillingHistory'); return false;">
-            <i class="fa-solid fa-file-invoice-dollar"></i><span>Billing History</span>
+                    <asp:HyperLink ID="HyperLink_Billings" runat="server" ToolTip="Billing" onclick="navigateTo('?Form=Billings'); return false;">
+            <i class="fa-solid fa-file-invoice-dollar"></i><span>Billings</span>
                     </asp:HyperLink>
                 </li>
                 <li>

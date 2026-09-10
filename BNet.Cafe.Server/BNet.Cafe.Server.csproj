@@ -128,8 +128,11 @@
     <Content Include="Databases\Queries\Computers\Update.sql" />
     <Content Include="Databases\Queries\Computers\UpdateCount.sql" />
     <Content Include="Databases\Queries\Rentals\Create.sql" />
+    <Content Include="Databases\Queries\Rentals\GetCount.sql" />
+    <Content Include="Databases\Queries\Rentals\GetAll.sql" />
     <Content Include="Databases\Queries\Rentals\GetByComputerId.sql" />
     <Content Include="Databases\Queries\Rentals\Update.sql" />
+    <Content Include="Forms\Billings.ascx" />
     <Content Include="Forms\ComputerCreate.ascx" />
     <Content Include="Forms\ComputerEdit.ascx" />
     <Content Include="Forms\Computers.ascx" />
@@ -174,6 +177,14 @@
     <Compile Include="Databases\DBScriptService.cs" />
     <Compile Include="Databases\Tables\computers.cs" />
     <Compile Include="Databases\Tables\rentals.cs" />
+    <Compile Include="Databases\Tables\users.cs" />
+    <Compile Include="Forms\Billings.ascx.cs">
+      <DependentUpon>Billings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Billings.ascx.designer.cs">
+      <DependentUpon>Billings.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ComputerCreate.ascx.cs">
       <DependentUpon>ComputerCreate.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
