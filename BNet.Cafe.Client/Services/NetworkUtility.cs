@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BNet.Cafe.Server.Services
+namespace BNet.Cafe.Client.Services
 {
     internal class NetworkUtility
     {
@@ -45,7 +46,7 @@ namespace BNet.Cafe.Server.Services
                 }
 
                 // Fallback to loopback address instead of throwing an exception
-                _cachedIpAddress = "127.0.0.1";
+                _cachedIpAddress =  "127.0.0.1";
                 return _cachedIpAddress;
             }
         }

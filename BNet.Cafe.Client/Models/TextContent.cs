@@ -18,5 +18,6 @@ namespace BNet.Cafe.Client.Models
         public string ClientName { get; set; }
         public string Windows { get; set; }
         public string WindowsVersion { get; set; }
+        public string IPAddress { get; set; }
     }
 }

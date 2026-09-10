@@ -78,6 +78,11 @@
                                 <asp:Label ID="Label_DBComputerName" runat="server" Text='<%#Eval("DBComputerName") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
+                        <asp:TemplateField HeaderText="IP Address" ItemStyle-Width="200px">
+                            <ItemTemplate>
+                                <asp:Label ID="Label_IPAddress" runat="server" Text=""></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
                         <asp:TemplateField HeaderText="Time Start" ItemStyle-Width="200px">
                             <ItemTemplate>
                                 <asp:Label ID="Label_TimeStart" runat="server" Text=""></asp:Label>

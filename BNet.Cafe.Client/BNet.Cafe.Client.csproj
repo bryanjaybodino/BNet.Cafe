@@ -67,6 +67,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Services\CalculateRentalPrice.cs" />
+    <Compile Include="Services\NetworkUtility.cs" />
     <Compile Include="Starter\EnvironmentHelper.cs" />
     <Compile Include="Starter\NativeMethods.cs" />
     <Compile Include="Services\ActivityReporter.cs" />

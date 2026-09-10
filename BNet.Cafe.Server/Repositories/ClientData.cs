@@ -14,6 +14,7 @@ namespace BNet.Cafe.Server.Repositories
             public string ClientName { get; set; }
             public string TimeStart { get; set; }
             public string TimeEnd { get; set; }
+            public string IPAddress { get; set; }
         }
         public List<ClientData.ClientTimeout> FetchData()
         {

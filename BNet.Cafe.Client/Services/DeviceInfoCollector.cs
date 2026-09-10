@@ -1,5 +1,6 @@
 ﻿using BNet.Cafe.Client.Models;
 using BNet.Cafe.Client.Repositories;
+using BNet.Cafe.Client.Services;
 using System;
 using System.Configuration;
 using System.Linq;
@@ -37,6 +38,7 @@ namespace BNet.Cafe.Client
                 OSVersion = Environment.OSVersion.VersionString,
                 ProcessorCount = Environment.ProcessorCount.ToString(),
                 ScreenCount = ScreenCaptured.GetScreenCount().ToString(),
+                IPAddress = NetworkUtility.GetLocalIPAddress()
             };
         }
     }

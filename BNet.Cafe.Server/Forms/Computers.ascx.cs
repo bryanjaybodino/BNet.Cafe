@@ -26,6 +26,7 @@ namespace BNet.Cafe.Server.Forms
             for (int i = 0; i < GridViewTable.Rows.Count; i++)
             {
                 Label Label_DBComputerName = (Label)GridViewTable.Rows[i].FindControl("Label_DBComputerName");
+                Label Label_IPAddress = (Label)GridViewTable.Rows[i].FindControl("Label_IPAddress");
                 Label Label_TimeStart = (Label)GridViewTable.Rows[i].FindControl("Label_TimeStart");
                 Label Label_TimeEnd = (Label)GridViewTable.Rows[i].FindControl("Label_TimeEnd");
                 Label Label_TotalHours = (Label)GridViewTable.Rows[i].FindControl("Label_TotalHours");
@@ -75,6 +76,7 @@ namespace BNet.Cafe.Server.Forms
                             Label_TotalHours.Text = "0 mins";
                         }
 
+                        Label_IPAddress.Text = fetchData.IPAddress;
                         Label_TimeStart.Text = start.ToString("MMM dd – hh:mm tt");
                         Label_TimeEnd.Text = isOpenTime ? "∞" : end.ToString("MMM dd – hh:mm tt");
                         Label_Status.Text = "Occupied";

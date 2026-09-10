@@ -1,5 +1,6 @@
 ﻿using BNet.Cafe.Client.Models;
 using BNet.Cafe.Client.Repositories;
+using BNet.Cafe.Client.Services;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -66,7 +67,8 @@ namespace BNet.Cafe.Client
                 workGroup = deviceInfo.WorkGroup,
                 osVersion = deviceInfo.OSVersion,
                 processorCount = deviceInfo.ProcessorCount,
-                screenCount = ScreenCaptured.GetScreenCount().ToString()
+                screenCount = ScreenCaptured.GetScreenCount().ToString(),
+                IPAddress = NetworkUtility.GetLocalIPAddress()
             };
 
             string json = JsonConvert.SerializeObject(payloadObj);

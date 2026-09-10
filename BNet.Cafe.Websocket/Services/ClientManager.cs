@@ -32,6 +32,7 @@ namespace BNet.Cafe.Websocket
                 {
                     existingClient.TimeStart = info.TimeStart;
                     existingClient.TimeEnd = info.TimeEnd;
+                    existingClient.IPAddress = info.IPAddress;
                 }
 
                 ClientListJson = JsonConvert.SerializeObject(_clientList, Formatting.Indented);
