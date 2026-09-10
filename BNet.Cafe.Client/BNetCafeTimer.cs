@@ -114,7 +114,7 @@ namespace BNet.Cafe.Client
             {
                 Label_TotalHours.Text = $"Purchased : {FormatPurchasedTime((endTime - createdTime).TotalSeconds)}";
                 Label_TimeoutDisplay.Text = $"Timeout : {endTime:hh:mm tt}";
-                label_TotalAmount.Text = $"Amount : ₱{amount:N2}";
+                            label_TotalAmount.Text = $"Amount : ₱{amount:N2}";
             }
 
 
@@ -158,7 +158,7 @@ namespace BNet.Cafe.Client
 
             if (isOpenTime)
             {
-                int amount = (int)CalculateRentalPrice.CalculatePrice((int)time.TotalMinutes);
+                double amount = CalculateRentalPrice.CalculatePrice((int)time.TotalMinutes);
                 label_TotalAmount.Text = $"Amount : ₱ {amount:N2}";
             }
         }
