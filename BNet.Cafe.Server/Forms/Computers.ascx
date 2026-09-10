@@ -40,13 +40,17 @@
                                         Command <i class="fa-solid fa-chevron-down"></i>
                                     </button>
                                     <div class="bnet-dropdown-menu">
-                                        <a onclick="navigateTo('BNetPage.aspx?Form=RentalManage&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
-                                            <i class="fa-regular fa-clock"></i>Manage Rental Session
-                                        </a>
-                                        <a class="bnet-dropdown-item"
-                                            onclick="openLogoutModal(this, '<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
-                                            <i class="fa-solid fa-right-from-bracket"></i>Log Out
-                                        </a>
+                                        <asp:Panel ID="Panel_ManageRental" Visible="false" runat="server">
+                                            <a onclick="navigateTo('BNetPage.aspx?Form=RentalManage&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
+                                                <i class="fa-regular fa-clock"></i>Manage Rental Session
+                                            </a>
+                                        </asp:Panel>
+                                        <asp:Panel ID="Panel_Logout" Visible="false" runat="server">
+                                            <a class="bnet-dropdown-item"
+                                                onclick="openLogoutModal(this, '<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
+                                                <i class="fa-solid fa-right-from-bracket"></i>Log Out
+                                            </a>
+                                        </asp:Panel>
                                         <a class="bnet-dropdown-item">
                                             <i class="fa-solid fa-clock-rotate-left"></i>Session History
                                         </a>

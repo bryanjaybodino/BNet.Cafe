@@ -30,6 +30,8 @@ namespace BNet.Cafe.Server.Forms
                 Label Label_TotalHours = (Label)GridViewTable.Rows[i].FindControl("Label_TotalHours");
                 Label Label_Status = (Label)GridViewTable.Rows[i].FindControl("Label_Status");
                 Label Label_Billing = (Label)GridViewTable.Rows[i].FindControl("Label_Billing");
+                Panel Panel_Logout = (Panel)GridViewTable.Rows[i].FindControl("Panel_Logout");
+                Panel Panel_ManageRental = (Panel)GridViewTable.Rows[i].FindControl("Panel_ManageRental");
                 var fetchData = liveData.FirstOrDefault(x => x.ClientName == Label_DBComputerName.Text);
 
                 if (fetchData != null)
@@ -76,15 +78,21 @@ namespace BNet.Cafe.Server.Forms
                         Label_Status.Text = "Occupied";
                         Label_Status.CssClass = "badge-status red";
                         Label_Billing.Text = $"₱{billing:N2}";
+                        Panel_Logout.Visible = true;
+                        Panel_ManageRental.Visible = true;
 
                     }
                     else
                     {
+                        Panel_Logout.Visible = false;
+                        Panel_ManageRental.Visible = true;
                         SetDefaultUiState("-", "Available", "badge-status green");
                     }
                 }
                 else
                 {
+                    Panel_Logout.Visible = false;
+                    Panel_ManageRental.Visible = false;
                     SetDefaultUiState("-", "Offline", "badge-status gray");
                 }
                 void SetDefaultUiState(string textValue, string statusText, string cssClass)
