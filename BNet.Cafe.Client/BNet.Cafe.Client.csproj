@@ -66,6 +66,7 @@
     <Compile Include="Design\ModernTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Services\CalculateRentalPrice.cs" />
     <Compile Include="Starter\EnvironmentHelper.cs" />
     <Compile Include="Starter\NativeMethods.cs" />
     <Compile Include="Services\ActivityReporter.cs" />

@@ -41,12 +41,16 @@ namespace BNet.Cafe.Server.Forms
                         TimeSpan duration = end - start;
                         int hours = (int)duration.TotalHours;
                         int minutes = duration.Minutes;
-
+                        bool isOpenTime = (hours > 100000);
+                   
+                        if (isOpenTime)
+                        {
+                            duration = TimeService.Get() - start;
+                            hours = (int)duration.TotalHours;
+                            minutes = duration.Minutes;
+                        }
 
                         double billing = CalculateRentalPrice.CalculatePrice((int)duration.TotalMinutes);
-
-
-
                         string hrLabel = hours == 1 ? "hr" : "hrs";
                         string minLabel = minutes == 1 ? "min" : "mins";
 
@@ -68,32 +72,36 @@ namespace BNet.Cafe.Server.Forms
                         }
 
                         Label_TimeStart.Text = start.ToString("MMM dd, yyyy – hh:mm tt");
-                        Label_TimeEnd.Text = end.ToString("MMM dd, yyyy – hh:mm tt");
+                        Label_TimeEnd.Text = isOpenTime ? "∞" : end.ToString("MMM dd, yyyy – hh:mm tt");
                         Label_Status.Text = "Occupied";
                         Label_Status.CssClass = "badge-status red";
-                        Label_Billing.Text = $"₱{billing:N2}";  
+                        Label_Billing.Text = $"₱{billing:N2}";
+
                     }
                     else
                     {
-                        Label_TimeStart.Text = "-";
-                        Label_TimeEnd.Text = "-";
-                        Label_TotalHours.Text = "-";
-                        Label_Billing.Text = "-";
-                        Label_Status.Text = "Available";
-                        Label_Status.CssClass = "badge-status green";
+                        SetDefaultUiState("-", "Available", "badge-status green");
                     }
                 }
                 else
                 {
-                    Label_TimeStart.Text = "-";
-                    Label_TimeEnd.Text = "-";
-                    Label_TotalHours.Text = "-";
-                    Label_Billing.Text = "-";
-                    Label_Status.Text = "Offline";
-                    Label_Status.CssClass = "badge-status gray";
+                    SetDefaultUiState("-", "Offline", "badge-status gray");
                 }
+                void SetDefaultUiState(string textValue, string statusText, string cssClass)
+                {
+                    Label_TimeStart.Text = textValue;
+                    Label_TimeEnd.Text = textValue;
+                    Label_TotalHours.Text = textValue;
+                    Label_Billing.Text = textValue;
+                    Label_Status.Text = statusText;
+                    Label_Status.CssClass = cssClass;
+                }
+
             }
         }
+
+
+
         protected void GridViewTable_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             GridViewTable.PageIndex = e.NewPageIndex;

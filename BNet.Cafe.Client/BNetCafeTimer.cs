@@ -1,4 +1,5 @@
 ﻿using BNet.Cafe.Client.Repositories;
+using BNet.Cafe.Client.Services;
 using System;
 using System.Configuration;
 using System.Drawing;
@@ -106,16 +107,17 @@ namespace BNet.Cafe.Client
 
             if (isOpenTime)
             {
-                Label_TotalHours.Text = "Purchased : OPEN TIME";
-                Label_TimeoutDisplay.Text = "Timeout : OPEN TIME";
+                Label_TotalHours.Text = "Purchased : ∞";
+                Label_TimeoutDisplay.Text = "Timeout : ∞";
             }
             else
             {
                 Label_TotalHours.Text = $"Purchased : {FormatPurchasedTime((endTime - createdTime).TotalSeconds)}";
                 Label_TimeoutDisplay.Text = $"Timeout : {endTime:hh:mm tt}";
+                label_TotalAmount.Text = $"Amount : ₱{amount:N2}";
             }
 
-            label_TotalAmount.Text = $"Amount : ₱{amount:N2}";
+
 
             UpdateDisplay();
             Button_Logout.Enabled = true;
@@ -153,6 +155,12 @@ namespace BNet.Cafe.Client
         {
             TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
             Label_TimerDisplay.Text = time.ToString(@"hh\:mm\:ss");
+
+            if (isOpenTime)
+            {
+                int amount = (int)CalculateRentalPrice.CalculatePrice((int)time.TotalMinutes);
+                label_TotalAmount.Text = $"Amount : ₱ {amount:N2}";
+            }
         }
 
         #region Session Persistence (Text File)
@@ -204,9 +212,8 @@ namespace BNet.Cafe.Client
                             remainingSeconds = (TimeService.Get() - createdTime).TotalSeconds;
                             Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
                             Label_CustomerName.Text = $"User : {(string.IsNullOrWhiteSpace(customerName) ? "GUEST" : customerName.ToUpper())}";
-                            Label_TotalHours.Text = "Purchased : OPEN TIME";
-                            label_TotalAmount.Text = $"Amount : ₱ {amount:N2}";
-                            Label_TimeoutDisplay.Text = "Timeout : OPEN TIME";
+                            Label_TotalHours.Text = "Purchased : ∞";
+                            Label_TimeoutDisplay.Text = "Timeout : ∞";
 
                             UpdateDisplay();
                             Timer_Countdown.Start();
