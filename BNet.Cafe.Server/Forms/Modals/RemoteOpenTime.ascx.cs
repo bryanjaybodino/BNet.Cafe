@@ -12,6 +12,13 @@ namespace BNet.Cafe.Server.Forms.Modals
     {
         protected void LinkButton_ConfirmOpenTime_Click(object sender, EventArgs e)
         {
+            // Verify that the postback target is actually this button
+            string eventTarget = Request.Form["__EVENTTARGET"] ?? string.Empty;
+            if (!eventTarget.Contains(LinkButton_ConfirmOpenTime.ID))
+            {
+                return;
+            }
+
             string computerId = Request.QueryString["id"];
             string computerName = HiddenField_OpenTimeClientId.Value.Trim();
             string customerId = HiddenField_OpenTimeCustomerName.Value;

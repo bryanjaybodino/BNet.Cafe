@@ -12,11 +12,8 @@
 </asp:ScriptManagerProxy>
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
-<Triggers>
-    <asp:AsyncPostBackTrigger ControlID="LinkButton_Refresh" EventName="" />
-</Triggers>
     <ContentTemplate>
-        <asp:LinkButton ID="LinkButton_Refresh" runat="server"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton_Refresh" OnClick="LinkButton_Refresh_Click" runat="server"></asp:LinkButton>
         <div class="bnet-table-wrapper">
             <div class="bnet-table-toolbar">
                 <div class="search-box">
@@ -56,10 +53,12 @@
                                                 <i class="fa-solid fa-right-from-bracket"></i>Log Out
                                             </a>
                                         </asp:Panel>
-                                        <a class="bnet-dropdown-item"
-                                            onclick="openTransferModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
-                                            <i class="fa-solid fa-right-left"></i>Transfer Session
+                                        <asp:Panel ID="Panel_Transfer" Visible="false" runat="server">
+                                            <a class="bnet-dropdown-item"
+                                                onclick="openTransferModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
+                                                <i class="fa-solid fa-right-left"></i>Transfer Session
                                         </a>
+                                        </asp:Panel>
                                         <a class="bnet-dropdown-item">
                                             <i class="fa-solid fa-clock-rotate-left"></i>Session History
                                         </a>
@@ -111,6 +110,6 @@
         </div>
         <uc1:ComputerDelete runat="server" ID="ComputerDelete" />
         <uc1:RemoteLogout runat="server" ID="RemoteLogout" />
-        <uc1:RemoteTimeTransfer runat="server" id="RemoteTimeTransfer" />
+        <uc1:RemoteTimeTransfer runat="server" ID="RemoteTimeTransfer" />
     </ContentTemplate>
 </asp:UpdatePanel>

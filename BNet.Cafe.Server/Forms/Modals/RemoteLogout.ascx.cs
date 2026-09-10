@@ -15,6 +15,13 @@ namespace BNet.Cafe.Server.Forms.Modals
     {
         protected void LinkButton_ConfirmLogout_Click(object sender, EventArgs e)
         {
+            // Verify that the postback target is actually this button
+            string eventTarget = Request.Form["__EVENTTARGET"] ?? string.Empty;
+            if (!eventTarget.Contains(LinkButton_ConfirmLogout.ID))
+            {
+                return;
+            }
+
             bool isOpenTime = (HiddenField_IsOpenTime.Value == "TRUE");
             if (isOpenTime)
             {

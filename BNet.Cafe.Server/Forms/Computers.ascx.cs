@@ -33,6 +33,7 @@ namespace BNet.Cafe.Server.Forms
                 Label Label_Billing = (Label)GridViewTable.Rows[i].FindControl("Label_Billing");
                 Panel Panel_Logout = (Panel)GridViewTable.Rows[i].FindControl("Panel_Logout");
                 Panel Panel_ManageRental = (Panel)GridViewTable.Rows[i].FindControl("Panel_ManageRental");
+                Panel Panel_Transfer = (Panel)GridViewTable.Rows[i].FindControl("Panel_Transfer");
                 var fetchData = liveData.FirstOrDefault(x => x.ClientName == Label_DBComputerName.Text);
 
                 if (fetchData != null)
@@ -45,7 +46,7 @@ namespace BNet.Cafe.Server.Forms
                         int hours = (int)duration.TotalHours;
                         int minutes = duration.Minutes;
                         bool isOpenTime = (hours > 100000);
-                   
+
                         if (isOpenTime)
                         {
                             duration = TimeService.Get() - start;
@@ -74,19 +75,21 @@ namespace BNet.Cafe.Server.Forms
                             Label_TotalHours.Text = "0 mins";
                         }
 
-                        Label_TimeStart.Text = start.ToString("MMM dd, yyyy – hh:mm tt");
-                        Label_TimeEnd.Text = isOpenTime ? "∞" : end.ToString("MMM dd, yyyy – hh:mm tt");
+                        Label_TimeStart.Text = start.ToString("MMM dd – hh:mm tt");
+                        Label_TimeEnd.Text = isOpenTime ? "∞" : end.ToString("MMM dd – hh:mm tt");
                         Label_Status.Text = "Occupied";
                         Label_Status.CssClass = "badge-status red";
                         Label_Billing.Text = $"₱{billing:N2}";
                         Panel_Logout.Visible = true;
                         Panel_ManageRental.Visible = true;
+                        Panel_Transfer.Visible = true;
 
                     }
                     else
                     {
                         Panel_Logout.Visible = false;
                         Panel_ManageRental.Visible = true;
+                        Panel_Transfer.Visible = false;
                         SetDefaultUiState("-", "Available", "badge-status green");
                     }
                 }
@@ -94,6 +97,7 @@ namespace BNet.Cafe.Server.Forms
                 {
                     Panel_Logout.Visible = false;
                     Panel_ManageRental.Visible = false;
+                    Panel_Transfer.Visible = false;
                     SetDefaultUiState("-", "Offline", "badge-status gray");
                 }
                 void SetDefaultUiState(string textValue, string statusText, string cssClass)
@@ -114,6 +118,11 @@ namespace BNet.Cafe.Server.Forms
         protected void GridViewTable_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             GridViewTable.PageIndex = e.NewPageIndex;
+        }
+
+        protected void LinkButton_Refresh_Click(object sender, EventArgs e)
+        {
+            // Explicitly handles the refresh postback so Web Forms does not re-fire previous events
         }
     }
 }

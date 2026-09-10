@@ -10,16 +10,17 @@ namespace BNet.Cafe.Server.Services
                 ? string.Empty
                 : $"setTimeout(function(){{ navigateTo('{redirectUrl}') }}, {delayMs});";
 
+            // Use an IIFE instead of Sys.Application.add_load to prevent re-execution on future postbacks
             string script = $@"
-                Sys.Application.add_load(function() {{
-                    ShowAlert('{message}', '{type}');
+                (function() {{
+                    ShowAlert('{message.Replace("'", "\\'")}', '{type}');
                     {redirectScript}
-                }});";
+                }})();";
 
             ScriptManager.RegisterStartupScript(
                 control,
                 control.GetType(),
-                "AlertScript",
+                "AlertScript_" + System.Guid.NewGuid().ToString("N"), // Unique key to avoid script overwrites
                 script,
                 true
             );

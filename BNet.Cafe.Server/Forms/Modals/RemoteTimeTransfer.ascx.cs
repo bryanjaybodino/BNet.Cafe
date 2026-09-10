@@ -50,6 +50,13 @@ namespace BNet.Cafe.Server.Forms.Modals
         }
         protected void LinkButton_ConfirmTransfer_Click(object sender, EventArgs e)
         {
+            // Verify that the postback target is actually this button
+            string eventTarget = Request.Form["__EVENTTARGET"] ?? string.Empty;
+            if (!eventTarget.Contains(LinkButton_ConfirmTransfer.ID))
+            {
+                return;
+            }
+
             string sourcePcName = HiddenField_SourceComputerName.Value;
             string targetPcName = DropDownList_TargetComputer.SelectedItem.Text;
             string targetPcId = DropDownList_TargetComputer.SelectedItem.Value;
@@ -79,14 +86,15 @@ namespace BNet.Cafe.Server.Forms.Modals
             int hours = (int)duration.TotalHours;
             int minutes = duration.Minutes;
             bool isOpenTime = (hours > 100000);
-
+            int totalTime = (int)duration.TotalMinutes;
             if (isOpenTime)
             {
                 duration = TimeService.Get() - start;
                 hours = (int)duration.TotalHours;
                 minutes = duration.Minutes;
+                totalTime = 0;
             }
-            int totalTime = (int)duration.TotalMinutes;
+
             decimal billing = (decimal)CalculateRentalPrice.CalculatePrice(totalTime);
 
 
@@ -99,8 +107,11 @@ namespace BNet.Cafe.Server.Forms.Modals
                 bool isSuccess = rentals.Update(rentalId, targetPcId, customerId, totalTime.ToString().Replace(",", ""), billing.ToString().Replace(",", ""));
                 if (isSuccess)
                 {
-                    RemoteMessagingService.LogoutPC(this, sourcePcName);
+
+
+
                     RemoteMessagingService.TransferSession(this, targetPcName, customerId, totalTime, billing, start);
+                    RemoteMessagingService.LogoutPC(this, sourcePcName);
                     AlertService.ShowAlert(this, $"Successfully transferred session from {sourcePcName} to {targetPcName}.", "success");
                 }
                 else

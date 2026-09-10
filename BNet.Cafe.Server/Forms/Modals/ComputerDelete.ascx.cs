@@ -8,6 +8,12 @@ namespace BNet.Cafe.Server.Forms.Modals
     {
         protected void LinkButton_ConfirmDelete_Click(object sender, EventArgs e)
         {
+            // Verify that the postback target is actually this button
+            string eventTarget = Request.Form["__EVENTTARGET"] ?? string.Empty;
+            if (!eventTarget.Contains(LinkButton_ConfirmDelete.ID))
+            {
+                return;
+            }
             Repositories.Computers computers = new Repositories.Computers();
             bool isSuccess = computers.Delete(HiddenField_DeleteId.Value);
 
