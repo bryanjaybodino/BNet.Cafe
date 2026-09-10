@@ -17,7 +17,7 @@
         </div>
         <div class="bnet-modal-footer">
             <span class="btn btn-secondary" onclick="closeOpenTimeModal()">Cancel</span>
-            <asp:LinkButton ID="LinkButton_ConfirmOpenTime" OnClick="LinkButton_ConfirmOpenTime_Click" CssClass="btn btn-danger" runat="server">OpenTime</asp:LinkButton>
+            <asp:LinkButton ID="LinkButton_ConfirmOpenTime" OnClientClick="disableOpenTimeButton()" OnClick="LinkButton_ConfirmOpenTime_Click" CssClass="btn btn-danger" runat="server">OpenTime</asp:LinkButton>
         </div>
     </div>
 </div>
@@ -51,5 +51,14 @@
         Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
             openTimeModalInstance = new BNetModal('#openTimeModal');
         });
+    }
+
+    function disableOpenTimeButton() {
+        var btn = document.querySelector('[id$="LinkButton_ConfirmOpenTime"]');
+        if (btn) {
+            btn.classList.add('disabled');
+            btn.style.pointerEvents = 'none';
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Saving...';
+        }
     }
 </script>

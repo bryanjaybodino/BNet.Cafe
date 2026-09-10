@@ -16,7 +16,7 @@
         </div>
         <div class="bnet-modal-footer">
             <span class="btn btn-secondary" onclick="closeLogoutModal()">Cancel</span>
-            <asp:LinkButton ID="LinkButton_ConfirmLogout" OnClick="LinkButton_ConfirmLogout_Click" CssClass="btn btn-danger" runat="server">Logout</asp:LinkButton>
+            <asp:LinkButton ID="LinkButton_ConfirmLogout" OnClientClick="disableLogoutButton()" OnClick="LinkButton_ConfirmLogout_Click" CssClass="btn btn-danger" runat="server">Logout</asp:LinkButton>
         </div>
     </div>
 </div>
@@ -55,5 +55,13 @@
         Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
             logoutModalInstance = new BNetModal('#logoutModal');
         });
+    }
+    function disableLogoutButton() {
+        var btn = document.querySelector('[id$="LinkButton_ConfirmLogout"]');
+        if (btn) {
+            btn.classList.add('disabled');
+            btn.style.pointerEvents = 'none';
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Saving...';
+        }
     }
 </script>

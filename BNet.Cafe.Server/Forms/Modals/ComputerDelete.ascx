@@ -14,7 +14,7 @@
         </div>
         <div class="bnet-modal-footer">
             <span class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</span>
-            <asp:LinkButton ID="LinkButton_ConfirmDelete" OnClick="LinkButton_ConfirmDelete_Click" CssClass="btn btn-danger" runat="server">Delete</asp:LinkButton>
+            <asp:LinkButton ID="LinkButton_ConfirmDelete" OnClientClick="disableDeleteButton()" OnClick="LinkButton_ConfirmDelete_Click" CssClass="btn btn-danger" runat="server">Delete</asp:LinkButton>
         </div>
     </div>
 </div>
@@ -46,5 +46,14 @@
         Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
             deleteModalInstance = new BNetModal('#deleteModal');
         });
+    }
+
+    function disableDeleteButton() {
+        var btn = document.querySelector('[id$="LinkButton_ConfirmDelete"]');
+        if (btn) {
+            btn.classList.add('disabled');
+            btn.style.pointerEvents = 'none';
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Saving...';
+        }
     }
 </script>

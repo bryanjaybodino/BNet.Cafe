@@ -6,11 +6,11 @@
 <div id="transferModal" class="bnet-modal-overlay">
     <div class="bnet-modal-container">
         <div class="bnet-modal-header">
-            <h3 class="bnet-modal-title"><i class="fa-solid fa-right-left"></i> Transfer Session</h3>
+            <h3 class="bnet-modal-title"><i class="fa-solid fa-right-left"></i>Transfer Session</h3>
             <span class="bnet-modal-close" onclick="closeTransferModal()">&times;</span>
         </div>
         <div class="bnet-modal-body">
-            <p>Transfer active session from <strong id="transferSourceName"></strong> to:</p>
+            <p>Transfer active session from <strong id="transferSourceName"></strong>to:</p>
             <div style="margin-top: 15px;">
                 <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px;">Target Computer</label>
                 <asp:DropDownList ID="DropDownList_TargetComputer" runat="server" CssClass="form-control" Style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
@@ -20,7 +20,7 @@
         </div>
         <div class="bnet-modal-footer">
             <span class="btn btn-secondary" onclick="closeTransferModal()">Cancel</span>
-            <asp:LinkButton ID="LinkButton_ConfirmTransfer" OnClick="LinkButton_ConfirmTransfer_Click" CssClass="btn btn-primary" runat="server">
+            <asp:LinkButton ID="LinkButton_ConfirmTransfer" OnClientClick="disableTransferButton()" OnClick="LinkButton_ConfirmTransfer_Click" CssClass="btn btn-primary" runat="server">
                 <i class="fa-solid fa-arrow-right-arrow-left"></i> Transfer
             </asp:LinkButton>
         </div>
@@ -53,5 +53,14 @@
         Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
             transferModalInstance = new BNetModal('#transferModal');
         });
+    }
+
+    function disableTransferButton() {
+        var btn = document.querySelector('[id$="LinkButton_ConfirmTransfer"]');
+        if (btn) {
+            btn.classList.add('disabled');
+            btn.style.pointerEvents = 'none';
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Saving...';
+        }
     }
 </script>
