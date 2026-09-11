@@ -14,6 +14,61 @@ function formatMinutesToHours(totalMinutes) {
     }
 }
 
+// Map custom entered amount back into estimated minutes based on rate matrix
+function convertAmountToMinutes(amount) {
+    if (amount <= 0) return 0;
+
+    // Rate Table Tiers: 
+    // <= 5  -> 15 mins
+    // <= 10 -> 30 mins
+    // <= 15 -> 60 mins
+    // <= 25 -> 120 mins
+    // <= 40 -> 180 mins
+    // <= 50 -> 240 mins
+    // > 50  -> 240 mins + 60 mins per 10 PHP extra
+
+    if (amount <= 5) {
+        return Math.round((amount / 5) * 15);
+    } else if (amount <= 10) {
+        return 15 + Math.round(((amount - 5) / 5) * 15);
+    } else if (amount <= 15) {
+        return 30 + Math.round(((amount - 10) / 5) * 30);
+    } else if (amount <= 25) {
+        return 60 + Math.round(((amount - 15) / 10) * 60);
+    } else if (amount <= 40) {
+        return 120 + Math.round(((amount - 25) / 15) * 60);
+    } else if (amount <= 50) {
+        return 180 + Math.round(((amount - 40) / 10) * 60);
+    } else {
+        var extraAmount = amount - 50;
+        var extraHoursInMins = Math.round((extraAmount / 10) * 60);
+        return 240 + extraHoursInMins;
+    }
+}
+
+// Automatically compute duration when Admin manually inputs/changes the Amount
+function calculateTimeFromAmount() {
+    var amountInput = document.querySelector('[id$="TextBox_Amount"]');
+    var durationInput = document.querySelector('[id$="TextBox_Duration"]');
+    var displayAmount = document.getElementById('display_TotalAmount');
+
+    if (!amountInput || !durationInput) return;
+
+    var amount = parseFloat(amountInput.value) || 0;
+    var computedMinutes = convertAmountToMinutes(amount);
+
+    durationInput.value = computedMinutes;
+
+    if (displayAmount) {
+        displayAmount.innerText = "₱ " + amount.toFixed(2);
+    }
+
+    var displayTime = document.getElementById('display_FormattedTime');
+    if (displayTime) {
+        displayTime.innerText = formatMinutesToHours(computedMinutes);
+    }
+}
+
 // Asynchronously fetch exact rate calculation from the backend ASHX Handler
 function calculateRentalPriceBackend(totalMinutes) {
     var amountInput = document.querySelector('[id$="TextBox_Amount"]');
@@ -27,14 +82,10 @@ function calculateRentalPriceBackend(totalMinutes) {
         return;
     }
 
-
-
-
-
-    // Call the backend handler
     var endpoint = /\.aspx$/i.test(window.location.pathname)
         ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateRentalPrice.ashx')
         : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateRentalPrice.ashx');
+
     fetch(endpoint + '?minutes=' + totalMinutes)
         .then(function (response) {
             if (!response.ok) {
@@ -44,7 +95,6 @@ function calculateRentalPriceBackend(totalMinutes) {
         })
         .then(function (data) {
             if (data) {
-                // Sync values returned from the backend ASHX handler
                 if (displayTime) {
                     displayTime.innerText = data.formattedTime;
                 }
@@ -70,7 +120,6 @@ function calculateAmount() {
 
     var minutes = parseInt(durationInput.value, 10) || 0;
 
-    // Invoke backend ASHX API call
     calculateRentalPriceBackend(minutes);
 }
 
@@ -90,9 +139,11 @@ function adjustDuration(amount) {
 
 function resetDuration() {
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
-    if (!durationInput) return;
+    var amountInput = document.querySelector('[id$="TextBox_Amount"]');
 
-    durationInput.value = 0;
+    if (durationInput) durationInput.value = 0;
+    if (amountInput) amountInput.value = "0.00";
+
     calculateAmount();
 }
 

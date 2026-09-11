@@ -45,12 +45,20 @@
                         <button type="button" class="btn btn-secondary" onclick="adjustDuration(30)">+30 Mins</button>
                         <button type="button" class="btn btn-secondary" onclick="adjustDuration(60)">+1 Hour</button>
                         <button type="button" class="btn btn-danger-outline" onclick="adjustDuration(-15)">-15 Mins</button>
+                        <button type="button" class="btn btn-danger-outline" onclick="adjustDuration(-30)">-30 Mins</button>
+                        <button type="button" class="btn btn-danger-outline" onclick="adjustDuration(-60)">-1 Hour</button>
                         <button type="button" class="btn btn-danger-outline" onclick="resetDuration()">Reset</button>
                     </div>
 
-                    <div class="form-group" style="margin-top: 15px;">
-                        <label for="<%= TextBox_Duration.ClientID %>">Total Input (Minutes)</label>
-                        <asp:TextBox ID="TextBox_Duration" runat="server" CssClass="form-control" Text="0" TextMode="Number" min="0" oninput="NumberOnly(this); calculateAmount();"></asp:TextBox>
+                    <div class="form-grid" style="margin-top: 15px;">
+                        <div class="form-group">
+                            <label for="<%= TextBox_Duration.ClientID %>">Total Input (Minutes)</label>
+                            <asp:TextBox ID="TextBox_Duration" runat="server" CssClass="form-control" Text="0" TextMode="Number" min="0" oninput="NumberOnly(this); calculateAmount();"></asp:TextBox>
+                        </div>
+                        <div class="form-group">
+                            <label for="<%= TextBox_Amount.ClientID %>">Total Input Amount (₱)</label>
+                            <asp:TextBox ID="TextBox_Amount" runat="server" CssClass="form-control" Text="0.00" TextMode="Number" oninput="NumberOnly(this); calculateTimeFromAmount();"></asp:TextBox>
+                        </div>
                     </div>
                 </div>
 
@@ -66,9 +74,6 @@
                         <span id="display_TotalAmount" class="summary-value highlight-amount">₱ 0.00</span>
                     </div>
                 </div>
-
-                <!-- Hidden field to keep server-side sync for Amount -->
-                <asp:TextBox ID="TextBox_Amount" runat="server" CssClass="d-none" Text="0.00"></asp:TextBox>
 
                 <!-- Rate Tier Reference Box -->
                 <div class="rate-legend-box">
