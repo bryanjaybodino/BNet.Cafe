@@ -14,7 +14,7 @@
         ELSE 
             CONCAT((r.DBDuration % 60), IF((r.DBDuration % 60) = 1, ' min', ' mins'))
     END AS DBFormattedDuration,
-    r.DBAmount,
+    FORMAT(r.DBAmount, 2) AS DBAmount,
     r.DBDateCreated,
     r.DBTimeCreated,
     r.DBIsDeleted

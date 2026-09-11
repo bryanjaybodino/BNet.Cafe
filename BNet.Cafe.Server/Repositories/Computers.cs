@@ -37,7 +37,9 @@ namespace BNet.Cafe.Server.Repositories
         public DataTable GetById(string id)
         {
             var scripts = new Dictionary<string, string>();
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", id);
+            string DBId = dBScriptService.CleanUpToUpper(id);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Computers/GetById.sql");
@@ -69,9 +71,10 @@ namespace BNet.Cafe.Server.Repositories
         public bool Update(string id, string computerName)
         {
             var scripts = new Dictionary<string, string>();
+            string DBId = dBScriptService.CleanUpToUpper(id);
             string DBComputerName = dBScriptService.CleanUpToUpper(computerName);
 
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", id);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerName", DBComputerName);
 
             Page page = HttpContext.Current.Handler as Page;
@@ -84,7 +87,9 @@ namespace BNet.Cafe.Server.Repositories
         public bool Delete(string id)
         {
             var scripts = new Dictionary<string, string>();
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", id);
+            string DBId = dBScriptService.CleanUpToUpper(id);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Computers/DeleteById.sql");

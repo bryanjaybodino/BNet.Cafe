@@ -8,7 +8,7 @@
     SUM(CASE WHEN r.DBUserId IS NULL OR r.DBUserId = '' OR r.DBUserId = '0' THEN 1 ELSE 0 END) AS DBTotalWalkIn,
     
     -- Financial Summary
-    IFNULL(SUM(r.DBAmount), 0) AS DBTotalIncome,
+    FORMAT(IFNULL(SUM(r.DBAmount), 0), 2) AS DBTotalIncome,
     
     -- Total Combined Usage
     IFNULL(SUM(r.DBDuration), 0) AS DBTotalDuration,

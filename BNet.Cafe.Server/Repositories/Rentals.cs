@@ -37,7 +37,9 @@ namespace BNet.Cafe.Server.Repositories
         public DataTable GetByComputerId(string id)
         {
             var scripts = new Dictionary<string, string>();
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", id);
+            string DBComputerId = dBScriptService.CleanUpToUpper(id);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", DBComputerId);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Rentals/GetByComputerId.sql");
@@ -49,9 +51,11 @@ namespace BNet.Cafe.Server.Repositories
         public bool Create(string computerId, string userId, string duration, string amount)
         {
             var scripts = new Dictionary<string, string>();
+            string DBComputerId = dBScriptService.CleanUpToUpper(computerId);
+            string DBUserId = dBScriptService.CleanUpToUpper(userId);
 
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", computerId);
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", userId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", DBComputerId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", DBUserId);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDuration", duration);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBAmount", amount);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
@@ -68,10 +72,13 @@ namespace BNet.Cafe.Server.Repositories
         public bool Update(string id, string computerId, string userId, string duration, string amount)
         {
             var scripts = new Dictionary<string, string>();
+            string DBId = dBScriptService.CleanUpToUpper(id);
+            string DBComputerId = dBScriptService.CleanUpToUpper(computerId);
+            string DBUserId = dBScriptService.CleanUpToUpper(userId);
 
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", id);
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", computerId);
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", userId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", DBComputerId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", DBUserId);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDuration", duration);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBAmount", amount);
 
@@ -85,7 +92,9 @@ namespace BNet.Cafe.Server.Repositories
         public bool Delete(string id)
         {
             var scripts = new Dictionary<string, string>();
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", id);
+            string DBId = dBScriptService.CleanUpToUpper(id);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Rentals/DeleteById.sql");
@@ -94,11 +103,13 @@ namespace BNet.Cafe.Server.Repositories
             return DBContext.SqlExecuteAsync(sql);
         }
 
-        public CountRentals GetCount()
+        public CountRentals GetCount(string computerId = "")
         {
             CountRentals countRentals = new CountRentals();
             var scripts = new Dictionary<string, string>();
+            string DBComputerId = dBScriptService.CleanUpToUpper(computerId);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", DBComputerId);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Rentals/GetCount.sql");

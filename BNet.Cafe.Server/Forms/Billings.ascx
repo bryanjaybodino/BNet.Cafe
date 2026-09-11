@@ -86,36 +86,37 @@
                     <Columns>
                         <asp:TemplateField HeaderText="Id" ItemStyle-Width="180px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_Id" runat="server" Text='<%# Eval("DBId") %>'></asp:Label>
+                                <asp:Label ID="Label_DBId" runat="server" Text='<%# Eval("DBId") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
+
                         <asp:TemplateField HeaderText="Computer" ItemStyle-Width="180px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_ComputerName" runat="server" Text='<%# Eval("DBComputerName") %>'></asp:Label>
+                                <asp:Label ID="Label_DBComputerName" runat="server" Text='<%# Eval("DBComputerName") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
 
                         <asp:TemplateField HeaderText="Customer" ItemStyle-Width="200px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_CustomerName" runat="server" Text='<%# Eval("DBEmail") %>'></asp:Label>
+                                <asp:Label ID="Label_DBEmail" runat="server" Text='<%# Eval("DBEmail") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
 
                         <asp:TemplateField HeaderText="Duration" ItemStyle-Width="150px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_Duration" runat="server" Text='<%# Eval("DBFormattedDuration") %>'></asp:Label>
+                                <asp:Label ID="Label_DBFormattedDuration" runat="server" Text='<%# Eval("DBFormattedDuration") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
 
                         <asp:TemplateField HeaderText="Amount Paid" ItemStyle-Width="150px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_Amount" runat="server" Text='<%# string.Format("₱{0:N2}", Eval("DBAmount")) %>'></asp:Label>
+                                <asp:Label ID="Label_DBAmount" runat="server" Text='<%# string.Format("₱{0}", Eval("DBAmount")) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
 
                         <asp:TemplateField HeaderText="Date & Time" ItemStyle-Width="220px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_DateTime" runat="server" Text='<%# string.Format("{0} - {1}", Eval("DBDateCreated"), Eval("DBTimeCreated")) %>'></asp:Label>
+                                <asp:Label ID="Label_DBDateCreated_DBTimeCreated" runat="server" Text='<%# string.Format("{0} - {1}", Eval("DBDateCreated"), Eval("DBTimeCreated")) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>

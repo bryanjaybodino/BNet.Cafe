@@ -16,14 +16,15 @@ namespace BNet.Cafe.Server.Forms
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
-            var count = rentals.GetCount();
+            string search = "";
+            string computerId = Request.QueryString["id"];
+
+            var count = rentals.GetCount(computerId);
             Label_TotalTransactions.Text = count.Total;
             Label_Users.Text = count.Users;
             Label_WalkIn.Text = count.WalkIn;
             Label_Income.Text = count.Income;
 
-            string search = "";
-            string computerId = Request.QueryString["id"];
             DataTable data = rentals.GetAll(search, computerId, GridViewTemplateService.GetPaginationIndex(GridViewTable));
             GridViewTemplateService.SetGridView(GridViewTable, data, Panel_Pagination);
         }
