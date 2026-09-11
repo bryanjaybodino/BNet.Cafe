@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace BNet.Cafe.Client
 {
@@ -441,6 +442,38 @@ namespace BNet.Cafe.Client
                 TextBox_Password.Text = string.Empty;
                 TextBox_Password.Focus();
             }
+        }
+
+        private void Button_Register_Click(object sender, EventArgs e)
+        {
+            using (RegisterForm regForm = new RegisterForm())
+            {
+                regForm.ShowDialog(this);
+            }
+        }
+        public static void OAuth_Login(string email, string durationMinutes = "60")
+        {
+            MainForm activeForm = Application.OpenForms.OfType<MainForm>().FirstOrDefault();
+            if (activeForm == null) return;
+
+            // Handle cross-thread UI updates safely
+            if (activeForm.InvokeRequired)
+            {
+                activeForm.BeginInvoke(new Action(() => OAuth_Login(email, durationMinutes)));
+                return;
+            }
+
+            // Timer creation logic
+            _BNetCafeTimer.CreateTimerData(
+                TimeService.Get().ToString(),
+                email,
+                durationMinutes,
+                "0"
+            );
+
+            // UI reset logic
+            activeForm.TextBox_Username.Text = string.Empty;
+            activeForm.TextBox_Password.Text = string.Empty;
         }
     }
 }

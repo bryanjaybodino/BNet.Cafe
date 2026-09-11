@@ -19,10 +19,15 @@ namespace BNet.Cafe.Server
                 {
                     Response.Redirect("Login.aspx");
                 }
-                label_FullName.Text = userCookies.fullname.ToUpper();
+                label_FullName.Text = userCookies.user_fullname.ToUpper();
+                if(userCookies.isUser)
+                {
+                    Response.Redirect($"Portal.aspx?Email={userCookies.user_email}", false);
+                }
+
 
                 Label_InitialName.Text = string.Join("",
-                    userCookies.fullname
+                    userCookies.user_fullname
                         .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
                         .Where(name => !string.IsNullOrWhiteSpace(name))
                         .Select(name => name[0])

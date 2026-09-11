@@ -13,7 +13,19 @@ namespace BNet.Cafe.Server.Databases.Tables
             list.Add(new DBMigration.DBColumns
             {
                 ColumnName = "DBEmail",
-                Length = 25,
+                Length = 50,
+                Type = DBMigration.DBColumns.type.VARCHAR
+            });
+            list.Add(new DBMigration.DBColumns
+            {
+                ColumnName = "DBName",
+                Length = 50,
+                Type = DBMigration.DBColumns.type.VARCHAR
+            });
+            list.Add(new DBMigration.DBColumns
+            {
+                ColumnName = "DBRole",
+                Length = 5,
                 Type = DBMigration.DBColumns.type.VARCHAR
             });
             DBMigration tableCreation = new DBMigration();

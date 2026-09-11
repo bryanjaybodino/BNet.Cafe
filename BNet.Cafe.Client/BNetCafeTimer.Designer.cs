@@ -71,7 +71,7 @@
             this.Button_Logout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button_Logout.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.Button_Logout.ForeColor = System.Drawing.Color.White;
-            this.Button_Logout.Location = new System.Drawing.Point(20, 208);
+            this.Button_Logout.Location = new System.Drawing.Point(20, 221);
             this.Button_Logout.Name = "Button_Logout";
             this.Button_Logout.Size = new System.Drawing.Size(242, 38);
             this.Button_Logout.TabIndex = 6;
@@ -108,21 +108,21 @@
             // 
             // Label_CustomerName
             // 
+            this.Label_CustomerName.AutoEllipsis = true;
             this.Label_CustomerName.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.Label_CustomerName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.Label_CustomerName.Location = new System.Drawing.Point(20, 175);
+            this.Label_CustomerName.Location = new System.Drawing.Point(20, 155);
             this.Label_CustomerName.Name = "Label_CustomerName";
-            this.Label_CustomerName.Size = new System.Drawing.Size(242, 18);
+            this.Label_CustomerName.Size = new System.Drawing.Size(242, 57);
             this.Label_CustomerName.TabIndex = 2;
-            this.Label_CustomerName.Text = "User : Guest / Walk-in";
-            this.Label_CustomerName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Label_CustomerName.Text = "Guest / Walk-in";
             // 
             // BNetCafeTimer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.ClientSize = new System.Drawing.Size(282, 265);
+            this.ClientSize = new System.Drawing.Size(282, 282);
             this.ControlBox = false;
             this.Controls.Add(this.Label_TimeoutDisplay);
             this.Controls.Add(this.label_TotalAmount);

@@ -132,6 +132,13 @@
     <Content Include="Databases\Queries\Rentals\GetAll.sql" />
     <Content Include="Databases\Queries\Rentals\GetByComputerId.sql" />
     <Content Include="Databases\Queries\Rentals\Update.sql" />
+    <Content Include="Databases\Queries\Users\Create.sql" />
+    <Content Include="Databases\Queries\Users\DeleteById.sql" />
+    <Content Include="Databases\Queries\Users\GetAll.sql" />
+    <Content Include="Databases\Queries\Users\GetByEmail.sql" />
+    <Content Include="Databases\Queries\Users\GetById.sql" />
+    <Content Include="Databases\Queries\Users\Update.sql" />
+    <Content Include="Databases\Queries\Users\UpdateCount.sql" />
     <Content Include="Forms\Billings.ascx" />
     <Content Include="Forms\ComputerCreate.ascx" />
     <Content Include="Forms\ComputerEarnings.ascx" />
@@ -149,6 +156,7 @@
     <Content Include="Offline Packages\System.Runtime.Caching\System.Configuration.ConfigurationManager.dll" />
     <Content Include="Offline Packages\System.Runtime.Caching\System.Runtime.Caching.dll" />
     <Content Include="Offline Packages\System.Runtime.CompilerServices.Unsafe\System.Runtime.CompilerServices.Unsafe.dll" />
+    <Content Include="Portal.aspx" />
     <Content Include="Remote.html" />
     <Content Include="Global.asax" />
     <Content Include="Login.aspx" />
@@ -274,10 +282,18 @@
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
     <Compile Include="OAuth\GoogleUserInfo.cs" />
+    <Compile Include="Portal.aspx.cs">
+      <DependentUpon>Portal.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal.aspx.designer.cs">
+      <DependentUpon>Portal.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Computers.cs" />
     <Compile Include="Repositories\ClientData.cs" />
     <Compile Include="Repositories\Rentals.cs" />
+    <Compile Include="Repositories\Users.cs" />
     <Compile Include="Services\ErrorLogService.cs" />
     <Compile Include="Services\GridViewTemplateService.cs" />
     <Compile Include="Services\GridviewPaginationService.cs" />

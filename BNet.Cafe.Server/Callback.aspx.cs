@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -54,13 +55,33 @@ namespace BNet.Cafe.Server
                     return;
                 }
 
+
+                Repositories.Users users = new Repositories.Users();
+                DataTable dataTable = users.GetByEmail(userInfo.email);
+                string role = "USER";
+                if (dataTable.Rows.Count > 0)
+                {
+                    role = dataTable.Rows[0]["DBRole"].ToString().ToUpper();
+                }
+                else
+                {
+                    users.Create(userInfo.email, userInfo.name, role);
+                }
+
                 // Store in session
                 Session["GoogleUser"] = userInfo;
                 Sessions.User userCookies = new Sessions.User();
-                userCookies.createCookies(userInfo.email, userInfo.name);
+                userCookies.createCookies(userInfo.email, userInfo.name, role);
 
-                // Redirect to dashboard
-                Response.Redirect("BNetPage.aspx", false);
+                if (role == "USER")
+                {
+                    Response.Redirect($"Portal.aspx?Email={userInfo.email}", false);
+                }
+                else
+                {
+                    // Redirect to dashboard
+                    Response.Redirect("BNetPage.aspx", false);
+                }
             }
             catch (Exception ex)
             {

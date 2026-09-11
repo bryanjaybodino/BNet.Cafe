@@ -76,7 +76,7 @@ namespace BNet.Cafe.Client
                 endTime = createdTime.AddMinutes(parsedDurationMinutes);
             }
 
-            string currentCustomerName = Label_CustomerName.Text.Replace("User : ", "");
+            string currentCustomerName = Label_CustomerName.Text;
             ApplyTimerData(currentCustomerName, parsedAmount);
         }
 
@@ -105,7 +105,7 @@ namespace BNet.Cafe.Client
             SaveSessionToFile(customerName, amount);
 
             Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
-            Label_CustomerName.Text = $"User : {(string.IsNullOrWhiteSpace(customerName) ? "Guest / Walk-in" : customerName)}";
+            Label_CustomerName.Text = $"{(string.IsNullOrWhiteSpace(customerName) ? "Guest / Walk-in" : customerName)}";
 
             if (isOpenTime)
             {
@@ -231,7 +231,7 @@ namespace BNet.Cafe.Client
                         string clientName = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
 
                         Label_ClientName.Text = clientName;
-                        Label_CustomerName.Text = $"User : {displayUser}";
+                        Label_CustomerName.Text = $"{displayUser}";
 
                         if (isAdministrator)
                         {

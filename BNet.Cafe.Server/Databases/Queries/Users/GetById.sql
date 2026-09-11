@@ -1,0 +1,4 @@
+﻿SELECT * FROM users 
+WHERE DBId = '{DBId}'
+ORDER BY DBId DESC 
+{LIMIT}
