@@ -1,6 +1,6 @@
 ﻿namespace BNet.Cafe.Client
 {
-    partial class RegisterForm
+    partial class OAuthLoginForm
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -126,12 +126,12 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "RegisterForm";
+            this.Name = "OAuthLoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "BNet Account Registration";
+            this.Text = "BNet OAuth Login Form";
             this.TopMost = true;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Load += new System.EventHandler(this.RegisterForm_Load);
+            this.Load += new System.EventHandler(this.OAuthLoginForm_Load);
             this.panelHeader.ResumeLayout(false);
             this.panelHeader.PerformLayout();
             this.panelBrowserContainer.ResumeLayout(false);

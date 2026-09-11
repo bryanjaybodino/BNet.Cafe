@@ -7,14 +7,14 @@ using Microsoft.Web.WebView2.Core;
 
 namespace BNet.Cafe.Client
 {
-    public partial class RegisterForm : Form
+    public partial class OAuthLoginForm : Form
     {
-        public RegisterForm()
+        public OAuthLoginForm()
         {
             InitializeComponent();
         }
 
-        private async void RegisterForm_Load(object sender, EventArgs e)
+        private async void OAuthLoginForm_Load(object sender, EventArgs e)
         {
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
@@ -92,7 +92,22 @@ namespace BNet.Cafe.Client
 
                     this.BeginInvoke(new Action(() =>
                     {
-                        MainForm.OAuth_Login(userId, balance);
+
+                        if (Convert.ToDouble(balance) > 0)
+                        {
+                            MainForm.OAuth_Login(userId, balance);
+                        }
+                        else
+                        {
+                            MessageBox.Show(
+                                "Your account balance is 0. Please top up at the counter to continue.",
+                                "Insufficient Balance",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning
+                            );
+                        }
+
+
                         this.Close();
                     }));
                 }

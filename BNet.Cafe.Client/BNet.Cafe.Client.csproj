@@ -78,11 +78,11 @@
     <Compile Include="Design\ModernTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="RegisterForm.cs">
+    <Compile Include="OAuthLoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RegisterForm.Designer.cs">
-      <DependentUpon>RegisterForm.cs</DependentUpon>
+    <Compile Include="OAuthLoginForm.Designer.cs">
+      <DependentUpon>OAuthLoginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\CalculateRentalPrice.cs" />
     <Compile Include="Services\NetworkUtility.cs" />
@@ -136,8 +136,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="RegisterForm.resx">
-      <DependentUpon>RegisterForm.cs</DependentUpon>
+    <EmbeddedResource Include="OAuthLoginForm.resx">
+      <DependentUpon>OAuthLoginForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />

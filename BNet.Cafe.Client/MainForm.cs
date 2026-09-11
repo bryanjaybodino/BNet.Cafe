@@ -446,7 +446,7 @@ namespace BNet.Cafe.Client
 
         private void Button_Register_Click(object sender, EventArgs e)
         {
-            using (RegisterForm regForm = new RegisterForm())
+            using (OAuthLoginForm regForm = new OAuthLoginForm())
             {
                 regForm.ShowDialog(this);
             }

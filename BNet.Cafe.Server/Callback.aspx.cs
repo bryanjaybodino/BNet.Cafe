@@ -79,7 +79,10 @@ namespace BNet.Cafe.Server
                 {
                     Repositories.Balances balances = new Repositories.Balances();
                     double balance = balances.GetBalanceByUserId(userId);
-                    balances.Create(userId, "-" + balance.ToString(), "0", "Logging-In");
+                    if (balance > 0)
+                    {
+                        balances.Create(userId, "-" + balance.ToString(), "0", "Logging-In");
+                    }
                     Response.Redirect($"Portal.aspx?UserId={userId}&Name={userInfo.name}&Email={userInfo.email}&Balance={balance}", false);
                 }
                 else
