@@ -54,8 +54,8 @@ namespace BNet.Cafe.Server.Repositories
             string DBComputerId = dBScriptService.CleanUpToUpper(computerId);
             string DBUserId = dBScriptService.CleanUpToUpper(userId);
 
+            scripts.Add("DBUserId", DBUserId); // Allowed Null
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", DBComputerId);
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", DBUserId);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDuration", duration);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBAmount", amount);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
@@ -76,9 +76,9 @@ namespace BNet.Cafe.Server.Repositories
             string DBComputerId = dBScriptService.CleanUpToUpper(computerId);
             string DBUserId = dBScriptService.CleanUpToUpper(userId);
 
+            scripts.Add("DBUserId", DBUserId); // Allowed Null
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", DBComputerId);
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", DBUserId);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDuration", duration);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBAmount", amount);
 
