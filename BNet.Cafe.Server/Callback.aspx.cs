@@ -59,9 +59,11 @@ namespace BNet.Cafe.Server
                 Repositories.Users users = new Repositories.Users();
                 DataTable dataTable = users.GetByEmail(userInfo.email);
                 string role = "USER";
+                string userId = "";
                 if (dataTable.Rows.Count > 0)
                 {
                     role = dataTable.Rows[0]["DBRole"].ToString().ToUpper();
+                    userId = dataTable.Rows[0]["DBId"].ToString().ToUpper();
                 }
                 else
                 {
@@ -75,7 +77,10 @@ namespace BNet.Cafe.Server
 
                 if (role == "USER")
                 {
-                    Response.Redirect($"Portal.aspx?Email={userInfo.email}", false);
+                    Repositories.Balances balances = new Repositories.Balances();
+                    double balance = balances.GetBalanceByUserId(userId);
+                    balances.Create(userId, "-" + balance.ToString(), "0", "Logging-In");
+                    Response.Redirect($"Portal.aspx?UserId={userId}&Name={userInfo.name}&Email={userInfo.email}&Balance={balance}", false);
                 }
                 else
                 {

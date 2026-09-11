@@ -78,9 +78,12 @@ namespace BNet.Cafe.Client
 
             if (fullUrl.IndexOf("Portal.aspx", StringComparison.OrdinalIgnoreCase) >= 0)
             {
+                string userId = GetQueryParameter(targetUri, "UserId");
+                string name = GetQueryParameter(targetUri, "Name");
                 string email = GetQueryParameter(targetUri, "Email");
+                string balance = GetQueryParameter(targetUri, "Balance");
 
-                if (!string.IsNullOrEmpty(email))
+                if (!string.IsNullOrEmpty(userId))
                 {
                     if (cancelArgs != null)
                     {
@@ -89,7 +92,7 @@ namespace BNet.Cafe.Client
 
                     this.BeginInvoke(new Action(() =>
                     {
-                        MainForm.OAuth_Login(email);
+                        MainForm.OAuth_Login(userId, balance);
                         this.Close();
                     }));
                 }

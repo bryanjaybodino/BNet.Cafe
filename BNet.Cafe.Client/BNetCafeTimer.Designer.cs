@@ -32,7 +32,7 @@
             // 
             this.Label_ClientName.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
             this.Label_ClientName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(80)))), ((int)(((byte)(236)))));
-            this.Label_ClientName.Location = new System.Drawing.Point(170, 9);
+            this.Label_ClientName.Location = new System.Drawing.Point(178, 9);
             this.Label_ClientName.Name = "Label_ClientName";
             this.Label_ClientName.Size = new System.Drawing.Size(100, 33);
             this.Label_ClientName.TabIndex = 1;
@@ -45,9 +45,9 @@
             this.Label_TotalHours.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.Label_TotalHours.Location = new System.Drawing.Point(14, 10);
             this.Label_TotalHours.Name = "Label_TotalHours";
-            this.Label_TotalHours.Size = new System.Drawing.Size(169, 20);
+            this.Label_TotalHours.Size = new System.Drawing.Size(188, 20);
             this.Label_TotalHours.TabIndex = 3;
-            this.Label_TotalHours.Text = "Purchased: 0 hr";
+            this.Label_TotalHours.Text = "Purchased: 0 hr | 0 min";
             this.Label_TotalHours.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Label_TimerDisplay

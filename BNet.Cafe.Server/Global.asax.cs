@@ -14,6 +14,7 @@ namespace BNet.Cafe.Server
             new Databases.Tables.computers().create();
             new Databases.Tables.rentals().create();
             new Databases.Tables.users().create();
+            new Databases.Tables.balances().create();
 
             //Page.RegisterAsyncTask(new PageAsyncTask(async () =>
             //{

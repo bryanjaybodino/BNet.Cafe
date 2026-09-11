@@ -34,7 +34,7 @@ namespace BNet.Cafe.Client
         /// <summary>
         /// Initializes a brand-new timer session for a customer.
         /// </summary>
-        public void CreateTimerData(string serverTime, string customerName, string duration, string amount)
+        public void CreateTimerData(string serverTime, string userId, string duration, string amount)
         {
             double.TryParse(duration, out double parsedDurationMinutes);
             double.TryParse(amount, out double parsedAmount);
@@ -43,7 +43,7 @@ namespace BNet.Cafe.Client
 
             // Check if open time (duration is 0)
             isOpenTime = (parsedDurationMinutes == 0);
-            isAdministrator = (customerName == "Administrator" && parsedDurationMinutes == 6000);
+            isAdministrator = (userId == "Administrator" && parsedDurationMinutes == 6000);
 
             if (isOpenTime)
             {
@@ -54,7 +54,7 @@ namespace BNet.Cafe.Client
                 endTime = createdTime.AddMinutes(parsedDurationMinutes);
             }
 
-            ApplyTimerData(customerName, parsedAmount);
+            ApplyTimerData(userId, parsedAmount);
         }
 
         /// <summary>
@@ -76,8 +76,7 @@ namespace BNet.Cafe.Client
                 endTime = createdTime.AddMinutes(parsedDurationMinutes);
             }
 
-            string currentCustomerName = Label_CustomerName.Text;
-            ApplyTimerData(currentCustomerName, parsedAmount);
+            ApplyTimerData(Label_CustomerName.Text, parsedAmount);
         }
 
         public void Logout()
@@ -89,7 +88,7 @@ namespace BNet.Cafe.Client
         }
 
 
-        private void ApplyTimerData(string customerName, double amount)
+        private void ApplyTimerData(string userId, double amount)
         {
             if (isOpenTime)
             {
@@ -102,10 +101,10 @@ namespace BNet.Cafe.Client
                 remainingSeconds = (endTime - TimeService.Get()).TotalSeconds;
             }
 
-            SaveSessionToFile(customerName, amount);
+            SaveSessionToFile(userId, amount);
 
             Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
-            Label_CustomerName.Text = $"{(string.IsNullOrWhiteSpace(customerName) ? "Guest / Walk-in" : customerName)}";
+            Label_CustomerName.Text = $"{(string.IsNullOrWhiteSpace(userId) ? "Guest / Walk-in" : userId)}";
 
             if (isOpenTime)
             {
@@ -187,12 +186,12 @@ namespace BNet.Cafe.Client
 
         #region Session Persistence (Text File)
 
-        private void SaveSessionToFile(string customerName, double amount)
+        private void SaveSessionToFile(string userId, double amount)
         {
             try
             {
-                // Updated file format: CreatedTimeTicks|TargetEndTimeTicks|CustomerName|Amount|IsOpenTime
-                string content = $"{createdTime.Ticks}|{endTime.Ticks}|{customerName}|{amount}|{isOpenTime}";
+                // Updated file format: CreatedTimeTicks|TargetEndTimeTicks|UserId|Amount|IsOpenTime
+                string content = $"{createdTime.Ticks}|{endTime.Ticks}|{userId}|{amount}|{isOpenTime}";
                 File.WriteAllText(sessionFilePath, content);
             }
             catch (Exception ex)
@@ -215,11 +214,11 @@ namespace BNet.Cafe.Client
                     createdTime = new DateTime(createdTicks);
                     endTime = new DateTime(endTicks);
 
-                    string customerName = parts[2];
+                    string userId = parts[2];
                     double.TryParse(parts[3], out double amount);
 
                     isOpenTime = parts.Length >= 5 && bool.TryParse(parts[4], out bool parsed) && parsed;
-                    isAdministrator = customerName == "Administrator" && amount == 0;
+                    isAdministrator = userId == "Administrator" && amount == 0;
 
                     DateTime now = TimeService.Get();
                     remainingSeconds = isOpenTime ? (now - createdTime).TotalSeconds : (endTime - now).TotalSeconds;
@@ -227,7 +226,7 @@ namespace BNet.Cafe.Client
                     // Only proceed if session is active (Admin, OpenTime, or remaining time > 0)
                     if (isAdministrator || isOpenTime || remainingSeconds > 0)
                     {
-                        string displayUser = string.IsNullOrWhiteSpace(customerName) ? "Guest / Walk-in" : customerName;
+                        string displayUser = string.IsNullOrWhiteSpace(userId) ? "Guest / Walk-in" : userId;
                         string clientName = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
 
                         Label_ClientName.Text = clientName;

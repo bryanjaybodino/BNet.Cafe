@@ -1,0 +1,20 @@
+﻿INSERT INTO `balances`
+(
+	DBUserId,
+	DBDuration,
+	DBAmount,
+	DBDescription,
+	DBDateCreated,
+	DBTimeCreated,
+	DBIsDeleted
+) 
+VALUES 
+(
+	'{DBUserId}',
+	'{DBDuration}',
+	'{DBAmount}',
+	'{DBDescription}',
+	'{DBDateCreated}',
+	'{DBTimeCreated}',
+	'{DBIsDeleted}'
+)

@@ -49,7 +49,7 @@
             this.lblCategory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(210)))), ((int)(((byte)(254)))));
             this.lblCategory.Location = new System.Drawing.Point(24, 12);
             this.lblCategory.Name = "lblCategory";
-            this.lblCategory.Size = new System.Drawing.Size(109, 17);
+            this.lblCategory.Size = new System.Drawing.Size(112, 19);
             this.lblCategory.TabIndex = 0;
             this.lblCategory.Text = "CLIENT PORTAL";
             // 
@@ -60,9 +60,9 @@
             this.lblTitle.ForeColor = System.Drawing.Color.White;
             this.lblTitle.Location = new System.Drawing.Point(22, 27);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(256, 32);
+            this.lblTitle.Size = new System.Drawing.Size(158, 32);
             this.lblTitle.TabIndex = 1;
-            this.lblTitle.Text = "Account Registration";
+            this.lblTitle.Text = "OAuth Login";
             // 
             // btnClose
             // 
@@ -84,11 +84,11 @@
             // progressBar
             // 
             this.progressBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.progressBar.Height = 4;
             this.progressBar.Location = new System.Drawing.Point(0, 64);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(1200, 4);
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBar.TabIndex = 3;
             this.progressBar.Visible = false;
             // 
             // panelBrowserContainer

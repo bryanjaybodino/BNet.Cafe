@@ -82,9 +82,9 @@ namespace BNet.Cafe.Client
                     long.TryParse(parts[0], out long createdTicks) &&
                     long.TryParse(parts[1], out long endTicks))
                 {
-                    string customerName = parts[2];
+                    string userId = parts[2];
                     double.TryParse(parts[3], out double amount);
-                    isAdministrator = customerName == "Administrator" && amount == 0;
+                    isAdministrator = userId == "Administrator" && amount == 0;
                 }
 
                 this.Hide();
@@ -336,7 +336,7 @@ namespace BNet.Cafe.Client
             if (Repositories.JsonValidation.IsValidJson(textMessage))
             {
                 var jsonObject = JObject.Parse(textMessage);
-                string customerName = jsonObject["customerName"]?.ToString() ?? "Unknown";
+                string userId = jsonObject["userId"]?.ToString() ?? "Guest / Walk-in";
                 string duration = jsonObject["duration"]?.ToString() ?? "0";
                 string amount = jsonObject["amount"]?.ToString() ?? "0";
                 string dateTime = jsonObject["dateTime"]?.ToString() ?? TimeService.Get().ToString();
@@ -352,7 +352,7 @@ namespace BNet.Cafe.Client
                 // 2. Update or Create Timer Data
                 if (!File.Exists(sessionFilePath))
                 {
-                    _BNetCafeTimer.CreateTimerData(dateTime, customerName, duration, amount);
+                    _BNetCafeTimer.CreateTimerData(dateTime, userId, duration, amount);
                 }
                 else
                 {
@@ -451,7 +451,7 @@ namespace BNet.Cafe.Client
                 regForm.ShowDialog(this);
             }
         }
-        public static void OAuth_Login(string email, string durationMinutes = "60")
+        public static void OAuth_Login(string userId, string durationMinutes)
         {
             MainForm activeForm = Application.OpenForms.OfType<MainForm>().FirstOrDefault();
             if (activeForm == null) return;
@@ -459,14 +459,14 @@ namespace BNet.Cafe.Client
             // Handle cross-thread UI updates safely
             if (activeForm.InvokeRequired)
             {
-                activeForm.BeginInvoke(new Action(() => OAuth_Login(email, durationMinutes)));
+                activeForm.BeginInvoke(new Action(() => OAuth_Login(userId, durationMinutes)));
                 return;
             }
 
             // Timer creation logic
             _BNetCafeTimer.CreateTimerData(
                 TimeService.Get().ToString(),
-                email,
+                userId,
                 durationMinutes,
                 "0"
             );
