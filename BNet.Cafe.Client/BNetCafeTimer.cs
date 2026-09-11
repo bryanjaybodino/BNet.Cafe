@@ -105,7 +105,7 @@ namespace BNet.Cafe.Client
             SaveSessionToFile(customerName, amount);
 
             Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
-            Label_CustomerName.Text = $"User : {(string.IsNullOrWhiteSpace(customerName) ? "GUEST" : customerName)}";
+            Label_CustomerName.Text = $"User : {(string.IsNullOrWhiteSpace(customerName) ? "Guest / Walk-in" : customerName)}";
 
             if (isOpenTime)
             {
@@ -227,7 +227,7 @@ namespace BNet.Cafe.Client
                     // Only proceed if session is active (Admin, OpenTime, or remaining time > 0)
                     if (isAdministrator || isOpenTime || remainingSeconds > 0)
                     {
-                        string displayUser = string.IsNullOrWhiteSpace(customerName) ? "GUEST" : customerName;
+                        string displayUser = string.IsNullOrWhiteSpace(customerName) ? "Guest / Walk-in" : customerName;
                         string clientName = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
 
                         Label_ClientName.Text = clientName;

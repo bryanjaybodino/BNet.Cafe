@@ -19,13 +19,13 @@
         {
             this.components = new System.ComponentModel.Container();
             this.Label_ClientName = new System.Windows.Forms.Label();
-            this.Label_CustomerName = new System.Windows.Forms.Label();
             this.Label_TotalHours = new System.Windows.Forms.Label();
             this.Label_TimerDisplay = new System.Windows.Forms.Label();
             this.Button_Logout = new BNet.Cafe.Client.Design.ModernButton();
             this.Timer_Countdown = new System.Windows.Forms.Timer(this.components);
             this.label_TotalAmount = new System.Windows.Forms.Label();
             this.Label_TimeoutDisplay = new System.Windows.Forms.Label();
+            this.Label_CustomerName = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Label_ClientName
@@ -39,24 +39,13 @@
             this.Label_ClientName.Text = "PC-00";
             this.Label_ClientName.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // Label_CustomerName
-            // 
-            this.Label_CustomerName.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.Label_CustomerName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.Label_CustomerName.Location = new System.Drawing.Point(20, 175);
-            this.Label_CustomerName.Name = "Label_CustomerName";
-            this.Label_CustomerName.Size = new System.Drawing.Size(242, 18);
-            this.Label_CustomerName.TabIndex = 2;
-            this.Label_CustomerName.Text = "User: Guest";
-            this.Label_CustomerName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // Label_TotalHours
             // 
             this.Label_TotalHours.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.Label_TotalHours.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.Label_TotalHours.Location = new System.Drawing.Point(12, 10);
+            this.Label_TotalHours.Location = new System.Drawing.Point(14, 10);
             this.Label_TotalHours.Name = "Label_TotalHours";
-            this.Label_TotalHours.Size = new System.Drawing.Size(176, 20);
+            this.Label_TotalHours.Size = new System.Drawing.Size(169, 20);
             this.Label_TotalHours.TabIndex = 3;
             this.Label_TotalHours.Text = "Purchased: 0 hr";
             this.Label_TotalHours.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -117,6 +106,17 @@
             this.Label_TimeoutDisplay.Text = "Timeout : 00:00";
             this.Label_TimeoutDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // Label_CustomerName
+            // 
+            this.Label_CustomerName.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.Label_CustomerName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.Label_CustomerName.Location = new System.Drawing.Point(20, 175);
+            this.Label_CustomerName.Name = "Label_CustomerName";
+            this.Label_CustomerName.Size = new System.Drawing.Size(242, 18);
+            this.Label_CustomerName.TabIndex = 2;
+            this.Label_CustomerName.Text = "User : Guest / Walk-in";
+            this.Label_CustomerName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // BNetCafeTimer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -124,13 +124,13 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.ClientSize = new System.Drawing.Size(282, 265);
             this.ControlBox = false;
-            this.Controls.Add(this.Label_ClientName);
             this.Controls.Add(this.Label_TimeoutDisplay);
             this.Controls.Add(this.label_TotalAmount);
             this.Controls.Add(this.Button_Logout);
             this.Controls.Add(this.Label_TimerDisplay);
             this.Controls.Add(this.Label_TotalHours);
             this.Controls.Add(this.Label_CustomerName);
+            this.Controls.Add(this.Label_ClientName);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
@@ -148,12 +148,12 @@
 
         #endregion
         private System.Windows.Forms.Label Label_ClientName;
-        private System.Windows.Forms.Label Label_CustomerName;
         private System.Windows.Forms.Label Label_TotalHours;
         private System.Windows.Forms.Label Label_TimerDisplay;
         private BNet.Cafe.Client.Design.ModernButton Button_Logout;
         private System.Windows.Forms.Timer Timer_Countdown;
         private System.Windows.Forms.Label label_TotalAmount;
         private System.Windows.Forms.Label Label_TimeoutDisplay;
+        private System.Windows.Forms.Label Label_CustomerName;
     }
 }
