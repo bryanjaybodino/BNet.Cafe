@@ -129,6 +129,7 @@ namespace BNet.Cafe.Server.Databases
         public void AddIfNotNullOrEmpty(
             Dictionary<string, string> parameters, string key, string value)
         {
+            if (value == "") return;
             if (parameters is null || string.IsNullOrEmpty(key)) return;
             if (parameters.ContainsKey(key)) return;
             if (value != null)

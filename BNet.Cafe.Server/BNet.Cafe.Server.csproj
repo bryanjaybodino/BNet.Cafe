@@ -134,6 +134,7 @@
     <Content Include="Databases\Queries\Rentals\Update.sql" />
     <Content Include="Forms\Billings.ascx" />
     <Content Include="Forms\ComputerCreate.ascx" />
+    <Content Include="Forms\ComputerEarnings.ascx" />
     <Content Include="Forms\ComputerEdit.ascx" />
     <Content Include="Forms\Computers.ascx" />
     <Content Include="Forms\Modals\ComputerDelete.ascx" />
@@ -191,6 +192,13 @@
     </Compile>
     <Compile Include="Forms\ComputerCreate.ascx.designer.cs">
       <DependentUpon>ComputerCreate.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ComputerEarnings.ascx.cs">
+      <DependentUpon>ComputerEarnings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\ComputerEarnings.ascx.designer.cs">
+      <DependentUpon>ComputerEarnings.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\ComputerEdit.ascx.cs">
       <DependentUpon>ComputerEdit.ascx</DependentUpon>

@@ -15,14 +15,17 @@ namespace BNet.Cafe.Server.Repositories
         private readonly DBContext DBContext = new DBContext();
         private readonly DBScriptService dBScriptService = new DBScriptService();
         private readonly GridviewPaginationService paginationService = new GridviewPaginationService();
+
         public DataTable GetAll(string search = "", int pageIndex = 0, bool isDeleted = false)
         {
-            var scripts = new Dictionary<string, string>
-            {
-                { "DBIsDeleted", isDeleted ? "TRUE" : "FALSE" },
-                { "DBComputerName", dBScriptService.CleanUpToUpper(search) },
-                { "LIMIT", $"{paginationService.SetPagination(pageIndex)}" }
-            };
+            var scripts = new Dictionary<string, string>();
+            string DBComputerName = dBScriptService.CleanUpToUpper(search);
+            string DBIsDeleted = isDeleted ? "TRUE" : "FALSE";
+            string LIMIT = paginationService.SetPagination(pageIndex);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerName", DBComputerName);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Computers/GetAll.sql");
@@ -33,10 +36,8 @@ namespace BNet.Cafe.Server.Repositories
 
         public DataTable GetById(string id)
         {
-            var scripts = new Dictionary<string, string>
-            {
-                { "DBId", id },
-            };
+            var scripts = new Dictionary<string, string>();
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", id);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Computers/GetById.sql");
@@ -47,13 +48,13 @@ namespace BNet.Cafe.Server.Repositories
 
         public bool Create(string computerName)
         {
-            var scripts = new Dictionary<string, string>
-            {
-                { "DBComputerName", dBScriptService.CleanUpToUpper(computerName) },
-                { "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd") },
-                { "DBTimeCreated", TimeService.Get().ToString("HH:mm:ss") },
-                { "DBIsDeleted", "FALSE" }
-            };
+            var scripts = new Dictionary<string, string>();
+            string DBComputerName = dBScriptService.CleanUpToUpper(computerName);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerName", DBComputerName);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeCreated", TimeService.Get().ToString("HH:mm:ss"));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Computers/Create.sql");
@@ -62,17 +63,16 @@ namespace BNet.Cafe.Server.Repositories
             int computerNameExist = Convert.ToInt32(result["ComputerNameExist"]);
 
             bool name = computerNameExist != 1;
-            return (name);
-
+            return name;
         }
 
         public bool Update(string id, string computerName)
         {
-            var scripts = new Dictionary<string, string>
-            {
-                { "DBId", id },
-                { "DBComputerName", dBScriptService.CleanUpToUpper(computerName) }
-            };
+            var scripts = new Dictionary<string, string>();
+            string DBComputerName = dBScriptService.CleanUpToUpper(computerName);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", id);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerName", DBComputerName);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Computers/Update.sql");
@@ -83,10 +83,8 @@ namespace BNet.Cafe.Server.Repositories
 
         public bool Delete(string id)
         {
-            var scripts = new Dictionary<string, string>
-            {
-                { "DBId", id }
-            };
+            var scripts = new Dictionary<string, string>();
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", id);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Computers/DeleteById.sql");
@@ -95,14 +93,12 @@ namespace BNet.Cafe.Server.Repositories
             return DBContext.SqlExecuteAsync(sql);
         }
 
-
         public CountComputers GetCount()
         {
             CountComputers countValue = new CountComputers();
-            var scripts = new Dictionary<string, string>
-            {
-                { "DBIsDeleted", "FALSE" }
-            };
+            var scripts = new Dictionary<string, string>();
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
+
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Computers/GetAll.sql");
             string sql = dBScriptService.Scripts(scripts, template);
@@ -110,7 +106,6 @@ namespace BNet.Cafe.Server.Repositories
 
             ClientData clientData = new ClientData();
             var liveData = clientData.FetchData();
-
 
             int occupied = 0;
             int available = 0;
@@ -135,8 +130,8 @@ namespace BNet.Cafe.Server.Repositories
                 {
                     offline++;
                 }
-
             }
+
             countValue.Total = dataTable.Rows.Count.ToString();
             countValue.Available = available.ToString();
             countValue.Occupied = occupied.ToString();

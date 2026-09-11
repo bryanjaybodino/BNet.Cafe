@@ -31,7 +31,7 @@ namespace BNet.Cafe.Server.Forms
                         {
                             string rentalId = rental.Rows[ii]["DBId"].ToString();
                             string duration = rental.Rows[ii]["DBDuration"].ToString();
-                            string customerId = rental.Rows[ii]["DBUserId"].ToString();
+                            string userId = rental.Rows[ii]["DBUserId"].ToString();
                             TextBox_Duration.Text = duration;
                             Label_RentalId.Text = rentalId;
                             Label_HeaderText.Text = "Rental ID # : ";
@@ -79,7 +79,7 @@ namespace BNet.Cafe.Server.Forms
         {
             string computerId = Request.QueryString["id"];
             string computerName = TextBox_ComputerName.Text.Trim();
-            string customerId = DropDownList_Customer.SelectedValue;
+            string userId = DropDownList_Customer.SelectedValue;
             string rentalId = Label_RentalId.Text;
             string command = (Label_Status.Text == "Occupied") ? ConstantData.RentalCommand.UPDATE : ConstantData.RentalCommand.CREATE;
 
@@ -92,16 +92,16 @@ namespace BNet.Cafe.Server.Forms
             bool isSuccess = false;
             if (command == ConstantData.RentalCommand.UPDATE)
             {
-                isSuccess = rentals.Update(rentalId, computerId, customerId, duration.ToString().Replace(",", ""), amount.ToString().Replace(",", ""));
+                isSuccess = rentals.Update(rentalId, computerId, userId, duration.ToString().Replace(",", ""), amount.ToString().Replace(",", ""));
             }
             else
             {
-                isSuccess = rentals.Create(computerId, customerId, duration.ToString().Replace(",", ""), amount.ToString().Replace(",", ""));
+                isSuccess = rentals.Create(computerId, userId, duration.ToString().Replace(",", ""), amount.ToString().Replace(",", ""));
             }
 
             if (isSuccess)
             {
-                RemoteMessagingService.SendToPC(UpdatePanel1, computerName, customerId, duration, amount, command);
+                RemoteMessagingService.SendToPC(UpdatePanel1, computerName, userId, duration, amount, command);
                 AlertService.ShowAlert(UpdatePanel1, "Rental session successfully created.", "success", "BNetPage.aspx?Form=Computers");
             }
             else

@@ -14,14 +14,18 @@ namespace BNet.Cafe.Server.Repositories
         private readonly DBScriptService dBScriptService = new DBScriptService();
         private readonly GridviewPaginationService paginationService = new GridviewPaginationService();
 
-        public DataTable GetAll(string search = "", int pageIndex = 0, bool isDeleted = false)
+        public DataTable GetAll(string search = "", string computerId = "", int pageIndex = 0, bool isDeleted = false)
         {
-            var scripts = new Dictionary<string, string>
-            {
-                { "DBIsDeleted", isDeleted ? "TRUE" : "FALSE" },
-                { "DBSearch", dBScriptService.CleanUpToUpper(search) },
-                { "LIMIT", $"{paginationService.SetPagination(pageIndex)}" }
-            };
+            var scripts = new Dictionary<string, string>();
+            string DBSearch = dBScriptService.CleanUpToUpper(search);
+            string DBComputerId = dBScriptService.CleanUpToUpper(computerId);
+            string DBIsDeleted = isDeleted ? "TRUE" : "FALSE";
+            string LIMIT = paginationService.SetPagination(pageIndex);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBSearch", DBSearch);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", DBComputerId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Rentals/GetAll.sql");
@@ -32,10 +36,8 @@ namespace BNet.Cafe.Server.Repositories
 
         public DataTable GetByComputerId(string id)
         {
-            var scripts = new Dictionary<string, string>
-            {
-                { "DBComputerId", id },
-            };
+            var scripts = new Dictionary<string, string>();
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", id);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Rentals/GetByComputerId.sql");
@@ -44,18 +46,17 @@ namespace BNet.Cafe.Server.Repositories
             return DBContext.SqlDataAdapterAsync(sql);
         }
 
-        public bool Create(string computerId, string customerId, string duration, string amount)
+        public bool Create(string computerId, string userId, string duration, string amount)
         {
-            var scripts = new Dictionary<string, string>
-            {
-                { "DBComputerId", computerId },
-                { "DBUserId", customerId },
-                { "DBDuration", duration },
-                { "DBAmount", amount },
-                { "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd") },
-                { "DBTimeCreated", TimeService.Get().ToString("HH:mm:ss") },
-                { "DBIsDeleted", "FALSE" }
-            };
+            var scripts = new Dictionary<string, string>();
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", computerId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", userId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDuration", duration);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBAmount", amount);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeCreated", TimeService.Get().ToString("HH:mm:ss"));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Rentals/Create.sql");
@@ -64,16 +65,15 @@ namespace BNet.Cafe.Server.Repositories
             return DBContext.SqlExecuteAsync(sql);
         }
 
-        public bool Update(string id, string computerId, string customerId, string duration, string amount)
+        public bool Update(string id, string computerId, string userId, string duration, string amount)
         {
-            var scripts = new Dictionary<string, string>
-            {
-                { "DBId", id },
-                { "DBComputerId", computerId },
-                { "DBUserId", customerId },
-                { "DBDuration", duration },
-                { "DBAmount", amount }
-            };
+            var scripts = new Dictionary<string, string>();
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", id);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", computerId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", userId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDuration", duration);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBAmount", amount);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Rentals/Update.sql");
@@ -84,10 +84,8 @@ namespace BNet.Cafe.Server.Repositories
 
         public bool Delete(string id)
         {
-            var scripts = new Dictionary<string, string>
-            {
-                { "DBId", id }
-            };
+            var scripts = new Dictionary<string, string>();
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", id);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Rentals/DeleteById.sql");
@@ -96,16 +94,12 @@ namespace BNet.Cafe.Server.Repositories
             return DBContext.SqlExecuteAsync(sql);
         }
 
-
-
-
         public CountRentals GetCount()
         {
             CountRentals countRentals = new CountRentals();
-            var scripts = new Dictionary<string, string>
-            {
-                { "DBIsDeleted", "FALSE" },
-            };
+            var scripts = new Dictionary<string, string>();
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
+
             Page page = HttpContext.Current.Handler as Page;
             string template = page.Server.MapPath("~/Databases/Queries/Rentals/GetCount.sql");
             string sql = dBScriptService.Scripts(scripts, template);
@@ -125,13 +119,16 @@ namespace BNet.Cafe.Server.Repositories
                 income = data.Rows[i]["DBTotalIncome"].ToString();
                 duration = data.Rows[i]["DBTotalFormattedDuration"].ToString();
             }
+
             countRentals.Total = total;
             countRentals.Users = users;
             countRentals.WalkIn = walkIn;
             countRentals.Income = income;
             countRentals.Duration = duration;
+
             return countRentals;
         }
+
         public class CountRentals
         {
             public string Total { get; set; }

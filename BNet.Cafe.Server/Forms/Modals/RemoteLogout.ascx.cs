@@ -31,7 +31,7 @@ namespace BNet.Cafe.Server.Forms.Modals
                 for (int i = 0; i < rental.Rows.Count; i++)
                 {
                     string rentalId = rental.Rows[i]["DBId"].ToString();
-                    string customerId = rental.Rows[i]["DBUserId"].ToString();
+                    string userId = rental.Rows[i]["DBUserId"].ToString();
 
                     ClientData clientData = new ClientData();
                     var liveData = clientData.FetchData();
@@ -44,7 +44,7 @@ namespace BNet.Cafe.Server.Forms.Modals
                             TimeSpan duration = TimeService.Get() - start;
                             int totalTime = (int)duration.TotalMinutes;
                             double billing = CalculateRentalPrice.CalculatePrice(totalTime);
-                            bool isSuccess = rentals.Update(rentalId, id, customerId, totalTime.ToString().Replace(",", ""), billing.ToString().Replace(",", ""));
+                            bool isSuccess = rentals.Update(rentalId, id, userId, totalTime.ToString().Replace(",", ""), billing.ToString().Replace(",", ""));
                             if (isSuccess)
                             {
                                 RemoteMessagingService.LogoutPC(this, HiddenField_LogoutClientId.Value);

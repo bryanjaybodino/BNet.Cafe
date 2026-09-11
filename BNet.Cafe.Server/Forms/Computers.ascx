@@ -125,10 +125,10 @@
                                                 <i class="fa-solid fa-right-left"></i>Transfer Session
                                         </a>
                                         </asp:Panel>
-                                        <a class="bnet-dropdown-item">
+                                        <a onclick="navigateTo('BNetPage.aspx?Form=ComputerEarnings&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                             <i class="fa-solid fa-clock-rotate-left"></i>Session History
                                         </a>
-                                        <a href='<%# "BNetPage.aspx?Form=ComputerEdit&id=" + Eval("DBId") %>' class="bnet-dropdown-item">
+                                        <a onclick="navigateTo('BNetPage.aspx?Form=ComputerEdit&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                             <i class="fa-solid fa-pen-to-square"></i>Edit Computer
                                         </a>
                                         <div class="bnet-dropdown-divider"></div>

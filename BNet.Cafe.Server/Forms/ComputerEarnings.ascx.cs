@@ -1,5 +1,4 @@
-﻿using BNet.Cafe.Server.Databases.Tables;
-using BNet.Cafe.Server.Repositories;
+﻿using BNet.Cafe.Server.Repositories;
 using BNet.Cafe.Server.Services;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ using System.Web.UI.WebControls;
 
 namespace BNet.Cafe.Server.Forms
 {
-    public partial class Billings : System.Web.UI.UserControl
+    public partial class ComputerEarnings : System.Web.UI.UserControl
     {
         private readonly Rentals rentals = new Rentals();
 
@@ -23,9 +22,9 @@ namespace BNet.Cafe.Server.Forms
             Label_WalkIn.Text = count.WalkIn;
             Label_Income.Text = count.Income;
 
-            string search = TextBox_Search.Text.Trim();
-            string computerId = "";
-            DataTable data = rentals.GetAll(search,computerId, GridViewTemplateService.GetPaginationIndex(GridViewTable));
+            string search = "";
+            string computerId = Request.QueryString["id"];
+            DataTable data = rentals.GetAll(search, computerId, GridViewTemplateService.GetPaginationIndex(GridViewTable));
             GridViewTemplateService.SetGridView(GridViewTable, data, Panel_Pagination);
         }
         protected void GridViewTable_PageIndexChanging(object sender, GridViewPageEventArgs e)

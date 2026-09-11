@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Billings.ascx.cs" Inherits="BNet.Cafe.Server.Forms.Billings" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ComputerEarnings.ascx.cs" Inherits="BNet.Cafe.Server.Forms.ComputerEarnings" %>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <asp:LinkButton ID="LinkButton_Refresh" OnClick="LinkButton_Refresh_Click" runat="server"></asp:LinkButton>
@@ -69,9 +69,7 @@
         </div>
         <div class="bnet-table-wrapper">
             <div class="bnet-table-toolbar">
-                <div class="search-box">
-                    <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" AutoPostBack="True" OnTextChanged="TextBox_Search_TextChanged" placeholder="Search computer or customer..." />
-                </div>
+
             </div>
 
             <!-- Scrollable container wrapper -->
@@ -84,11 +82,6 @@
                     <PagerStyle CssClass="bnet-pagination" HorizontalAlign="Center" />
 
                     <Columns>
-                        <asp:TemplateField HeaderText="Id" ItemStyle-Width="180px">
-                            <ItemTemplate>
-                                <asp:Label ID="Label_Id" runat="server" Text='<%# Eval("DBId") %>'></asp:Label>
-                            </ItemTemplate>
-                        </asp:TemplateField>
                         <asp:TemplateField HeaderText="Computer" ItemStyle-Width="180px">
                             <ItemTemplate>
                                 <asp:Label ID="Label_ComputerName" runat="server" Text='<%# Eval("DBComputerName") %>'></asp:Label>

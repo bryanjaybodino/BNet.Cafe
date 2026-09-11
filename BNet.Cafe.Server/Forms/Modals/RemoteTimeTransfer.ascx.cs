@@ -103,14 +103,14 @@ namespace BNet.Cafe.Server.Forms.Modals
             for (int i = 0; i < rental.Rows.Count; i++)
             {
                 string rentalId = rental.Rows[i]["DBId"].ToString();
-                string customerId = rental.Rows[i]["DBUserId"].ToString();
-                bool isSuccess = rentals.Update(rentalId, targetPcId, customerId, totalTime.ToString().Replace(",", ""), billing.ToString().Replace(",", ""));
+                string userId = rental.Rows[i]["DBUserId"].ToString();
+                bool isSuccess = rentals.Update(rentalId, targetPcId, userId, totalTime.ToString().Replace(",", ""), billing.ToString().Replace(",", ""));
                 if (isSuccess)
                 {
 
 
 
-                    RemoteMessagingService.TransferSession(this, targetPcName, customerId, totalTime, billing, start);
+                    RemoteMessagingService.TransferSession(this, targetPcName, userId, totalTime, billing, start);
                     RemoteMessagingService.LogoutPC(this, sourcePcName);
                     AlertService.ShowAlert(this, $"Successfully transferred session from {sourcePcName} to {targetPcName}.", "success");
                 }

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -21,13 +24,28 @@ namespace BNet.Cafe.Server.Services
             try
             {
                 string sessionID = HttpContext.Current.Session?.SessionID ?? "StaticSession";
-                return $"GV_PageIndex_{gridView.UniqueID}_{sessionID}";
+                string pageUrl = HttpContext.Current.Request.RawUrl;
+
+                string rawKey = $"GV_PageIndex_{pageUrl}_{gridView.UniqueID}_{sessionID}";
+
+                return $"GV_PageIndex_{HashString(rawKey)}";
             }
             catch
             {
                 return $"GV_PageIndex_{gridView.ID}";
             }
         }
+
+        private static string HashString(string value)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(value));
+
+                return Convert.ToBase64String(bytes).ToLowerInvariant();
+            }
+        }
+
 
         public static int GetPaginationIndex(GridView gridView)
         {

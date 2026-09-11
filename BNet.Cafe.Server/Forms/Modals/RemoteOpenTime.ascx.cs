@@ -21,7 +21,7 @@ namespace BNet.Cafe.Server.Forms.Modals
 
             string computerId = Request.QueryString["id"];
             string computerName = HiddenField_OpenTimeClientId.Value.Trim();
-            string customerId = HiddenField_OpenTimeCustomerName.Value;
+            string userId = HiddenField_OpenTimeCustomerName.Value;
             string rentalId = HiddenField_OpenTimeRentalId.Value;
             string command = (HiddenField_OpenTimeStatus.Value == "Occupied") ? ConstantData.RentalCommand.UPDATE : ConstantData.RentalCommand.CREATE;
 
@@ -34,16 +34,16 @@ namespace BNet.Cafe.Server.Forms.Modals
             bool isSuccess = false;
             if (command == ConstantData.RentalCommand.UPDATE)
             {
-                isSuccess = rentals.Update(rentalId, computerId, customerId, duration.ToString().Replace(",", ""), amount.ToString().Replace(",", ""));
+                isSuccess = rentals.Update(rentalId, computerId, userId, duration.ToString().Replace(",", ""), amount.ToString().Replace(",", ""));
             }
             else
             {
-                isSuccess = rentals.Create(computerId, customerId, duration.ToString().Replace(",", ""), amount.ToString().Replace(",", ""));
+                isSuccess = rentals.Create(computerId, userId, duration.ToString().Replace(",", ""), amount.ToString().Replace(",", ""));
             }
 
             if (isSuccess)
             {
-                RemoteMessagingService.SendToPC(this.Page, computerName, customerId, duration, amount, command);
+                RemoteMessagingService.SendToPC(this.Page, computerName, userId, duration, amount, command);
                 AlertService.ShowAlert(this.Page, "Rental session successfully created.", "success", "BNetPage.aspx?Form=Computers");
             }
             else

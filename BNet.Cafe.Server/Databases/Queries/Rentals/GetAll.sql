@@ -23,6 +23,7 @@ LEFT JOIN computers c ON r.DBComputerId = c.DBId
 LEFT JOIN users u ON r.DBUserId = u.DBId
 WHERE 1 = 1 
   AND r.DBIsDeleted = '{DBIsDeleted}'
+  AND r.DBComputerId = '{DBComputerId}'
   AND (c.DBComputerName LIKE '%{DBSearch}%'  OR u.DBEmail LIKE '%{DBSearch}%' )
 ORDER BY r.DBId DESC
 {LIMIT}
