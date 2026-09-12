@@ -11,6 +11,7 @@ namespace BNet.Cafe.Server.Forms
         {
             if (!IsPostBack)
             {
+                LoadDropdowns();
                 string id = Request.QueryString["id"];
                 Repositories.Computers computers = new Repositories.Computers();
                 var computer = computers.GetById(id);
@@ -41,6 +42,7 @@ namespace BNet.Cafe.Server.Forms
                             // Save original loaded values
                             HiddenField_InitialDuration.Value = duration;
                             HiddenField_InitialAmount.Value = string.IsNullOrEmpty(dbAmount) ? "0.00" : dbAmount;
+                            DropDownList_Customer.SelectedValue = userId;
                         }
                         Label_Status.CssClass = "bnet-badge-status red";
                     }
@@ -66,19 +68,18 @@ namespace BNet.Cafe.Server.Forms
                         Label_Status.CssClass ="bnet-badge-status green";
                     }
                 }
-                LoadDropdowns();
             }
         }
 
         private void LoadDropdowns()
         {
             //// Populate Customer DropDownList
-            //Repositories.Customers customers = new Repositories.Customers();
-            //DropDownList_Customer.DataSource = customers.GetAll();
-            //DropDownList_Customer.DataTextField = "DBCustomerName";
-            //DropDownList_Customer.DataValueField = "DBId";
-            //DropDownList_Customer.DataBind();
-            //DropDownList_Customer.Items.Insert(0, new System.Web.UI.WebControls.ListItem("-- Select Customer --", ""));
+            Repositories.Users customers = new Repositories.Users();
+            DropDownList_Customer.DataSource = customers.GetAll();
+            DropDownList_Customer.DataTextField = "DBEmail";
+            DropDownList_Customer.DataValueField = "DBId";
+            DropDownList_Customer.DataBind();
+            DropDownList_Customer.Items.Insert(0, new System.Web.UI.WebControls.ListItem("-- Select Customer --", ""));
         }
 
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
