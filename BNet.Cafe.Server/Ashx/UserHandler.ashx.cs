@@ -6,8 +6,12 @@ using System.Web;
 
 namespace BNet.Cafe.Server.Ashx
 {
-    public class LoginHandler : IHttpHandler
+    /// <summary>
+    /// Summary description for UserHandler
+    /// </summary>
+    public class UserHandler : IHttpHandler
     {
+
         private readonly Users _usersRepository = new Users();
 
         public void ProcessRequest(HttpContext context)
@@ -16,16 +20,16 @@ namespace BNet.Cafe.Server.Ashx
 
             try
             {
-                string email = context.Request["email"];
-                string password = context.Request["password"];
+                string id = context.Request["userId"];
 
-                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+
+                if (string.IsNullOrWhiteSpace(id))
                 {
-                    SendJsonResponse(context, false, "Email and password are required.");
+                    SendJsonResponse(context, false, "User id is required.");
                     return;
                 }
 
-                DataTable dt = _usersRepository.GetLogin(email, password);
+                DataTable dt = _usersRepository.GetById(id);
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -71,6 +75,7 @@ namespace BNet.Cafe.Server.Ashx
         }
 
         public bool IsReusable => false;
+
 
         public class UserData
         {

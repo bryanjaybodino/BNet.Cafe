@@ -1,28 +1,29 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace BNet.Cafe.Client.Ashx
 {
-    internal class LoginHandler
+    internal class UserHandler
     {
         private static readonly HttpClient client = new HttpClient();
 
-        public async Task<LoginApiResponse> LoginAsync(string email, string password)
+        public async Task<LoginApiResponse> UserAsync(string userId)
         {
             var formData = new Dictionary<string, string>
             {
-                { "email", email },
-                { "password", password }
+                { "userId", userId },
             };
 
             using (var content = new FormUrlEncodedContent(formData))
             {
                 string baseUrl = ConfigurationManager.AppSettings["AppUrl"]?.TrimEnd('/');
-                string handlerUrl = $"{baseUrl}/Ashx/LoginHandler.ashx";
+                string handlerUrl = $"{baseUrl}/Ashx/UserHandler.ashx";
 
                 HttpResponseMessage response = await client.PostAsync(handlerUrl, content);
                 response.EnsureSuccessStatusCode();

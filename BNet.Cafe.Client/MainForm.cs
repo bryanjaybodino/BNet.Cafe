@@ -357,7 +357,8 @@ namespace BNet.Cafe.Client
                 // 2. Update or Create Timer Data
                 if (!File.Exists(sessionFilePath))
                 {
-                    _BNetCafeTimer.CreateTimerData(dateTime, userId, duration, amount);
+                    _BNetCafeTimer.userId = userId;
+                    _BNetCafeTimer.CreateTimerData(dateTime, duration, amount);
                 }
                 else
                 {
@@ -465,7 +466,8 @@ namespace BNet.Cafe.Client
 
             if (isAdmin)
             {
-                _BNetCafeTimer.CreateTimerData(TimeService.Get().ToString(), "Administrator", "6000", "0");
+                _BNetCafeTimer.userId = "Administrator";
+                _BNetCafeTimer.CreateTimerData(TimeService.Get().ToString(), "6000", "0");
                 TextBox_Username.Text = string.Empty;
                 TextBox_Password.Text = string.Empty;
                 return;
@@ -494,7 +496,10 @@ namespace BNet.Cafe.Client
             CreateBalanceHandler createBalanceHandler = new CreateBalanceHandler();
             await createBalanceHandler.CreateBalanceAsync(userId, "-" + durationMinutes, "0", "LOGGING-IN");
 
-            _BNetCafeTimer.CreateTimerData(TimeService.Get().ToString(), userId, durationMinutes, "0");
+
+
+            _BNetCafeTimer.userId = userId;
+            _BNetCafeTimer.CreateTimerData(TimeService.Get().ToString(), durationMinutes, "0");
 
             TextBox_Username.Text = string.Empty;
             TextBox_Password.Text = string.Empty;
@@ -519,9 +524,9 @@ namespace BNet.Cafe.Client
             }
 
             // Timer creation logic
+            _BNetCafeTimer.userId = userId;
             _BNetCafeTimer.CreateTimerData(
                 TimeService.Get().ToString(),
-                userId,
                 durationMinutes,
                 "0"
             );

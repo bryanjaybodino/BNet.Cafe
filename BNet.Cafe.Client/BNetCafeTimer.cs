@@ -19,6 +19,7 @@ namespace BNet.Cafe.Client
         private readonly string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
         public bool isAdministrator = false;
         public bool isRunning = false;
+        public string userId = string.Empty;
 
         public BNetCafeTimer()
         {
@@ -37,7 +38,7 @@ namespace BNet.Cafe.Client
         /// <summary>
         /// Initializes a brand-new timer session for a customer.
         /// </summary>
-        public void CreateTimerData(string serverTime, string userId, string duration, string amount)
+        public void CreateTimerData(string serverTime, string duration, string amount)
         {
             double.TryParse(duration, out double parsedDurationMinutes);
             double.TryParse(amount, out double parsedAmount);
@@ -57,7 +58,7 @@ namespace BNet.Cafe.Client
                 endTime = createdTime.AddMinutes(parsedDurationMinutes);
             }
 
-            ApplyTimerData(userId, parsedAmount);
+            ApplyTimerData(parsedAmount);
         }
 
         /// <summary>
@@ -79,7 +80,7 @@ namespace BNet.Cafe.Client
                 endTime = createdTime.AddMinutes(parsedDurationMinutes);
             }
 
-            ApplyTimerData(Label_CustomerName.Text, parsedAmount);
+            ApplyTimerData(parsedAmount);
         }
 
         public async void Logout()
@@ -90,16 +91,16 @@ namespace BNet.Cafe.Client
                 TimeSpan time = TimeSpan.FromSeconds(remainingSeconds);
                 int minutes = time.Minutes;       // Returns 46
                 int totalMinutes = (int)time.TotalMinutes; // Returns 166
-                await createBalanceHandler.CreateBalanceAsync(Label_CustomerName.Text, totalMinutes.ToString(), "0", "LOGGING-OUT");
+                await createBalanceHandler.CreateBalanceAsync(userId, totalMinutes.ToString(), "0", "LOGGING-OUT");
             }
             isOpenTime = false;
             endTime = createdTime.AddMinutes(0);
-            ApplyTimerData("", 0);
+            ApplyTimerData(0);
             ClearSessionFile();
         }
 
 
-        private void ApplyTimerData(string userId, double amount)
+        private void ApplyTimerData(double amount)
         {
             if (isOpenTime)
             {
@@ -112,7 +113,7 @@ namespace BNet.Cafe.Client
                 remainingSeconds = (endTime - TimeService.Get()).TotalSeconds;
             }
 
-            SaveSessionToFile(userId, amount);
+            SaveSessionToFile(amount);
 
             Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
             Label_CustomerName.Text = $"{(string.IsNullOrWhiteSpace(userId) ? "Guest / Walk-in" : userId)}";
@@ -197,7 +198,7 @@ namespace BNet.Cafe.Client
 
         #region Session Persistence (Text File)
 
-        private void SaveSessionToFile(string userId, double amount)
+        private void SaveSessionToFile(double amount)
         {
             try
             {
@@ -210,7 +211,7 @@ namespace BNet.Cafe.Client
                 Console.WriteLine($"Error saving session: {ex.Message}");
             }
         }
-        private void ResumeExistingSession()
+        private async void ResumeExistingSession()
         {
             if (!File.Exists(sessionFilePath)) return;
 
@@ -225,11 +226,24 @@ namespace BNet.Cafe.Client
                     createdTime = new DateTime(createdTicks);
                     endTime = new DateTime(endTicks);
 
-                    string userId = parts[2];
+                    userId = parts[2];
                     double.TryParse(parts[3], out double amount);
 
                     isOpenTime = parts.Length >= 5 && bool.TryParse(parts[4], out bool parsed) && parsed;
                     isAdministrator = userId == "Administrator" && amount == 0;
+
+                    string displayUser = string.IsNullOrWhiteSpace(userId) ? "Guest / Walk-in" : userId;
+                    bool isNumber = int.TryParse(userId, out _);
+
+                    if (isNumber)
+                    {
+                        UserHandler userHandler = new UserHandler();
+                        var data = await userHandler.UserAsync(userId);
+                        if (data.Success)
+                        {
+                            displayUser = data.Data.Name;
+                        }
+                    }
 
                     DateTime now = TimeService.Get();
                     remainingSeconds = isOpenTime ? (now - createdTime).TotalSeconds : (endTime - now).TotalSeconds;
@@ -237,7 +251,7 @@ namespace BNet.Cafe.Client
                     // Only proceed if session is active (Admin, OpenTime, or remaining time > 0)
                     if (isAdministrator || isOpenTime || remainingSeconds > 0)
                     {
-                        string displayUser = string.IsNullOrWhiteSpace(userId) ? "Guest / Walk-in" : userId;
+
                         string clientName = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
 
                         Label_ClientName.Text = clientName;
@@ -281,6 +295,7 @@ namespace BNet.Cafe.Client
             isOpenTime = false;
             if (File.Exists(sessionFilePath))
             {
+                userId = string.Empty;
                 isRunning = false;
                 Timer_Countdown.Stop();
                 remainingSeconds = 0;
@@ -306,7 +321,7 @@ namespace BNet.Cafe.Client
             }
         }
 
-        private  void Button_Logout_Click(object sender, EventArgs e)
+        private void Button_Logout_Click(object sender, EventArgs e)
         {
             var result = MessageBox.Show("Are you sure you want to log out?", "Confirm Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)

@@ -186,6 +186,9 @@
     <Compile Include="Ashx\LoginHandler.ashx.cs">
       <DependentUpon>LoginHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Ashx\UserHandler.ashx.cs">
+      <DependentUpon>UserHandler.ashx</DependentUpon>
+    </Compile>
     <Compile Include="BNetPage.aspx.cs">
       <DependentUpon>BNetPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -350,6 +353,7 @@
     <Content Include="Ashx\CreateRentalHandler.ashx" />
     <Content Include="Ashx\LoginHandler.ashx" />
     <Content Include="Ashx\CreateBalanceHandler.ashx" />
+    <Content Include="Ashx\UserHandler.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

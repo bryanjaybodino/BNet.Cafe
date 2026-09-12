@@ -45,7 +45,7 @@ namespace BNet.Cafe.Client
                 // Clear all active cookies to force re-authentication (password prompt)
                 webView.CoreWebView2.CookieManager.DeleteAllCookies();
 
-                string registerUrl = ConfigurationManager.AppSettings["RegisterUrl"];
+                string registerUrl = ConfigurationManager.AppSettings["AppUrl"];
                 webView.Source = new Uri(registerUrl);
             }
             catch (Exception ex)

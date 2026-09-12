@@ -24,7 +24,7 @@ namespace BNet.Cafe.Client.Ashx
 
             using (var content = new FormUrlEncodedContent(formData))
             {
-                string baseUrl = ConfigurationManager.AppSettings["RegisterUrl"]?.TrimEnd('/');
+                string baseUrl = ConfigurationManager.AppSettings["AppUrl"]?.TrimEnd('/');
                 string handlerUrl = $"{baseUrl}/Ashx/CreateRentalHandler.ashx";
 
                 HttpResponseMessage response = await client.PostAsync(handlerUrl, content);

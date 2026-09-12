@@ -70,10 +70,13 @@
     <Reference Include="UIAutomationTypes" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ashx\ApiResponse.cs" />
+    <Compile Include="Ashx\_UserData.cs" />
+    <Compile Include="Ashx\_ApiResponse.cs" />
     <Compile Include="Ashx\CreateBalanceHandler.cs" />
     <Compile Include="Ashx\CreateRentalHandler.cs" />
+    <Compile Include="Ashx\_LoginApiResponse.cs" />
     <Compile Include="Ashx\LoginHandler.cs" />
+    <Compile Include="Ashx\UserHandler.cs" />
     <Compile Include="Design\ModernBadge.cs">
       <SubType>Component</SubType>
     </Compile>
