@@ -3,7 +3,8 @@
     r.DBComputerId,
     c.DBComputerName,
     r.DBUserId,
-    IFNULL(u.DBEmail, 'Guest / Walk-in') AS DBEmail,
+    IFNULL(u.DBEmail, '--') AS DBEmail,
+    IFNULL(u.DBName, 'Guest / Walk-in') AS DBName,
     r.DBDuration,
     CASE 
         WHEN r.DBDuration IS NULL OR r.DBDuration = 0 THEN '0 min'
@@ -24,6 +25,6 @@ LEFT JOIN users u ON r.DBUserId = u.DBId
 WHERE 1 = 1 
   AND r.DBIsDeleted = '{DBIsDeleted}'
   AND r.DBComputerId = '{DBComputerId}'
-  AND (c.DBComputerName LIKE '%{DBSearch}%'  OR u.DBEmail LIKE '%{DBSearch}%' )
+  AND (c.DBComputerName LIKE '%{DBSearch}%'  OR u.DBEmail LIKE '%{DBSearch}%'   OR u.DBName LIKE '%{DBSearch}%'  )
 ORDER BY r.DBId DESC
 {LIMIT}

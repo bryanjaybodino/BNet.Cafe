@@ -57,7 +57,7 @@
 
             <div class="form-group">
                 <label for="<%= TextBox_Description.ClientID %>">Description / Remarks</label>
-                <asp:TextBox ID="TextBox_Description" runat="server" CssClass="form-control" Text="Top-Up Load Credit"></asp:TextBox>
+                <asp:TextBox ID="TextBox_Description" runat="server" Enabled="false" CssClass="form-control" Text="Top-Up Load Credit"></asp:TextBox>
             </div>
 
             <!-- Action Buttons -->

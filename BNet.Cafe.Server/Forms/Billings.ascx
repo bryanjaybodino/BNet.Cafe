@@ -95,8 +95,12 @@
                                 <asp:Label ID="Label_DBComputerName" runat="server" Text='<%# Eval("DBComputerName") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-
                         <asp:TemplateField HeaderText="Customer" ItemStyle-Width="200px">
+                            <ItemTemplate>
+                                <asp:Label ID="Label_DBName" runat="server" Text='<%# Eval("DBName") %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Email" ItemStyle-Width="200px">
                             <ItemTemplate>
                                 <asp:Label ID="Label_DBEmail" runat="server" Text='<%# Eval("DBEmail") %>'></asp:Label>
                             </ItemTemplate>
