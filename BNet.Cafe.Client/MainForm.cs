@@ -16,7 +16,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace BNet.Cafe.Client
 {
@@ -45,10 +44,16 @@ namespace BNet.Cafe.Client
         public MainForm()
         {
             InitializeComponent();
-        }
-        public void setAdmin()
-        {
 
+            if (!EnvironmentHelper.IsDevelopment)
+            {
+                this.FormBorderStyle = FormBorderStyle.None;
+                this.WindowState = FormWindowState.Maximized;
+                this.TopMost = true;
+                this.ControlBox = false;
+                this.MaximizeBox = false;
+                this.MinimizeBox = false;
+            }
         }
         public void LockScreen()
         {
@@ -62,19 +67,11 @@ namespace BNet.Cafe.Client
             // 2. Start global low-level hooks
             KeyboardHook.Start();
 
-            ////// 3. Configure window for full-screen lock mode
-            //this.FormBorderStyle = FormBorderStyle.None;
-            //this.WindowState = FormWindowState.Maximized;
-            //this.TopMost = true;
-            //this.ControlBox = false;
-            //this.MaximizeBox = false;
-            //this.MinimizeBox = false;
-
             ////// 4. Show and force focus
             this.Show();
-            //this.BringToFront();
-            //this.Activate();
-            //this.Focus();
+            this.BringToFront();
+            this.Activate();
+            this.Focus();
         }
         public void UnlockScreen()
         {

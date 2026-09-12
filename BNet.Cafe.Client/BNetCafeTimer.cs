@@ -179,6 +179,7 @@ namespace BNet.Cafe.Client
             TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
             Label_TimerDisplay.Text = isAdministrator ? "Unlimited" : time.ToString(@"hh\:mm\:ss");
 
+
             if (isOpenTime)
             {
                 double amount = CalculateRentalPrice.CalculatePrice((int)time.TotalMinutes);
@@ -187,7 +188,7 @@ namespace BNet.Cafe.Client
             }
             else
             {
-                Label_TimeoutDisplay.Text = DisplayFormatter.FormatTimeoutDisplay(TimeService.Get().AddSeconds(remainingSeconds));
+                Label_TimeoutDisplay.Text = isAdministrator ? "Timeout : -- : -- " : DisplayFormatter.FormatTimeoutDisplay(TimeService.Get().AddSeconds(remainingSeconds));
                 Button_Logout.Enabled = true;
             }
         }
