@@ -108,6 +108,7 @@
     <Content Include="Assets\BNetSelect\Style.css" />
     <Content Include="Assets\BNetTable\Style.css" />
     <Content Include="Assets\Pages\Computers.js" />
+    <Content Include="Assets\Pages\UserTopUp.js" />
     <Content Include="Assets\Pages\RentalManage.css" />
     <Content Include="Assets\fontawesome\font-awesome.min.css" />
     <Content Include="Assets\Pages\Remote.css" />

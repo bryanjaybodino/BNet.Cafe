@@ -2,12 +2,13 @@
 <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
     <Scripts>
         <asp:ScriptReference Path="~/Assets/Pages/RentalManage.js" />
+        <asp:ScriptReference Path="~/Assets/Pages/UserTopUp.js" />
     </Scripts>
 </asp:ScriptManagerProxy>
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
-        <div class="card">
+        <div class="bnet-table-wrapper">
             <!-- Header -->
             <div class="content-header">
                 <h1>
@@ -72,41 +73,3 @@
 
     </ContentTemplate>
 </asp:UpdatePanel>
-
-<script type="text/javascript">
-    function ValidateTopUp() {
-        var amountInput = document.querySelector('[id$="TextBox_Amount"]');
-        var durationInput = document.querySelector('[id$="TextBox_Duration"]');
-
-        var errors = [];
-
-        if (!amountInput || parseFloat(amountInput.value) <= 0) {
-            errors.push('Please enter a valid amount paid.');
-        }
-
-        if (!durationInput || parseInt(durationInput.value, 10) <= 0) {
-            errors.push('The entered amount does not result in any time credit.');
-        }
-
-        if (errors.length > 0) {
-            if (typeof ShowAlert === 'function') {
-                ShowAlert(errors);
-            } else {
-                alert(errors.join('\n'));
-            }
-            return false;
-        }
-        disableSubmitButton();
-        return true;
-    }
-
-    function disableSubmitButton() {
-        var btn = document.querySelector('[id$="LinkButton_Submit"]');
-        if (btn) {
-            btn.classList.add('disabled');
-            btn.style.pointerEvents = 'none';
-            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Saving...';
-        }
-    }
-
-</script>
