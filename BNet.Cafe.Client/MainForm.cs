@@ -416,7 +416,7 @@ namespace BNet.Cafe.Client
             if (sess != null && sess.IsOpen)
             {
                 _ = _activityReporter.SendActivityInfoAsync(sess, currentWindow, _deviceInfo);
-    }
+            }
         }
         private static async Task<byte[]> ReceiveFullMessage(WebSocket ws, byte[] buffer)
         {
@@ -459,8 +459,13 @@ namespace BNet.Cafe.Client
             string password = TextBox_Password.Text;
 
             // 1. Check offline admin bypass first before network calls
-            bool isLocalAdmin = (username == "BNet" && password == "@12345");
+            bool isLocalAdmin = (username == "BNetAdmin" && password == "@12345");
 
+            if (isLocalAdmin)
+            {
+                AdminLogin();
+                return;
+            }
             try
             {
                 LoginHandler loginHandler = new LoginHandler();
@@ -485,11 +490,7 @@ namespace BNet.Cafe.Client
 
                 if (isAdmin)
                 {
-                    _BNetCafeTimer.isAdministrator = true;
-                    _BNetCafeTimer.userId = "Administrator";
-                    await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), "6000", "0");
-                    TextBox_Username.Text = string.Empty;
-                    TextBox_Password.Text = string.Empty;
+                    AdminLogin();
                     return;
                 }
 
@@ -532,6 +533,17 @@ namespace BNet.Cafe.Client
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
+            }
+
+
+            async void AdminLogin()
+            {
+                _BNetCafeTimer.isAdministrator = true;
+                _BNetCafeTimer.userId = "Administrator";
+                await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), "6000", "0");
+                TextBox_Username.Text = string.Empty;
+                TextBox_Password.Text = string.Empty;
+                return;
             }
         }
 

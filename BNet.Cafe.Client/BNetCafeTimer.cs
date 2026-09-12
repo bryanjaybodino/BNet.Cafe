@@ -191,7 +191,6 @@ namespace BNet.Cafe.Client
                 Button_Logout.Enabled = true;
             }
         }
-
         public void PauseTimer()
         {
             if (isPaused) return;
@@ -199,11 +198,8 @@ namespace BNet.Cafe.Client
             isPaused = true;
             Timer_Countdown.Stop();
 
-            // Recalculate endTime based on exact remaining seconds left so server display is accurate
-            DateTime now = TimeService.Get();
-            endTime = now.AddSeconds(remainingSeconds);
-
-            SessionManager.SaveSession(createdTime, endTime, userId, 0, isOpenTime, isPaused: true);
+            // Preserve original createdTime and endTime; save remainingSeconds separately
+            SessionManager.SaveSession(createdTime, endTime, userId, 0, isOpenTime, isPaused: true, remainingSeconds: remainingSeconds);
             UpdateDisplay();
         }
 
@@ -213,11 +209,11 @@ namespace BNet.Cafe.Client
 
             isPaused = false;
 
-            // Push endTime forward starting right NOW based on remaining seconds left
+            // Push endTime forward based on current time + remaining seconds
             DateTime now = TimeService.Get();
             endTime = now.AddSeconds(remainingSeconds);
 
-            SessionManager.SaveSession(createdTime, endTime, userId, 0, isOpenTime, isPaused: false);
+            SessionManager.SaveSession(createdTime, endTime, userId, 0, isOpenTime, isPaused: false, remainingSeconds: remainingSeconds);
 
             UpdateDisplay();
             Timer_Countdown.Start();
@@ -242,9 +238,9 @@ namespace BNet.Cafe.Client
 
             if (isPaused)
             {
-                // When loading a paused session, derive remaining time from stored EndTime & CreatedTime
+                remainingSeconds = session.RemainingSeconds;
+                // Keep createdTime intact, set display endTime relative to now for active display updates
                 endTime = session.EndTime;
-                remainingSeconds = Math.Max(0, (endTime - createdTime).TotalSeconds);
             }
             else
             {
@@ -270,7 +266,15 @@ namespace BNet.Cafe.Client
                 }
                 else
                 {
-                    Label_TotalHours.Text = $"Purchased : {DisplayFormatter.FormatPurchasedTime((endTime - createdTime).TotalSeconds)}";
+                    // Calculate total purchased time using stored original duration or remainingSeconds + consumed time
+                    double totalPurchasedSeconds = remainingSeconds + (now - createdTime).TotalSeconds;
+                    if (isPaused)
+                    {
+                        // On paused load, rely on the saved session bounds
+                        totalPurchasedSeconds = (session.EndTime - session.CreatedTime).TotalSeconds;
+                    }
+
+                    Label_TotalHours.Text = $"Purchased : {DisplayFormatter.FormatPurchasedTime(totalPurchasedSeconds)}";
                     label_TotalAmount.Text = $"Amount : ₱ {session.Amount:N2}";
                 }
 

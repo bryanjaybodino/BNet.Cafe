@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace BNet.Cafe.Client
 {
@@ -11,56 +12,53 @@ namespace BNet.Cafe.Client
         public double Amount { get; set; }
         public bool IsOpenTime { get; set; }
         public bool IsAdministrator { get; set; }
-        public bool IsPaused { get; set; } // Add IsPaused property
+        public bool IsPaused { get; set; }
+        public double RemainingSeconds { get; set; }
     }
 
     public static class SessionManager
     {
-        private static readonly string SessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
+        private static readonly string SessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.json");
 
-        public static void SaveSession(DateTime createdTime, DateTime endTime, string userId, double amount, bool isOpenTime, bool isPaused = false)
+        public static void SaveSession(DateTime createdTime, DateTime endTime, string userId, double amount, bool isOpenTime, bool isPaused = false, double remainingSeconds = 0)
         {
             try
             {
-                string content = $"{createdTime.Ticks}|{endTime.Ticks}|{userId}|{amount}|{isOpenTime}|{isPaused}";
-                File.WriteAllText(SessionFilePath, content);
+                var session = new SessionData
+                {
+                    CreatedTime = createdTime,
+                    EndTime = endTime,
+                    UserId = userId,
+                    Amount = amount,
+                    IsOpenTime = isOpenTime,
+                    IsAdministrator = (userId == "Administrator" && (amount == 0 || (endTime - createdTime).TotalDays > 1)),
+                    IsPaused = isPaused,
+                    RemainingSeconds = remainingSeconds
+                };
+
+                // Formatting.Indented creates clear, readable line breaks in Notepad
+                string jsonContent = JsonConvert.SerializeObject(session, Formatting.Indented);
+                File.WriteAllText(SessionFilePath, jsonContent);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error saving session: {ex.Message}");
             }
         }
+
         public static SessionData ReadSession()
         {
             if (!File.Exists(SessionFilePath)) return null;
 
             try
             {
-                string[] parts = File.ReadAllText(SessionFilePath).Split('|');
-                if (parts.Length >= 4 &&
-                    long.TryParse(parts[0], out long createdTicks) &&
-                    long.TryParse(parts[1], out long endTicks))
-                {
-                    string userId = parts[2];
-                    double.TryParse(parts[3], out double amount);
-                    bool isOpenTime = parts.Length >= 5 && bool.TryParse(parts[4], out bool parsed) && parsed;
-                    bool isPaused = parts.Length >= 6 && bool.TryParse(parts[5], out bool p) && p;
-
-                    return new SessionData
-                    {
-                        CreatedTime = new DateTime(createdTicks),
-                        EndTime = new DateTime(endTicks),
-                        UserId = userId,
-                        Amount = amount,
-                        IsOpenTime = isOpenTime,
-                        IsAdministrator = (userId == "Administrator" && (amount == 0 || endTicks - createdTicks > TimeSpan.FromDays(1).Ticks)),
-                        IsPaused = isPaused
-                    };
-                }
+                string jsonContent = File.ReadAllText(SessionFilePath);
+                return JsonConvert.DeserializeObject<SessionData>(jsonContent);
             }
-            catch { }
-
-            return null;
+            catch
+            {
+                return null;
+            }
         }
 
         public static bool Exists() => File.Exists(SessionFilePath);
