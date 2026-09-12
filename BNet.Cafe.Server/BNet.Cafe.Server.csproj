@@ -156,6 +156,7 @@
     <Content Include="Forms\Modals\RemoteLogout.ascx" />
     <Content Include="Forms\Modals\RemoteMessage.ascx" />
     <Content Include="Forms\Modals\RemoteOpenTime.ascx" />
+    <Content Include="Forms\Modals\RemoteTimePause.ascx" />
     <Content Include="Forms\Modals\RemoteTimeTransfer.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Forms\RentalManage.ascx" />
@@ -275,6 +276,13 @@
     </Compile>
     <Compile Include="Forms\Modals\RemoteOpenTime.ascx.designer.cs">
       <DependentUpon>RemoteOpenTime.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\RemoteTimePause.ascx.cs">
+      <DependentUpon>RemoteTimePause.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\RemoteTimePause.ascx.designer.cs">
+      <DependentUpon>RemoteTimePause.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Modals\RemoteTimeTransfer.ascx.cs">
       <DependentUpon>RemoteTimeTransfer.ascx</DependentUpon>

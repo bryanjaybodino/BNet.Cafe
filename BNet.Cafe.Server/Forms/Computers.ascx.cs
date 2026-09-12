@@ -83,10 +83,11 @@ namespace BNet.Cafe.Server.Forms
                             Label_TotalHours.Text = "0 mins";
                         }
 
+                   
                         Label_IPAddress.Text = fetchData.IPAddress;
                         Label_TimeStart.Text = start.ToString("MMM dd – hh:mm tt");
                         Label_TimeEnd.Text = isOpenTime ? "∞" : end.ToString("MMM dd – hh:mm tt");
-                        Label_Status.Text = "Occupied";
+                        Label_Status.Text = (fetchData.IsPaused.ToUpper() == "TRUE") ? "Pause" : "Occupied";
                         Label_Status.CssClass = "bnet-badge-status red";
                         Label_Billing.Text = $"₱{billing:N2}";
                         Panel_Logout.Visible = true;
@@ -132,7 +133,6 @@ namespace BNet.Cafe.Server.Forms
                     Label_Status.Text = statusText;
                     Label_Status.CssClass = cssClass;
                 }
-
             }
         }
 

@@ -11,6 +11,7 @@ namespace BNet.Cafe.Websocket
         public string TimeStart { get; set; }
         public string TimeEnd { get; set; }
         public string IPAddress { get; set; }
+        public string IsPaused { get; set; }
 
     }
 }

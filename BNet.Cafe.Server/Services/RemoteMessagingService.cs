@@ -93,6 +93,27 @@ namespace BNet.Cafe.Server.Services
             // 3. Register startup script context for ASP.NET WebForms / UpdatePanel
             ScriptManager.RegisterStartupScript(control, control.GetType(), "SendToPCScript" + Guid.NewGuid().ToString(), script, true);
         }
+        
+        /// <summary>
+         /// Sends a raw text message or command string (e.g., 'PAUSE', 'RESUME') to a target client PC.
+         /// </summary>
+        public static void SendTextMessage(Control control, string targetClient, string message)
+        {
+            if (control == null)
+            {
+                throw new ArgumentNullException(nameof(control), "Control parameter cannot be null."); 
+            }
+
+            // 1. Serialize parameters safely for JavaScript string literal execution
+            string safeTargetClient = JsonConvert.SerializeObject(targetClient ?? string.Empty); 
+            string safeMessage = JsonConvert.SerializeObject(message ?? string.Empty); 
+
+            // 2. Construct client-side script call
+            string script = $"sendTextMessageToPC({safeTargetClient}, {safeMessage});"; 
+
+            // 3. Register script context for ASP.NET WebForms UpdatePanel compatibility
+            ScriptManager.RegisterStartupScript(control, control.GetType(), "SendTextMessageScript" + Guid.NewGuid().ToString(), script, true); 
+        }
 
     }
 }

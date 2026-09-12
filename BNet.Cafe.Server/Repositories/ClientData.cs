@@ -15,6 +15,7 @@ namespace BNet.Cafe.Server.Repositories
             public string TimeStart { get; set; }
             public string TimeEnd { get; set; }
             public string IPAddress { get; set; }
+            public string IsPaused { get; set; }
         }
         public List<ClientData.ClientTimeout> FetchData()
         {
@@ -69,7 +70,14 @@ namespace BNet.Cafe.Server.Repositories
                             }
                             else
                             {
-                                return "Occupied";
+                                if (clientData.IsPaused.ToUpper() == "TRUE")
+                                {
+                                    return "Pause";
+                                }
+                                else
+                                {
+                                    return "Occupied";
+                                }                       
                             }
                         }
 

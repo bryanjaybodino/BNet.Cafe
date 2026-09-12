@@ -19,6 +19,7 @@ namespace BNet.Cafe.Client
         public bool isAdministrator = false;
         public bool isRunning = false;
         public string userId = string.Empty;
+        public bool isPaused = false;
 
         public BNetCafeTimer()
         {
@@ -61,7 +62,6 @@ namespace BNet.Cafe.Client
 
         public void Logout()
         {
-            // 1. Calculate and save pending logout data FIRST before resetting variables
             if (!Label_CustomerName.Text.Contains("Guest / Walk-in") && !string.IsNullOrEmpty(userId))
             {
                 TimeSpan time = TimeSpan.FromSeconds(remainingSeconds);
@@ -69,14 +69,12 @@ namespace BNet.Cafe.Client
 
                 PendingLogoutManager.SavePendingLogout(userId, totalMinutes, "0", "LOGGING-OUT");
 
-                // 2. Fire and forget server sync in the background so UI locks instantly
                 _ = Task.Run(async () =>
                 {
                     await PendingLogoutManager.ProcessPendingLogoutAsync();
                 });
             }
 
-            // 3. Immediately reset timer and clear local session file
             isOpenTime = false;
             endTime = createdTime.AddMinutes(0);
             _ = ApplyTimerDataAsync(0);
@@ -88,11 +86,9 @@ namespace BNet.Cafe.Client
             DateTime now = TimeService.Get();
             remainingSeconds = isOpenTime ? (now - createdTime).TotalSeconds : (endTime - now).TotalSeconds;
 
-            SessionManager.SaveSession(createdTime, endTime, userId, amount, isOpenTime);
+            SessionManager.SaveSession(createdTime, endTime, userId, amount, isOpenTime, isPaused);
 
             Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
-
-            // Resolve user display name (Fixes issue #1)
             Label_CustomerName.Text = await ResolveDisplayNameAsync(userId);
 
             if (isOpenTime)
@@ -116,7 +112,7 @@ namespace BNet.Cafe.Client
             UpdateDisplay();
             Button_Logout.Enabled = true;
 
-            if (!Timer_Countdown.Enabled)
+            if (!isPaused && !Timer_Countdown.Enabled)
             {
                 Timer_Countdown.Start();
             }
@@ -146,6 +142,9 @@ namespace BNet.Cafe.Client
 
         private void Timer_Countdown_Tick(object sender, EventArgs e)
         {
+            // Do not decrement timer while paused
+            if (isPaused) return;
+
             DateTime now = TimeService.Get();
             if (isOpenTime)
             {
@@ -154,7 +153,9 @@ namespace BNet.Cafe.Client
             }
             else
             {
-                remainingSeconds = (endTime - now).TotalSeconds;
+                // Rely on ticking down remainingSeconds instead of static endTime subtraction
+                remainingSeconds--;
+
                 if (remainingSeconds > 0)
                 {
                     UpdateDisplay();
@@ -168,6 +169,13 @@ namespace BNet.Cafe.Client
 
         private void UpdateDisplay()
         {
+            if (isPaused)
+            {
+                Label_TimerDisplay.Text = "PAUSED";
+                Label_TimeoutDisplay.Text = "Timeout : PAUSED";
+                return;
+            }
+
             TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
             Label_TimerDisplay.Text = isAdministrator ? "Unlimited" : time.ToString(@"hh\:mm\:ss");
 
@@ -179,8 +187,40 @@ namespace BNet.Cafe.Client
             }
             else
             {
+                Label_TimeoutDisplay.Text = DisplayFormatter.FormatTimeoutDisplay(TimeService.Get().AddSeconds(remainingSeconds));
                 Button_Logout.Enabled = true;
             }
+        }
+
+        public void PauseTimer()
+        {
+            if (isPaused) return;
+
+            isPaused = true;
+            Timer_Countdown.Stop();
+
+            // Recalculate endTime based on exact remaining seconds left so server display is accurate
+            DateTime now = TimeService.Get();
+            endTime = now.AddSeconds(remainingSeconds);
+
+            SessionManager.SaveSession(createdTime, endTime, userId, 0, isOpenTime, isPaused: true);
+            UpdateDisplay();
+        }
+
+        public void ResumeTimer()
+        {
+            if (!isPaused) return;
+
+            isPaused = false;
+
+            // Push endTime forward starting right NOW based on remaining seconds left
+            DateTime now = TimeService.Get();
+            endTime = now.AddSeconds(remainingSeconds);
+
+            SessionManager.SaveSession(createdTime, endTime, userId, 0, isOpenTime, isPaused: false);
+
+            UpdateDisplay();
+            Timer_Countdown.Start();
         }
 
         private async Task ResumeExistingSessionAsync()
@@ -193,13 +233,24 @@ namespace BNet.Cafe.Client
             }
 
             createdTime = session.CreatedTime;
-            endTime = session.EndTime;
             userId = session.UserId;
             isOpenTime = session.IsOpenTime;
             isAdministrator = session.IsAdministrator;
+            isPaused = session.IsPaused;
 
             DateTime now = TimeService.Get();
-            remainingSeconds = isOpenTime ? (now - createdTime).TotalSeconds : (endTime - now).TotalSeconds;
+
+            if (isPaused)
+            {
+                // When loading a paused session, derive remaining time from stored EndTime & CreatedTime
+                endTime = session.EndTime;
+                remainingSeconds = Math.Max(0, (endTime - createdTime).TotalSeconds);
+            }
+            else
+            {
+                endTime = session.EndTime;
+                remainingSeconds = isOpenTime ? (now - createdTime).TotalSeconds : (endTime - now).TotalSeconds;
+            }
 
             if (isAdministrator || isOpenTime || remainingSeconds > 0)
             {
@@ -220,12 +271,20 @@ namespace BNet.Cafe.Client
                 else
                 {
                     Label_TotalHours.Text = $"Purchased : {DisplayFormatter.FormatPurchasedTime((endTime - createdTime).TotalSeconds)}";
-                    Label_TimeoutDisplay.Text = DisplayFormatter.FormatTimeoutDisplay(endTime);
                     label_TotalAmount.Text = $"Amount : ₱ {session.Amount:N2}";
                 }
 
-                UpdateDisplay();
-                Timer_Countdown.Start();
+                if (isPaused)
+                {
+                    Timer_Countdown.Stop();
+                    UpdateDisplay();
+                }
+                else
+                {
+                    UpdateDisplay();
+                    Timer_Countdown.Start();
+                }
+
                 KeyboardHook.Stop();
                 return;
             }

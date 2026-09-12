@@ -28,10 +28,13 @@ namespace BNet.Cafe.Client
             string timeEnd = string.Empty;
 
             SessionData sessionData = SessionManager.ReadSession();
+            bool isPaused = false;
+
             if (sessionData != null)
             {
                 timeStart = sessionData.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss");
                 timeEnd = sessionData.EndTime.ToString("yyyy-MM-dd HH:mm:ss");
+                isPaused = sessionData.IsPaused;
             }
 
             var payloadObj = new
@@ -45,6 +48,7 @@ namespace BNet.Cafe.Client
                 capturedAt = info.CapturedAt.ToString("o"),
                 timeStart = timeStart,
                 timeEnd = timeEnd,
+                isPaused = isPaused,
 
                 windows = deviceInfo.Windows,
                 windowsVersion = deviceInfo.WindowsVersion,

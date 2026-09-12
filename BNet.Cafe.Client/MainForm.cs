@@ -362,6 +362,20 @@ namespace BNet.Cafe.Client
                 ClearTitleCache();
 
             }
+            else if (textMessage == "PAUSE")
+            {
+                _BNetCafeTimer?.PauseTimer();
+                //LockScreen(); // Optionally lock the screen during pause
+                ClearTitleCache();
+                TriggerImmediateActivityReport();
+            }
+            else if (textMessage == "RESUME")
+            {
+                _BNetCafeTimer?.ResumeTimer();
+                //UnlockScreen(); // Unlock the screen when resumed
+                ClearTitleCache();
+                TriggerImmediateActivityReport();
+            }
             else if (textMessage == "LOGOUT")
             {
                 _BNetCafeTimer?.Logout();
@@ -395,7 +409,15 @@ namespace BNet.Cafe.Client
                 );
             }
         }
-
+        private void TriggerImmediateActivityReport()
+        {
+            var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
+            var sess = _currentSession;
+            if (sess != null && sess.IsOpen)
+            {
+                _ = _activityReporter.SendActivityInfoAsync(sess, currentWindow, _deviceInfo);
+    }
+        }
         private static async Task<byte[]> ReceiveFullMessage(WebSocket ws, byte[] buffer)
         {
             WebSocketReceiveResult result;

@@ -2,6 +2,8 @@
 <%@ Register Src="~/Forms/Modals/ComputerDelete.ascx" TagPrefix="uc1" TagName="ComputerDelete" %>
 <%@ Register Src="~/Forms/Modals/RemoteLogout.ascx" TagPrefix="uc1" TagName="RemoteLogout" %>
 <%@ Register Src="~/Forms/Modals/RemoteTimeTransfer.ascx" TagPrefix="uc1" TagName="RemoteTimeTransfer" %>
+<%@ Register Src="~/Forms/Modals/RemoteTimePause.ascx" TagPrefix="uc1" TagName="RemoteTimePause" %>
+
 
 
 <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
@@ -85,9 +87,16 @@
                 <div class="search-box">
                     <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" placeholder="Search computers..." />
                 </div>
-                <asp:HyperLink ID="HyperLink_Add" NavigateUrl="~/BNetPage.aspx?Form=ComputerCreate" CssClass="btn btn-primary" runat="server">
-                     + Add Computer 
-                </asp:HyperLink>
+                <div style="display: flex; gap: 8px;">
+
+                    <a class="btn btn-secondary" onclick="openPauseModal('')">
+                        <i class="fa-solid fa-circle-pause"></i>Pause / Resume Time
+           
+                    </a>
+                    <asp:HyperLink ID="HyperLink_Add" NavigateUrl="~/BNetPage.aspx?Form=ComputerCreate" CssClass="btn btn-primary" runat="server">
+                 + Add Computer 
+            </asp:HyperLink>
+                </div>
             </div>
 
             <!-- Scrollable container wrapper -->
@@ -125,6 +134,9 @@
                                                 <i class="fa-solid fa-right-left"></i>Transfer Session
                                         </a>
                                         </asp:Panel>
+                                        <a class="bnet-dropdown-item" onclick="openPauseModal('<%# Eval("DBComputerName") %>')">
+                                            <i class="fa-solid fa-circle-pause"></i>Pause / Resume Time
+                                        </a>
                                         <a onclick="navigateTo('BNetPage.aspx?Form=ComputerEarnings&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                             <i class="fa-solid fa-clock-rotate-left"></i>Session History
                                         </a>
@@ -182,5 +194,6 @@
         <uc1:ComputerDelete runat="server" ID="ComputerDelete" />
         <uc1:RemoteLogout runat="server" ID="RemoteLogout" />
         <uc1:RemoteTimeTransfer runat="server" ID="RemoteTimeTransfer" />
+        <uc1:RemoteTimePause runat="server" ID="RemoteTimePause" />
     </ContentTemplate>
 </asp:UpdatePanel>

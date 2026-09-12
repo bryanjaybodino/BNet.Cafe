@@ -11,17 +11,18 @@ namespace BNet.Cafe.Client
         public double Amount { get; set; }
         public bool IsOpenTime { get; set; }
         public bool IsAdministrator { get; set; }
+        public bool IsPaused { get; set; } // Add IsPaused property
     }
 
     public static class SessionManager
     {
         private static readonly string SessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
 
-        public static void SaveSession(DateTime createdTime, DateTime endTime, string userId, double amount, bool isOpenTime)
+        public static void SaveSession(DateTime createdTime, DateTime endTime, string userId, double amount, bool isOpenTime, bool isPaused = false)
         {
             try
             {
-                string content = $"{createdTime.Ticks}|{endTime.Ticks}|{userId}|{amount}|{isOpenTime}";
+                string content = $"{createdTime.Ticks}|{endTime.Ticks}|{userId}|{amount}|{isOpenTime}|{isPaused}";
                 File.WriteAllText(SessionFilePath, content);
             }
             catch (Exception ex)
@@ -29,7 +30,6 @@ namespace BNet.Cafe.Client
                 Console.WriteLine($"Error saving session: {ex.Message}");
             }
         }
-
         public static SessionData ReadSession()
         {
             if (!File.Exists(SessionFilePath)) return null;
@@ -44,6 +44,7 @@ namespace BNet.Cafe.Client
                     string userId = parts[2];
                     double.TryParse(parts[3], out double amount);
                     bool isOpenTime = parts.Length >= 5 && bool.TryParse(parts[4], out bool parsed) && parsed;
+                    bool isPaused = parts.Length >= 6 && bool.TryParse(parts[5], out bool p) && p;
 
                     return new SessionData
                     {
@@ -52,7 +53,8 @@ namespace BNet.Cafe.Client
                         UserId = userId,
                         Amount = amount,
                         IsOpenTime = isOpenTime,
-                        IsAdministrator = (userId == "Administrator" && (amount == 0 || endTicks - createdTicks > TimeSpan.FromDays(1).Ticks))
+                        IsAdministrator = (userId == "Administrator" && (amount == 0 || endTicks - createdTicks > TimeSpan.FromDays(1).Ticks)),
+                        IsPaused = isPaused
                     };
                 }
             }
