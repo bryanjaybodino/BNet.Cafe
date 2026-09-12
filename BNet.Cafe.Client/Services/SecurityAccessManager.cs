@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text;
 using System.Windows.Forms;
 
@@ -27,7 +28,7 @@ namespace BNet.Cafe.Client.Services
 
         /// <summary>
         /// Scans active processes and titles against security rules. 
-        /// Kills TaskManager processes and safely closes target File Explorer windows.
+        /// Kills TaskManager processes and safely closes restricted File Explorer windows.
         /// </summary>
         /// <returns>True if restricted access was detected and handled; otherwise, false.</returns>
         public static bool EnforceRestrictions(Repositories.UserActivity.ActiveWindowInfo info)
@@ -44,7 +45,10 @@ namespace BNet.Cafe.Client.Services
                                    windowTitle.IndexOf(userStartup, StringComparison.OrdinalIgnoreCase) >= 0 ||
                                    windowTitle.IndexOf(commonStartup, StringComparison.OrdinalIgnoreCase) >= 0;
 
-            if (isTaskManager || isControlPanel || isStartupFolder)
+            // Checks root C:\ drive and critical Windows directories while leaving user folders (e.g., C:\Anyfolders) open
+            bool isRestrictedPath = IsRestrictedPathWindow(windowTitle);
+
+            if (isTaskManager || isControlPanel || isStartupFolder || isRestrictedPath)
             {
                 try
                 {
@@ -101,13 +105,14 @@ namespace BNet.Cafe.Client.Services
                         bool isTargetWindow = title.IndexOf("Programs and Features", StringComparison.OrdinalIgnoreCase) >= 0 ||
                                              title.IndexOf("Startup", StringComparison.OrdinalIgnoreCase) >= 0 ||
                                              title.IndexOf(userStartup, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                             title.IndexOf(commonStartup, StringComparison.OrdinalIgnoreCase) >= 0;
+                                             title.IndexOf(commonStartup, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                             IsRestrictedPathWindow(title);
 
                         if (isTargetWindow)
                         {
                             SendMessage(hWnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
                             MessageBox.Show(
-                                "You have no access to open the " + title,
+                                "You have no access to open " + title,
                                 "User Restriction",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error,
@@ -119,6 +124,51 @@ namespace BNet.Cafe.Client.Services
                 }
                 return true; // Continue enumeration
             }, IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Helper method to identify if the Explorer window represents the root C:\ drive or critical Windows folders.
+        /// </summary>
+        private static bool IsRestrictedPathWindow(string title)
+        {
+            if (string.IsNullOrWhiteSpace(title)) return false;
+
+            string trimmedTitle = title.Trim();
+
+            // 1. Root C:\ drive match
+            bool isRootCDrive = trimmedTitle.Equals(@"C:\", StringComparison.OrdinalIgnoreCase) ||
+                                trimmedTitle.Equals("C:", StringComparison.OrdinalIgnoreCase) ||
+                                trimmedTitle.Equals("Local Disk (C:)", StringComparison.OrdinalIgnoreCase) ||
+                                trimmedTitle.Equals("OS (C:)", StringComparison.OrdinalIgnoreCase) ||
+                                trimmedTitle.EndsWith(@":\ (C:)", StringComparison.OrdinalIgnoreCase);
+
+            if (isRootCDrive) return true;
+
+            // 2. Critical Windows System Folders
+            string[] criticalFolders = new string[]
+            {
+                "Program Files",
+                "Program Files (x86)",
+                "Windows",
+                "System32",
+                "SysWOW64",
+                "ProgramData",
+                "System Volume Information",
+                "$Recycle.Bin",
+                "PerfLogs"
+            };
+
+            foreach (string folder in criticalFolders)
+            {
+                if (trimmedTitle.Equals(folder, StringComparison.OrdinalIgnoreCase) ||
+                    trimmedTitle.IndexOf(@"C:\" + folder, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    trimmedTitle.IndexOf(@"\" + folder, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
