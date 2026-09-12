@@ -11,8 +11,10 @@
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
-<asp:HiddenField ID="HiddenField_InitialDuration" runat="server" Value="0" />
-<asp:HiddenField ID="HiddenField_InitialAmount" runat="server" Value="0.00" />
+        <!-- Hidden fields to store loaded DB state -->
+        <asp:HiddenField ID="HiddenField_InitialDuration" runat="server" Value="0" />
+        <asp:HiddenField ID="HiddenField_InitialAmount" runat="server" Value="0.00" />
+
         <asp:Panel ID="Panel_Form" runat="server">
             <div class="bnet-table-wrapper">
                 <div class="content-header" style="margin-bottom: 20px;">
@@ -69,11 +71,13 @@
                     <div class="summary-item">
                         <span class="summary-label"><i class="fa-solid fa-hourglass-half"></i>Total Time</span>
                         <span id="display_FormattedTime" class="summary-value highlight-time">0 hrs 0 mins</span>
+                        <small id="display_TimeBreakdown" style="display:none; color: #6b7280; font-size: 12px; margin-top: 4px;"></small>
                     </div>
                     <div class="summary-divider"></div>
                     <div class="summary-item">
                         <span class="summary-label"><i class="fa-solid fa-peso-sign"></i>Total Amount</span>
                         <span id="display_TotalAmount" class="summary-value highlight-amount">₱ 0.00</span>
+                        <small id="display_AmountBreakdown" style="display:none; color: #10b981; font-size: 12px; font-weight: 600; margin-top: 4px;"></small>
                     </div>
                 </div>
 
@@ -92,13 +96,14 @@
                         <i class="fa-solid fa-circle-info"></i><strong>Note:</strong> After reaching 4 hours (₱50), each additional hour extension is charged at a flat rate of <strong>₱10/hr</strong>.
                     </div>
                 </div>
+                
                 <asp:Panel ID="Panel_Buttons" runat="server">
                     <!-- Form Actions -->
                     <div class="form-grid-action">
                         <span onclick="navigateTo('BNetPage.aspx?Form=Computers')" class="btn btn-secondary">Back</span>
                         <span class="btn btn-danger" onclick="openOpenTimeModal('<%= Label_RentalId.Text %>','<%= TextBox_ComputerName.Text %>','<%= DropDownList_Customer.SelectedValue %>','<%= Label_Status.Text %>')"><i class="fa fa-hourglass"></i>Open Time</span>
                         <asp:LinkButton ID="LinkButton_Submit" OnClick="LinkButton_Submit_Click" CssClass="btn btn-primary" OnClientClick="return Validate();" runat="server">
-                    <i class="fa fa-save"></i>Add Rental
+                            <i class="fa fa-save"></i>Add Rental
                         </asp:LinkButton>
                     </div>
                 </asp:Panel>

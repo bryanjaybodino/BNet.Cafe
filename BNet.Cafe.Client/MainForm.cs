@@ -1,6 +1,7 @@
 ﻿using BNet.Cafe.Client.Ashx;
 using BNet.Cafe.Client.Models;
 using BNet.Cafe.Client.Repositories;
+using BNet.Cafe.Client.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -48,18 +49,30 @@ namespace BNet.Cafe.Client
 
         public void LockScreen()
         {
+            // 1. Always check InvokeRequired FIRST before touching any UI properties
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action(LockScreen));
+                return;
+            }
+
+            // 2. Start global low-level hooks
             KeyboardHook.Start();
+
+            // 3. Configure window for full-screen lock mode
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
             this.TopMost = true;
             this.ControlBox = false;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+
+            // 4. Show and force focus
+            this.Show();
             this.BringToFront();
             this.Activate();
             this.Focus();
         }
-
         public void UnlockScreen()
         {
             KeyboardHook.Stop();
@@ -112,9 +125,6 @@ namespace BNet.Cafe.Client
                         {
                             // Unlocks keyboard so user can type in username/password
                             LockScreen();
-                            this.Show();
-                            this.BringToFront();
-                            this.Activate();
                         }
 
                         if (_BNetCafeTimer.Visible)
@@ -318,12 +328,6 @@ namespace BNet.Cafe.Client
         private void ClearTitleCache()
         {
             _activityReporter.ClearTitleCache();
-
-            var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
-            if (_currentSession != null)
-            {
-                _ = _activityReporter.SendActivityInfoAsync(_currentSession, currentWindow, _deviceInfo);
-            }
         }
 
         private void HandleIncomingTextMessage(string textMessage)
@@ -369,11 +373,22 @@ namespace BNet.Cafe.Client
             {
                 _BNetCafeTimer?.Logout();
 
-                // Show login form and relock PC on logout
-                LockScreen();
-                this.Show();
-                this.BringToFront();
+                // 1. Clear title cache first so the next window poll is guaranteed to send
                 ClearTitleCache();
+
+                // 2. Lock screen and force window focus
+                LockScreen();
+
+                // 3. Manually trigger activity update AFTER window focus has settled
+                Task.Delay(200).ContinueWith(_ =>
+                {
+                    var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
+                    var sess = _currentSession;
+                    if (sess != null && sess.IsOpen)
+                    {
+                        _ = _activityReporter.SendActivityInfoAsync(sess, currentWindow, _deviceInfo);
+                    }
+                }, TaskScheduler.FromCurrentSynchronizationContext());
             }
             else
             {

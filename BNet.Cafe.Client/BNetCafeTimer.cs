@@ -18,6 +18,7 @@ namespace BNet.Cafe.Client
         private bool isOpenTime = false; // Track open time mode
         private readonly string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
         public bool isAdministrator = false;
+        public bool isRunning = false;
 
         public BNetCafeTimer()
         {
@@ -81,8 +82,16 @@ namespace BNet.Cafe.Client
             ApplyTimerData(Label_CustomerName.Text, parsedAmount);
         }
 
-        public void Logout()
+        public async void Logout()
         {
+            if (!Label_CustomerName.Text.Contains("Guest / Walk-in"))
+            {
+                CreateBalanceHandler createBalanceHandler = new CreateBalanceHandler();
+                TimeSpan time = TimeSpan.FromSeconds(remainingSeconds);
+                int minutes = time.Minutes;       // Returns 46
+                int totalMinutes = (int)time.TotalMinutes; // Returns 166
+                await createBalanceHandler.CreateBalanceAsync(Label_CustomerName.Text, totalMinutes.ToString(), "0", "LOGGING-OUT");
+            }
             isOpenTime = false;
             endTime = createdTime.AddMinutes(0);
             ApplyTimerData("", 0);
@@ -272,6 +281,7 @@ namespace BNet.Cafe.Client
             isOpenTime = false;
             if (File.Exists(sessionFilePath))
             {
+                isRunning = false;
                 Timer_Countdown.Stop();
                 remainingSeconds = 0;
                 this.Hide();
@@ -296,20 +306,12 @@ namespace BNet.Cafe.Client
             }
         }
 
-        private async void Button_Logout_Click(object sender, EventArgs e)
+        private  void Button_Logout_Click(object sender, EventArgs e)
         {
             var result = MessageBox.Show("Are you sure you want to log out?", "Confirm Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                if(!Label_CustomerName.Text.Contains("Guest / Walk-in"))
-                {
-                    CreateBalanceHandler createBalanceHandler = new CreateBalanceHandler();
-                    TimeSpan time = TimeSpan.FromSeconds(remainingSeconds);
-                    int minutes = time.Minutes;       // Returns 46
-                    int totalMinutes = (int)time.TotalMinutes; // Returns 166
-                    await createBalanceHandler.CreateBalanceAsync(Label_CustomerName.Text, totalMinutes.ToString(), "0", "LOGGING-OUT");
-                } 
-                ClearSessionFile();
+                Logout();
             }
         }
 

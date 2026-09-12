@@ -95,14 +95,18 @@ function calculateRentalPriceBackend(totalMinutes) {
         });
 }
 
-// Update calculated amount & formatted hours display in real-time
+
+// Calculate amount and handle breakdown display
 function calculateAmount() {
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
     var initialDurationInput = document.querySelector('[id$="HiddenField_InitialDuration"]');
     var initialAmountInput = document.querySelector('[id$="HiddenField_InitialAmount"]');
     var amountInput = document.querySelector('[id$="TextBox_Amount"]');
+
     var displayTime = document.getElementById('display_FormattedTime');
     var displayAmount = document.getElementById('display_TotalAmount');
+    var timeBreakdown = document.getElementById('display_TimeBreakdown');
+    var amountBreakdown = document.getElementById('display_AmountBreakdown');
 
     if (!durationInput) return;
 
@@ -110,11 +114,29 @@ function calculateAmount() {
     var initialMinutes = initialDurationInput ? (parseInt(initialDurationInput.value, 10) || 0) : 0;
     var initialAmount = initialAmountInput ? (parseFloat(initialAmountInput.value) || 0) : 0;
 
-    // Check if extra minutes were added
+    // PREVENT DEDUCTING BELOW BASE DURATION:
+    // If user tries to go lower than initial duration, snap back to initial duration
+    if (currentMinutes < initialMinutes) {
+        currentMinutes = initialMinutes;
+        durationInput.value = initialMinutes;
+    }
+
     var extendedMinutes = currentMinutes - initialMinutes;
 
+    // Helper function to format display time
+    function formatTime(mins) {
+        var h = Math.floor(mins / 60);
+        var m = mins % 60;
+        if (h > 0 && m > 0) return h + ' hrs ' + m + ' mins';
+        if (h > 0) return h + ' hrs';
+        return m + ' mins';
+    }
+
+    // Always keep Total Time UI locked to at least full current time
+    if (displayTime) displayTime.innerText = formatTime(currentMinutes);
+
+    // If extended time exists (greater than base)
     if (extendedMinutes > 0) {
-        // Fetch price calculation ONLY for the added extended minutes
         var endpoint = /\.aspx$/i.test(window.location.pathname)
             ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateAmountFromDuration.ashx')
             : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateAmountFromDuration.ashx');
@@ -123,42 +145,71 @@ function calculateAmount() {
             .then(function (response) { return response.json(); })
             .then(function (data) {
                 if (data) {
-                    var totalCharge = initialAmount + data.totalAmount;
+                    var extensionCharge = data.totalAmount;
+                    var totalCharge = initialAmount + extensionCharge;
 
                     if (amountInput) amountInput.value = totalCharge.toFixed(2);
                     if (displayAmount) displayAmount.innerText = '₱ ' + totalCharge.toFixed(2);
 
-                    // Format current total time
-                    var hrs = Math.floor(currentMinutes / 60);
-                    var mins = currentMinutes % 60;
-                    if (displayTime) displayTime.innerText = hrs + ' hrs ' + mins + ' mins';
+                    // Show breakdown separating base time from added extra time
+                    if (timeBreakdown) {
+                        timeBreakdown.innerText = 'Base: ' + formatTime(initialMinutes) + ' | Extra: +' + formatTime(extendedMinutes);
+                        timeBreakdown.style.display = 'block';
+                    }
+                    if (amountBreakdown) {
+                        amountBreakdown.innerText = '(Prepaid: ₱' + initialAmount.toFixed(2) + ' + Extra: ₱' + extensionCharge.toFixed(2) + ')';
+                        amountBreakdown.style.display = 'block';
+                    }
                 }
             })
-            .catch(function (error) {
-                console.error('Error fetching calculated extension price:', error);
-            });
+            .catch(function (err) { console.error(err); });
     } else {
-        // Session has not been extended beyond initial duration
+        // Returned to exact Base Duration (Extended minutes = 0)
         if (amountInput) amountInput.value = initialAmount.toFixed(2);
         if (displayAmount) displayAmount.innerText = '₱ ' + initialAmount.toFixed(2);
 
-        var hrs = Math.floor(currentMinutes / 60);
-        var mins = currentMinutes % 60;
-        if (displayTime) displayTime.innerText = hrs + ' hrs ' + mins + ' mins';
+        if (timeBreakdown) timeBreakdown.style.display = 'none';
+
+        if (amountBreakdown) {
+            if (initialAmount === 0 && initialMinutes > 0) {
+                amountBreakdown.innerText = '(Paid via User Top-up Balance)';
+                amountBreakdown.style.display = 'block';
+            } else {
+                amountBreakdown.style.display = 'none';
+            }
+        }
     }
 }
 
-// Quick action buttons logic
+// Quick action duration adjustment (+ / - buttons)
 function adjustDuration(amount) {
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
+    var initialDurationInput = document.querySelector('[id$="HiddenField_InitialDuration"]');
     if (!durationInput) return;
 
     var current = parseInt(durationInput.value, 10) || 0;
+    var initialMinutes = initialDurationInput ? (parseInt(initialDurationInput.value, 10) || 0) : 0;
+
     var updated = current + amount;
 
-    if (updated < 0) updated = 0;
+    // Do not allow reducing below initial base duration
+    if (updated < initialMinutes) {
+        updated = initialMinutes;
+    }
 
     durationInput.value = updated;
+    calculateAmount();
+}
+
+// Reset button returns back to the base duration instead of 0
+function resetDuration() {
+    var durationInput = document.querySelector('[id$="TextBox_Duration"]');
+    var initialDurationInput = document.querySelector('[id$="HiddenField_InitialDuration"]');
+
+    var initialMinutes = initialDurationInput ? (parseInt(initialDurationInput.value, 10) || 0) : 0;
+
+    if (durationInput) durationInput.value = initialMinutes;
+
     calculateAmount();
 }
 

@@ -89,6 +89,7 @@
     <Compile Include="OAuthLoginForm.Designer.cs">
       <DependentUpon>OAuthLoginForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Services\AppFocusHelper.cs" />
     <Compile Include="Services\CalculateRentalPrice.cs" />
     <Compile Include="Services\NetworkUtility.cs" />
     <Compile Include="Starter\EnvironmentHelper.cs" />
