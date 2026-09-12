@@ -14,12 +14,13 @@ namespace BNet.Cafe.Server.Forms
     public partial class Computers : System.Web.UI.UserControl
     {
         Repositories.Computers computers = new Repositories.Computers();
+        Repositories.Rentals rentals = new Repositories.Rentals();
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
             var count = computers.GetCount();
             Label_Total.Text = count.Total;
-            Label_Offline.Text = count.Offline;    
+            Label_Offline.Text = count.Offline;
             Label_Occupied.Text = count.Occupied;
             Label_Available.Text = count.Available;
 
@@ -31,6 +32,7 @@ namespace BNet.Cafe.Server.Forms
 
             for (int i = 0; i < GridViewTable.Rows.Count; i++)
             {
+                Label Label_DBId = (Label)GridViewTable.Rows[i].FindControl("Label_DBId");
                 Label Label_DBComputerName = (Label)GridViewTable.Rows[i].FindControl("Label_DBComputerName");
                 Label Label_IPAddress = (Label)GridViewTable.Rows[i].FindControl("Label_IPAddress");
                 Label Label_TimeStart = (Label)GridViewTable.Rows[i].FindControl("Label_TimeStart");
@@ -62,7 +64,20 @@ namespace BNet.Cafe.Server.Forms
                             minutes = duration.Minutes;
                         }
 
-                        double billing = CalculateAmountFromDuration.CalculatePrice((int)duration.TotalMinutes);
+
+
+                        var rentalData = rentals.GetByComputerId(Label_DBId.Text);
+                        double billing = 0;
+                        if (rentalData.Rows.Count > 0)
+                        {
+                            billing = Convert.ToDouble(rentalData.Rows[0]["DBAmount"].ToString());
+                        }
+                        else
+                        {
+                            billing = CalculateAmountFromDuration.CalculatePrice((int)duration.TotalMinutes);
+                        }
+
+
                         string hrLabel = hours == 1 ? "hr" : "hrs";
                         string minLabel = minutes == 1 ? "min" : "mins";
 
@@ -83,11 +98,11 @@ namespace BNet.Cafe.Server.Forms
                             Label_TotalHours.Text = "0 mins";
                         }
 
-                   
+
                         Label_IPAddress.Text = fetchData.IPAddress;
                         Label_TimeStart.Text = start.ToString("MMM dd – hh:mm tt");
                         Label_TimeEnd.Text = isOpenTime ? "∞" : end.ToString("MMM dd – hh:mm tt");
-                        Label_Status.Text = (fetchData.IsPaused.ToUpper() == "TRUE") ? "Pause" : "Occupied";
+                        Label_Status.Text = (fetchData.IsPaused.ToUpper() == "TRUE") ? "Paused" : "Occupied";
                         Label_Status.CssClass = "bnet-badge-status red";
                         Label_Billing.Text = $"₱{billing:N2}";
                         Panel_Logout.Visible = true;

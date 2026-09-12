@@ -42,39 +42,12 @@ namespace BNet.Cafe.Server.Forms.Modals
         protected global::System.Web.UI.WebControls.DropDownList DropDownList_OccupiedPcs;
 
         /// <summary>
-        /// LinkButton_PauseSelected control.
+        /// LinkButton_ToggleState control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton LinkButton_PauseSelected;
-
-        /// <summary>
-        /// LinkButton_ResumeSelected control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton LinkButton_ResumeSelected;
-
-        /// <summary>
-        /// LinkButton_PauseAll control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton LinkButton_PauseAll;
-
-        /// <summary>
-        /// LinkButton_ResumeAll control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton LinkButton_ResumeAll;
+        protected global::System.Web.UI.WebControls.LinkButton LinkButton_ToggleState;
     }
 }

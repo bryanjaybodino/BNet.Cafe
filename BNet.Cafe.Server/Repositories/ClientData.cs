@@ -72,7 +72,7 @@ namespace BNet.Cafe.Server.Repositories
                             {
                                 if (clientData.IsPaused.ToUpper() == "TRUE")
                                 {
-                                    return "Pause";
+                                    return "Paused";
                                 }
                                 else
                                 {

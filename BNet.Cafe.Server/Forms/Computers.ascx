@@ -153,6 +153,7 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Computer Name" ItemStyle-Width="200px">
                             <ItemTemplate>
+                                <asp:Label ID="Label_DBId" Visible="false" runat="server" Text='<%#Eval("DBId") %>'></asp:Label>
                                 <asp:Label ID="Label_DBComputerName" runat="server" Text='<%#Eval("DBComputerName") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>

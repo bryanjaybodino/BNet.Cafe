@@ -17,69 +17,63 @@ namespace BNet.Cafe.Server.Forms.Modals
             ClientData clientData = new ClientData();
             var liveData = clientData.FetchData();
 
-            // Get all active/occupied computers currently connected
             var activePcs = liveData.Where(x => !string.IsNullOrEmpty(x.TimeStart)).ToList();
 
-            foreach (var pc in activePcs)
+            if (activePcs.Count > 0)
             {
-                string statusLabel = (pc.IsPaused.ToUpper()=="TRUE") ? " (Paused)" : " (Running)";
-                DropDownList_OccupiedPcs.Items.Add(new ListItem(pc.ClientName + statusLabel, pc.ClientName));
+                // ALL PCs Option: Check if all active PCs are currently paused
+                bool allPaused = activePcs.All(p => p.IsPaused.ToUpper() == "TRUE");
+                ListItem allItem = new ListItem("-- All Active PCs --", "ALL_PCS");
+                allItem.Attributes["data-paused"] = allPaused ? "true" : "false";
+                DropDownList_OccupiedPcs.Items.Add(allItem);
+
+                foreach (var pc in activePcs)
+                {
+                    bool isPaused = pc.IsPaused.ToUpper() == "TRUE";
+                    string statusLabel = isPaused ? " (Paused)" : " (Running)";
+
+                    ListItem item = new ListItem(pc.ClientName + statusLabel, pc.ClientName);
+                    item.Attributes["data-paused"] = isPaused ? "true" : "false";
+
+                    DropDownList_OccupiedPcs.Items.Add(item);
+                }
+
+                DropDownList_OccupiedPcs.Enabled = true;
+                LinkButton_ToggleState.Enabled = true;
             }
-
-            bool hasItems = DropDownList_OccupiedPcs.Items.Count > 0;
-            DropDownList_OccupiedPcs.Enabled = hasItems;
-            LinkButton_PauseSelected.Enabled = hasItems;
-            LinkButton_ResumeSelected.Enabled = hasItems;
-
-            if (!hasItems)
+            else
             {
                 DropDownList_OccupiedPcs.Items.Add(new ListItem("-- No Occupied PCs Connected --", ""));
+                DropDownList_OccupiedPcs.Enabled = false;
+                LinkButton_ToggleState.Enabled = false;
             }
         }
 
         protected void LinkButton_ExecuteAction_Click(object sender, EventArgs e)
         {
-            string actionType = HiddenField_ActionType.Value;
-            string selectedPc = HiddenField_SelectedComputerName.Value;
+            string actionType = HiddenField_ActionType.Value; // "PAUSE" or "RESUME"
+            string targetPc = HiddenField_SelectedComputerName.Value;
+
+            if (string.IsNullOrEmpty(targetPc) || string.IsNullOrEmpty(actionType)) return;
 
             ClientData clientData = new ClientData();
             var liveData = clientData.FetchData();
 
-            switch (actionType)
+            string command = (actionType == "PAUSE") ? ConstantData.RentalCommand.PAUSE : ConstantData.RentalCommand.RESUME;
+
+            if (targetPc == "ALL_PCS")
             {
-                case "PAUSE_SELECTED":
-                    if (!string.IsNullOrEmpty(selectedPc))
-                    {
-                        RemoteMessagingService.SendTextMessage(this, selectedPc,ConstantData.RentalCommand.PAUSE);
-                        AlertService.ShowAlert(this, $"Sent PAUSE signal to {selectedPc}.", "success");
-                    }
-                    break;
-
-                case "RESUME_SELECTED":
-                    if (!string.IsNullOrEmpty(selectedPc))
-                    {
-                        RemoteMessagingService.SendTextMessage(this, selectedPc, ConstantData.RentalCommand.RESUME);
-                        AlertService.ShowAlert(this, $"Sent RESUME signal to {selectedPc}.", "success");
-                    }
-                    break;
-
-                case "PAUSE_ALL":
-                    var activePcsToPause = liveData.Where(x => !string.IsNullOrEmpty(x.TimeStart)).ToList();
-                    foreach (var pc in activePcsToPause)
-                    {
-                        RemoteMessagingService.SendTextMessage(this, pc.ClientName, ConstantData.RentalCommand.PAUSE);
-                    }
-                    AlertService.ShowAlert(this, "Sent PAUSE signal to all active PCs.", "success");
-                    break;
-
-                case "RESUME_ALL":
-                    var activePcsToResume = liveData.Where(x => !string.IsNullOrEmpty(x.TimeStart)).ToList();
-                    foreach (var pc in activePcsToResume)
-                    {
-                        RemoteMessagingService.SendTextMessage(this, pc.ClientName, ConstantData.RentalCommand.RESUME);
-                    }
-                    AlertService.ShowAlert(this, "Sent RESUME signal to all active PCs.", "success");
-                    break;
+                var activePcs = liveData.Where(x => !string.IsNullOrEmpty(x.TimeStart)).ToList();
+                foreach (var pc in activePcs)
+                {
+                    RemoteMessagingService.SendTextMessage(this, pc.ClientName, command);
+                }
+                AlertService.ShowAlert(this, $"Sent {actionType} signal to all active PCs.", "success");
+            }
+            else
+            {
+                RemoteMessagingService.SendTextMessage(this, targetPc, command);
+                AlertService.ShowAlert(this, $"Sent {actionType} signal to {targetPc}.", "success");
             }
         }
     }
