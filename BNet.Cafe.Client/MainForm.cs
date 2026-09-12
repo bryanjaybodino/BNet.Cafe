@@ -46,7 +46,10 @@ namespace BNet.Cafe.Client
         {
             InitializeComponent();
         }
+        public void setAdmin()
+        {
 
+        }
         public void LockScreen()
         {
             // 1. Always check InvokeRequired FIRST before touching any UI properties
@@ -59,7 +62,7 @@ namespace BNet.Cafe.Client
             // 2. Start global low-level hooks
             KeyboardHook.Start();
 
-            // 3. Configure window for full-screen lock mode
+            //// 3. Configure window for full-screen lock mode
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
             this.TopMost = true;
@@ -67,7 +70,7 @@ namespace BNet.Cafe.Client
             this.MaximizeBox = false;
             this.MinimizeBox = false;
 
-            // 4. Show and force focus
+            //// 4. Show and force focus
             this.Show();
             this.BringToFront();
             this.Activate();
@@ -81,7 +84,6 @@ namespace BNet.Cafe.Client
         private async void MainForm_Load(object sender, EventArgs e)
         {
             string clientName = ConfigurationManager.AppSettings["ClientName"];
-            bool isAdministrator = false;
             lblBigPcName.Text = clientName;
             lblStatusBadge.Text = $"● Station {clientName} Online";
             await Task.Delay(1000);
@@ -90,7 +92,7 @@ namespace BNet.Cafe.Client
             var session = SessionManager.ReadSession();
             if (session != null)
             {
-                isAdministrator = session.IsAdministrator;
+                _BNetCafeTimer.isAdministrator = session.IsAdministrator;
                 this.Hide();
                 _BNetCafeTimer.Show();
                 ClearTitleCache();
@@ -139,27 +141,9 @@ namespace BNet.Cafe.Client
                 }));
 
 
-                if (!isAdministrator)
+                if (!_BNetCafeTimer.isAdministrator)
                 {
-                    string processName = info?.ProcessName ?? string.Empty;
-                    string windowTitle = info?.WindowTitle ?? string.Empty;
-
-                    bool isTaskManager = processName.Equals("Taskmgr", StringComparison.OrdinalIgnoreCase);
-                    bool isControlPanel = windowTitle.IndexOf("Programs and Features", StringComparison.OrdinalIgnoreCase) >= 0;
-
-                    if (isTaskManager || isControlPanel)
-                    {
-                        try
-                        {
-                            foreach (var proc in Process.GetProcessesByName("Taskmgr")) proc.Kill();
-                            foreach (var proc in Process.GetProcessesByName("explorer"))
-                            {
-                                if (proc.MainWindowTitle.Contains("Programs and Features")) proc.Kill();
-                            }
-                        }
-                        catch { }
-                        return;
-                    }
+                    SecurityAccessManager.EnforceRestrictions(info);
                 }
                 var sess = _currentSession;
                 if (sess == null || !sess.IsOpen) return;
@@ -363,6 +347,7 @@ namespace BNet.Cafe.Client
                 // 2. Update or Create Timer Data
                 if (!SessionManager.Exists())
                 {
+                    _BNetCafeTimer.isAdministrator = false;
                     _BNetCafeTimer.userId = userId;
                     await _BNetCafeTimer.CreateTimerDataAsync(dateTime, duration, amount);
                 }
@@ -375,6 +360,7 @@ namespace BNet.Cafe.Client
                 UnlockScreen();
                 this.Hide();
                 ClearTitleCache();
+
             }
             else if (textMessage == "LOGOUT")
             {
@@ -387,15 +373,15 @@ namespace BNet.Cafe.Client
                 LockScreen();
 
                 // 3. Manually trigger activity update AFTER window focus has settled
-                Task.Delay(200).ContinueWith(_ =>
-                {
-                    var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
-                    var sess = _currentSession;
-                    if (sess != null && sess.IsOpen)
-                    {
-                        _ = _activityReporter.SendActivityInfoAsync(sess, currentWindow, _deviceInfo);
-                    }
-                }, TaskScheduler.FromCurrentSynchronizationContext());
+                await Task.Delay(200).ContinueWith(_ =>
+                   {
+                       var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
+                       var sess = _currentSession;
+                       if (sess != null && sess.IsOpen)
+                       {
+                           _ = _activityReporter.SendActivityInfoAsync(sess, currentWindow, _deviceInfo);
+                       }
+                   }, TaskScheduler.FromCurrentSynchronizationContext());
             }
             else
             {
@@ -477,6 +463,7 @@ namespace BNet.Cafe.Client
 
                 if (isAdmin)
                 {
+                    _BNetCafeTimer.isAdministrator = true;
                     _BNetCafeTimer.userId = "Administrator";
                     await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), "6000", "0");
                     TextBox_Username.Text = string.Empty;
@@ -507,6 +494,7 @@ namespace BNet.Cafe.Client
                 CreateBalanceHandler createBalanceHandler = new CreateBalanceHandler();
                 await createBalanceHandler.CreateBalanceAsync(userId, "-" + durationMinutes, "0", "LOGGING-IN");
 
+                _BNetCafeTimer.isAdministrator = false;
                 _BNetCafeTimer.userId = userId;
                 await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), durationMinutes, "0");
 
@@ -531,27 +519,6 @@ namespace BNet.Cafe.Client
             {
                 regForm.ShowDialog(this);
             }
-        }
-
-        public static async void OAuth_Login(string userId, string durationMinutes)
-        {
-            MainForm activeForm = Application.OpenForms.OfType<MainForm>().FirstOrDefault();
-            if (activeForm == null) return;
-
-            // Handle cross-thread UI updates safely
-            if (activeForm.InvokeRequired)
-            {
-                activeForm.BeginInvoke(new Action(() => OAuth_Login(userId, durationMinutes)));
-                return;
-            }
-
-            // Timer creation logic
-            _BNetCafeTimer.userId = userId;
-            await _BNetCafeTimer.CreateTimerDataAsync(
-                TimeService.Get().ToString(),
-                durationMinutes,
-                "0"
-            );
         }
     }
 }

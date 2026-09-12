@@ -35,8 +35,8 @@
             this.lblSubtitle = new System.Windows.Forms.Label();
             this.lblWelcome = new System.Windows.Forms.Label();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.lblStatusBadge = new BNet.Cafe.Client.Design.ModernBadge();
             this.Button_Login = new BNet.Cafe.Client.Design.ModernButton();
+            this.lblStatusBadge = new BNet.Cafe.Client.Design.ModernBadge();
             this.Button_Register = new BNet.Cafe.Client.Design.ModernButton();
             this.TextBox_Password = new BNet.Cafe.Client.Design.ModernTextBox();
             this.TextBox_Username = new BNet.Cafe.Client.Design.ModernTextBox();
@@ -256,19 +256,6 @@
             this.lblCategory.TabIndex = 0;
             this.lblCategory.Text = "CLIENT PORTAL";
             // 
-            // lblStatusBadge
-            // 
-            this.lblStatusBadge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(252)))), ((int)(((byte)(231)))));
-            this.lblStatusBadge.BorderRadius = 14;
-            this.lblStatusBadge.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.lblStatusBadge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
-            this.lblStatusBadge.Location = new System.Drawing.Point(104, 429);
-            this.lblStatusBadge.Name = "lblStatusBadge";
-            this.lblStatusBadge.Size = new System.Drawing.Size(190, 28);
-            this.lblStatusBadge.TabIndex = 9;
-            this.lblStatusBadge.Text = "● Station PC-01 Online";
-            this.lblStatusBadge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // Button_Login
             // 
             this.Button_Login.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(80)))), ((int)(((byte)(236)))));
@@ -284,6 +271,19 @@
             this.Button_Login.Text = "Sign In";
             this.Button_Login.UseVisualStyleBackColor = false;
             this.Button_Login.Click += new System.EventHandler(this.Button_Login_Click);
+            // 
+            // lblStatusBadge
+            // 
+            this.lblStatusBadge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(252)))), ((int)(((byte)(231)))));
+            this.lblStatusBadge.BorderRadius = 14;
+            this.lblStatusBadge.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.lblStatusBadge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
+            this.lblStatusBadge.Location = new System.Drawing.Point(104, 429);
+            this.lblStatusBadge.Name = "lblStatusBadge";
+            this.lblStatusBadge.Size = new System.Drawing.Size(190, 28);
+            this.lblStatusBadge.TabIndex = 9;
+            this.lblStatusBadge.Text = "● Station PC-01 Online";
+            this.lblStatusBadge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Button_Register
             // 
