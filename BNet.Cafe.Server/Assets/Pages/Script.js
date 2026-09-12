@@ -50,9 +50,9 @@ window.addEventListener('resize', () => {
     }
 });
 
-// Theme Management
-const currentTheme = localStorage.getItem('theme') || 'light';
-html.setAttribute('data-theme', currentTheme);
+
+// Initialize theme icon on DOM load
+const currentTheme = html.getAttribute('data-theme') || 'light';
 updateThemeIcon(currentTheme);
 
 if (themeToggle) {
@@ -69,6 +69,7 @@ function updateThemeIcon(theme) {
         themeToggle.innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
     }
 }
+
 
 
 // =============================================================================

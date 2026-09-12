@@ -6,7 +6,9 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+.no-transitions * {
+    transition: none !important;
+}
 :root {
     --primary: #3b82f6;
     --primary-dark: #1e40af;

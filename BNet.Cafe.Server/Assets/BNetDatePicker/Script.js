@@ -7,11 +7,10 @@ class BNetDatePicker {
             ? document.querySelector(options.container)
             : options.container;
 
-        this.mode = options.mode || 'single'; // 'single' or 'range'
+        this.mode = options.mode || 'single';
         this.placeholder = options.placeholder || (this.mode === 'range' ? 'Select date range...' : 'Select date...');
         this.onChange = options.onChange || null;
 
-        // Date selection state
         this.currentDate = new Date();
         this.viewYear = this.currentDate.getFullYear();
         this.viewMonth = this.currentDate.getMonth();
@@ -145,6 +144,12 @@ class BNetDatePicker {
 
     adjustPosition() {
         this.dropdown.classList.remove('align-right');
+
+        // Skip dropdown edge shifting on mobile viewports
+        if (window.innerWidth <= 480) {
+            return;
+        }
+
         const dropdownRect = this.dropdown.getBoundingClientRect();
         const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
 
@@ -167,7 +172,6 @@ class BNetDatePicker {
         return `${months[parseInt(m, 10) - 1]} ${parseInt(d, 10)}, ${y}`;
     }
 
-    // Precise Range Shortcut Logic
     applyShortcut(type) {
         const now = new Date();
         const y = now.getFullYear();
@@ -214,11 +218,9 @@ class BNetDatePicker {
         this.selectedStartDate = this.formatDate(start);
         this.selectedEndDate = this.formatDate(end);
 
-        // Sync calendar grid to show the end date month
         this.viewYear = end.getFullYear();
         this.viewMonth = end.getMonth();
 
-        // Update visual selection on shortcut buttons
         if (this.sidebar) {
             this.sidebar.querySelectorAll('.bnet-dp-shortcut').forEach(b => {
                 b.classList.toggle('active', b.dataset.range === type);
@@ -328,7 +330,6 @@ class BNetDatePicker {
         });
     }
 
-    // Controls professional UI output
     updateValueDisplay() {
         let displayText = '';
 
@@ -396,9 +397,6 @@ class BNetDatePicker {
     }
 }
 
-// =============================================================================
-// Auto-Binding Utility Function for HTML Inputs / ASP.NET Controls
-// =============================================================================
 function initBNetDatePickers(selector = 'input.bnet-datepicker') {
     const inputs = document.querySelectorAll(selector);
 

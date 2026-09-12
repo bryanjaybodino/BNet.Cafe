@@ -240,11 +240,35 @@
     opacity: 0.65;
 }
 
+/* Disable transitions during load to prevent theme flashes */
+.no-transitions * {
+    transition: none !important;
+}
+
 /* Mobile Screen Responsiveness */
 @media (max-width: 480px) {
-    .bnet-datepicker-dropdown.has-sidebar {
-        flex-direction: column;
+    .bnet-datepicker-container,
+    .bnet-datepicker-container.mode-range {
+        width: 100%;
+        min-width: 0;
     }
+
+    .bnet-datepicker-dropdown {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translate(-50%, -50%) !important;
+        width: 90vw !important;
+        max-width: 320px !important;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+        .bnet-datepicker-dropdown.has-sidebar {
+            flex-direction: column;
+        }
 
     .bnet-dp-sidebar {
         width: 100%;
@@ -252,17 +276,21 @@
         border-bottom: 1px solid var(--border-light, #e2e8f0);
         flex-direction: row;
         overflow-x: auto;
+        white-space: nowrap;
         padding: 6px;
+        -webkit-overflow-scrolling: touch;
     }
 
     .bnet-dp-shortcut {
         margin-right: 4px;
         margin-bottom: 0;
-        padding: 5px 8px;
+        padding: 6px 10px;
+        flex-shrink: 0;
     }
 
     .bnet-dp-calendar-body {
         width: 100%;
         box-sizing: border-box;
+        padding: 10px;
     }
 }
