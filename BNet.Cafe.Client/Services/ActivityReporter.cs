@@ -3,7 +3,6 @@ using BNet.Cafe.Client.Repositories;
 using BNet.Cafe.Client.Services;
 using Newtonsoft.Json;
 using System;
-using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,23 +27,11 @@ namespace BNet.Cafe.Client
             string timeStart = string.Empty;
             string timeEnd = string.Empty;
 
-            string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
-            if (File.Exists(sessionFilePath))
+            SessionData sessionData = SessionManager.ReadSession();
+            if (sessionData != null)
             {
-                try
-                {
-                    string content = File.ReadAllText(sessionFilePath);
-                    string[] parts = content.Split('|');
-
-                    if (parts.Length >= 4
-                        && long.TryParse(parts[0], out long createdTicks)
-                        && long.TryParse(parts[1], out long endTicks))
-                    {
-                        timeStart = new DateTime(createdTicks).ToString("yyyy-MM-dd HH:mm:ss");
-                        timeEnd = new DateTime(endTicks).ToString("yyyy-MM-dd HH:mm:ss");
-                    }
-                }
-                catch { }
+                timeStart = sessionData.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss");
+                timeEnd = sessionData.EndTime.ToString("yyyy-MM-dd HH:mm:ss");
             }
 
             var payloadObj = new

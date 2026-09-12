@@ -86,25 +86,14 @@ namespace BNet.Cafe.Client
             lblStatusBadge.Text = $"● Station {clientName} Online";
             await Task.Delay(1000);
             _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
-            string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
-            if (File.Exists(sessionFilePath))
+
+            var session = SessionManager.ReadSession();
+            if (session != null)
             {
-
-                string[] parts = File.ReadAllText(sessionFilePath).Split('|');
-
-                if (parts.Length >= 4 &&
-                    long.TryParse(parts[0], out long createdTicks) &&
-                    long.TryParse(parts[1], out long endTicks))
-                {
-                    string userId = parts[2];
-                    double.TryParse(parts[3], out double amount);
-                    isAdministrator = userId == "Administrator" && amount == 0;
-                }
-
+                isAdministrator = session.IsAdministrator;
                 this.Hide();
                 _BNetCafeTimer.Show();
                 ClearTitleCache();
-
             }
 
             _screenStreamer.RebuildScreenKeyCache(ScreenCaptured.GetScreenCount(), _deviceInfo.ClientName);
@@ -113,7 +102,7 @@ namespace BNet.Cafe.Client
             {
 
                 // 1. Check disk on background thread
-                bool fileExists = File.Exists(sessionFilePath);
+                bool fileExists = SessionManager.Exists();
 
                 // 2. Safe UI update on the UI thread
                 this.BeginInvoke((Action)(() =>
@@ -330,7 +319,7 @@ namespace BNet.Cafe.Client
             _activityReporter.ClearTitleCache();
         }
 
-        private void HandleIncomingTextMessage(string textMessage)
+        private async void HandleIncomingTextMessage(string textMessage)
         {
             if (InvokeRequired)
             {
@@ -346,8 +335,6 @@ namespace BNet.Cafe.Client
                 string amount = jsonObject["amount"]?.ToString() ?? "0";
                 string dateTime = jsonObject["dateTime"]?.ToString() ?? TimeService.Get().ToString();
 
-                string sessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
-
                 // 1. Instantiate timer if null or disposed
                 if (_BNetCafeTimer == null || _BNetCafeTimer.IsDisposed)
                 {
@@ -355,14 +342,14 @@ namespace BNet.Cafe.Client
                 }
 
                 // 2. Update or Create Timer Data
-                if (!File.Exists(sessionFilePath))
+                if (!SessionManager.Exists())
                 {
                     _BNetCafeTimer.userId = userId;
-                    _BNetCafeTimer.CreateTimerData(dateTime, duration, amount);
+                    await _BNetCafeTimer.CreateTimerDataAsync(dateTime, duration, amount);
                 }
                 else
                 {
-                    _BNetCafeTimer.UpdateTimerData(duration, amount);
+                    await _BNetCafeTimer.UpdateTimerDataAsync(duration, amount);
                 }
 
                 // 3. Immediately reflect UI changes and unlock PC
@@ -467,7 +454,7 @@ namespace BNet.Cafe.Client
             if (isAdmin)
             {
                 _BNetCafeTimer.userId = "Administrator";
-                _BNetCafeTimer.CreateTimerData(TimeService.Get().ToString(), "6000", "0");
+                await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), "6000", "0");
                 TextBox_Username.Text = string.Empty;
                 TextBox_Password.Text = string.Empty;
                 return;
@@ -496,14 +483,13 @@ namespace BNet.Cafe.Client
             CreateBalanceHandler createBalanceHandler = new CreateBalanceHandler();
             await createBalanceHandler.CreateBalanceAsync(userId, "-" + durationMinutes, "0", "LOGGING-IN");
 
-
-
             _BNetCafeTimer.userId = userId;
-            _BNetCafeTimer.CreateTimerData(TimeService.Get().ToString(), durationMinutes, "0");
+            await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), durationMinutes, "0");
 
             TextBox_Username.Text = string.Empty;
             TextBox_Password.Text = string.Empty;
         }
+
         private void Button_Register_Click(object sender, EventArgs e)
         {
             using (OAuthLoginForm regForm = new OAuthLoginForm())
@@ -511,7 +497,8 @@ namespace BNet.Cafe.Client
                 regForm.ShowDialog(this);
             }
         }
-        public static void OAuth_Login(string userId, string durationMinutes)
+
+        public static async void OAuth_Login(string userId, string durationMinutes)
         {
             MainForm activeForm = Application.OpenForms.OfType<MainForm>().FirstOrDefault();
             if (activeForm == null) return;
@@ -525,12 +512,11 @@ namespace BNet.Cafe.Client
 
             // Timer creation logic
             _BNetCafeTimer.userId = userId;
-            _BNetCafeTimer.CreateTimerData(
+            await _BNetCafeTimer.CreateTimerDataAsync(
                 TimeService.Get().ToString(),
                 durationMinutes,
                 "0"
             );
-
         }
     }
 }
