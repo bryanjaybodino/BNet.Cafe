@@ -1,17 +1,14 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 
 namespace BNet.Cafe.Server.Ashx
 {
     /// <summary>
-    /// Summary description for CalculateRentalPrice
+    /// Handler to calculate monetary amount (₱) from time duration (minutes).
     /// </summary>
-    public class CalculateRentalPrice : IHttpHandler
+    public class CalculateAmountFromDuration : IHttpHandler
     {
-
         public void ProcessRequest(HttpContext context)
         {
             context.Response.ContentType = "application/json";

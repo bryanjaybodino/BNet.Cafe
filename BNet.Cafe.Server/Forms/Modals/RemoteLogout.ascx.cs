@@ -43,7 +43,7 @@ namespace BNet.Cafe.Server.Forms.Modals
                         {
                             TimeSpan duration = TimeService.Get() - start;
                             int totalTime = (int)duration.TotalMinutes;
-                            double billing = CalculateRentalPrice.CalculatePrice(totalTime);
+                            double billing = CalculateAmountFromDuration.CalculatePrice(totalTime);
                             bool isSuccess = rentals.Update(rentalId, id, userId, totalTime.ToString().Replace(",", ""), billing.ToString().Replace(",", ""));
                             if (isSuccess)
                             {

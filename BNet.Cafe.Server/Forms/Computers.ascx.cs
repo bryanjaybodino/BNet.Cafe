@@ -62,7 +62,7 @@ namespace BNet.Cafe.Server.Forms
                             minutes = duration.Minutes;
                         }
 
-                        double billing = CalculateRentalPrice.CalculatePrice((int)duration.TotalMinutes);
+                        double billing = CalculateAmountFromDuration.CalculatePrice((int)duration.TotalMinutes);
                         string hrLabel = hours == 1 ? "hr" : "hrs";
                         string minLabel = minutes == 1 ? "min" : "mins";
 

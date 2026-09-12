@@ -154,6 +154,8 @@
     <Content Include="Forms\Modals\RemoteTimeTransfer.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Forms\RentalManage.ascx" />
+    <Content Include="Forms\Users.ascx" />
+    <Content Include="Forms\UserTopUp.ascx" />
     <Content Include="Offline Packages\Newtonsoft.Json\Newtonsoft.Json.dll" />
     <Content Include="Offline Packages\RestSharp\RestSharp.dll" />
     <Content Include="Offline Packages\System.Runtime.Caching\System.Configuration.ConfigurationManager.dll" />
@@ -166,8 +168,11 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ashx\CalculateRentalPrice.ashx.cs">
-      <DependentUpon>CalculateRentalPrice.ashx</DependentUpon>
+    <Compile Include="Ashx\CalculateAmountFromDuration.ashx.cs">
+      <DependentUpon>CalculateAmountFromDuration.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Ashx\CalculateDurationFromAmount.ashx.cs">
+      <DependentUpon>CalculateDurationFromAmount.ashx</DependentUpon>
     </Compile>
     <Compile Include="BNetPage.aspx.cs">
       <DependentUpon>BNetPage.aspx</DependentUpon>
@@ -275,6 +280,20 @@
     <Compile Include="Forms\RentalManage.ascx.designer.cs">
       <DependentUpon>RentalManage.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Users.ascx.cs">
+      <DependentUpon>Users.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Users.ascx.designer.cs">
+      <DependentUpon>Users.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UserTopUp.ascx.cs">
+      <DependentUpon>UserTopUp.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\UserTopUp.ascx.designer.cs">
+      <DependentUpon>UserTopUp.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -314,7 +333,8 @@
     <Content Include="Assets\fontawesome\webfonts\fa-regular-400.woff2" />
     <Content Include="Assets\fontawesome\webfonts\fa-solid-900.woff2" />
     <Content Include="Assets\fontawesome\webfonts\fa-v4compatibility.woff2" />
-    <Content Include="Ashx\CalculateRentalPrice.ashx" />
+    <Content Include="Ashx\CalculateAmountFromDuration.ashx" />
+    <Content Include="Ashx\CalculateDurationFromAmount.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
