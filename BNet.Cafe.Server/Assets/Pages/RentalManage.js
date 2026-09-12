@@ -98,11 +98,54 @@ function calculateRentalPriceBackend(totalMinutes) {
 // Update calculated amount & formatted hours display in real-time
 function calculateAmount() {
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
+    var initialDurationInput = document.querySelector('[id$="HiddenField_InitialDuration"]');
+    var initialAmountInput = document.querySelector('[id$="HiddenField_InitialAmount"]');
+    var amountInput = document.querySelector('[id$="TextBox_Amount"]');
+    var displayTime = document.getElementById('display_FormattedTime');
+    var displayAmount = document.getElementById('display_TotalAmount');
+
     if (!durationInput) return;
 
-    var minutes = parseInt(durationInput.value, 10) || 0;
+    var currentMinutes = parseInt(durationInput.value, 10) || 0;
+    var initialMinutes = initialDurationInput ? (parseInt(initialDurationInput.value, 10) || 0) : 0;
+    var initialAmount = initialAmountInput ? (parseFloat(initialAmountInput.value) || 0) : 0;
 
-    calculateRentalPriceBackend(minutes);
+    // Check if extra minutes were added
+    var extendedMinutes = currentMinutes - initialMinutes;
+
+    if (extendedMinutes > 0) {
+        // Fetch price calculation ONLY for the added extended minutes
+        var endpoint = /\.aspx$/i.test(window.location.pathname)
+            ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateAmountFromDuration.ashx')
+            : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateAmountFromDuration.ashx');
+
+        fetch(endpoint + '?minutes=' + extendedMinutes)
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+                if (data) {
+                    var totalCharge = initialAmount + data.totalAmount;
+
+                    if (amountInput) amountInput.value = totalCharge.toFixed(2);
+                    if (displayAmount) displayAmount.innerText = '₱ ' + totalCharge.toFixed(2);
+
+                    // Format current total time
+                    var hrs = Math.floor(currentMinutes / 60);
+                    var mins = currentMinutes % 60;
+                    if (displayTime) displayTime.innerText = hrs + ' hrs ' + mins + ' mins';
+                }
+            })
+            .catch(function (error) {
+                console.error('Error fetching calculated extension price:', error);
+            });
+    } else {
+        // Session has not been extended beyond initial duration
+        if (amountInput) amountInput.value = initialAmount.toFixed(2);
+        if (displayAmount) displayAmount.innerText = '₱ ' + initialAmount.toFixed(2);
+
+        var hrs = Math.floor(currentMinutes / 60);
+        var mins = currentMinutes % 60;
+        if (displayTime) displayTime.innerText = hrs + ' hrs ' + mins + ' mins';
+    }
 }
 
 // Quick action buttons logic

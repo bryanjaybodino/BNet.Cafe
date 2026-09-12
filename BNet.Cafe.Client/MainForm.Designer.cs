@@ -277,7 +277,7 @@
             this.Button_Login.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button_Login.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
             this.Button_Login.ForeColor = System.Drawing.Color.White;
-            this.Button_Login.Location = new System.Drawing.Point(6, 290);
+            this.Button_Login.Location = new System.Drawing.Point(6, 293);
             this.Button_Login.Name = "Button_Login";
             this.Button_Login.Size = new System.Drawing.Size(388, 46);
             this.Button_Login.TabIndex = 7;
@@ -297,7 +297,7 @@
             this.Button_Register.Name = "Button_Register";
             this.Button_Register.Size = new System.Drawing.Size(388, 46);
             this.Button_Register.TabIndex = 8;
-            this.Button_Register.Text = "Google Sign-In";
+            this.Button_Register.Text = "Sign Up With Goolge";
             this.Button_Register.UseVisualStyleBackColor = false;
             this.Button_Register.Click += new System.EventHandler(this.Button_Register_Click);
             // 

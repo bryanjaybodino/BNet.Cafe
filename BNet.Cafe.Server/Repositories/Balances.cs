@@ -30,7 +30,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Balances/Create.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Balances/Create.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlExecuteAsync(sql);
@@ -44,7 +44,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", DBUserId);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Balances/GetBalanceByUserId.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Balances/GetBalanceByUserId.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             DataTable dataTable = DBContext.SqlDataAdapterAsync(sql);

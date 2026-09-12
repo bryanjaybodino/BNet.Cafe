@@ -1,9 +1,11 @@
-﻿using BNet.Cafe.Client.Repositories;
+﻿using BNet.Cafe.Client.Ashx;
+using BNet.Cafe.Client.Repositories;
 using BNet.Cafe.Client.Services;
 using System;
 using System.Configuration;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BNet.Cafe.Client
@@ -294,11 +296,19 @@ namespace BNet.Cafe.Client
             }
         }
 
-        private void Button_Logout_Click(object sender, EventArgs e)
+        private async void Button_Logout_Click(object sender, EventArgs e)
         {
             var result = MessageBox.Show("Are you sure you want to log out?", "Confirm Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
+                if(!Label_CustomerName.Text.Contains("Guest / Walk-in"))
+                {
+                    CreateBalanceHandler createBalanceHandler = new CreateBalanceHandler();
+                    TimeSpan time = TimeSpan.FromSeconds(remainingSeconds);
+                    int minutes = time.Minutes;       // Returns 46
+                    int totalMinutes = (int)time.TotalMinutes; // Returns 166
+                    await createBalanceHandler.CreateBalanceAsync(Label_CustomerName.Text, totalMinutes.ToString(), "0", "LOGGING-OUT");
+                } 
                 ClearSessionFile();
             }
         }

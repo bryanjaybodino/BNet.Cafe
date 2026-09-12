@@ -32,11 +32,17 @@ namespace BNet.Cafe.Server.Forms
                             string rentalId = rental.Rows[ii]["DBId"].ToString();
                             string duration = rental.Rows[ii]["DBDuration"].ToString();
                             string userId = rental.Rows[ii]["DBUserId"].ToString();
+                            string dbAmount = rental.Rows[ii]["DBAmount"].ToString();
+
                             TextBox_Duration.Text = duration;
                             Label_RentalId.Text = rentalId;
                             Label_HeaderText.Text = "Rental ID # : ";
+
+                            // Save original loaded values
+                            HiddenField_InitialDuration.Value = duration;
+                            HiddenField_InitialAmount.Value = string.IsNullOrEmpty(dbAmount) ? "0.00" : dbAmount;
                         }
-                        Label_Status.CssClass ="bnet-badge-status red";
+                        Label_Status.CssClass = "bnet-badge-status red";
                     }
                     else if (status == "Offline")
                     {

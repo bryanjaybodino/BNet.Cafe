@@ -28,7 +28,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Computers/GetAll.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Computers/GetAll.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlDataAdapterAsync(sql);
@@ -42,11 +42,37 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Computers/GetById.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Computers/GetById.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlDataAdapterAsync(sql);
         }
+
+
+        public string GetIdByName(string name)
+        {
+            var scripts = new Dictionary<string, string>();
+            string DBComputerName = dBScriptService.CleanUpToUpper(name);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerName", DBComputerName);
+
+            Page page = HttpContext.Current.Handler as Page;
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Computers/GetIdByName.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+
+            DataTable dataTable = DBContext.SqlDataAdapterAsync(sql);
+
+            if (dataTable != null)
+            {
+                return dataTable.Rows[0]["DBId"].ToString();
+            }
+            else
+            {
+                return name;
+            }
+        }
+
+
 
         public bool Create(string computerName)
         {
@@ -59,7 +85,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Computers/Create.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Computers/Create.sql");
             string sql = dBScriptService.Scripts(scripts, template);
             var result = DBContext.SqlExecuteReaderAsync(sql);
             int computerNameExist = Convert.ToInt32(result["ComputerNameExist"]);
@@ -78,7 +104,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerName", DBComputerName);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Computers/Update.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Computers/Update.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlExecuteAsync(sql);
@@ -92,7 +118,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Computers/DeleteById.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Computers/DeleteById.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlExecuteAsync(sql);
@@ -105,7 +131,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Computers/GetAll.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Computers/GetAll.sql");
             string sql = dBScriptService.Scripts(scripts, template);
             DataTable dataTable = DBContext.SqlDataAdapterAsync(sql);
 

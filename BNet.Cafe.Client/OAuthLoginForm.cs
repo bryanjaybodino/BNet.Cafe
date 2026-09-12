@@ -79,35 +79,20 @@ namespace BNet.Cafe.Client
             if (fullUrl.IndexOf("Portal.aspx", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 string userId = GetQueryParameter(targetUri, "UserId");
-                string name = GetQueryParameter(targetUri, "Name");
-                string email = GetQueryParameter(targetUri, "Email");
-                string balance = GetQueryParameter(targetUri, "Balance");
-
                 if (!string.IsNullOrEmpty(userId))
                 {
                     if (cancelArgs != null)
                     {
                         cancelArgs.Cancel = true;
                     }
-
                     this.BeginInvoke(new Action(() =>
                     {
-
-                        if (Convert.ToDouble(balance) > 0)
-                        {
-                            MainForm.OAuth_Login(userId, balance);
-                        }
-                        else
-                        {
-                            MessageBox.Show(
-                                "Your account balance is 0. Please top up at the counter to continue.",
-                                "Insufficient Balance",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning
-                            );
-                        }
-
-
+                        MessageBox.Show(
+                            "Your account has been created. Please top up at the counter to continue.",
+                            "Registered Successfully",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
                         this.Close();
                     }));
                 }

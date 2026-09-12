@@ -26,7 +26,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Users/GetAll.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Users/GetAll.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlDataAdapterAsync(sql);
@@ -39,12 +39,31 @@ namespace BNet.Cafe.Server.Repositories
 
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
 
-            Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Users/GetById.sql");
+
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Users/GetById.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlDataAdapterAsync(sql);
         }
+
+        public DataTable GetLogin(string email, string password)
+        {
+            var scripts = new Dictionary<string, string>();
+            string DBEmail = dBScriptService.CleanUpToUpper(email);
+            string DBPassword = dBScriptService.CleanUpToUpper(password);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBEmail", DBEmail);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBPassword", DBPassword);
+
+            // Use HttpContext.Current.Server directly instead of casting Handler to Page
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Users/GetLogin.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+
+            return DBContext.SqlDataAdapterAsync(sql);
+        }
+
+
+
         public DataTable GetByEmail(string email)
         {
             var scripts = new Dictionary<string, string>();
@@ -52,8 +71,7 @@ namespace BNet.Cafe.Server.Repositories
 
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBEmail", DBEmail);
 
-            Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Users/GetByEmail.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Users/GetByEmail.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlDataAdapterAsync(sql);
@@ -75,7 +93,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Users/Create.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Users/Create.sql");
             string sql = dBScriptService.Scripts(scripts, template);
             var result = DBContext.SqlExecuteReaderAsync(sql);
             int emailExist = Convert.ToInt32(result["EmailExist"]);
@@ -98,7 +116,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBRole", DBRole);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Users/Update.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Users/Update.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlExecuteAsync(sql);
@@ -112,7 +130,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Users/DeleteById.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Users/DeleteById.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlExecuteAsync(sql);

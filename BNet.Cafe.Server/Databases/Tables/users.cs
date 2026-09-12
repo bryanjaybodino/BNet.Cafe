@@ -18,6 +18,12 @@ namespace BNet.Cafe.Server.Databases.Tables
             });
             list.Add(new DBMigration.DBColumns
             {
+                ColumnName = "DBPassword",
+                Length = 50,
+                Type = DBMigration.DBColumns.type.VARCHAR
+            });
+            list.Add(new DBMigration.DBColumns
+            {
                 ColumnName = "DBName",
                 Length = 50,
                 Type = DBMigration.DBColumns.type.VARCHAR

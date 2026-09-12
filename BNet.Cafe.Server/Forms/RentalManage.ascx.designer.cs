@@ -33,6 +33,24 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
+        /// HiddenField_InitialDuration control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField HiddenField_InitialDuration;
+
+        /// <summary>
+        /// HiddenField_InitialAmount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField HiddenField_InitialAmount;
+
+        /// <summary>
         /// Panel_Form control.
         /// </summary>
         /// <remarks>

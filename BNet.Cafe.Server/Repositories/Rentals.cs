@@ -28,7 +28,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Rentals/GetAll.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Rentals/GetAll.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlDataAdapterAsync(sql);
@@ -42,7 +42,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", DBComputerId);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Rentals/GetByComputerId.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Rentals/GetByComputerId.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlDataAdapterAsync(sql);
@@ -63,7 +63,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Rentals/Create.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Rentals/Create.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlExecuteAsync(sql);
@@ -83,7 +83,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBAmount", amount);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Rentals/Update.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Rentals/Update.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlExecuteAsync(sql);
@@ -97,7 +97,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Rentals/DeleteById.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Rentals/DeleteById.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlExecuteAsync(sql);
@@ -112,7 +112,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", DBComputerId);
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = page.Server.MapPath("~/Databases/Queries/Rentals/GetCount.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Rentals/GetCount.sql");
             string sql = dBScriptService.Scripts(scripts, template);
             var data = DBContext.SqlDataAdapterAsync(sql);
 

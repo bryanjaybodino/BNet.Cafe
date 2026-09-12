@@ -127,6 +127,7 @@
     <Content Include="Databases\Queries\Balances\GetAll.sql" />
     <Content Include="Databases\Queries\Computers\Create.sql" />
     <Content Include="Databases\Queries\Computers\DeleteById.sql" />
+    <Content Include="Databases\Queries\Computers\GetIdByName.sql" />
     <Content Include="Databases\Queries\Computers\GetById.sql" />
     <Content Include="Databases\Queries\Computers\GetAll.sql" />
     <Content Include="Databases\Queries\Computers\Update.sql" />
@@ -138,6 +139,7 @@
     <Content Include="Databases\Queries\Rentals\Update.sql" />
     <Content Include="Databases\Queries\Users\Create.sql" />
     <Content Include="Databases\Queries\Users\DeleteById.sql" />
+    <Content Include="Databases\Queries\Users\GetLogin.sql" />
     <Content Include="Databases\Queries\Users\GetAll.sql" />
     <Content Include="Databases\Queries\Users\GetByEmail.sql" />
     <Content Include="Databases\Queries\Users\GetById.sql" />
@@ -174,6 +176,15 @@
     </Compile>
     <Compile Include="Ashx\CalculateDurationFromAmount.ashx.cs">
       <DependentUpon>CalculateDurationFromAmount.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Ashx\CreateBalanceHandler.ashx.cs">
+      <DependentUpon>CreateBalanceHandler.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Ashx\CreateRentalHandler.ashx.cs">
+      <DependentUpon>CreateRentalHandler.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Ashx\LoginHandler.ashx.cs">
+      <DependentUpon>LoginHandler.ashx</DependentUpon>
     </Compile>
     <Compile Include="BNetPage.aspx.cs">
       <DependentUpon>BNetPage.aspx</DependentUpon>
@@ -336,6 +347,9 @@
     <Content Include="Assets\fontawesome\webfonts\fa-v4compatibility.woff2" />
     <Content Include="Ashx\CalculateAmountFromDuration.ashx" />
     <Content Include="Ashx\CalculateDurationFromAmount.ashx" />
+    <Content Include="Ashx\CreateRentalHandler.ashx" />
+    <Content Include="Ashx\LoginHandler.ashx" />
+    <Content Include="Ashx\CreateBalanceHandler.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

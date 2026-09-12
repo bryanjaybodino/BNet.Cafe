@@ -1,4 +1,5 @@
-﻿using BNet.Cafe.Client.Models;
+﻿using BNet.Cafe.Client.Ashx;
+using BNet.Cafe.Client.Models;
 using BNet.Cafe.Client.Repositories;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -422,15 +423,16 @@ namespace BNet.Cafe.Client
             }
         }
 
-        private void Button_Login_Click(object sender, EventArgs e)
+        private async void Button_Login_Click(object sender, EventArgs e)
         {
-            if (TextBox_Username.Text == "BNet" && TextBox_Password.Text == "@123")
-            {
-                _BNetCafeTimer.CreateTimerData(TimeService.Get().ToString(), "Administrator", "6000", "0");
-                TextBox_Username.Text = string.Empty;
-                TextBox_Password.Text = string.Empty;
-            }
-            else
+            string username = TextBox_Username.Text.Trim();
+            string password = TextBox_Password.Text;
+
+            LoginHandler loginHandler = new LoginHandler();
+            var loginResponse = await loginHandler.LoginAsync(username, password);
+
+            // 1. Guard clause: Handle failed authentication immediately
+            if (!loginResponse.Success && username != "BNet")
             {
                 MessageBox.Show(
                     "Invalid username or password. Please try again.",
@@ -438,12 +440,50 @@ namespace BNet.Cafe.Client
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-
                 TextBox_Password.Text = string.Empty;
                 TextBox_Password.Focus();
+                return;
             }
-        }
 
+            // 2. Admin Check
+            bool isAdmin = (username == "BNet" && password == "@12345") || string.Equals(loginResponse.Data.Role, "ADMIN", StringComparison.OrdinalIgnoreCase);
+
+            if (isAdmin)
+            {
+                _BNetCafeTimer.CreateTimerData(TimeService.Get().ToString(), "Administrator", "6000", "0");
+                TextBox_Username.Text = string.Empty;
+                TextBox_Password.Text = string.Empty;
+                return;
+            }
+
+            // 3. Insufficient Balance Check
+            if (loginResponse.Data.TotalDuration <= 0)
+            {
+                MessageBox.Show(
+                    "Your account balance is 0. Please top up at the counter to continue.",
+                    "Insufficient Balance",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+                return;
+            }
+
+            // 4. Standard User Rental Process
+            string userId = loginResponse.Data.Id.ToString();
+            string durationMinutes = loginResponse.Data.TotalDuration.ToString();
+            string clientName = ConfigurationManager.AppSettings["ClientName"];
+
+            CreateRentalHandler createRentalHandler = new CreateRentalHandler();
+            await createRentalHandler.CreateRentalAsync(clientName, userId, durationMinutes, "0");
+
+            CreateBalanceHandler createBalanceHandler = new CreateBalanceHandler();
+            await createBalanceHandler.CreateBalanceAsync(userId, "-" + durationMinutes, "0", "LOGGING-IN");
+
+            _BNetCafeTimer.CreateTimerData(TimeService.Get().ToString(), userId, durationMinutes, "0");
+
+            TextBox_Username.Text = string.Empty;
+            TextBox_Password.Text = string.Empty;
+        }
         private void Button_Register_Click(object sender, EventArgs e)
         {
             using (OAuthLoginForm regForm = new OAuthLoginForm())
@@ -471,9 +511,6 @@ namespace BNet.Cafe.Client
                 "0"
             );
 
-            // UI reset logic
-            activeForm.TextBox_Username.Text = string.Empty;
-            activeForm.TextBox_Password.Text = string.Empty;
         }
     }
 }
