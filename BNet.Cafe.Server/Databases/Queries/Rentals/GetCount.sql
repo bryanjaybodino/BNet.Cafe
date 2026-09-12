@@ -28,4 +28,5 @@ LEFT JOIN users u ON r.DBUserId = u.DBId
 WHERE 1=1 
     AND r.DBIsDeleted = '{DBIsDeleted}'
     AND r.DBComputerId = '{DBComputerId}'  
+    AND r.DBDateCreated BETWEEN '{DBDateStart}' AND '{DBDateEnd}'
     AND ( c.DBComputerName LIKE '%{DBSearch}%'  OR u.DBEmail LIKE '%{DBSearch}%');

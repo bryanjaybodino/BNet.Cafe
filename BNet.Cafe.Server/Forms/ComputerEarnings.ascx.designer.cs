@@ -69,6 +69,15 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.Label Label_Income;
 
         /// <summary>
+        /// TextBox_DateRage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBox_DateRage;
+
+        /// <summary>
         /// GridViewTable control.
         /// </summary>
         /// <remarks>

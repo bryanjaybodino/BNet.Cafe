@@ -14,7 +14,7 @@ namespace BNet.Cafe.Server.Repositories
         private readonly DBScriptService dBScriptService = new DBScriptService();
         private readonly GridviewPaginationService paginationService = new GridviewPaginationService();
 
-        public DataTable GetAll(string search = "", string computerId = "", int pageIndex = 0, bool isDeleted = false)
+        public DataTable GetAll(string search = "", string computerId = "", string dateRange = "", int pageIndex = 0, bool isDeleted = false)
         {
             var scripts = new Dictionary<string, string>();
             string DBSearch = dBScriptService.CleanUpToUpper(search);
@@ -22,9 +22,21 @@ namespace BNet.Cafe.Server.Repositories
             string DBIsDeleted = isDeleted ? "TRUE" : "FALSE";
             string LIMIT = paginationService.SetPagination(pageIndex);
 
+
+            string DBDateStart = "";
+            string DBDateEnd = "";
+            if (dateRange.Contains(","))
+            {
+                var date = dateRange.Split(',');
+                DBDateStart = date[0];
+                DBDateEnd = date[1];
+            }
+
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBSearch", DBSearch);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", DBComputerId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateStart", DBDateStart);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateEnd", DBDateEnd);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
 
             Page page = HttpContext.Current.Handler as Page;
@@ -103,13 +115,26 @@ namespace BNet.Cafe.Server.Repositories
             return DBContext.SqlExecuteAsync(sql);
         }
 
-        public CountRentals GetCount(string computerId = "")
+        public CountRentals GetCount(string computerId = "",string dateRange="")
         {
+
+            string DBDateStart = "";
+            string DBDateEnd = "";
+            if (dateRange.Contains(","))
+            {
+                var date = dateRange.Split(',');
+                DBDateStart = date[0];
+                DBDateEnd = date[1];
+            }
+
             CountRentals countRentals = new CountRentals();
             var scripts = new Dictionary<string, string>();
             string DBComputerId = dBScriptService.CleanUpToUpper(computerId);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", DBComputerId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateStart", DBDateStart);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateEnd", DBDateEnd);
+
 
             Page page = HttpContext.Current.Handler as Page;
             string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Rentals/GetCount.sql");

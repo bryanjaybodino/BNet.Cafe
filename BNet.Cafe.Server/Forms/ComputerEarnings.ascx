@@ -69,6 +69,7 @@
         </div>
         <div class="bnet-table-wrapper">
             <div class="bnet-table-toolbar">
+                <asp:TextBox ID="TextBox_DateRage" AutoPostBack="true" CssClass="bnet-datepicker" data-mode="range" runat="server"></asp:TextBox>
             </div>
 
             <!-- Scrollable container wrapper -->

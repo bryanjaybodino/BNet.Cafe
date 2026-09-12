@@ -16,6 +16,7 @@
     <link href="Assets/BNetTable/Style.css" rel="stylesheet" />
     <link href="Assets/BNetDropdown/Style.css" rel="stylesheet" />
     <link href="Assets/BNetBadge/Style.css" rel="stylesheet" />
+    <link href="Assets/BNetDatePicker/Style.css" rel="stylesheet" />
 </head>
 <body>
     <div id="pageLoadingOverlay" class="loading-overlay">
@@ -99,5 +100,6 @@
     <script src="Assets/BNetModal/Script.js"></script>
     <script src="Assets/BNetAlert/Script.js"></script>
     <script src="Assets/BNetPageLoader/Script.js"></script>
+    <script src="Assets/BNetDatePicker/Script.js"></script>
 </body>
 </html>

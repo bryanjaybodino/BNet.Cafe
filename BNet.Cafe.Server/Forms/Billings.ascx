@@ -72,7 +72,9 @@
                 <div class="search-box">
                     <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" AutoPostBack="True" OnTextChanged="TextBox_Search_TextChanged" placeholder="Search computer or customer..." />
                 </div>
+                <asp:TextBox ID="TextBox_DateRage" AutoPostBack="true" CssClass="bnet-datepicker" data-mode="range" runat="server"></asp:TextBox>
             </div>
+
 
             <!-- Scrollable container wrapper -->
             <div class="bnet-table-container">
