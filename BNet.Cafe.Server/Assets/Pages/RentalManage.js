@@ -101,6 +101,7 @@ function calculateAmount() {
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
     var initialDurationInput = document.querySelector('[id$="HiddenField_InitialDuration"]');
     var initialAmountInput = document.querySelector('[id$="HiddenField_InitialAmount"]');
+    var customerSelect = document.querySelector('[id$="DropDownList_Customer"]');
     var amountInput = document.querySelector('[id$="TextBox_Amount"]');
 
     var displayTime = document.getElementById('display_FormattedTime');
@@ -111,19 +112,27 @@ function calculateAmount() {
     if (!durationInput) return;
 
     var currentMinutes = parseInt(durationInput.value, 10) || 0;
-    var initialMinutes = initialDurationInput ? (parseInt(initialDurationInput.value, 10) || 0) : 0;
-    var initialAmount = initialAmountInput ? (parseFloat(initialAmountInput.value) || 0) : 0;
 
-    // PREVENT DEDUCTING BELOW BASE DURATION:
-    // If user tries to go lower than initial duration, snap back to initial duration
+    // Check if dropdown is empty / unselected / walk-in
+    var isWalkIn = !customerSelect || !customerSelect.value || customerSelect.value === "";
+
+    var initialMinutes = (!isWalkIn && initialDurationInput) ? (parseInt(initialDurationInput.value, 10) || 0) : 0;
+    var initialAmount = (!isWalkIn && initialAmountInput) ? (parseFloat(initialAmountInput.value) || 0) : 0;
+
+    // PREVENT DEDUCTING BELOW BASE DURATION ONLY FOR EXISTING ACTIVE RENTALS
     if (currentMinutes < initialMinutes) {
         currentMinutes = initialMinutes;
         durationInput.value = initialMinutes;
     }
 
+    // Do not allow total minutes to fall below 0
+    if (currentMinutes < 0) {
+        currentMinutes = 0;
+        durationInput.value = 0;
+    }
+
     var extendedMinutes = currentMinutes - initialMinutes;
 
-    // Helper function to format display time
     function formatTime(mins) {
         var h = Math.floor(mins / 60);
         var m = mins % 60;
@@ -132,10 +141,16 @@ function calculateAmount() {
         return m + ' mins';
     }
 
-    // Always keep Total Time UI locked to at least full current time
     if (displayTime) displayTime.innerText = formatTime(currentMinutes);
 
-    // If extended time exists (greater than base)
+    // If walk-in or new rental with no initial base, calculate rate directly
+    if (initialMinutes === 0) {
+        calculateRentalPriceBackend(currentMinutes);
+        if (timeBreakdown) timeBreakdown.style.display = 'none';
+        if (amountBreakdown) amountBreakdown.style.display = 'none';
+        return;
+    }
+
     if (extendedMinutes > 0) {
         var endpoint = /\.aspx$/i.test(window.location.pathname)
             ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateAmountFromDuration.ashx')
@@ -151,7 +166,6 @@ function calculateAmount() {
                     if (amountInput) amountInput.value = totalCharge.toFixed(2);
                     if (displayAmount) displayAmount.innerText = '₱ ' + totalCharge.toFixed(2);
 
-                    // Show breakdown separating base time from added extra time
                     if (timeBreakdown) {
                         timeBreakdown.innerText = 'Base: ' + formatTime(initialMinutes) + ' | Extra: +' + formatTime(extendedMinutes);
                         timeBreakdown.style.display = 'block';
@@ -164,37 +178,33 @@ function calculateAmount() {
             })
             .catch(function (err) { console.error(err); });
     } else {
-        // Returned to exact Base Duration (Extended minutes = 0)
         if (amountInput) amountInput.value = initialAmount.toFixed(2);
         if (displayAmount) displayAmount.innerText = '₱ ' + initialAmount.toFixed(2);
 
         if (timeBreakdown) timeBreakdown.style.display = 'none';
-
-        if (amountBreakdown) {
-            if (initialAmount === 0 && initialMinutes > 0) {
-                amountBreakdown.innerText = '(Paid via User Top-up Balance)';
-                amountBreakdown.style.display = 'block';
-            } else {
-                amountBreakdown.style.display = 'none';
-            }
-        }
+        if (amountBreakdown) amountBreakdown.style.display = 'none';
     }
 }
 
-// Quick action duration adjustment (+ / - buttons)
 function adjustDuration(amount) {
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
     var initialDurationInput = document.querySelector('[id$="HiddenField_InitialDuration"]');
+    var customerSelect = document.querySelector('[id$="DropDownList_Customer"]');
     if (!durationInput) return;
 
     var current = parseInt(durationInput.value, 10) || 0;
-    var initialMinutes = initialDurationInput ? (parseInt(initialDurationInput.value, 10) || 0) : 0;
+    var isWalkIn = !customerSelect || !customerSelect.value || customerSelect.value === "";
+
+    var initialMinutes = (!isWalkIn && initialDurationInput) ? (parseInt(initialDurationInput.value, 10) || 0) : 0;
 
     var updated = current + amount;
 
-    // Do not allow reducing below initial base duration
     if (updated < initialMinutes) {
         updated = initialMinutes;
+    }
+
+    if (updated < 0) {
+        updated = 0;
     }
 
     durationInput.value = updated;

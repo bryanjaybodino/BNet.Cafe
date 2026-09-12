@@ -62,19 +62,19 @@ namespace BNet.Cafe.Client
             // 2. Start global low-level hooks
             KeyboardHook.Start();
 
-            //// 3. Configure window for full-screen lock mode
-            this.FormBorderStyle = FormBorderStyle.None;
-            this.WindowState = FormWindowState.Maximized;
-            this.TopMost = true;
-            this.ControlBox = false;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            ////// 3. Configure window for full-screen lock mode
+            //this.FormBorderStyle = FormBorderStyle.None;
+            //this.WindowState = FormWindowState.Maximized;
+            //this.TopMost = true;
+            //this.ControlBox = false;
+            //this.MaximizeBox = false;
+            //this.MinimizeBox = false;
 
-            //// 4. Show and force focus
+            ////// 4. Show and force focus
             this.Show();
-            this.BringToFront();
-            this.Activate();
-            this.Focus();
+            //this.BringToFront();
+            //this.Activate();
+            //this.Focus();
         }
         public void UnlockScreen()
         {
@@ -338,13 +338,11 @@ namespace BNet.Cafe.Client
                 string amount = jsonObject["amount"]?.ToString() ?? "0";
                 string dateTime = jsonObject["dateTime"]?.ToString() ?? TimeService.Get().ToString();
 
-                // 1. Instantiate timer if null or disposed
                 if (_BNetCafeTimer == null || _BNetCafeTimer.IsDisposed)
                 {
                     _BNetCafeTimer = new BNetCafeTimer();
                 }
 
-                // 2. Update or Create Timer Data
                 if (!SessionManager.Exists())
                 {
                     _BNetCafeTimer.isAdministrator = false;
@@ -356,46 +354,48 @@ namespace BNet.Cafe.Client
                     await _BNetCafeTimer.UpdateTimerDataAsync(duration, amount);
                 }
 
-                // 3. Immediately reflect UI changes and unlock PC
                 UnlockScreen();
                 this.Hide();
                 ClearTitleCache();
-
+                TriggerImmediateActivityReport();
             }
             else if (textMessage == "PAUSE")
             {
-                _BNetCafeTimer?.PauseTimer();
-                //LockScreen(); // Optionally lock the screen during pause
+                if (_BNetCafeTimer != null && !_BNetCafeTimer.IsDisposed)
+                {
+                    _BNetCafeTimer.PauseTimer();
+                }
                 ClearTitleCache();
                 TriggerImmediateActivityReport();
             }
             else if (textMessage == "RESUME")
             {
-                _BNetCafeTimer?.ResumeTimer();
-                //UnlockScreen(); // Unlock the screen when resumed
+                if (_BNetCafeTimer != null && !_BNetCafeTimer.IsDisposed)
+                {
+                    _BNetCafeTimer.ResumeTimer();
+                }
                 ClearTitleCache();
                 TriggerImmediateActivityReport();
             }
             else if (textMessage == "LOGOUT")
             {
-                _BNetCafeTimer?.Logout();
+                if (_BNetCafeTimer != null && !_BNetCafeTimer.IsDisposed)
+                {
+                    _BNetCafeTimer.Logout();
+                }
 
-                // 1. Clear title cache first so the next window poll is guaranteed to send
                 ClearTitleCache();
-
-                // 2. Lock screen and force window focus
                 LockScreen();
 
-                // 3. Manually trigger activity update AFTER window focus has settled
                 await Task.Delay(200).ContinueWith(_ =>
-                   {
-                       var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
-                       var sess = _currentSession;
-                       if (sess != null && sess.IsOpen)
-                       {
-                           _ = _activityReporter.SendActivityInfoAsync(sess, currentWindow, _deviceInfo);
-                       }
-                   }, TaskScheduler.FromCurrentSynchronizationContext());
+                {
+                    var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
+                    var sess = _currentSession;
+                    if (sess != null && sess.IsOpen)
+                    {
+                        _ = _activityReporter.SendActivityInfoAsync(sess, currentWindow, _deviceInfo);
+                    }
+                }, TaskScheduler.FromCurrentSynchronizationContext());
             }
             else
             {

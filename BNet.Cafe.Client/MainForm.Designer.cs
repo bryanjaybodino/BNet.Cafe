@@ -29,17 +29,17 @@
             this.labelHeroTitle = new System.Windows.Forms.Label();
             this.panelRightContent = new System.Windows.Forms.Panel();
             this.panelLoginContainer = new System.Windows.Forms.Panel();
+            this.lblStatusBadge = new BNet.Cafe.Client.Design.ModernBadge();
             this.lblCopyright = new System.Windows.Forms.Label();
+            this.Button_Login = new BNet.Cafe.Client.Design.ModernButton();
+            this.Button_Register = new BNet.Cafe.Client.Design.ModernButton();
+            this.TextBox_Password = new BNet.Cafe.Client.Design.ModernTextBox();
             this.lblPassword = new System.Windows.Forms.Label();
+            this.TextBox_Username = new BNet.Cafe.Client.Design.ModernTextBox();
             this.lblUsername = new System.Windows.Forms.Label();
             this.lblSubtitle = new System.Windows.Forms.Label();
             this.lblWelcome = new System.Windows.Forms.Label();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.Button_Login = new BNet.Cafe.Client.Design.ModernButton();
-            this.lblStatusBadge = new BNet.Cafe.Client.Design.ModernBadge();
-            this.Button_Register = new BNet.Cafe.Client.Design.ModernButton();
-            this.TextBox_Password = new BNet.Cafe.Client.Design.ModernTextBox();
-            this.TextBox_Username = new BNet.Cafe.Client.Design.ModernTextBox();
             this.panelLeftHero.SuspendLayout();
             this.panelRightContent.SuspendLayout();
             this.panelLoginContainer.SuspendLayout();
@@ -190,6 +190,19 @@
             this.panelLoginContainer.Size = new System.Drawing.Size(400, 480);
             this.panelLoginContainer.TabIndex = 0;
             // 
+            // lblStatusBadge
+            // 
+            this.lblStatusBadge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(252)))), ((int)(((byte)(231)))));
+            this.lblStatusBadge.BorderRadius = 14;
+            this.lblStatusBadge.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.lblStatusBadge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
+            this.lblStatusBadge.Location = new System.Drawing.Point(104, 429);
+            this.lblStatusBadge.Name = "lblStatusBadge";
+            this.lblStatusBadge.Size = new System.Drawing.Size(190, 28);
+            this.lblStatusBadge.TabIndex = 9;
+            this.lblStatusBadge.Text = "● Station PC-01 Online";
+            this.lblStatusBadge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // lblCopyright
             // 
             this.lblCopyright.Font = new System.Drawing.Font("Segoe UI", 8F);
@@ -201,6 +214,50 @@
             this.lblCopyright.Text = "© 2026 BNet Cafe Client · All rights reserved";
             this.lblCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // Button_Login
+            // 
+            this.Button_Login.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(80)))), ((int)(((byte)(236)))));
+            this.Button_Login.BorderRadius = 12;
+            this.Button_Login.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Button_Login.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Button_Login.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
+            this.Button_Login.ForeColor = System.Drawing.Color.White;
+            this.Button_Login.Location = new System.Drawing.Point(6, 293);
+            this.Button_Login.Name = "Button_Login";
+            this.Button_Login.Size = new System.Drawing.Size(388, 46);
+            this.Button_Login.TabIndex = 7;
+            this.Button_Login.Text = "Sign In";
+            this.Button_Login.UseVisualStyleBackColor = false;
+            this.Button_Login.Click += new System.EventHandler(this.Button_Login_Click);
+            // 
+            // Button_Register
+            // 
+            this.Button_Register.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.Button_Register.BorderRadius = 12;
+            this.Button_Register.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Button_Register.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Button_Register.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
+            this.Button_Register.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.Button_Register.Location = new System.Drawing.Point(6, 345);
+            this.Button_Register.Name = "Button_Register";
+            this.Button_Register.Size = new System.Drawing.Size(388, 46);
+            this.Button_Register.TabIndex = 8;
+            this.Button_Register.Text = "Sign Up With Goolge";
+            this.Button_Register.UseVisualStyleBackColor = false;
+            this.Button_Register.Click += new System.EventHandler(this.Button_Register_Click);
+            // 
+            // TextBox_Password
+            // 
+            this.TextBox_Password.BackColor = System.Drawing.Color.White;
+            this.TextBox_Password.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.TextBox_Password.BorderRadius = 10;
+            this.TextBox_Password.Location = new System.Drawing.Point(6, 228);
+            this.TextBox_Password.Name = "TextBox_Password";
+            this.TextBox_Password.Padding = new System.Windows.Forms.Padding(12, 10, 12, 10);
+            this.TextBox_Password.PasswordChar = '•';
+            this.TextBox_Password.Size = new System.Drawing.Size(388, 44);
+            this.TextBox_Password.TabIndex = 6;
+            // 
             // lblPassword
             // 
             this.lblPassword.AutoSize = true;
@@ -211,6 +268,18 @@
             this.lblPassword.Size = new System.Drawing.Size(76, 20);
             this.lblPassword.TabIndex = 5;
             this.lblPassword.Text = "Password";
+            // 
+            // TextBox_Username
+            // 
+            this.TextBox_Username.BackColor = System.Drawing.Color.White;
+            this.TextBox_Username.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.TextBox_Username.BorderRadius = 10;
+            this.TextBox_Username.Location = new System.Drawing.Point(6, 148);
+            this.TextBox_Username.Name = "TextBox_Username";
+            this.TextBox_Username.Padding = new System.Windows.Forms.Padding(12, 10, 12, 10);
+            this.TextBox_Username.PasswordChar = '\0';
+            this.TextBox_Username.Size = new System.Drawing.Size(388, 44);
+            this.TextBox_Username.TabIndex = 4;
             // 
             // lblUsername
             // 
@@ -256,75 +325,6 @@
             this.lblCategory.TabIndex = 0;
             this.lblCategory.Text = "CLIENT PORTAL";
             // 
-            // Button_Login
-            // 
-            this.Button_Login.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(80)))), ((int)(((byte)(236)))));
-            this.Button_Login.BorderRadius = 12;
-            this.Button_Login.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Button_Login.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Button_Login.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
-            this.Button_Login.ForeColor = System.Drawing.Color.White;
-            this.Button_Login.Location = new System.Drawing.Point(6, 293);
-            this.Button_Login.Name = "Button_Login";
-            this.Button_Login.Size = new System.Drawing.Size(388, 46);
-            this.Button_Login.TabIndex = 7;
-            this.Button_Login.Text = "Sign In";
-            this.Button_Login.UseVisualStyleBackColor = false;
-            this.Button_Login.Click += new System.EventHandler(this.Button_Login_Click);
-            // 
-            // lblStatusBadge
-            // 
-            this.lblStatusBadge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(252)))), ((int)(((byte)(231)))));
-            this.lblStatusBadge.BorderRadius = 14;
-            this.lblStatusBadge.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.lblStatusBadge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
-            this.lblStatusBadge.Location = new System.Drawing.Point(104, 429);
-            this.lblStatusBadge.Name = "lblStatusBadge";
-            this.lblStatusBadge.Size = new System.Drawing.Size(190, 28);
-            this.lblStatusBadge.TabIndex = 9;
-            this.lblStatusBadge.Text = "● Station PC-01 Online";
-            this.lblStatusBadge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // Button_Register
-            // 
-            this.Button_Register.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.Button_Register.BorderRadius = 12;
-            this.Button_Register.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Button_Register.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Button_Register.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
-            this.Button_Register.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.Button_Register.Location = new System.Drawing.Point(6, 345);
-            this.Button_Register.Name = "Button_Register";
-            this.Button_Register.Size = new System.Drawing.Size(388, 46);
-            this.Button_Register.TabIndex = 8;
-            this.Button_Register.Text = "Sign Up With Goolge";
-            this.Button_Register.UseVisualStyleBackColor = false;
-            this.Button_Register.Click += new System.EventHandler(this.Button_Register_Click);
-            // 
-            // TextBox_Password
-            // 
-            this.TextBox_Password.BackColor = System.Drawing.Color.White;
-            this.TextBox_Password.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.TextBox_Password.BorderRadius = 10;
-            this.TextBox_Password.Location = new System.Drawing.Point(6, 228);
-            this.TextBox_Password.Name = "TextBox_Password";
-            this.TextBox_Password.Padding = new System.Windows.Forms.Padding(12, 10, 12, 10);
-            this.TextBox_Password.PasswordChar = '•';
-            this.TextBox_Password.Size = new System.Drawing.Size(388, 44);
-            this.TextBox_Password.TabIndex = 6;
-            // 
-            // TextBox_Username
-            // 
-            this.TextBox_Username.BackColor = System.Drawing.Color.White;
-            this.TextBox_Username.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.TextBox_Username.BorderRadius = 10;
-            this.TextBox_Username.Location = new System.Drawing.Point(6, 148);
-            this.TextBox_Username.Name = "TextBox_Username";
-            this.TextBox_Username.Padding = new System.Windows.Forms.Padding(12, 10, 12, 10);
-            this.TextBox_Username.PasswordChar = '\0';
-            this.TextBox_Username.Size = new System.Drawing.Size(388, 44);
-            this.TextBox_Username.TabIndex = 4;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -337,8 +337,6 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "BNet Cafe Client";
-            this.TopMost = true;
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.panelLeftHero.ResumeLayout(false);
             this.panelLeftHero.PerformLayout();
