@@ -168,9 +168,28 @@ namespace BNet.Cafe.Client
             };
 
             UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
+            _ = Task.Run(ContinuousPendingLogoutSyncLoopAsync);
             _ = Task.Run(RunAgentLoop);
         }
+        private async Task ContinuousPendingLogoutSyncLoopAsync()
+        {
+            while (true)
+            {
+                try
+                {
+                    // First check: notepad / pending file exist?
+                    if (PendingLogoutManager.HasPendingLogout())
+                    {
+                        // Second check: check server & third: save to DB & fourth: remove file
+                        await PendingLogoutManager.ProcessPendingLogoutAsync();
+                    }
+                }
+                catch { }
 
+                // Poll every 10 seconds for offline logouts to re-sync
+                await Task.Delay(10000);
+            }
+        }
         private async Task RunAgentLoop()
         {
             string wsUrl = ConfigurationManager.AppSettings["WebSocketUrl"];
@@ -431,63 +450,79 @@ namespace BNet.Cafe.Client
             string username = TextBox_Username.Text.Trim();
             string password = TextBox_Password.Text;
 
-            LoginHandler loginHandler = new LoginHandler();
-            var loginResponse = await loginHandler.LoginAsync(username, password);
+            // 1. Check offline admin bypass first before network calls
+            bool isLocalAdmin = (username == "BNet" && password == "@12345");
 
-            // 1. Guard clause: Handle failed authentication immediately
-            if (!loginResponse.Success && username != "BNet")
+            try
             {
-                MessageBox.Show(
-                    "Invalid username or password. Please try again.",
-                    "Login Failed",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                TextBox_Password.Text = string.Empty;
-                TextBox_Password.Focus();
-                return;
-            }
+                LoginHandler loginHandler = new LoginHandler();
+                var loginResponse = await loginHandler.LoginAsync(username, password);
 
-            // 2. Admin Check
-            bool isAdmin = (username == "BNet" && password == "@12345") || string.Equals(loginResponse.Data.Role, "ADMIN", StringComparison.OrdinalIgnoreCase);
+                // 2. Handle failed server response or null payload safely
+                if (loginResponse == null || (!loginResponse.Success && !isLocalAdmin))
+                {
+                    MessageBox.Show(
+                        "Invalid username or password. Please try again.",
+                        "Login Failed",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    TextBox_Password.Text = string.Empty;
+                    TextBox_Password.Focus();
+                    return;
+                }
 
-            if (isAdmin)
-            {
-                _BNetCafeTimer.userId = "Administrator";
-                await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), "6000", "0");
+                // 3. Admin Check (Server role OR Local Admin credentials)
+                bool isAdmin = isLocalAdmin || string.Equals(loginResponse?.Data?.Role, "ADMIN", StringComparison.OrdinalIgnoreCase);
+
+                if (isAdmin)
+                {
+                    _BNetCafeTimer.userId = "Administrator";
+                    await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), "6000", "0");
+                    TextBox_Username.Text = string.Empty;
+                    TextBox_Password.Text = string.Empty;
+                    return;
+                }
+
+                // 4. Insufficient Balance Check
+                if (loginResponse.Data == null || loginResponse.Data.TotalDuration <= 0)
+                {
+                    MessageBox.Show(
+                        "Your account balance is 0. Please top up at the counter to continue.",
+                        "Insufficient Balance",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                    return;
+                }
+
+                // 5. Standard User Rental Process
+                string userId = loginResponse.Data.Id.ToString();
+                string durationMinutes = loginResponse.Data.TotalDuration.ToString();
+                string clientName = ConfigurationManager.AppSettings["ClientName"];
+
+                CreateRentalHandler createRentalHandler = new CreateRentalHandler();
+                await createRentalHandler.CreateRentalAsync(clientName, userId, durationMinutes, "0");
+
+                CreateBalanceHandler createBalanceHandler = new CreateBalanceHandler();
+                await createBalanceHandler.CreateBalanceAsync(userId, "-" + durationMinutes, "0", "LOGGING-IN");
+
+                _BNetCafeTimer.userId = userId;
+                await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), durationMinutes, "0");
+
                 TextBox_Username.Text = string.Empty;
                 TextBox_Password.Text = string.Empty;
-                return;
             }
-
-            // 3. Insufficient Balance Check
-            if (loginResponse.Data.TotalDuration <= 0)
+            catch (Exception ex)
             {
+                // Prevent system termination on network failure or server disconnect
                 MessageBox.Show(
-                    "Your account balance is 0. Please top up at the counter to continue.",
-                    "Insufficient Balance",
+                    "Unable to connect to the server. Please check your network connection or try again later.",
+                    "Server Unavailable",
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
+                    MessageBoxIcon.Warning
                 );
-                return;
             }
-
-            // 4. Standard User Rental Process
-            string userId = loginResponse.Data.Id.ToString();
-            string durationMinutes = loginResponse.Data.TotalDuration.ToString();
-            string clientName = ConfigurationManager.AppSettings["ClientName"];
-
-            CreateRentalHandler createRentalHandler = new CreateRentalHandler();
-            await createRentalHandler.CreateRentalAsync(clientName, userId, durationMinutes, "0");
-
-            CreateBalanceHandler createBalanceHandler = new CreateBalanceHandler();
-            await createBalanceHandler.CreateBalanceAsync(userId, "-" + durationMinutes, "0", "LOGGING-IN");
-
-            _BNetCafeTimer.userId = userId;
-            await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), durationMinutes, "0");
-
-            TextBox_Username.Text = string.Empty;
-            TextBox_Password.Text = string.Empty;
         }
 
         private void Button_Register_Click(object sender, EventArgs e)

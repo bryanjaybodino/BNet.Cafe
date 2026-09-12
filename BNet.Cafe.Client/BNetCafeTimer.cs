@@ -59,18 +59,27 @@ namespace BNet.Cafe.Client
             await ApplyTimerDataAsync(parsedAmount);
         }
 
-        public async void Logout()
+        public void Logout()
         {
-            if (!Label_CustomerName.Text.Contains("Guest / Walk-in"))
+            // 1. Calculate and save pending logout data FIRST before resetting variables
+            if (!Label_CustomerName.Text.Contains("Guest / Walk-in") && !string.IsNullOrEmpty(userId))
             {
-                var createBalanceHandler = new CreateBalanceHandler();
                 TimeSpan time = TimeSpan.FromSeconds(remainingSeconds);
-                await createBalanceHandler.CreateBalanceAsync(userId, ((int)time.TotalMinutes).ToString(), "0", "LOGGING-OUT");
+                string totalMinutes = ((int)time.TotalMinutes).ToString();
+
+                PendingLogoutManager.SavePendingLogout(userId, totalMinutes, "0", "LOGGING-OUT");
+
+                // 2. Fire and forget server sync in the background so UI locks instantly
+                _ = Task.Run(async () =>
+                {
+                    await PendingLogoutManager.ProcessPendingLogoutAsync();
+                });
             }
 
+            // 3. Immediately reset timer and clear local session file
             isOpenTime = false;
             endTime = createdTime.AddMinutes(0);
-            await ApplyTimerDataAsync(0);
+            _ = ApplyTimerDataAsync(0);
             ClearSessionFile();
         }
 
