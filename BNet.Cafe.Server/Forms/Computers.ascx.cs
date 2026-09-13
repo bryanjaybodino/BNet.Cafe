@@ -109,10 +109,7 @@ namespace BNet.Cafe.Server.Forms
                         Panel_Logout.Visible = true;
                         Panel_ManageRental.Visible = true;
                         Panel_Transfer.Visible = true;
-                        if(Label_Status.Text == "Occupied")
-                        {
-                            Panel_PauseResume.Visible=true;
-                        }
+                        Panel_PauseResume.Visible = true;
 
                         if (isAdministrator)
                         {
@@ -125,6 +122,7 @@ namespace BNet.Cafe.Server.Forms
                             Panel_Logout.Visible = false;
                             Panel_ManageRental.Visible = false;
                             Panel_Transfer.Visible = false;
+                            Panel_PauseResume.Visible = false;
                         }
                     }
                     else
@@ -133,6 +131,7 @@ namespace BNet.Cafe.Server.Forms
                         Panel_Logout.Visible = false;
                         Panel_ManageRental.Visible = true;
                         Panel_Transfer.Visible = false;
+                        Panel_PauseResume.Visible = false;
                         SetDefaultUiState("-", "Available", "bnet-badge-status green");
                     }
                 }
@@ -141,6 +140,7 @@ namespace BNet.Cafe.Server.Forms
                     Panel_Logout.Visible = false;
                     Panel_ManageRental.Visible = false;
                     Panel_Transfer.Visible = false;
+                    Panel_PauseResume.Visible = false;
                     SetDefaultUiState("-", "Offline", "bnet-badge-status gray");
                 }
                 void SetDefaultUiState(string textValue, string statusText, string cssClass)
