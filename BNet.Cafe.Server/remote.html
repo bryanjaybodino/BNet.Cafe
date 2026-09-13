@@ -140,10 +140,6 @@
             box-shadow: none;
         }
 
-        #screen.remote-mode {
-            cursor: none;
-        }
-
         .fps-badge {
             bottom: 12px;
             right: 12px;
@@ -220,7 +216,13 @@
         .exit-fs-btn:hover {
             opacity: 1;
         }
-
+        /* Remove default browser focus outlines */
+        .btn:focus,
+        .exit-fs-btn:focus,
+        .screen-tab:focus {
+            outline: none;
+            box-shadow: none;
+        }
         /* Mobile styling */
         @media (max-width: 768px), (pointer: coarse) {
             .toggle-btn {
@@ -320,18 +322,30 @@
 
         function renderLoop() {
             requestAnimationFrame(renderLoop);
+
+            // Skip cycle if there is no frame OR if browser is still decoding previous frame
             if (!pendingFrame || decodeInFlight > 0) return;
-            var buf = pendingFrame; pendingFrame = null; decodeInFlight++;
+
+            var buf = pendingFrame;
+            pendingFrame = null; // Clear queue reference immediately
+            decodeInFlight++;
+
             createImageBitmap(new Blob([new Uint8Array(buf, 1)], { type: 'image/jpeg' }))
                 .then(function (bm) {
                     if (canvas.width !== bm.width || canvas.height !== bm.height) {
-                        frameNaturalW = bm.width; frameNaturalH = bm.height;
-                        canvas.width = bm.width; canvas.height = bm.height;
+                        frameNaturalW = bm.width;
+                        frameNaturalH = bm.height;
+                        canvas.width = bm.width;
+                        canvas.height = bm.height;
                     }
                     ctx2d.drawImage(bm, 0, 0);
-                    bm.close(); frameCount++; lastFrameAt = Date.now();
+                    bm.close();
+                    frameCount++;
+                    lastFrameAt = Date.now();
                 })
-                .finally(function () { decodeInFlight--; });
+                .finally(function () {
+                    decodeInFlight--;
+                });
         }
         renderLoop();
 
@@ -349,7 +363,12 @@
             ws.onmessage = function (evt) {
                 if (!(evt.data instanceof ArrayBuffer)) return;
                 var view = new Uint8Array(evt.data);
-                if (view[0] === 0x10) { pendingFrame = evt.data; }
+
+                // Frame identifier header Check (0x10)
+                if (view[0] === 0x10) {
+                    // Always overwrite with the LATEST frame and drop queued frame
+                    pendingFrame = evt.data;
+                }
             };
             ws.onclose = function () { wsReady = false; setTimeout(connectWS, 3000); };
         }
@@ -374,6 +393,7 @@
             remoteToggleBtn.textContent = remoteActive ? 'Stop Control' : 'Start Control';
             remoteToggleBtn.style.background = remoteActive ? 'var(--red)' : 'var(--accent)';
             canvas.classList.toggle('remote-mode', remoteActive);
+            this.blur();
         });
 
         function getScaledCoords(e) {
@@ -382,7 +402,32 @@
         }
 
         /* Desktop Mouse and Keyboard Controls */
-        canvas.addEventListener('mousemove', function (e) { if (remoteActive) { var c = getScaledCoords(e); sendInput({ type: 'mousemove', x: c.x, y: c.y, frameW: frameNaturalW, frameH: frameNaturalH }); } });
+        /* Optimized Throttled MouseMove */
+        var lastMousePosition = null;
+        var mouseMovePending = false;
+
+        canvas.addEventListener('mousemove', function (e) {
+            if (!remoteActive) return;
+
+            var c = getScaledCoords(e);
+            lastMousePosition = {
+                type: 'mousemove',
+                x: c.x,
+                y: c.y,
+                frameW: frameNaturalW,
+                frameH: frameNaturalH
+            };
+
+            if (!mouseMovePending) {
+                mouseMovePending = true;
+                requestAnimationFrame(function () {
+                    if (lastMousePosition && remoteActive) {
+                        sendInput(lastMousePosition);
+                    }
+                    mouseMovePending = false;
+                });
+            }
+        });
         canvas.addEventListener('mousedown', function (e) { if (remoteActive) { e.preventDefault(); var c = getScaledCoords(e); sendInput({ type: 'mousedown', x: c.x, y: c.y, button: e.button, frameW: frameNaturalW, frameH: frameNaturalH }); } });
         canvas.addEventListener('mouseup', function (e) { if (remoteActive) { e.preventDefault(); var c = getScaledCoords(e); sendInput({ type: 'mouseup', x: c.x, y: c.y, button: e.button, frameW: frameNaturalW, frameH: frameNaturalH }); } });
 

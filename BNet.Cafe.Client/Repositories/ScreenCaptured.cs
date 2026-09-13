@@ -163,8 +163,7 @@ namespace BNet.Cafe.Client.Repositories
             if (hDesktop == IntPtr.Zero)
             {
                 hDesktop = OpenDesktop("Default", 0, false, DESKTOP_ALL);
-                if (hDesktop == IntPtr.Zero)
-                    return null;
+                if (hDesktop == IntPtr.Zero) return null;
             }
 
             SetThreadDesktop(hDesktop);
@@ -187,11 +186,14 @@ namespace BNet.Cafe.Client.Repositories
                 hBmp = CreateCompatibleBitmap(screenDC, w, h);
                 hOld = SelectObject(memDC, hBmp);
 
-                // BitBlt from the physical origin of this screen.
                 if (!BitBlt(memDC, 0, 0, w, h, screenDC, bounds.X, bounds.Y, SRCCOPY))
                     return null;
 
-                return Image.FromHbitmap(hBmp);   // copies GDI bits into a managed Bitmap
+                // Clone directly to avoid memory leaks with standard Hbitmap wrapper
+                using (Bitmap temp = Image.FromHbitmap(hBmp))
+                {
+                    return new Bitmap(temp);
+                }
             }
             catch { return null; }
             finally

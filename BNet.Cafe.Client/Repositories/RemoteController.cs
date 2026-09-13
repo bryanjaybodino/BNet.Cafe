@@ -156,14 +156,15 @@ namespace BNet.Cafe.Client.Repositories
         /// 65535 → right edge of virtual desktop (across ALL monitors).
         /// We therefore need the virtual desktop origin and dimensions.
         /// </summary>
+        /// 
+        private static readonly int VdLeft = GetSystemMetrics(SM_XVIRTUALSCREEN);
+        private static readonly int VdTop = GetSystemMetrics(SM_YVIRTUALSCREEN);
+        private static readonly int VdW = Math.Max(1, GetSystemMetrics(SM_CXVIRTUALSCREEN));
+        private static readonly int VdH = Math.Max(1, GetSystemMetrics(SM_CYVIRTUALSCREEN));
         private static (int absX, int absY) ToVirtualAbsolute(int screenRelX, int screenRelY, int screenIndex, int frameW = 0, int frameH = 0)
         {
             Rectangle screenBounds = GetPhysicalScreenBounds(screenIndex);
 
-            // The browser sends coordinates in JPEG frame space, which may be
-            // smaller than the physical screen due to server-side image scaling.
-            // Scale coords back to physical screen pixels before computing the
-            // virtual-desktop absolute position.
             int physX = screenRelX;
             int physY = screenRelY;
             if (frameW > 0 && frameH > 0 && screenBounds.Width > 0 && screenBounds.Height > 0)
@@ -172,37 +173,27 @@ namespace BNet.Cafe.Client.Repositories
                 physY = (int)Math.Round((double)screenRelY * screenBounds.Height / frameH);
             }
 
-            // Convert from per-screen-relative to virtual-desktop-absolute pixel coords
             int vdX = screenBounds.X + physX;
             int vdY = screenBounds.Y + physY;
 
-            // Virtual desktop origin and size (physical pixels)
-            int vdLeft = GetSystemMetrics(SM_XVIRTUALSCREEN);
-            int vdTop = GetSystemMetrics(SM_YVIRTUALSCREEN);
-            int vdW = GetSystemMetrics(SM_CXVIRTUALSCREEN);
-            int vdH = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+            // Use cached metrics
+            int absX = (int)(((double)(vdX - VdLeft) / VdW) * (ABSOLUTE_MAX + 1));
+            int absY = (int)(((double)(vdY - VdTop) / VdH) * (ABSOLUTE_MAX + 1));
 
-            if (vdW <= 0) vdW = 1;
-            if (vdH <= 0) vdH = 1;
-
-            // Shift by virtual desktop origin so (0,0) of the formula aligns with
-            // the left-top of the virtual screen, then scale to 0-65535.
-            int absX = (int)(((double)(vdX - vdLeft) / vdW) * (ABSOLUTE_MAX + 1));
-            int absY = (int)(((double)(vdY - vdTop) / vdH) * (ABSOLUTE_MAX + 1));
-
-            // Clamp just in case of rounding overflow
-            absX = Math.Max(0, Math.Min(ABSOLUTE_MAX, absX));
-            absY = Math.Max(0, Math.Min(ABSOLUTE_MAX, absY));
-
-
-            return (absX, absY);
+            return (Math.Max(0, Math.Min(ABSOLUTE_MAX, absX)), Math.Max(0, Math.Min(ABSOLUTE_MAX, absY)));
         }
 
         // ── Mouse helpers ──────────────────────────────────────────────────────
 
+        private static (int lastX, int lastY) _lastPos = (-1, -1);
+
         private static void MouseMove(int x, int y, int screenIndex, int frameW = 0, int frameH = 0)
         {
             var (absX, absY) = ToVirtualAbsolute(x, y, screenIndex, frameW, frameH);
+
+            // Skip redundant mouse moves if coordinates haven't changed
+            if (_lastPos.lastX == absX && _lastPos.lastY == absY) return;
+            _lastPos = (absX, absY);
 
             var inp = new INPUT
             {

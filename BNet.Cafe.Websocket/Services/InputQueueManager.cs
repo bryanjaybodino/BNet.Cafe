@@ -34,7 +34,14 @@ namespace BNet.Cafe.Websocket
             else
             {
                 var q = _inputQueues.GetOrAdd(clientName, _ => new ConcurrentQueue<RemoteInput>());
-                while (q.Count >= InputQueueCap) q.TryDequeue(out _);
+
+                // Coalesce mousemove: replace trailing mousemove if new input is also mousemove
+                if (input.Type?.ToLower() == "mousemove" && q.Count > 0)
+                {
+                    // Drop old queued moves if queue is backing up
+                    while (q.Count >= InputQueueCap) q.TryDequeue(out _);
+                }
+
                 q.Enqueue(input);
             }
         }

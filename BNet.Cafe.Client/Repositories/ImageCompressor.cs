@@ -112,13 +112,12 @@ namespace BNet.Cafe.Client.Repositories
         /// </summary>
         private static Bitmap ResizeImage(Bitmap source, int width, int height)
         {
-            var destination = new Bitmap(width, height);
+            var destination = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
             using (Graphics g = Graphics.FromImage(destination))
             {
-                // HighQualityBilinear gives visually clean text at lower CPU
-                // cost than Bicubic — ideal for remote desktop use.
-                g.InterpolationMode = InterpolationMode.HighQualityBilinear;
-                g.SmoothingMode = SmoothingMode.None;
+                // Low/Bilinear mode significantly cuts CPU usage during real-time scaling
+                g.InterpolationMode = InterpolationMode.Low;
+                g.SmoothingMode = SmoothingMode.HighSpeed;
                 g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
                 g.CompositingQuality = CompositingQuality.HighSpeed;
                 g.DrawImage(source, 0, 0, width, height);
