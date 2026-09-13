@@ -43,6 +43,7 @@ namespace BNet.Cafe.Server.Forms
                 Panel Panel_Logout = (Panel)GridViewTable.Rows[i].FindControl("Panel_Logout");
                 Panel Panel_ManageRental = (Panel)GridViewTable.Rows[i].FindControl("Panel_ManageRental");
                 Panel Panel_Transfer = (Panel)GridViewTable.Rows[i].FindControl("Panel_Transfer");
+                Panel Panel_PauseResume = (Panel)GridViewTable.Rows[i].FindControl("Panel_PauseResume");
                 var fetchData = liveData.FirstOrDefault(x => x.ClientName == Label_DBComputerName.Text);
 
                 if (fetchData != null)
@@ -108,7 +109,10 @@ namespace BNet.Cafe.Server.Forms
                         Panel_Logout.Visible = true;
                         Panel_ManageRental.Visible = true;
                         Panel_Transfer.Visible = true;
-
+                        if(Label_Status.Text == "Occupied")
+                        {
+                            Panel_PauseResume.Visible=true;
+                        }
 
                         if (isAdministrator)
                         {

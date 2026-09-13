@@ -134,9 +134,11 @@
                                                 <i class="fa-solid fa-right-left"></i>Transfer Session
                                         </a>
                                         </asp:Panel>
-                                        <a class="bnet-dropdown-item" onclick="openPauseModal('<%# Eval("DBComputerName") %>')">
-                                            <i class="fa-solid fa-circle-pause"></i>Pause / Resume Time
+                                        <asp:Panel ID="Panel_PauseResume" Visible="false" runat="server">
+                                            <a class="bnet-dropdown-item" onclick="openPauseModal('<%# Eval("DBComputerName") %>')">
+                                                <i class="fa-solid fa-circle-pause"></i>Pause / Resume Time
                                         </a>
+                                        </asp:Panel>
                                         <a onclick="navigateTo('BNetPage.aspx?Form=ComputerEarnings&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                             <i class="fa-solid fa-clock-rotate-left"></i>Session History
                                         </a>
