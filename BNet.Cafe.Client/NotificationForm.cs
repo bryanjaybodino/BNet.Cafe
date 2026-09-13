@@ -58,8 +58,8 @@ namespace BNet.Cafe.Client.Design
 
         private void AdjustLayoutForTextLength()
         {
-            // Dynamically calculate height for multi-line text
-            Size maxTextSize = new Size(312, 1000);
+            // Calculate height for multi-line text with wider max bounds (402px)
+            Size maxTextSize = new Size(402, 1000);
             Size titleMeasured = TextRenderer.MeasureText(Label_Title.Text, Label_Title.Font, maxTextSize, TextFormatFlags.WordBreak);
             Size messageMeasured = TextRenderer.MeasureText(Label_Message.Text, Label_Message.Font, maxTextSize, TextFormatFlags.WordBreak);
 
@@ -75,8 +75,8 @@ namespace BNet.Cafe.Client.Design
         private GraphicsPath CreateNotchPath()
         {
             GraphicsPath path = new GraphicsPath();
-            int bottomIndent = 18; // Inset distance for the bottom slants
-            int notchHeight = 14;   // Vertical height of the slant slope
+            int bottomIndent = 50; // Scaled inset distance for wider notification slants
+            int notchHeight = 100;   // Vertical height of the slant slope
 
             path.StartFigure();
             path.AddLine(0, 0, this.Width, 0); // Flat Top edge flush with screen top
