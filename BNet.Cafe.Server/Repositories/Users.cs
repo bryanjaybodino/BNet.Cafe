@@ -78,14 +78,16 @@ namespace BNet.Cafe.Server.Repositories
         }
 
 
-        public bool Create(string email, string name, string role)
+        public bool Create(string email, string password, string name, string role)
         {
             var scripts = new Dictionary<string, string>();
             string DBEmail = dBScriptService.CleanUpToUpper(email);
+            string DBPassword = dBScriptService.CleanUpToUpper(password);
             string DBName = dBScriptService.CleanUpToUpper(name);
             string DBRole = dBScriptService.CleanUpToUpper(role);
 
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBEmail", DBEmail);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBPassword", DBPassword);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBName", DBName);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBRole", DBRole);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
@@ -98,20 +100,21 @@ namespace BNet.Cafe.Server.Repositories
             var result = DBContext.SqlExecuteReaderAsync(sql);
             int emailExist = Convert.ToInt32(result["EmailExist"]);
 
-            bool success = emailExist != 1;
-            return success;
+            return emailExist != 1;
         }
 
-        public bool Update(string id, string email, string name, string role)
+        public bool Update(string id, string email, string password, string name, string role)
         {
             var scripts = new Dictionary<string, string>();
             string DBId = dBScriptService.CleanUpToUpper(id);
             string DBEmail = dBScriptService.CleanUpToUpper(email);
+            string DBPassword = dBScriptService.CleanUpToUpper(password);
             string DBName = dBScriptService.CleanUpToUpper(name);
             string DBRole = dBScriptService.CleanUpToUpper(role);
 
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBEmail", DBEmail);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBPassword", DBPassword);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBName", DBName);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBRole", DBRole);
 

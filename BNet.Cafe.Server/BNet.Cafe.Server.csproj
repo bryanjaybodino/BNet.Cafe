@@ -110,6 +110,8 @@
     <Content Include="Assets\BNetSelect\Style.css" />
     <Content Include="Assets\BNetTable\Style.css" />
     <Content Include="Assets\Pages\Computers.js" />
+    <Content Include="Assets\Pages\UserCreate.js" />
+    <Content Include="Assets\Pages\UserEdit.js" />
     <Content Include="Assets\Pages\UserTopUp.js" />
     <Content Include="Assets\Pages\RentalManage.css" />
     <Content Include="Assets\fontawesome\font-awesome.min.css" />
@@ -160,6 +162,8 @@
     <Content Include="Forms\Modals\RemoteTimeTransfer.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Forms\RentalManage.ascx" />
+    <Content Include="Forms\UserCreate.ascx" />
+    <Content Include="Forms\UserEdit.ascx" />
     <Content Include="Forms\Users.ascx" />
     <Content Include="Forms\UserTopUp.ascx" />
     <Content Include="Offline Packages\Newtonsoft.Json\Newtonsoft.Json.dll" />
@@ -304,6 +308,20 @@
     </Compile>
     <Compile Include="Forms\RentalManage.ascx.designer.cs">
       <DependentUpon>RentalManage.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UserCreate.ascx.cs">
+      <DependentUpon>UserCreate.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\UserCreate.ascx.designer.cs">
+      <DependentUpon>UserCreate.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UserEdit.ascx.cs">
+      <DependentUpon>UserEdit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\UserEdit.ascx.designer.cs">
+      <DependentUpon>UserEdit.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Users.ascx.cs">
       <DependentUpon>Users.ascx</DependentUpon>

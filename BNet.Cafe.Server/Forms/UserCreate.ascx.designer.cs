@@ -11,7 +11,7 @@ namespace BNet.Cafe.Server.Forms
 {
 
 
-    public partial class UserTopUp
+    public partial class UserCreate
     {
 
         /// <summary>
@@ -33,67 +33,40 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
-        /// Panel_Form control.
+        /// TextBox_Name control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel Panel_Form;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Name;
 
         /// <summary>
-        /// Label_UserName control.
+        /// TextBox_Email control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label_UserName;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Email;
 
         /// <summary>
-        /// Label_UserEmail control.
+        /// TextBox_Password control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label_UserEmail;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Password;
 
         /// <summary>
-        /// Label_CurrentBalance control.
+        /// DropDownList_Role control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label_CurrentBalance;
-
-        /// <summary>
-        /// TextBox_Amount control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox_Amount;
-
-        /// <summary>
-        /// TextBox_Duration control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox_Duration;
-
-        /// <summary>
-        /// TextBox_Description control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox_Description;
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_Role;
 
         /// <summary>
         /// LinkButton_Submit control.

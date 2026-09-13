@@ -8,6 +8,11 @@
                 <div class="search-box">
                     <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" AutoPostBack="True" OnTextChanged="TextBox_Search_TextChanged" placeholder="Search user name or email..." />
                 </div>
+                <div style="display: flex; gap: 8px;">
+                    <asp:HyperLink ID="HyperLink_Add" NavigateUrl="~/BNetPage.aspx?Form=UserCreate" CssClass="btn btn-primary" runat="server">
+                        + Add User 
+                    </asp:HyperLink>
+                </div>
             </div>
 
             <!-- Scrollable container wrapper -->
@@ -28,8 +33,13 @@
                                         Command <i class="fa-solid fa-chevron-down"></i>
                                     </button>
                                     <div class="bnet-dropdown-menu">
-                                        <a onclick="navigateTo('BNetPage.aspx?Form=UserTopUp&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
-                                            <i class="fa-regular fa-credit-card"></i>Top-up
+                                        <asp:Panel ID="Panel_TopUp" Visible="false" runat="server">
+                                            <a onclick="navigateTo('BNetPage.aspx?Form=UserTopUp&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
+                                                <i class="fa-regular fa-credit-card"></i>Top-up
+                                            </a>
+                                        </asp:Panel>
+                                        <a onclick="navigateTo('BNetPage.aspx?Form=UserEdit&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
+                                            <i class="fa-solid fa-pen-to-square"></i>Edit User
                                         </a>
                                     </div>
                                 </div>

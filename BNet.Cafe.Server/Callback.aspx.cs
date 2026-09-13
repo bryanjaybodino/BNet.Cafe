@@ -67,7 +67,7 @@ namespace BNet.Cafe.Server
                 }
                 else
                 {
-                    users.Create(userInfo.email, userInfo.name, role);
+                    users.Create(userInfo.email, userInfo.email, userInfo.name, role);
                 }
 
                 // Store in session

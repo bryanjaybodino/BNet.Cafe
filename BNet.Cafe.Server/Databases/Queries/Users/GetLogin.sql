@@ -3,6 +3,7 @@
     u.DBName,
     u.DBEmail,
     u.DBRole,
+    u.DBPassword,
     u.DBDateCreated,
     u.DBTimeCreated,
     u.DBIsDeleted,

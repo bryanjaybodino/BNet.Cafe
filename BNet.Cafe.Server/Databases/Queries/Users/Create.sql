@@ -3,7 +3,7 @@ UPDATE users
     SET DBIsDeleted = 'FALSE'
         WHERE DBEmail = '{DBEmail}';
 
--- Check if AssetType exists
+-- Check if user exists
 SELECT 
     (
         SELECT COUNT(*) 
@@ -14,6 +14,7 @@ SELECT
 -- Insert new record if no conflict exists
 INSERT INTO users (
     DBEmail,
+    DBPassword,
     DBName,
     DBRole,
     DBDateCreated,
@@ -22,6 +23,7 @@ INSERT INTO users (
 )
 SELECT 
     '{DBEmail}',
+    '{DBPassword}',
     '{DBName}',
     '{DBRole}',
     '{DBDateCreated}',

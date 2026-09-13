@@ -36,9 +36,17 @@ namespace BNet.Cafe.Server.Forms
             {
                 Label_UserName.Text = userData.Rows[0]["DBName"].ToString();
                 Label_UserEmail.Text = userData.Rows[0]["DBEmail"].ToString();
+                string role = userData.Rows[0]["DBRole"].ToString();
 
                 double totalMinutes = balances.GetBalanceByUserId(userId);
                 Label_CurrentBalance.Text = $"{totalMinutes} Mins";
+
+                if (role == "ADMIN")
+                {
+                    AlertService.ShowAlert(this, "This account is admin no need to top-up", "warning");
+                    Panel_Form.Enabled = false;
+                    LinkButton_Submit.Visible = false;
+                }
             }
             else
             {
