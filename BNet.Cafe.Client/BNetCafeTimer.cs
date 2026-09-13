@@ -27,7 +27,7 @@ namespace BNet.Cafe.Client
         private DateTime endTime;
         private bool isOpenTime = false;
 
-        public bool isAdministrator = false;
+        public bool isAdmin = false;
         public bool isRunning = false;
         public string userId = string.Empty;
         public bool isPaused = false;
@@ -58,14 +58,13 @@ namespace BNet.Cafe.Client
         private bool IsMemberUser()
         {
             return !string.IsNullOrWhiteSpace(userId)
-                && userId != "Administrator"
-                && !isAdministrator
+                && !isAdmin
                 && Label_CustomerName.Text != "Guest / Walk-in";
         }
 
         private bool IsWalkInUser()
         {
-            return (!isAdministrator && userId != "Administrator") &&
+            return (!isAdmin) &&
                    (string.IsNullOrWhiteSpace(userId) || Label_CustomerName.Text == "Guest / Walk-in");
         }
 
@@ -96,7 +95,6 @@ namespace BNet.Cafe.Client
 
             createdTime = Convert.ToDateTime(serverTime);
             isOpenTime = (parsedDurationMinutes == 0);
-            isAdministrator = (userId == "Administrator" && parsedDurationMinutes == 6000);
             isPaused = false;
             endTime = isOpenTime ? DateTime.MaxValue : createdTime.AddMinutes(parsedDurationMinutes);
 
@@ -140,7 +138,7 @@ namespace BNet.Cafe.Client
             DateTime now = TimeService.Get();
             remainingSeconds = isOpenTime ? (now - createdTime).TotalSeconds : (endTime - now).TotalSeconds;
 
-            SessionManager.SaveSession(createdTime, endTime, userId, amount, isOpenTime, isPaused);
+            SessionManager.SaveSession(createdTime, endTime, userId, amount,isAdmin, isOpenTime, isPaused);
 
             Label_ClientName.Text =  ConfigHelper.GetClientNameFromIP();
             Label_CustomerName.Text = await ResolveDisplayNameAsync(userId);
@@ -154,7 +152,7 @@ namespace BNet.Cafe.Client
                 Label_TotalHours.Text = "Purchased: Pay-as-you-go";
                 Label_TimeoutDisplay.Text = "Timeout: Continuous";
             }
-            else if (isAdministrator)
+            else if (isAdmin)
             {
                 Label_SessionType.Text = "ADMINISTRATOR MODE";
                 Label_TotalHours.Text = "Purchased: Unlimited";
@@ -180,8 +178,8 @@ namespace BNet.Cafe.Client
 
         private async Task<string> ResolveDisplayNameAsync(string id)
         {
+            if (isAdmin) return "Administrator";
             if (string.IsNullOrWhiteSpace(id)) return "Guest / Walk-in";
-            if (id == "Administrator") return id;
 
             if (int.TryParse(id, out _))
             {
@@ -238,7 +236,7 @@ namespace BNet.Cafe.Client
 
             Label_TimerDisplay.ForeColor = Color.FromArgb(67, 56, 202);
             TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
-            Label_TimerDisplay.Text = isAdministrator ? "Unlimited" : time.ToString(@"hh\:mm\:ss");
+            Label_TimerDisplay.Text = isAdmin ? "Unlimited" : time.ToString(@"hh\:mm\:ss");
 
             if (isOpenTime)
             {
@@ -248,7 +246,7 @@ namespace BNet.Cafe.Client
             }
             else
             {
-                Label_TimeoutDisplay.Text = isAdministrator ? "Timeout: --:--" : DisplayFormatter.FormatTimeoutDisplay(TimeService.Get().AddSeconds(remainingSeconds));
+                Label_TimeoutDisplay.Text = isAdmin ? "Timeout: --:--" : DisplayFormatter.FormatTimeoutDisplay(TimeService.Get().AddSeconds(remainingSeconds));
                 Button_Logout.Enabled = true;
             }
         }
@@ -260,7 +258,7 @@ namespace BNet.Cafe.Client
             isPaused = true;
             Timer_Countdown.Stop();
 
-            SessionManager.SaveSession(createdTime, endTime, userId, 0, isOpenTime, isPaused: true, remainingSeconds: remainingSeconds);
+            SessionManager.SaveSession(createdTime, endTime, userId, 0, isAdmin, isOpenTime, isPaused: true, remainingSeconds: remainingSeconds);
             UpdateDisplay();
         }
 
@@ -273,7 +271,7 @@ namespace BNet.Cafe.Client
             DateTime now = TimeService.Get();
             endTime = now.AddSeconds(remainingSeconds);
 
-            SessionManager.SaveSession(createdTime, endTime, userId, 0, isOpenTime, isPaused: false, remainingSeconds: remainingSeconds);
+            SessionManager.SaveSession(createdTime, endTime, userId, 0, isAdmin, isOpenTime, isPaused: false, remainingSeconds: remainingSeconds);
 
             UpdateDisplay();
             Timer_Countdown.Start();
@@ -291,7 +289,7 @@ namespace BNet.Cafe.Client
             createdTime = session.CreatedTime;
             userId = session.UserId;
             isOpenTime = session.IsOpenTime;
-            isAdministrator = session.IsAdministrator;
+            isAdmin = session.isAdmin;
             isPaused = session.IsPaused;
 
             DateTime now = TimeService.Get();
@@ -307,7 +305,7 @@ namespace BNet.Cafe.Client
                 remainingSeconds = isOpenTime ? (now - createdTime).TotalSeconds : (endTime - now).TotalSeconds;
             }
 
-            if (isAdministrator || isOpenTime || remainingSeconds > 0)
+            if (isAdmin || isOpenTime || remainingSeconds > 0)
             {
                 Label_ClientName.Text = ConfigHelper.GetClientNameFromIP();
                 Label_CustomerName.Text = await ResolveDisplayNameAsync(userId);
@@ -315,7 +313,7 @@ namespace BNet.Cafe.Client
 
                 UpdateAccountActionButton();
 
-                if (isAdministrator)
+                if (isAdmin)
                 {
                     Label_SessionType.Text = "ADMINISTRATOR MODE";
                     Label_TotalHours.Text = "Purchased: Unlimited";

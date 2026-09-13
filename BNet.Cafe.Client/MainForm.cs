@@ -90,7 +90,7 @@ namespace BNet.Cafe.Client
             if (session != null)
             {
                 TriggerImmediateActivityReport();
-                _BNetCafeTimer.isAdministrator = session.IsAdministrator;
+                _BNetCafeTimer.isAdmin = session.isAdmin;
                 this.Hide();
                 _BNetCafeTimer.Show();
                 ClearTitleCache();
@@ -139,7 +139,7 @@ namespace BNet.Cafe.Client
                 }));
 
 
-                if (!_BNetCafeTimer.isAdministrator)
+                if (!_BNetCafeTimer.isAdmin)
                 {
                     SecurityAccessManager.EnforceRestrictions(info);
                 }
@@ -343,7 +343,7 @@ namespace BNet.Cafe.Client
 
                 if (!SessionManager.Exists())
                 {
-                    _BNetCafeTimer.isAdministrator = false;
+                    _BNetCafeTimer.isAdmin = false;
                     _BNetCafeTimer.userId = userId;
                     await _BNetCafeTimer.CreateTimerDataAsync(dateTime, duration, amount);
                 }
@@ -510,7 +510,7 @@ namespace BNet.Cafe.Client
                 CreateBalanceHandler createBalanceHandler = new CreateBalanceHandler();
                 await createBalanceHandler.CreateBalanceAsync(userId, "-" + durationMinutes, "0", "LOGGING-IN");
 
-                _BNetCafeTimer.isAdministrator = false;
+                _BNetCafeTimer.isAdmin = false;
                 _BNetCafeTimer.userId = userId;
                 await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), durationMinutes, "0");
 
@@ -532,8 +532,7 @@ namespace BNet.Cafe.Client
 
             async void AdminLogin()
             {
-                _BNetCafeTimer.isAdministrator = true;
-                _BNetCafeTimer.userId = "Administrator";
+                _BNetCafeTimer.isAdmin = true;
                 await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), "6000", "0");
                 TextBox_Username.Text = string.Empty;
                 TextBox_Password.Text = string.Empty;

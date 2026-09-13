@@ -12,7 +12,7 @@ namespace BNet.Cafe.Client
         public string UserId { get; set; } = string.Empty;
         public double Amount { get; set; }
         public bool IsOpenTime { get; set; }
-        public bool IsAdministrator { get; set; }
+        public bool isAdmin { get; set; }
         public bool IsPaused { get; set; }
         public double RemainingSeconds { get; set; }
     }
@@ -28,7 +28,7 @@ namespace BNet.Cafe.Client
         //C:\ProgramData\BNetCafe
         private static readonly string SessionFilePath = Path.Combine(SessionDirectory, $"{ConfigHelper.GetClientNameFromIP()+"_Session"}.json");
 
-        public static void SaveSession(DateTime createdTime, DateTime endTime, string userId, double amount, bool isOpenTime, bool isPaused = false, double remainingSeconds = 0)
+        public static void SaveSession(DateTime createdTime, DateTime endTime, string userId, double amount, bool isAdmin, bool isOpenTime, bool isPaused = false, double remainingSeconds = 0)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace BNet.Cafe.Client
                     UserId = userId,
                     Amount = amount,
                     IsOpenTime = isOpenTime,
-                    IsAdministrator = (userId == "Administrator" && (amount == 0 || (endTime - createdTime).TotalDays > 1)),
+                    isAdmin = isAdmin,
                     IsPaused = isPaused,
                     RemainingSeconds = remainingSeconds
                 };
