@@ -4,6 +4,7 @@ using BNet.Cafe.Client.Services;
 using System;
 using System.Configuration;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -11,6 +12,16 @@ namespace BNet.Cafe.Client
 {
     public partial class BNetCafeTimer : Form
     {
+        // Native Win32 window drag constants
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int HT_CAPTION = 0x2;
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+
         private double remainingSeconds = 0;
         private DateTime createdTime;
         private DateTime endTime;
@@ -30,9 +41,18 @@ namespace BNet.Cafe.Client
 
         private void ConfigureFormStyle()
         {
-            this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = FormBorderStyle.None;
             this.TopMost = false;
             this.ShowInTaskbar = false;
+        }
+
+        private void Panel_Header_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
         }
 
         public async Task CreateTimerDataAsync(string serverTime, string duration, string amount)
@@ -90,23 +110,27 @@ namespace BNet.Cafe.Client
 
             Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
             Label_CustomerName.Text = await ResolveDisplayNameAsync(userId);
+            Label_StartTime.Text = $"Started At: {createdTime:hh:mm tt}";
 
             if (isOpenTime)
             {
-                Label_TotalHours.Text = "Purchased : ∞";
-                Label_TimeoutDisplay.Text = "Timeout : ∞";
+                Label_SessionType.Text = "OPEN TIME SESSION";
+                Label_TotalHours.Text = "Purchased: Pay-as-you-go";
+                Label_TimeoutDisplay.Text = "Timeout: Continuous";
             }
             else if (isAdministrator)
             {
-                Label_TotalHours.Text = "Purchased : --";
-                Label_TimeoutDisplay.Text = "Timeout : --";
-                label_TotalAmount.Text = "Amount : --";
+                Label_SessionType.Text = "ADMINISTRATOR MODE";
+                Label_TotalHours.Text = "Purchased: Unlimited";
+                Label_TimeoutDisplay.Text = "Timeout: --:--";
+                label_TotalAmount.Text = "Total Amount: --";
             }
             else
             {
-                Label_TotalHours.Text = $"Purchased : {DisplayFormatter.FormatPurchasedTime((endTime - createdTime).TotalSeconds)}";
+                Label_SessionType.Text = "PREPAID SESSION";
+                Label_TotalHours.Text = $"Purchased: {DisplayFormatter.FormatPurchasedTime((endTime - createdTime).TotalSeconds)}";
                 Label_TimeoutDisplay.Text = DisplayFormatter.FormatTimeoutDisplay(endTime);
-                label_TotalAmount.Text = $"Amount : ₱{amount:N2}";
+                label_TotalAmount.Text = $"Total Amount: ₱ {amount:N2}";
             }
 
             UpdateDisplay();
@@ -142,7 +166,6 @@ namespace BNet.Cafe.Client
 
         private void Timer_Countdown_Tick(object sender, EventArgs e)
         {
-            // Do not decrement timer while paused
             if (isPaused) return;
 
             DateTime now = TimeService.Get();
@@ -153,7 +176,6 @@ namespace BNet.Cafe.Client
             }
             else
             {
-                // Rely on ticking down remainingSeconds instead of static endTime subtraction
                 remainingSeconds--;
 
                 if (remainingSeconds > 0)
@@ -172,26 +194,29 @@ namespace BNet.Cafe.Client
             if (isPaused)
             {
                 Label_TimerDisplay.Text = "PAUSED";
-                Label_TimeoutDisplay.Text = "Timeout : PAUSED";
+                Label_TimerDisplay.ForeColor = Color.FromArgb(217, 119, 6);
+                Label_TimeoutDisplay.Text = "Timeout: PAUSED";
+                Label_SessionType.Text = "SESSION PAUSED";
                 return;
             }
 
+            Label_TimerDisplay.ForeColor = Color.FromArgb(67, 56, 202);
             TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
             Label_TimerDisplay.Text = isAdministrator ? "Unlimited" : time.ToString(@"hh\:mm\:ss");
-
 
             if (isOpenTime)
             {
                 double amount = CalculateRentalPrice.CalculatePrice((int)time.TotalMinutes);
-                label_TotalAmount.Text = $"Amount : ₱ {amount:N2}";
+                label_TotalAmount.Text = $"Total Amount: ₱ {amount:N2}";
                 Button_Logout.Enabled = false;
             }
             else
             {
-                Label_TimeoutDisplay.Text = isAdministrator ? "Timeout : -- : -- " : DisplayFormatter.FormatTimeoutDisplay(TimeService.Get().AddSeconds(remainingSeconds));
+                Label_TimeoutDisplay.Text = isAdministrator ? "Timeout: --:--" : DisplayFormatter.FormatTimeoutDisplay(TimeService.Get().AddSeconds(remainingSeconds));
                 Button_Logout.Enabled = true;
             }
         }
+
         public void PauseTimer()
         {
             if (isPaused) return;
@@ -199,7 +224,6 @@ namespace BNet.Cafe.Client
             isPaused = true;
             Timer_Countdown.Stop();
 
-            // Preserve original createdTime and endTime; save remainingSeconds separately
             SessionManager.SaveSession(createdTime, endTime, userId, 0, isOpenTime, isPaused: true, remainingSeconds: remainingSeconds);
             UpdateDisplay();
         }
@@ -210,7 +234,6 @@ namespace BNet.Cafe.Client
 
             isPaused = false;
 
-            // Push endTime forward based on current time + remaining seconds
             DateTime now = TimeService.Get();
             endTime = now.AddSeconds(remainingSeconds);
 
@@ -240,7 +263,6 @@ namespace BNet.Cafe.Client
             if (isPaused)
             {
                 remainingSeconds = session.RemainingSeconds;
-                // Keep createdTime intact, set display endTime relative to now for active display updates
                 endTime = session.EndTime;
             }
             else
@@ -253,30 +275,32 @@ namespace BNet.Cafe.Client
             {
                 Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
                 Label_CustomerName.Text = await ResolveDisplayNameAsync(userId);
+                Label_StartTime.Text = $"Started At: {createdTime:hh:mm tt}";
 
                 if (isAdministrator)
                 {
-                    Label_TotalHours.Text = "Purchased : --";
-                    Label_TimeoutDisplay.Text = "Timeout : --";
-                    label_TotalAmount.Text = "Amount : --";
+                    Label_SessionType.Text = "ADMINISTRATOR MODE";
+                    Label_TotalHours.Text = "Purchased: Unlimited";
+                    Label_TimeoutDisplay.Text = "Timeout: --:--";
+                    label_TotalAmount.Text = "Total Amount: --";
                 }
                 else if (isOpenTime)
                 {
-                    Label_TotalHours.Text = "Purchased : ∞";
-                    Label_TimeoutDisplay.Text = "Timeout : ∞";
+                    Label_SessionType.Text = "OPEN TIME SESSION";
+                    Label_TotalHours.Text = "Purchased: Pay-as-you-go";
+                    Label_TimeoutDisplay.Text = "Timeout: Continuous";
                 }
                 else
                 {
-                    // Calculate total purchased time using stored original duration or remainingSeconds + consumed time
+                    Label_SessionType.Text = "PREPAID SESSION";
                     double totalPurchasedSeconds = remainingSeconds + (now - createdTime).TotalSeconds;
                     if (isPaused)
                     {
-                        // On paused load, rely on the saved session bounds
                         totalPurchasedSeconds = (session.EndTime - session.CreatedTime).TotalSeconds;
                     }
 
-                    Label_TotalHours.Text = $"Purchased : {DisplayFormatter.FormatPurchasedTime(totalPurchasedSeconds)}";
-                    label_TotalAmount.Text = $"Amount : ₱ {session.Amount:N2}";
+                    Label_TotalHours.Text = $"Purchased: {DisplayFormatter.FormatPurchasedTime(totalPurchasedSeconds)}";
+                    label_TotalAmount.Text = $"Total Amount: ₱ {session.Amount:N2}";
                 }
 
                 if (isPaused)
