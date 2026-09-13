@@ -142,7 +142,7 @@ namespace BNet.Cafe.Client
 
             SessionManager.SaveSession(createdTime, endTime, userId, amount, isOpenTime, isPaused);
 
-            Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
+            Label_ClientName.Text =  ConfigHelper.GetClientNameFromIP();
             Label_CustomerName.Text = await ResolveDisplayNameAsync(userId);
             Label_StartTime.Text = $"Started At: {createdTime:hh:mm tt}";
 
@@ -309,7 +309,7 @@ namespace BNet.Cafe.Client
 
             if (isAdministrator || isOpenTime || remainingSeconds > 0)
             {
-                Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
+                Label_ClientName.Text = ConfigHelper.GetClientNameFromIP();
                 Label_CustomerName.Text = await ResolveDisplayNameAsync(userId);
                 Label_StartTime.Text = $"Started At: {createdTime:hh:mm tt}";
 

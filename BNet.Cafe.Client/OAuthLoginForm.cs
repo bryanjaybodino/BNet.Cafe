@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BNet.Cafe.Client.Services;
+using Microsoft.Web.WebView2.Core;
+using System;
 using System.Configuration;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
-using Microsoft.Web.WebView2.Core;
 
 namespace BNet.Cafe.Client
 {
@@ -45,7 +46,7 @@ namespace BNet.Cafe.Client
                 // Clear all active cookies to force re-authentication (password prompt)
                 webView.CoreWebView2.CookieManager.DeleteAllCookies();
 
-                string baseUrl = ConfigurationManager.AppSettings["AppUrl"]?.TrimEnd('/');
+                string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
                 string handlerUrl = $"{baseUrl}/Login.aspx";
                 webView.Source = new Uri(handlerUrl);
             }

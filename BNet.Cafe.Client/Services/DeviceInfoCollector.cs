@@ -33,7 +33,7 @@ namespace BNet.Cafe.Client
                 OSArchitecture = arch,
                 SerialNumber = serial,
                 MachineName = Environment.MachineName,
-                ClientName = (ConfigurationManager.AppSettings["ClientName"] ?? "").ToUpper().Replace(" ", ""),
+                ClientName = ConfigHelper.GetClientNameFromIP(),
                 WorkGroup = Environment.UserDomainName,
                 OSVersion = Environment.OSVersion.VersionString,
                 ProcessorCount = Environment.ProcessorCount.ToString(),

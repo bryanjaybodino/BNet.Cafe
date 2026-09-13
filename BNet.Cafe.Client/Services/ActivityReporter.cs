@@ -87,7 +87,7 @@ namespace BNet.Cafe.Client
                 isPaused = sessionData.IsPaused;
             }
 
-            string clientName = ConfigurationManager.AppSettings["ClientName"];
+            string clientName =  ConfigHelper.GetClientNameFromIP();
             var payloadObj = new
             {
                 clientName = clientName,

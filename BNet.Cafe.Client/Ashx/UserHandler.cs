@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BNet.Cafe.Client.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -22,7 +23,7 @@ namespace BNet.Cafe.Client.Ashx
 
             using (var content = new FormUrlEncodedContent(formData))
             {
-                string baseUrl = ConfigurationManager.AppSettings["AppUrl"]?.TrimEnd('/');
+                string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
                 string handlerUrl = $"{baseUrl}/Ashx/UserHandler.ashx";
 
                 HttpResponseMessage response = await client.PostAsync(handlerUrl, content);

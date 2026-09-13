@@ -1,4 +1,5 @@
-﻿using Microsoft.Web.WebView2.Core;
+﻿using BNet.Cafe.Client.Services;
+using Microsoft.Web.WebView2.Core;
 using System;
 using System.Configuration;
 using System.Security.Policy;
@@ -45,7 +46,7 @@ namespace BNet.Cafe.Client
                 webView.CoreWebView2.CookieManager.DeleteAllCookies();
 
                 // Load URL from app configuration
-                string baseUrl = ConfigurationManager.AppSettings["AppUrl"]?.TrimEnd('/');
+                string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
                 string handlerUrl = $"{baseUrl}/ResetPassword.aspx?userId={userId}";
                 webView.Source = new Uri(handlerUrl);
             }

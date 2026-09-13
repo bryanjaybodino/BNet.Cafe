@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BNet.Cafe.Client.Services;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace BNet.Cafe.Client.Ashx
 {
@@ -23,7 +24,7 @@ namespace BNet.Cafe.Client.Ashx
 
             using (var content = new FormUrlEncodedContent(formData))
             {
-                string baseUrl = ConfigurationManager.AppSettings["AppUrl"]?.TrimEnd('/');
+                string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
                 string handlerUrl = $"{baseUrl}/Ashx/CreateBalanceHandler.ashx";
 
                 HttpResponseMessage response = await client.PostAsync(handlerUrl, content);

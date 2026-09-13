@@ -80,7 +80,7 @@ namespace BNet.Cafe.Client
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
-            string clientName = ConfigurationManager.AppSettings["ClientName"];
+            string clientName = ConfigHelper.GetClientNameFromIP();
             lblBigPcName.Text = clientName;
             lblStatusBadge.Text = $"● Station {clientName} Online";
             await Task.Delay(1000);
@@ -174,7 +174,7 @@ namespace BNet.Cafe.Client
         }
         private async Task RunAgentLoop()
         {
-            string wsUrl = ConfigurationManager.AppSettings["WebSocketUrl"];
+            string wsUrl = ConfigHelper.WebSocketUrl;
             Uri agentWsUri = new Uri($"{wsUrl}/ws/agent");
 
             while (true)
@@ -502,7 +502,7 @@ namespace BNet.Cafe.Client
                 // 5. Standard User Rental Process
                 string userId = loginResponse.Data.Id.ToString();
                 string durationMinutes = loginResponse.Data.TotalDuration.ToString();
-                string clientName = ConfigurationManager.AppSettings["ClientName"];
+                string clientName = ConfigHelper.GetClientNameFromIP();
 
                 CreateRentalHandler createRentalHandler = new CreateRentalHandler();
                 await createRentalHandler.CreateRentalAsync(clientName, userId, durationMinutes, "0");
