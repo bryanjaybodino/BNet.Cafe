@@ -1,15 +1,11 @@
 ﻿using BNet.Cafe.Client.Ashx;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BNet.Cafe.Client.Services
 {
-
     public class PendingLogoutData
     {
         public string UserId { get; set; }
@@ -21,7 +17,15 @@ namespace BNet.Cafe.Client.Services
 
     public static class PendingLogoutManager
     {
-        private static readonly string PendingFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "pending_logout.json");
+        // Safe local directory for diskless write access across all Windows users
+        private static readonly string PendingDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            "BNetCafe"
+        );
+
+        //C:\ProgramData\BNetCafe
+
+        private static readonly string PendingFilePath = Path.Combine(PendingDirectory, "pending_logout.json");
 
         // First: Check if the file exists
         public static bool HasPendingLogout()
@@ -34,6 +38,12 @@ namespace BNet.Cafe.Client.Services
         {
             try
             {
+                // Ensure target directory exists before saving file
+                if (!Directory.Exists(PendingDirectory))
+                {
+                    Directory.CreateDirectory(PendingDirectory);
+                }
+
                 var data = new PendingLogoutData
                 {
                     UserId = userId,

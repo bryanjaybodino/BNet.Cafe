@@ -137,6 +137,7 @@ namespace BNet.Cafe.Client.Services
 
             // 1. Root C:\ drive match
             bool isRootCDrive = trimmedTitle.Equals(@"C:\", StringComparison.OrdinalIgnoreCase) ||
+                                trimmedTitle.Equals(@"C:\ - File Explorer", StringComparison.OrdinalIgnoreCase) ||
                                 trimmedTitle.Equals("C:", StringComparison.OrdinalIgnoreCase) ||
                                 trimmedTitle.Equals("Local Disk (C:)", StringComparison.OrdinalIgnoreCase) ||
                                 trimmedTitle.Equals("OS (C:)", StringComparison.OrdinalIgnoreCase) ||

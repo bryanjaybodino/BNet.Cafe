@@ -18,12 +18,25 @@ namespace BNet.Cafe.Client
 
     public static class SessionManager
     {
-        private static readonly string SessionFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.json");
+        // Safe local directory for diskless write access across all Windows users
+        private static readonly string SessionDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            "BNetCafe"
+        );
+
+        //C:\ProgramData\BNetCafe
+        private static readonly string SessionFilePath = Path.Combine(SessionDirectory, "session.json");
 
         public static void SaveSession(DateTime createdTime, DateTime endTime, string userId, double amount, bool isOpenTime, bool isPaused = false, double remainingSeconds = 0)
         {
             try
             {
+                // Ensure target directory exists before saving file
+                if (!Directory.Exists(SessionDirectory))
+                {
+                    Directory.CreateDirectory(SessionDirectory);
+                }
+
                 var session = new SessionData
                 {
                     CreatedTime = createdTime,
@@ -36,7 +49,6 @@ namespace BNet.Cafe.Client
                     RemainingSeconds = remainingSeconds
                 };
 
-                // Formatting.Indented creates clear, readable line breaks in Notepad
                 string jsonContent = JsonConvert.SerializeObject(session, Formatting.Indented);
                 File.WriteAllText(SessionFilePath, jsonContent);
             }

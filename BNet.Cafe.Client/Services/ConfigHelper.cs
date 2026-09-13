@@ -20,28 +20,35 @@ namespace BNet.Cafe.Client.Services
         {
             try
             {
-                // Inspect local network adapters directly (No DNS lookup delay when offline)
-                var localIp = NetworkInterface.GetAllNetworkInterfaces()
-                    .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
-                                 ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                    .SelectMany(ni => ni.GetIPProperties().UnicastAddresses)
-                    .FirstOrDefault(ip => ip.Address.AddressFamily == AddressFamily.InterNetwork
-                                       && !IPAddress.IsLoopback(ip.Address))?.Address;
-
-                if (localIp != null)
+                string configName = ConfigurationManager.AppSettings["ClientName"];
+                if (!string.IsNullOrEmpty(configName))
                 {
-                    string[] octets = localIp.ToString().Split('.');
-                    if (octets.Length == 4 && int.TryParse(octets[3], out int lastOctet))
-                    {                    
-                        if (lastOctet > 100)
+                    return configName.ToUpper().Replace(" ", "");
+                }
+                else
+                {
+                    // Inspect local network adapters directly (No DNS lookup delay when offline)
+                    var localIp = NetworkInterface.GetAllNetworkInterfaces()
+                        .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
+                                     ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                        .SelectMany(ni => ni.GetIPProperties().UnicastAddresses)
+                        .FirstOrDefault(ip => ip.Address.AddressFamily == AddressFamily.InterNetwork
+                                           && !IPAddress.IsLoopback(ip.Address))?.Address;
+
+                    if (localIp != null)
+                    {
+                        string[] octets = localIp.ToString().Split('.');
+                        if (octets.Length == 4 && int.TryParse(octets[3], out int lastOctet))
                         {
-                            int pcNumber = lastOctet - 100;
-                            return $"PC-{pcNumber:D2}";
-                        }
-                        string configName = ConfigurationManager.AppSettings["ClientName"];
-                        if (!string.IsNullOrEmpty(configName))
-                        {
-                            return configName.ToUpper().Replace(" ", "");
+                            if (lastOctet > 100)
+                            {
+                                int pcNumber = lastOctet - 100;
+                                return $"PC-{pcNumber:D2}";
+                            }
+                            else
+                            {
+                                return $"PC-{lastOctet:D2}";
+                            }
                         }
                     }
                 }

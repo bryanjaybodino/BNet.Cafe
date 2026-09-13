@@ -22,7 +22,7 @@ namespace BNet.Cafe.Client
     public partial class MainForm : Form
     {
         private const int ReconnectDelayMs = 500;
-        private const int ActivityIntervalMs = 1000;
+        private const int ActivityIntervalMs = 5000;
         private const int SendTimeoutMs = 600;
         private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
 
