@@ -56,25 +56,25 @@ namespace BNet.Cafe.Server.Forms
                         int minutes = duration.Minutes;
                         bool isOpenTime = (hours > 100000);
                         bool isAdministrator = (hours == 100);
-
+                        double billing = 0;
                         if (isOpenTime && !isAdministrator)
                         {
                             duration = TimeService.Get() - start;
                             hours = (int)duration.TotalHours;
                             minutes = duration.Minutes;
-                        }
-
-
-
-                        var rentalData = rentals.GetByComputerId(Label_DBId.Text);
-                        double billing = 0;
-                        if (rentalData.Rows.Count > 0)
-                        {
-                            billing = Convert.ToDouble(rentalData.Rows[0]["DBAmount"].ToString());
+                            billing = CalculateAmountFromDuration.CalculatePrice((int)duration.TotalMinutes);
                         }
                         else
                         {
-                            billing = CalculateAmountFromDuration.CalculatePrice((int)duration.TotalMinutes);
+                            var rentalData = rentals.GetByComputerId(Label_DBId.Text);
+                            if (rentalData.Rows.Count > 0) 
+                            {
+                                billing = Convert.ToDouble(rentalData.Rows[0]["DBAmount"].ToString());
+                            }
+                            else
+                            {
+                                billing = CalculateAmountFromDuration.CalculatePrice((int)duration.TotalMinutes);
+                            }
                         }
 
 
