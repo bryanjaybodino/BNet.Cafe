@@ -1,6 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using BNet.Cafe.Client.Services;
 using Newtonsoft.Json;
+using System;
+using System.IO;
 
 namespace BNet.Cafe.Client
 {
@@ -25,7 +26,7 @@ namespace BNet.Cafe.Client
         );
 
         //C:\ProgramData\BNetCafe
-        private static readonly string SessionFilePath = Path.Combine(SessionDirectory, "session.json");
+        private static readonly string SessionFilePath = Path.Combine(SessionDirectory, $"{ConfigHelper.GetClientNameFromIP()+"_Session"}.json");
 
         public static void SaveSession(DateTime createdTime, DateTime endTime, string userId, double amount, bool isOpenTime, bool isPaused = false, double remainingSeconds = 0)
         {

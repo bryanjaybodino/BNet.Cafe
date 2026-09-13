@@ -25,7 +25,7 @@ namespace BNet.Cafe.Client.Services
 
         //C:\ProgramData\BNetCafe
 
-        private static readonly string PendingFilePath = Path.Combine(PendingDirectory, "pending_logout.json");
+        private static readonly string PendingFilePath = Path.Combine(PendingDirectory, $"{ConfigHelper.GetClientNameFromIP() + "_Logout"}.json");
 
         // First: Check if the file exists
         public static bool HasPendingLogout()
