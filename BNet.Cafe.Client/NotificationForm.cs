@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace BNet.Cafe.Client.Design
@@ -17,8 +16,8 @@ namespace BNet.Cafe.Client.Design
     public partial class NotificationForm : Form
     {
         // Win32 Extended Window Styles
-        private const int WS_EX_NOACTIVATE = 0x08000000;
-        private const int WS_EX_TRANSPARENT = 0x00000020;
+        private const int WS_EX_TRANSPARENT = 0x00000020; // Makes window click-through
+        private const int WS_EX_NOACTIVATE = 0x08000000;  // Prevents taking focus from games
 
         private Timer autoCloseTimer;
         private Timer slideTimer;
@@ -27,10 +26,15 @@ namespace BNet.Cafe.Client.Design
         // Prevents stealing focus when shown
         protected override bool ShowWithoutActivation => true;
 
-        // Makes window click-through and completely prevents focus activation
+        // Correctly modify base CreateParams to make form click-through without crashing
         protected override CreateParams CreateParams
         {
-            get;
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= WS_EX_NOACTIVATE | WS_EX_TRANSPARENT;
+                return cp;
+            }
         }
 
         public NotificationForm(string title, string message, NotificationType type = NotificationType.Info, int durationMs = 3500)
@@ -64,7 +68,7 @@ namespace BNet.Cafe.Client.Design
                     break;
             }
 
-            // Click-to-dismiss handlers removed to avoid taking mouse focus away from active games
+            // Click handlers omitted intentionally to prevent focus stealing from active games
         }
 
         private void AdjustLayoutForTextLength()
