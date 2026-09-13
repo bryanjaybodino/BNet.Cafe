@@ -97,7 +97,7 @@ namespace BNet.Cafe.Client
             createdTime = Convert.ToDateTime(serverTime);
             isOpenTime = (parsedDurationMinutes == 0);
             isAdministrator = (userId == "Administrator" && parsedDurationMinutes == 6000);
-
+            isPaused = false;
             endTime = isOpenTime ? DateTime.MaxValue : createdTime.AddMinutes(parsedDurationMinutes);
 
             await ApplyTimerDataAsync(parsedAmount);
@@ -128,7 +128,7 @@ namespace BNet.Cafe.Client
                     await PendingLogoutManager.ProcessPendingLogoutAsync();
                 });
             }
-
+            isPaused = false;
             isOpenTime = false;
             endTime = createdTime.AddMinutes(0);
             _ = ApplyTimerDataAsync(0);
