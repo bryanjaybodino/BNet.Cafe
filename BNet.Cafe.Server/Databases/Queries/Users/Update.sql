@@ -1,6 +1,8 @@
 ﻿UPDATE `users` 
-SET `DBEmail` = '{DBEmail}',
+SET 
+    `DBEmail` = '{DBEmail}',
     `DBPassword` = '{DBPassword}',
     `DBName` = '{DBName}',
-    `DBRole` = '{DBRole}'
+    `DBRole` = '{DBRole}',
+    `DBId` = '{DBId}' 
 WHERE `DBId` = '{DBId}';

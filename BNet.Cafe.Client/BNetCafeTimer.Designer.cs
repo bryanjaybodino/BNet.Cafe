@@ -29,6 +29,7 @@
             this.Label_TimeoutDisplay = new System.Windows.Forms.Label();
             this.label_TotalAmount = new System.Windows.Forms.Label();
             this.Timer_Countdown = new System.Windows.Forms.Timer(this.components);
+            this.Button_AccountAction = new BNet.Cafe.Client.Design.ModernButton();
             this.Button_Logout = new BNet.Cafe.Client.Design.ModernButton();
             this.Panel_Header.SuspendLayout();
             this.Panel_Details.SuspendLayout();
@@ -153,6 +154,24 @@
             this.Timer_Countdown.Interval = 1000;
             this.Timer_Countdown.Tick += new System.EventHandler(this.Timer_Countdown_Tick);
             // 
+            // Button_AccountAction
+            // 
+            this.Button_AccountAction.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(99)))), ((int)(((byte)(102)))), ((int)(((byte)(241)))));
+            this.Button_AccountAction.BorderRadius = 8;
+            this.Button_AccountAction.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Button_AccountAction.FlatAppearance.BorderSize = 0;
+            this.Button_AccountAction.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Button_AccountAction.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.Button_AccountAction.ForeColor = System.Drawing.Color.White;
+            this.Button_AccountAction.Location = new System.Drawing.Point(15, 295);
+            this.Button_AccountAction.Name = "Button_AccountAction";
+            this.Button_AccountAction.Size = new System.Drawing.Size(270, 38);
+            this.Button_AccountAction.TabIndex = 5;
+            this.Button_AccountAction.Text = "Change Password";
+            this.Button_AccountAction.UseVisualStyleBackColor = false;
+            this.Button_AccountAction.Visible = false;
+            this.Button_AccountAction.Click += new System.EventHandler(this.Button_AccountAction_Click);
+            // 
             // Button_Logout
             // 
             this.Button_Logout.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(80)))), ((int)(((byte)(236)))));
@@ -162,7 +181,7 @@
             this.Button_Logout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button_Logout.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.Button_Logout.ForeColor = System.Drawing.Color.White;
-            this.Button_Logout.Location = new System.Drawing.Point(15, 298);
+            this.Button_Logout.Location = new System.Drawing.Point(15, 340);
             this.Button_Logout.Name = "Button_Logout";
             this.Button_Logout.Size = new System.Drawing.Size(270, 42);
             this.Button_Logout.TabIndex = 4;
@@ -175,8 +194,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.ClientSize = new System.Drawing.Size(300, 355);
+            this.ClientSize = new System.Drawing.Size(300, 395);
             this.ControlBox = false;
+            this.Controls.Add(this.Button_AccountAction);
             this.Controls.Add(this.Button_Logout);
             this.Controls.Add(this.Panel_Details);
             this.Controls.Add(this.Label_TimerDisplay);
@@ -209,6 +229,7 @@
         private System.Windows.Forms.Label Label_TotalHours;
         private System.Windows.Forms.Label Label_TimeoutDisplay;
         private System.Windows.Forms.Label label_TotalAmount;
+        private BNet.Cafe.Client.Design.ModernButton Button_AccountAction;
         private BNet.Cafe.Client.Design.ModernButton Button_Logout;
         private System.Windows.Forms.Timer Timer_Countdown;
     }

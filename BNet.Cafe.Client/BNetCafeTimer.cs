@@ -55,6 +55,40 @@ namespace BNet.Cafe.Client
             }
         }
 
+        private bool IsMemberUser()
+        {
+            return !string.IsNullOrWhiteSpace(userId)
+                && userId != "Administrator"
+                && !isAdministrator
+                && Label_CustomerName.Text != "Guest / Walk-in";
+        }
+
+        private bool IsWalkInUser()
+        {
+            return (!isAdministrator && userId != "Administrator") &&
+                   (string.IsNullOrWhiteSpace(userId) || Label_CustomerName.Text == "Guest / Walk-in");
+        }
+
+        private void UpdateAccountActionButton()
+        {
+            if (IsMemberUser())
+            {
+                Button_AccountAction.Text = "Change Password";
+                Button_AccountAction.BackColor = Color.FromArgb(99, 102, 241);
+                Button_AccountAction.Visible = true;
+            }
+            else if (IsWalkInUser())
+            {
+                Button_AccountAction.Text = "Create Account";
+                Button_AccountAction.BackColor = Color.FromArgb(16, 185, 129);
+                Button_AccountAction.Visible = true;
+            }
+            else
+            {
+                Button_AccountAction.Visible = false;
+            }
+        }
+
         public async Task CreateTimerDataAsync(string serverTime, string duration, string amount)
         {
             double.TryParse(duration, out double parsedDurationMinutes);
@@ -111,6 +145,8 @@ namespace BNet.Cafe.Client
             Label_ClientName.Text = ConfigurationManager.AppSettings["ClientName"]?.ToUpper().Replace(" ", "") ?? "CLIENT";
             Label_CustomerName.Text = await ResolveDisplayNameAsync(userId);
             Label_StartTime.Text = $"Started At: {createdTime:hh:mm tt}";
+
+            UpdateAccountActionButton();
 
             if (isOpenTime)
             {
@@ -277,6 +313,8 @@ namespace BNet.Cafe.Client
                 Label_CustomerName.Text = await ResolveDisplayNameAsync(userId);
                 Label_StartTime.Text = $"Started At: {createdTime:hh:mm tt}";
 
+                UpdateAccountActionButton();
+
                 if (isAdministrator)
                 {
                     Label_SessionType.Text = "ADMINISTRATOR MODE";
@@ -324,6 +362,7 @@ namespace BNet.Cafe.Client
         private void ClearSessionFile()
         {
             isOpenTime = false;
+            Button_AccountAction.Visible = false;
             if (SessionManager.Exists())
             {
                 userId = string.Empty;
@@ -355,6 +394,21 @@ namespace BNet.Cafe.Client
             if (MessageBox.Show("Are you sure you want to log out?", "Confirm Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 Logout();
+            }
+        }
+
+        private void Button_AccountAction_Click(object sender, EventArgs e)
+        {
+            if (IsMemberUser())
+            {
+                var resetForm = new ResetPasswordForm();
+                resetForm.Show();
+                resetForm.ResetPassword(userId);
+            }
+            else if (IsWalkInUser())
+            {
+                var oauthForm = new OAuthLoginForm();
+                oauthForm.Show();
             }
         }
     }

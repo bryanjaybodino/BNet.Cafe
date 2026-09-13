@@ -175,6 +175,7 @@
     <Content Include="Remote.html" />
     <Content Include="Global.asax" />
     <Content Include="Login.aspx" />
+    <Content Include="ResetPassword.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -361,11 +362,19 @@
     <Compile Include="Repositories\ClientData.cs" />
     <Compile Include="Repositories\Rentals.cs" />
     <Compile Include="Repositories\Users.cs" />
+    <Compile Include="ResetPassword.aspx.cs">
+      <DependentUpon>ResetPassword.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ResetPassword.aspx.designer.cs">
+      <DependentUpon>ResetPassword.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Services\ErrorLogService.cs" />
     <Compile Include="Services\GridViewTemplateService.cs" />
     <Compile Include="Services\GridviewPaginationService.cs" />
     <Compile Include="Services\AlertService.cs" />
     <Compile Include="Services\NetworkUtility.cs" />
+    <Compile Include="Services\PasswordResetHelper.cs" />
     <Compile Include="Services\RemoteMessagingService.cs" />
     <Compile Include="Services\SecuredDataService.cs" />
     <Compile Include="Services\TimeService.cs" />

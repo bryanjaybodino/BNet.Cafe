@@ -3,8 +3,10 @@ using BNet.Cafe.Client.Repositories;
 using BNet.Cafe.Client.Services;
 using Newtonsoft.Json;
 using System;
+using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 namespace BNet.Cafe.Client
 {
@@ -60,6 +62,38 @@ namespace BNet.Cafe.Client
                 processorCount = deviceInfo.ProcessorCount,
                 screenCount = ScreenCaptured.GetScreenCount().ToString(),
                 IPAddress = NetworkUtility.GetLocalIPAddress()
+            };
+
+            string json = JsonConvert.SerializeObject(payloadObj);
+            byte[] jsonBytes = Utf8.GetBytes(json);
+            byte[] frame = new byte[1 + jsonBytes.Length];
+            frame[0] = 0x03;
+            Buffer.BlockCopy(jsonBytes, 0, frame, 1, jsonBytes.Length);
+            await session.SendAsync(frame, System.Net.WebSockets.WebSocketMessageType.Binary);
+        }
+
+
+        public async Task HeartBeat(AgentSession session)
+        {
+            SessionData sessionData = SessionManager.ReadSession();
+            bool isPaused = false;
+            string timeStart = string.Empty;
+            string timeEnd = string.Empty;
+
+            if (sessionData != null)
+            {
+                timeStart = sessionData.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss");
+                timeEnd = sessionData.EndTime.ToString("yyyy-MM-dd HH:mm:ss");
+                isPaused = sessionData.IsPaused;
+            }
+
+            string clientName = ConfigurationManager.AppSettings["ClientName"];
+            var payloadObj = new
+            {
+                clientName = clientName,
+                timeStart = timeStart,
+                timeEnd = timeEnd,
+                isPaused = isPaused,
             };
 
             string json = JsonConvert.SerializeObject(payloadObj);

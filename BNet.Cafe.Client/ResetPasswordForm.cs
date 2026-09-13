@@ -1,20 +1,19 @@
-﻿using System;
+﻿using Microsoft.Web.WebView2.Core;
+using System;
 using System.Configuration;
-using System.Threading.Tasks;
-using System.Web;
+using System.Security.Policy;
 using System.Windows.Forms;
-using Microsoft.Web.WebView2.Core;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace BNet.Cafe.Client
 {
-    public partial class OAuthLoginForm : Form
+    public partial class ResetPasswordForm : Form
     {
-        public OAuthLoginForm()
+        public ResetPasswordForm()
         {
             InitializeComponent();
         }
-
-        private async void OAuthLoginForm_Load(object sender, EventArgs e)
+        public async void ResetPassword(string userId)
         {
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
@@ -38,15 +37,16 @@ namespace BNet.Cafe.Client
                 webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
                 webView.CoreWebView2.Settings.AreDevToolsEnabled = false;
 
-                // Bind events
+                // Bind loading progress bar events
                 webView.CoreWebView2.NavigationStarting += WebView_NavigationStarting;
                 webView.CoreWebView2.NavigationCompleted += WebView_NavigationCompleted;
 
-                // Clear all active cookies to force re-authentication (password prompt)
+                // Clear active cookies
                 webView.CoreWebView2.CookieManager.DeleteAllCookies();
 
+                // Load URL from app configuration
                 string baseUrl = ConfigurationManager.AppSettings["AppUrl"]?.TrimEnd('/');
-                string handlerUrl = $"{baseUrl}/Login.aspx";
+                string handlerUrl = $"{baseUrl}/ResetPassword.aspx?userId={userId}";
                 webView.Source = new Uri(handlerUrl);
             }
             catch (Exception ex)
@@ -60,58 +60,20 @@ namespace BNet.Cafe.Client
             }
         }
 
+
         private void WebView_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
         {
-            progressBar.Visible = true;
-            CheckAndProcessCallback(new Uri(e.Uri), e);
+            progressBar.Visible = true; 
         }
 
         private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
-            progressBar.Visible = false;
-        }
-
-        private void CheckAndProcessCallback(Uri targetUri, CoreWebView2NavigationStartingEventArgs cancelArgs)
-        {
-            if (targetUri == null) return;
-
-            string fullUrl = targetUri.ToString();
-
-            if (fullUrl.IndexOf("Portal.aspx", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                string userId = GetQueryParameter(targetUri, "UserId");
-                if (!string.IsNullOrEmpty(userId))
-                {
-                    if (cancelArgs != null)
-                    {
-                        cancelArgs.Cancel = true;
-                    }
-                    this.BeginInvoke(new Action(() =>
-                    {
-                        MessageBox.Show(
-                            "Your account has been created. Please top up at the counter to continue.",
-                            "Registered Successfully",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information
-                        );
-                        this.Close();
-                    }));
-                }
-            }
-        }
-
-        private string GetQueryParameter(Uri uri, string parameterName)
-        {
-            if (uri == null || string.IsNullOrEmpty(uri.Query))
-                return null;
-
-            var queryParams = HttpUtility.ParseQueryString(uri.Query);
-            return queryParams[parameterName];
+            progressBar.Visible = false; 
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Close(); 
         }
     }
 }

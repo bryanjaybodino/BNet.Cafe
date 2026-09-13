@@ -89,6 +89,7 @@ namespace BNet.Cafe.Client
             var session = SessionManager.ReadSession();
             if (session != null)
             {
+                TriggerImmediateActivityReport();
                 _BNetCafeTimer.isAdministrator = session.IsAdministrator;
                 this.Hide();
                 _BNetCafeTimer.Show();
@@ -373,6 +374,7 @@ namespace BNet.Cafe.Client
                 }
                 ClearTitleCache();
                 TriggerImmediateActivityReport();
+
             }
             else if (textMessage == "LOGOUT")
             {
@@ -383,16 +385,7 @@ namespace BNet.Cafe.Client
 
                 ClearTitleCache();
                 LockScreen();
-
-                await Task.Delay(200).ContinueWith(_ =>
-                {
-                    var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
-                    var sess = _currentSession;
-                    if (sess != null && sess.IsOpen)
-                    {
-                        _ = _activityReporter.SendActivityInfoAsync(sess, currentWindow, _deviceInfo);
-                    }
-                }, TaskScheduler.FromCurrentSynchronizationContext());
+                TriggerImmediateActivityReport();
             }
             else
             {
@@ -405,15 +398,18 @@ namespace BNet.Cafe.Client
                     MessageBoxOptions.ServiceNotification
                 );
             }
+
+
         }
-        private void TriggerImmediateActivityReport()
+        private async void TriggerImmediateActivityReport()
         {
-            var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
-            var sess = _currentSession;
-            if (sess != null && sess.IsOpen)
+            await Task.Delay(1000).ContinueWith(_ =>
             {
-                _ = _activityReporter.SendActivityInfoAsync(sess, currentWindow, _deviceInfo);
-            }
+                var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
+                var sess = _currentSession;
+                _ = _activityReporter.HeartBeat(sess);
+
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
         private static async Task<byte[]> ReceiveFullMessage(WebSocket ws, byte[] buffer)
         {
@@ -520,6 +516,7 @@ namespace BNet.Cafe.Client
 
                 TextBox_Username.Text = string.Empty;
                 TextBox_Password.Text = string.Empty;
+                TriggerImmediateActivityReport();
             }
             catch (Exception ex)
             {
@@ -540,6 +537,7 @@ namespace BNet.Cafe.Client
                 await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), "6000", "0");
                 TextBox_Username.Text = string.Empty;
                 TextBox_Password.Text = string.Empty;
+                TriggerImmediateActivityReport();
                 return;
             }
         }
