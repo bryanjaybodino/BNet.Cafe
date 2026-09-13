@@ -1,4 +1,5 @@
 ﻿using BNet.Cafe.Client.Ashx;
+using BNet.Cafe.Client.Design;
 using BNet.Cafe.Client.Repositories;
 using BNet.Cafe.Client.Services;
 using System;
@@ -26,6 +27,8 @@ namespace BNet.Cafe.Client
         private DateTime createdTime;
         private DateTime endTime;
         private bool isOpenTime = false;
+        private bool hasWarned5Min = false;
+        private bool hasWarned1Min = false;
 
         public bool isAdmin = false;
         public bool isRunning = false;
@@ -96,6 +99,8 @@ namespace BNet.Cafe.Client
             createdTime = Convert.ToDateTime(serverTime);
             isOpenTime = (parsedDurationMinutes == 0);
             isPaused = false;
+            hasWarned5Min = false;
+            hasWarned1Min = false;
             endTime = isOpenTime ? DateTime.MaxValue : createdTime.AddMinutes(parsedDurationMinutes);
 
             await ApplyTimerDataAsync(parsedAmount);
@@ -105,8 +110,9 @@ namespace BNet.Cafe.Client
         {
             double.TryParse(newDuration, out double parsedDurationMinutes);
             double.TryParse(newAmount, out double parsedAmount);
-
             isOpenTime = (parsedDurationMinutes == 0);
+            hasWarned5Min = false;
+            hasWarned1Min = false;
             endTime = isOpenTime ? DateTime.MaxValue : createdTime.AddMinutes(parsedDurationMinutes);
 
             await ApplyTimerDataAsync(parsedAmount);
@@ -138,9 +144,9 @@ namespace BNet.Cafe.Client
             DateTime now = TimeService.Get();
             remainingSeconds = isOpenTime ? (now - createdTime).TotalSeconds : (endTime - now).TotalSeconds;
 
-            SessionManager.SaveSession(createdTime, endTime, userId, amount,isAdmin, isOpenTime, isPaused);
+            SessionManager.SaveSession(createdTime, endTime, userId, amount, isAdmin, isOpenTime, isPaused);
 
-            Label_ClientName.Text =  ConfigHelper.GetClientNameFromIP();
+            Label_ClientName.Text = ConfigHelper.GetClientNameFromIP();
             Label_CustomerName.Text = await ResolveDisplayNameAsync(userId);
             Label_StartTime.Text = $"Started At: {createdTime:hh:mm tt}";
 
@@ -197,7 +203,6 @@ namespace BNet.Cafe.Client
 
             return id;
         }
-
         private void Timer_Countdown_Tick(object sender, EventArgs e)
         {
             if (isPaused) return;
@@ -219,6 +224,25 @@ namespace BNet.Cafe.Client
                 else
                 {
                     ClearSessionFile();
+                }
+                // Inside Timer_Countdown_Tick:
+                if (!isOpenTime && !isAdmin)
+                {
+                    int currentSecondsLeft = (int)Math.Max(0, remainingSeconds);
+
+                    // 5-Minute Warning (Trigger between 300 and 299 seconds)
+                    if (currentSecondsLeft <= 300 && currentSecondsLeft > 240 && !hasWarned5Min)
+                    {
+                        hasWarned5Min = true;
+                        NotificationForm.Show("Time Warning", "You have 5 minutes remaining in your session.", NotificationType.Warning, 5000);
+                    }
+
+                    // 1-Minute Warning (Trigger between 60 and 59 seconds)
+                    if (currentSecondsLeft <= 60 && currentSecondsLeft > 0 && !hasWarned1Min)
+                    {
+                        hasWarned1Min = true;
+                        NotificationForm.Show("Session Expiring Soon", "You have 1 minute remaining! Please add time to continue.", NotificationType.Error, 5000);
+                    }
                 }
             }
         }

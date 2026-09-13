@@ -1,4 +1,5 @@
 ﻿using BNet.Cafe.Client.Ashx;
+using BNet.Cafe.Client.Design;
 using BNet.Cafe.Client.Models;
 using BNet.Cafe.Client.Repositories;
 using BNet.Cafe.Client.Services;
@@ -350,6 +351,7 @@ namespace BNet.Cafe.Client
                 else
                 {
                     await _BNetCafeTimer.UpdateTimerDataAsync(duration, amount);
+                    NotificationForm.Show("Time Updated", "Your session dynamic time was updated successfully.", NotificationType.Success);
                 }
 
                 UnlockScreen();
@@ -362,6 +364,7 @@ namespace BNet.Cafe.Client
                 if (_BNetCafeTimer != null && !_BNetCafeTimer.IsDisposed)
                 {
                     _BNetCafeTimer.PauseTimer();
+                    NotificationForm.Show("Session Paused", "Your timer has been temporarily paused.", NotificationType.Info);
                 }
                 ClearTitleCache();
                 TriggerImmediateActivityReport();
@@ -371,6 +374,7 @@ namespace BNet.Cafe.Client
                 if (_BNetCafeTimer != null && !_BNetCafeTimer.IsDisposed)
                 {
                     _BNetCafeTimer.ResumeTimer();
+                    NotificationForm.Show("Session Resumed", "Your timer is now active.", NotificationType.Success);
                 }
                 ClearTitleCache();
                 TriggerImmediateActivityReport();

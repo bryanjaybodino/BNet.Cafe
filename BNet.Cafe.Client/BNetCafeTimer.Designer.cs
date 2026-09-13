@@ -174,13 +174,13 @@
             // 
             // Button_Logout
             // 
-            this.Button_Logout.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(80)))), ((int)(((byte)(236)))));
+            this.Button_Logout.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.Button_Logout.BorderRadius = 8;
             this.Button_Logout.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Button_Logout.FlatAppearance.BorderSize = 0;
             this.Button_Logout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button_Logout.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.Button_Logout.ForeColor = System.Drawing.Color.White;
+            this.Button_Logout.ForeColor = System.Drawing.Color.Crimson;
             this.Button_Logout.Location = new System.Drawing.Point(15, 340);
             this.Button_Logout.Name = "Button_Logout";
             this.Button_Logout.Size = new System.Drawing.Size(270, 42);

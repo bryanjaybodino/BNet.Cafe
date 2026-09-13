@@ -86,6 +86,12 @@
     <Compile Include="Design\ModernTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="NotificationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NotificationForm.Designer.cs">
+      <DependentUpon>NotificationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="OAuthLoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
