@@ -101,6 +101,11 @@
     <Content Include="Assets\BNetAlert\Script.js" />
     <Content Include="Assets\BNetAlert\Style.css" />
     <Content Include="Assets\BNetBadge\Style.css" />
+    <Content Include="Assets\BNetChart\BNetBarChart.js" />
+    <Content Include="Assets\BNetChart\BNetBaseChart.js" />
+    <Content Include="Assets\BNetChart\BNetChart.css" />
+    <Content Include="Assets\BNetChart\BNetDonutChart.js" />
+    <Content Include="Assets\BNetChart\BNetLineChart.js" />
     <Content Include="Assets\BNetDatePicker\Script.js" />
     <Content Include="Assets\BNetDatePicker\Style.css" />
     <Content Include="Assets\BNetDropdown\Style.css" />
