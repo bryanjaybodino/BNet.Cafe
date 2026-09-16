@@ -136,6 +136,8 @@
     <Content Include="Databases\Queries\Computers\GetAll.sql" />
     <Content Include="Databases\Queries\Computers\Update.sql" />
     <Content Include="Databases\Queries\Computers\UpdateCount.sql" />
+    <Content Include="Databases\Queries\Dashboard\RevenueTrend.sql" />
+    <Content Include="Databases\Queries\Dashboard\ComputerUsage.sql" />
     <Content Include="Databases\Queries\Rentals\Create.sql" />
     <Content Include="Databases\Queries\Rentals\GetCount.sql" />
     <Content Include="Databases\Queries\Rentals\GetAll.sql" />
@@ -154,6 +156,7 @@
     <Content Include="Forms\ComputerEarnings.ascx" />
     <Content Include="Forms\ComputerEdit.ascx" />
     <Content Include="Forms\Computers.ascx" />
+    <Content Include="Forms\Dashboard.ascx" />
     <Content Include="Forms\Modals\ComputerDelete.ascx" />
     <Content Include="Forms\Modals\RemoteLogout.ascx" />
     <Content Include="Forms\Modals\RemoteMessage.ascx" />
@@ -253,6 +256,13 @@
     </Compile>
     <Compile Include="Forms\Computers.ascx.designer.cs">
       <DependentUpon>Computers.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dashboard.ascx.cs">
+      <DependentUpon>Dashboard.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Dashboard.ascx.designer.cs">
+      <DependentUpon>Dashboard.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Modals\ComputerDelete.ascx.cs">
       <DependentUpon>ComputerDelete.ascx</DependentUpon>
@@ -360,6 +370,7 @@
     <Compile Include="Repositories\Balances.cs" />
     <Compile Include="Repositories\Computers.cs" />
     <Compile Include="Repositories\ClientData.cs" />
+    <Compile Include="Repositories\Dashboard.cs" />
     <Compile Include="Repositories\Rentals.cs" />
     <Compile Include="Repositories\Users.cs" />
     <Compile Include="ResetPassword.aspx.cs">
