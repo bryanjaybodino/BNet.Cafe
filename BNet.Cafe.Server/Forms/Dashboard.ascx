@@ -136,7 +136,7 @@
                 <div class="chart-header">
                     <span class="chart-title">Top 10 Member Top-Up Spenders</span>
                 </div>
-                <div class="bnet-table-container" style="overflow-y: auto; max-height: 240px;">
+                <div class="bnet-table-container">
                     <table class="bnet-table" id="TableTopUsers">
                         <thead>
                             <tr>

@@ -1,35 +1,21 @@
 ﻿// =============================================================================
-// BNet Bar Chart Component (DYNAMIC MOBILE RESPONSIVE)
+// BNet Bar Chart Component
 // =============================================================================
 class BNetBarChart extends BNetBaseChart {
     constructor(options) {
         super(options);
+        this.viewBox = options.viewBox || "0 0 800 240";
+        this.width = options.width || 800;
+        this.height = options.height || 240;
         this.labelKey = options.labelKey || 'pc';
         this.valueKey = options.valueKey || 'count';
         this.barColor = options.barColor || "var(--secondary)";
         this.unitLabel = options.unitLabel || "rentals";
-        this.height = options.height || 240;
-        this.baseWidth = options.width || 800;
-
-        this.initSVG();
         this.render();
     }
 
     render() {
-        if (!this.data) this.data = [];
-
-        // Ensure minimum 55px width allocation per terminal so labels are always readable
-        const requiredWidth = Math.max(this.baseWidth, this.data.length * 55 + this.padding * 2);
-        this.width = requiredWidth;
-        this.viewBox = `0 0 ${this.width} ${this.height}`;
-
         this.initSVG();
-
-        // Apply width directly to SVG element style for crisp rendering
-        if (this.svg) {
-            this.svg.style.minWidth = `${this.width}px`;
-        }
-
         const totalCount = this.data.reduce((acc, item) => acc + (item[this.valueKey] || 0), 0);
         if (!this.data.length || totalCount <= 0) {
             this.renderEmpty(this.width, this.height);
@@ -39,9 +25,9 @@ class BNetBarChart extends BNetBaseChart {
         const maxVal = Math.max(...this.data.map(d => d[this.valueKey])) * 1.15 || 1;
         const availableWidth = this.width - this.padding * 2;
         const gap = availableWidth / this.data.length;
-        const barWidth = Math.min(45, gap * 0.6);
+        const barWidth = Math.min(60, gap * 0.6);
 
-        // Render Axis Gridlines & Values
+        // Render Axis & Gridlines
         for (let i = 0; i <= 4; i++) {
             const y = this.height - this.padding - (i / 4) * (this.height - this.padding * 2);
             const val = (maxVal * (i / 4)).toFixed(0);
@@ -62,7 +48,7 @@ class BNetBarChart extends BNetBaseChart {
             this.svg.appendChild(label);
         }
 
-        // Render Bars & Labels
+        // Render Bars
         this.data.forEach((item, i) => {
             const x = this.padding + i * gap + (gap - barWidth) / 2;
             const barHeight = (item[this.valueKey] / maxVal) * (this.height - this.padding * 2);
@@ -82,7 +68,7 @@ class BNetBarChart extends BNetBaseChart {
             xLabel.setAttribute("x", x + barWidth / 2); xLabel.setAttribute("y", this.height - 12);
             xLabel.setAttribute("text-anchor", "middle");
             xLabel.setAttribute("fill", "var(--text-light-secondary)");
-            xLabel.setAttribute("font-size", "11");
+            xLabel.setAttribute("font-size", "12");
             xLabel.textContent = item[this.labelKey];
             this.svg.appendChild(xLabel);
 
