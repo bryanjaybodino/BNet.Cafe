@@ -63,5 +63,29 @@ namespace BNet.Cafe.Server.Repositories
 
             return DBContext.SqlDataAdapterAsync(sql);
         }
+
+        // Powers the Top 10 Member Spenders leaderboard
+        public DataTable GetTopUpUsers(string dateRange = "", bool isDeleted = false)
+        {
+            var scripts = new Dictionary<string, string>();
+            string DBIsDeleted = isDeleted ? "TRUE" : "FALSE";
+            string DBDateStart = "", DBDateEnd = "";
+
+            if (dateRange.Contains(","))
+            {
+                var date = dateRange.Split(',');
+                DBDateStart = date[0];
+                DBDateEnd = date[1];
+            }
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateStart", DBDateStart);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateEnd", DBDateEnd);
+
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Dashboard/TopUpUsers.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+
+            return DBContext.SqlDataAdapterAsync(sql);
+        }
     }
 }

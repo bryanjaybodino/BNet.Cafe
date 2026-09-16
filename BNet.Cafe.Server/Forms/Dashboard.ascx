@@ -71,6 +71,22 @@
                 </div>
                 <span class="bnet-badge-status yellow">Revenue</span>
             </div>
+
+            <!-- New Feature: Top-Up Load KPI -->
+            <div class="card card-compact">
+                <div class="card-inline-content">
+                    <div class="card-icon-sm">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <div class="card-details">
+                        <span class="card-title-sm">Top-Up Load</span>
+                        <span class="card-value-sm">
+                            <asp:Label ID="Label_TopUpIncome" runat="server" Text="₱0.00"></asp:Label>
+                        </span>
+                    </div>
+                </div>
+                <span class="bnet-badge-status green">Credits</span>
+            </div>
         </div>
 
         <!-- Charts Row 1: Revenue trend + Customer types -->
@@ -98,14 +114,35 @@
             </div>
         </div>
 
-        <!-- Charts Row 2: Computer usage -->
+        <!-- Charts Row 2: Computer usage & Leaderboard -->
         <div class="charts-grid">
-            <div class="card-chart" style="grid-column: 1 / -1;">
+            <div class="card-chart span-2">
                 <div class="chart-header">
                     <span class="chart-title">Computer Usage (Transactions per Terminal)</span>
                 </div>
                 <div class="chart-container">
                     <svg id="DashboardBarChart" viewBox="0 0 800 240"></svg>
+                </div>
+            </div>
+
+            <!-- New Feature: Top 10 Member Spenders Leaderboard -->
+            <div class="card-chart">
+                <div class="chart-header">
+                    <span class="chart-title">Top 10 Member Top-Up Spenders</span>
+                </div>
+                <div class="bnet-table-container" style="overflow-y: auto; max-height: 240px;">
+                    <table class="bnet-table" id="TableTopUsers">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Member</th>
+                                <th>Count</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="TableTopUsersBody">
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -115,8 +152,6 @@
 </asp:UpdatePanel>
 
 <style>
-    /* Scoped styles for the chart section. Card / badge / table classes are
-       already defined in the site's shared Style.css (see Billings.ascx). */
     .dashboard-toolbar {
         display: flex;
         align-items: center;
@@ -239,13 +274,6 @@
 </style>
 
 <script>
-    // Render functions are defined ONCE, client-side, in plain markup that is
-    // part of the initial page (not re-sent by the server on postback).
-    // Data comes from HiddenField_ChartData, which code-behind refreshes on
-    // every Page_PreRender. Since it's a plain form element inside the
-    // UpdatePanel, its .value is correctly applied even when the surrounding
-    // markup is swapped in via innerHTML during an async postback — unlike a
-    // <script> tag, which the browser would silently refuse to re-execute.
     (function () {
         function showDashboardTooltip(evt, text) {
             var tooltip = document.getElementById("DashboardTooltip");
@@ -306,11 +334,10 @@
                 path.setAttribute("d", pathData);
                 path.setAttribute("fill", "none");
 
-                // Ensure hex fallbacks are present if CSS variable fails to resolve
                 var fallbackColor = item.label === "Members" ? "#10b981" : "#3b82f6";
                 path.setAttribute("stroke", item.color || fallbackColor);
                 path.setAttribute("stroke-width", "20");
-                path.setAttribute("stroke-linecap", "butt"); // Prevents slice edges from hiding behind each other
+                path.setAttribute("stroke-linecap", "butt");
                 path.setAttribute("class", "donut-segment");
 
                 path.addEventListener("mousemove", function (e) {
@@ -339,7 +366,6 @@
 
             var width = 600, height = 240, padding = 40;
 
-            // Check if empty or all amounts sum to <= 0
             var totalAmount = revenueTrend.reduce(function (acc, item) { return acc + (item.amount || 0); }, 0);
             if (!revenueTrend.length || totalAmount <= 0) {
                 var emptyText = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -362,7 +388,6 @@
                 return { x: x, y: y, data: d };
             });
 
-            // Draw gridlines and labels
             for (var i = 0; i <= 4; i++) {
                 var y = height - padding - (i / 4) * (height - padding * 2);
                 var val = (maxVal * (i / 4)).toFixed(0);
@@ -383,7 +408,6 @@
                 svg.appendChild(label);
             }
 
-            // Draw path
             var pathData = points.reduce(function (acc, pt, i) {
                 return i === 0 ? ("M " + pt.x + " " + pt.y) : (acc + " L " + pt.x + " " + pt.y);
             }, "");
@@ -395,7 +419,6 @@
             path.setAttribute("stroke-width", "3");
             svg.appendChild(path);
 
-            // Draw data points & x-axis labels
             points.forEach(function (pt) {
                 var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 circle.setAttribute("cx", pt.x); circle.setAttribute("cy", pt.y);
@@ -417,6 +440,7 @@
                 svg.appendChild(dateLabel);
             });
         }
+
         function renderBar(computerUsage) {
             var svg = document.getElementById("DashboardBarChart");
             if (!svg) return;
@@ -424,7 +448,6 @@
 
             var width = 800, height = 240, padding = 40;
 
-            // Check if empty or all counts sum to <= 0
             var totalCount = computerUsage.reduce(function (acc, item) { return acc + (item.count || 0); }, 0);
             if (!computerUsage.length || totalCount <= 0) {
                 var emptyText = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -443,7 +466,6 @@
             var gap = availableWidth / computerUsage.length;
             var barWidth = Math.min(60, gap * 0.6);
 
-            // Gridlines and Y-axis labels
             for (var i = 0; i <= 4; i++) {
                 var y = height - padding - (i / 4) * (height - padding * 2);
                 var val = (maxVal * (i / 4)).toFixed(0);
@@ -464,7 +486,6 @@
                 svg.appendChild(label);
             }
 
-            // Render Bars
             computerUsage.forEach(function (item, i) {
                 var x = padding + i * gap + (gap - barWidth) / 2;
                 var barHeight = (item.count / maxVal) * (height - padding * 2);
@@ -501,6 +522,27 @@
             });
         }
 
+        function renderTopUsers(topUsers) {
+            var tbody = document.getElementById("TableTopUsersBody");
+            if (!tbody) return;
+            tbody.innerHTML = "";
+
+            if (!topUsers || topUsers.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>No top-ups</td></tr>";
+                return;
+            }
+
+            topUsers.forEach(function (user, index) {
+                var tr = document.createElement("tr");
+                tr.innerHTML =
+                    "<td><b>#" + (index + 1) + "</b></td>" +
+                    "<td>" + user.name + "</td>" +
+                    "<td>" + user.count + "x</td>" +
+                    "<td><strong style='color: var(--accent-green, #10b981);'>₱" + user.amount.toFixed(2) + "</strong></td>";
+                tbody.appendChild(tr);
+            });
+        }
+
         function updateLegend(customerTypes) {
             var membersEl = document.getElementById("LegendMembersValue");
             var walkInEl = document.getElementById("LegendWalkInValue");
@@ -525,12 +567,12 @@
             renderDonut(data.customerTypes || []);
             renderLine(data.revenueTrend || []);
             renderBar(data.computerUsage || []);
+            renderTopUsers(data.topUsers || []);
             updateLegend(data.customerTypes || []);
         }
 
         document.addEventListener("DOMContentLoaded", initBNetDashboardCharts);
 
-        // Support ASP.NET AJAX UpdatePanel partial postbacks
         if (typeof Sys !== "undefined" && Sys.WebForms && Sys.WebForms.PageRequestManager) {
             Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
                 initBNetDashboardCharts();
@@ -539,6 +581,4 @@
 
         window.initBNetDashboardCharts = initBNetDashboardCharts;
     })();
-
-    console.log(JSON.parse(document.getElementById('<%= HiddenField_ChartData.ClientID %>').value).customerTypes);
 </script>

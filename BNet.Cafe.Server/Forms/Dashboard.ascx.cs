@@ -31,18 +31,26 @@ namespace BNet.Cafe.Server.Forms
             Label_WalkIn.Text = count.WalkIn;
             Label_Income.Text = count.Income;
 
-            // Chart data
+            // Chart & Leaderboard data
             DataTable revenueTrend = dashboardRepository.GetRevenueTrend(dateRange);
             DataTable computerUsage = dashboardRepository.GetComputerUsage(dateRange);
+            DataTable topUpUsers = dashboardRepository.GetTopUpUsers(dateRange);
 
-            HiddenField_ChartData.Value = BuildChartDataJson(count, revenueTrend, computerUsage);
+            // Calculate total top-up sum for new KPI card
+            decimal totalTopUpSum = 0;
+            foreach (DataRow row in topUpUsers.Rows)
+            {
+                if (row["TotalTopUpAmount"] != DBNull.Value)
+                {
+                    totalTopUpSum += Convert.ToDecimal(row["TotalTopUpAmount"]);
+                }
+            }
+            Label_TopUpIncome.Text = "₱" + totalTopUpSum.ToString("N2");
+
+            HiddenField_ChartData.Value = BuildChartDataJson(count, revenueTrend, computerUsage, topUpUsers);
         }
 
-        // Builds the JSON payload consumed client-side by initBNetDashboardCharts()
-        // in Dashboard.ascx. Kept as a plain HiddenField value (not an inline
-        // <script> block) so it updates correctly across UpdatePanel async
-        // postbacks — the client re-reads it via add_endRequest.
-        private string BuildChartDataJson(Rentals.CountRentals count, DataTable revenueTrend, DataTable computerUsage)
+        private string BuildChartDataJson(Rentals.CountRentals count, DataTable revenueTrend, DataTable computerUsage, DataTable topUpUsers)
         {
             int usersCount = int.TryParse(count.Users, out int u) ? u : 0;
             int walkInCount = int.TryParse(count.WalkIn, out int w) ? w : 0;
@@ -66,22 +74,28 @@ namespace BNet.Cafe.Server.Forms
                 usageItems.Add("{\"pc\":\"" + EscapeJson(pc) + "\",\"count\":" + cnt + "}");
             }
 
+            var topUserItems = new List<string>();
+            foreach (DataRow row in topUpUsers.Rows)
+            {
+                string name = row["MemberName"] == DBNull.Value ? "Unknown" : row["MemberName"].ToString();
+                string cnt = row["TopUpCount"].ToString();
+                string amt = Convert.ToDecimal(row["TotalTopUpAmount"]).ToString("0.00");
+
+                topUserItems.Add("{\"name\":\"" + EscapeJson(name) + "\",\"count\":" + cnt + ",\"amount\":" + amt + "}");
+            }
+
             var customerTypeItems = new List<string>
             {
                 "{\"label\":\"Members\",\"value\":" + usersCount + ",\"color\":\"#10b981\"}",
                 "{\"label\":\"Walk-In\",\"value\":" + walkInCount + ",\"color\":\"#3b82f6\"}"
             };
 
-            // string.Join never leaves a trailing comma before the closing
-            // bracket — the previous version appended "," after every item
-            // unconditionally, which produced invalid JSON like "[...,]" and
-            // made JSON.parse() throw (silently, inside the client try/catch),
-            // so nothing ever rendered.
             StringBuilder json = new StringBuilder();
             json.Append("{");
             json.Append("\"revenueTrend\":[").Append(string.Join(",", revenueItems)).Append("],");
             json.Append("\"computerUsage\":[").Append(string.Join(",", usageItems)).Append("],");
-            json.Append("\"customerTypes\":[").Append(string.Join(",", customerTypeItems)).Append("]");
+            json.Append("\"customerTypes\":[").Append(string.Join(",", customerTypeItems)).Append("],");
+            json.Append("\"topUsers\":[").Append(string.Join(",", topUserItems)).Append("]");
             json.Append("}");
 
             return json.ToString();
@@ -96,12 +110,10 @@ namespace BNet.Cafe.Server.Forms
 
         protected void LinkButton_Refresh_Click(object sender, EventArgs e)
         {
-            // Handles explicit refresh trigger without re-executing stale postback actions
         }
 
         protected void TextBox_DateRage_TextChanged(object sender, EventArgs e)
         {
-            // Page_PreRender re-reads TextBox_DateRage.Text and refreshes KPIs + chart JSON
         }
     }
 }

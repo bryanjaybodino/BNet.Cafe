@@ -136,6 +136,7 @@
     <Content Include="Databases\Queries\Computers\GetAll.sql" />
     <Content Include="Databases\Queries\Computers\Update.sql" />
     <Content Include="Databases\Queries\Computers\UpdateCount.sql" />
+    <Content Include="Databases\Queries\Dashboard\TopUpUsers.sql" />
     <Content Include="Databases\Queries\Dashboard\RevenueTrend.sql" />
     <Content Include="Databases\Queries\Dashboard\ComputerUsage.sql" />
     <Content Include="Databases\Queries\Rentals\Create.sql" />
