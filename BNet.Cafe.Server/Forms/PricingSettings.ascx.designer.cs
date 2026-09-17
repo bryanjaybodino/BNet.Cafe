@@ -7,110 +7,83 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BNet.Cafe.Server
+namespace BNet.Cafe.Server.Forms
 {
 
 
-    public partial class BNetPage
+    public partial class PricingSettings
     {
 
         /// <summary>
-        /// HyperLink_Dashboard control.
+        /// UpdatePanel1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Dashboard;
+        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
-        /// HyperLink_Computers control.
+        /// HiddenField_PriceId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Computers;
+        protected global::System.Web.UI.WebControls.HiddenField HiddenField_PriceId;
 
         /// <summary>
-        /// HyperLink_Remote control.
+        /// DropDownList_CustomerType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Remote;
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_CustomerType;
 
         /// <summary>
-        /// HyperLink_Billings control.
+        /// TextBox_Minutes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Billings;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Minutes;
 
         /// <summary>
-        /// HyperLink_Users control.
+        /// TextBox_Price control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Users;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Price;
 
         /// <summary>
-        /// HyperLink_PricingSettings control.
+        /// LinkButton_Cancel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_PricingSettings;
+        protected global::System.Web.UI.WebControls.LinkButton LinkButton_Cancel;
 
         /// <summary>
-        /// Label_InitialName control.
+        /// LinkButton_Submit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label_InitialName;
+        protected global::System.Web.UI.WebControls.LinkButton LinkButton_Submit;
 
         /// <summary>
-        /// label_FullName control.
+        /// GridView_Pricing control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label label_FullName;
-
-        /// <summary>
-        /// MainForm control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm MainForm;
-
-        /// <summary>
-        /// ScriptManager1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.ScriptManager ScriptManager1;
-
-        /// <summary>
-        /// PlaceHolder_Container control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder PlaceHolder_Container;
+        protected global::System.Web.UI.WebControls.GridView GridView_Pricing;
     }
 }

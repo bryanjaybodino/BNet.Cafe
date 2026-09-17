@@ -62,6 +62,11 @@
             <i class="fas fa-users"></i><span>Users</span>
                     </asp:HyperLink>
                 </li>
+                <li>
+                    <asp:HyperLink ID="HyperLink_PricingSettings" runat="server" ToolTip="Pricing Settings" onclick="navigateTo('?Form=PricingSettings'); return false;">
+            <i class="fas fa-cash-register"></i><span>Pricing Setting</span>
+                    </asp:HyperLink>
+                </li>
             </ul>
         </div>
 

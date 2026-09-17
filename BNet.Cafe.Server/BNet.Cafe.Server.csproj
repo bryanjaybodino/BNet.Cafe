@@ -144,6 +144,11 @@
     <Content Include="Databases\Queries\Dashboard\TopUpUsers.sql" />
     <Content Include="Databases\Queries\Dashboard\RevenueTrend.sql" />
     <Content Include="Databases\Queries\Dashboard\ComputerUsage.sql" />
+    <Content Include="Databases\Queries\PricingRates\DeleteById.sql" />
+    <Content Include="Databases\Queries\PricingRates\GetAll.sql" />
+    <Content Include="Databases\Queries\PricingRates\GetById.sql" />
+    <Content Include="Databases\Queries\PricingRates\Update.sql" />
+    <Content Include="Databases\Queries\PricingRates\Create.sql" />
     <Content Include="Databases\Queries\Rentals\Create.sql" />
     <Content Include="Databases\Queries\Rentals\GetCount.sql" />
     <Content Include="Databases\Queries\Rentals\GetAll.sql" />
@@ -169,6 +174,7 @@
     <Content Include="Forms\Modals\RemoteOpenTime.ascx" />
     <Content Include="Forms\Modals\RemoteTimePause.ascx" />
     <Content Include="Forms\Modals\RemoteTimeTransfer.ascx" />
+    <Content Include="Forms\PricingSettings.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Forms\RentalManage.ascx" />
     <Content Include="Forms\UserCreate.ascx" />
@@ -226,6 +232,7 @@
     <Compile Include="Databases\DBScriptService.cs" />
     <Compile Include="Databases\Tables\balances.cs" />
     <Compile Include="Databases\Tables\computers.cs" />
+    <Compile Include="Databases\Tables\pricing_rates.cs" />
     <Compile Include="Databases\Tables\rentals.cs" />
     <Compile Include="Databases\Tables\users.cs" />
     <Compile Include="Forms\Billings.ascx.cs">
@@ -312,6 +319,13 @@
     <Compile Include="Forms\Modals\RemoteTimeTransfer.ascx.designer.cs">
       <DependentUpon>RemoteTimeTransfer.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Forms\PricingSettings.ascx.cs">
+      <DependentUpon>PricingSettings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\PricingSettings.ascx.designer.cs">
+      <DependentUpon>PricingSettings.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Remote.ascx.cs">
       <DependentUpon>Remote.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -377,6 +391,7 @@
     <Compile Include="Repositories\Computers.cs" />
     <Compile Include="Repositories\ClientData.cs" />
     <Compile Include="Repositories\Dashboard.cs" />
+    <Compile Include="Repositories\PricingRates.cs" />
     <Compile Include="Repositories\Rentals.cs" />
     <Compile Include="Repositories\Users.cs" />
     <Compile Include="ResetPassword.aspx.cs">
