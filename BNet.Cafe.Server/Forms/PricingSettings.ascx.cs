@@ -10,19 +10,17 @@ namespace BNet.Cafe.Server.Forms
     {
         private readonly Repositories.PricingRates pricingRepository = new Repositories.PricingRates();
 
-        protected void Page_Load(object sender, EventArgs e)
+        protected void Page_PreRender(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                LoadPricingList();
-            }
+            LoadPricingList();
         }
 
         private void LoadPricingList()
         {
-            DataTable dt = pricingRepository.GetAll();
+            DataTable dt = pricingRepository.GetAll(DropDownList_CustomerType.SelectedValue);
             GridView_Pricing.DataSource = dt;
             GridView_Pricing.DataBind();
+            Label_TotalRules.Text =GridView_Pricing.Rows.Count.ToString();
             UpdatePanel1.Update();
         }
 
@@ -61,7 +59,6 @@ namespace BNet.Cafe.Server.Forms
             if (isSuccess)
             {
                 ClearForm();
-                LoadPricingList();
                 string actionMsg = (id == "0" || string.IsNullOrEmpty(id)) ? "added" : "updated";
                 AlertService.ShowAlert(UpdatePanel1, $"Pricing rule {actionMsg} successfully.", "success");
             }
@@ -103,7 +100,6 @@ namespace BNet.Cafe.Server.Forms
                 if (isDeleted)
                 {
                     ClearForm();
-                    LoadPricingList();
                     AlertService.ShowAlert(UpdatePanel1, "Pricing rule deleted successfully.", "success");
                 }
                 else

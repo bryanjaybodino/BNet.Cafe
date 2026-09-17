@@ -80,22 +80,6 @@
                         <small id="display_AmountBreakdown" style="display:none; color: #10b981; font-size: 12px; font-weight: 600; margin-top: 4px;"></small>
                     </div>
                 </div>
-
-                <!-- Rate Tier Reference Box -->
-                <div class="rate-legend-box">
-                    <div class="rate-legend-title"><i class="fa-solid fa-tags"></i>Current Rate Reference</div>
-                    <div class="rate-grid">
-                        <span>15 Mins: <strong>₱5</strong></span>
-                        <span>30 Mins: <strong>₱10</strong></span>
-                        <span>1 Hour: <strong>₱15</strong></span>
-                        <span>2 Hours: <strong>₱25</strong></span>
-                        <span>3 Hours: <strong>₱40</strong></span>
-                        <span>4 Hours: <strong>₱50</strong></span>
-                    </div>
-                    <div class="rate-note">
-                        <i class="fa-solid fa-circle-info"></i><strong>Note:</strong> After reaching 4 hours (₱50), each additional hour extension is charged at a flat rate of <strong>₱10/hr</strong>.
-                    </div>
-                </div>
                 
                 <asp:Panel ID="Panel_Buttons" runat="server">
                     <!-- Form Actions -->

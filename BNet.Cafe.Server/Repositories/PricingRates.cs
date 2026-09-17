@@ -15,12 +15,14 @@ namespace BNet.Cafe.Server.Repositories
         private readonly DBScriptService dBScriptService = new DBScriptService();
         private readonly GridviewPaginationService paginationService = new GridviewPaginationService();
 
-        public DataTable GetAll(string search = "", int pageIndex = 0, bool isDeleted = false)
+        public DataTable GetAll(string customerType = "", int pageIndex = 0, bool isDeleted = false)
         {
             var scripts = new Dictionary<string, string>();
             string DBIsDeleted = isDeleted ? "TRUE" : "FALSE";
             string LIMIT = paginationService.SetPagination(pageIndex);
+            string DBCustomerType = dBScriptService.CleanUpToUpper(customerType);
 
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBCustomerType", DBCustomerType);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
 
@@ -40,25 +42,6 @@ namespace BNet.Cafe.Server.Repositories
 
             Page page = HttpContext.Current.Handler as Page;
             string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/PricingRates/GetById.sql");
-            string sql = dBScriptService.Scripts(scripts, template);
-
-            return DBContext.SqlDataAdapterAsync(sql);
-        }
-
-        /// <summary>
-        /// Get all pricing rates for a specific customer type
-        /// </summary>
-        public DataTable GetByCustomerType(string customerType)
-        {
-            var scripts = new Dictionary<string, string>();
-            string DBCustomerType = dBScriptService.CleanUpToUpper(customerType);
-            string DBIsDeleted = "FALSE";
-
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBCustomerType", DBCustomerType);
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
-
-            Page page = HttpContext.Current.Handler as Page;
-            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/PricingRates/GetByCustomerType.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlDataAdapterAsync(sql);
@@ -131,7 +114,7 @@ namespace BNet.Cafe.Server.Repositories
             {
                 // Get pricing intervals from database
                 PricingRates repo = new PricingRates();
-                DataTable dt = repo.GetByCustomerType(customerType);
+                DataTable dt = repo.GetAll(customerType);
 
                 if (dt == null || dt.Rows.Count == 0)
                 {
@@ -203,7 +186,7 @@ namespace BNet.Cafe.Server.Repositories
             {
                 // Get pricing intervals from database
                 PricingRates repo = new PricingRates();
-                DataTable dt = repo.GetByCustomerType(customerType);
+                DataTable dt = repo.GetAll(customerType);
 
                 if (dt == null || dt.Rows.Count == 0)
                 {

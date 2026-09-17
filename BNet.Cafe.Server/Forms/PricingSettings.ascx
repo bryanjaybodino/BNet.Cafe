@@ -10,10 +10,11 @@
             <div class="pricing-header">
                 <div>
                     <h1 class="pricing-title">
-                        <i class="fa-solid fa-tags"></i> Pricing Intervals
+                        <i class="fa-solid fa-tags"></i>Pricing Intervals
                     </h1>
                     <p class="pricing-subtitle">
                         Define pricing tiers based on duration. The system will interpolate prices between intervals.
+                   
                     </p>
                 </div>
             </div>
@@ -24,7 +25,7 @@
                 <div class="pricing-form-panel">
                     <div class="form-card">
                         <h2 class="form-section-title">
-                            <i class="fa-solid fa-plus-circle"></i> Add/Edit Pricing Rule
+                            <i class="fa-solid fa-plus-circle"></i>Add/Edit Pricing Rule
                         </h2>
 
                         <!-- Customer Type -->
@@ -32,8 +33,7 @@
                             <label for="DropDownList_CustomerType">
                                 Customer Tier <span class="required-badge">*</span>
                             </label>
-                            <asp:DropDownList ID="DropDownList_CustomerType" runat="server" CssClass="form-control pricing-select">
-                                <asp:ListItem Text="Select Tier..." Value=""></asp:ListItem>
+                            <asp:DropDownList ID="DropDownList_CustomerType" AutoPostBack="true" runat="server" CssClass="form-control pricing-select">
                                 <asp:ListItem Text="Guest / Walk-In" Value="GUEST"></asp:ListItem>
                                 <asp:ListItem Text="Member" Value="MEMBER"></asp:ListItem>
                             </asp:DropDownList>
@@ -44,13 +44,13 @@
                             <label>
                                 Duration <span class="required-badge">*</span>
                             </label>
-                            
+
                             <!-- Hours and Minutes Inputs -->
                             <div class="duration-input-group">
                                 <div class="duration-input-item">
                                     <label for="TextBox_Hours" class="duration-label">Hours</label>
-                                    <asp:TextBox ID="TextBox_Hours" runat="server" TextMode="Number" 
-                                        CssClass="form-control pricing-input duration-input" 
+                                    <asp:TextBox ID="TextBox_Hours" runat="server" TextMode="Number"
+                                        CssClass="form-control pricing-input duration-input"
                                         placeholder="0" min="0" max="24"></asp:TextBox>
                                 </div>
 
@@ -60,15 +60,16 @@
 
                                 <div class="duration-input-item">
                                     <label for="TextBox_Minutes_Only" class="duration-label">Minutes</label>
-                                    <asp:TextBox ID="TextBox_Minutes_Only" runat="server" TextMode="Number" 
-                                        CssClass="form-control pricing-input duration-input" 
+                                    <asp:TextBox ID="TextBox_Minutes_Only" runat="server" TextMode="Number"
+                                        CssClass="form-control pricing-input duration-input"
                                         placeholder="0" min="0" max="59"></asp:TextBox>
                                 </div>
                             </div>
 
                             <!-- Total Minutes Display -->
                             <div class="helper-text" style="margin-top: 12px;">
-                                <i class="fa fa-clock"></i> Total Duration: 
+                                <i class="fa fa-clock"></i>Total Duration: 
+                               
                                 <span id="TotalDurationDisplay" class="value-highlight">0 mins</span>
                                 <span id="TotalMinutesValue" class="value-highlight" style="display: none;">0</span>
                             </div>
@@ -82,7 +83,7 @@
                             <div class="input-group-with-helper">
                                 <div class="price-input-wrapper">
                                     <span class="currency-symbol">₱</span>
-                                    <asp:TextBox ID="TextBox_Price" runat="server" TextMode="Number" CssClass="form-control pricing-input" 
+                                    <asp:TextBox ID="TextBox_Price" runat="server" TextMode="Number" CssClass="form-control pricing-input"
                                         placeholder="0.00" step="0.01" min="0"></asp:TextBox>
                                 </div>
                                 <div class="helper-text">
@@ -93,11 +94,11 @@
 
                         <!-- Action Buttons -->
                         <div class="form-actions">
-                            <asp:LinkButton ID="LinkButton_Cancel" OnClick="LinkButton_Cancel_Click" 
+                            <asp:LinkButton ID="LinkButton_Cancel" OnClick="LinkButton_Cancel_Click"
                                 CssClass="btn btn-secondary" runat="server">
                                 <i class="fa fa-times-circle"></i> Clear
                             </asp:LinkButton>
-                            <asp:LinkButton ID="LinkButton_Submit" OnClick="LinkButton_Submit_Click" 
+                            <asp:LinkButton ID="LinkButton_Submit" OnClick="LinkButton_Submit_Click"
                                 CssClass="btn btn-primary btn-lg" OnClientClick="return ValidatePricing();" runat="server">
                                 <i class="fa fa-save"></i> Save Rule
                             </asp:LinkButton>
@@ -107,8 +108,10 @@
                     <!-- Quick Reference -->
                     <div class="quick-reference">
                         <h3>💡 Quick Reference</h3>
-                        <p>Set price points at key intervals (30 min, 1 hr, 1.5 hrs, etc). 
-                           The system automatically calculates intermediate prices.</p>
+                        <p>
+                            Set price points at key intervals (30 min, 1 hr, 1.5 hrs, etc). 
+                           The system automatically calculates intermediate prices.
+                        </p>
                         <div class="reference-example">
                             <strong>Example Input:</strong>
                             <ul>
@@ -128,17 +131,18 @@
                     <div class="grid-card">
                         <div class="grid-header">
                             <h2 class="grid-title">
-                                <i class="fa-solid fa-list"></i> Existing Rules
+                                <i class="fa-solid fa-list"></i>Existing Rules
                             </h2>
-                            <span class="grid-count">
-                                Total: <strong id="RuleCount">0</strong> rules
+                            <span class="grid-count">Total: <strong id="RuleCount">
+                                <asp:Label ID="Label_TotalRules" runat="server" Text="0"></asp:Label>
+                            </strong>rules
                             </span>
                         </div>
 
                         <!-- Grid Container with scroll -->
                         <div class="bnet-table-container pricing-grid-container">
-                            <asp:GridView ID="GridView_Pricing" runat="server" AutoGenerateColumns="False" GridLines="None" 
-                                CssClass="bnet-table pricing-table" OnRowCommand="GridView_Pricing_RowCommand" 
+                            <asp:GridView ID="GridView_Pricing" runat="server" AutoGenerateColumns="False" GridLines="None"
+                                CssClass="bnet-table pricing-table" OnRowCommand="GridView_Pricing_RowCommand"
                                 OnDataBound="GridView_Pricing_DataBound">
                                 <Columns>
 
@@ -152,7 +156,7 @@
                                         </ItemTemplate>
                                     </asp:TemplateField>
 
-       
+
                                     <asp:TemplateField HeaderText="Duration">
                                         <HeaderStyle Width="30%" CssClass="header-cell" />
                                         <ItemStyle Width="30%" CssClass="cell-duration" />
@@ -160,8 +164,7 @@
                                             <span class="duration-value">
                                                 <%# FormatDuration(int.Parse(Eval("DBMinutes").ToString())) %>
                                             </span>
-                                            <span class="duration-minutes" style="display: block; font-size: 11px; color: var(--text-light-secondary); margin-top: 4px;">
-                                                (<%# Eval("DBMinutes") %> mins)
+                                            <span class="duration-minutes" style="display: block; font-size: 11px; color: var(--text-light-secondary); margin-top: 4px;">(<%# Eval("DBMinutes") %> mins)
                                             </span>
                                         </ItemTemplate>
                                     </asp:TemplateField>
@@ -170,8 +173,7 @@
                                         <HeaderStyle Width="25%" CssClass="header-cell" />
                                         <ItemStyle Width="25%" CssClass="cell-price" />
                                         <ItemTemplate>
-                                            <span class="price-value">
-                                                ₱ <%# double.Parse(Eval("DBPrice").ToString()).ToString("F2") %>
+                                            <span class="price-value">₱ <%# double.Parse(Eval("DBPrice").ToString()).ToString("F2") %>
                                             </span>
                                         </ItemTemplate>
                                     </asp:TemplateField>
@@ -181,13 +183,13 @@
                                         <ItemStyle Width="25%" CssClass="cell-actions" />
                                         <ItemTemplate>
                                             <div class="action-buttons">
-                                                <asp:LinkButton ID="LinkButton_Edit" runat="server" CommandName="EditRate" 
-                                                    CommandArgument='<%# Eval("DBId") %>' CssClass="btn-action btn-edit" 
+                                                <asp:LinkButton ID="LinkButton_Edit" runat="server" CommandName="EditRate"
+                                                    CommandArgument='<%# Eval("DBId") %>' CssClass="btn-action btn-edit"
                                                     ToolTip="Edit this rule">
                                                     <i class="fa fa-edit"></i>
                                                 </asp:LinkButton>
-                                                <asp:LinkButton ID="LinkButton_Delete" runat="server" CommandName="DeleteRate" 
-                                                    CommandArgument='<%# Eval("DBId") %>' CssClass="btn-action btn-delete" 
+                                                <asp:LinkButton ID="LinkButton_Delete" runat="server" CommandName="DeleteRate"
+                                                    CommandArgument='<%# Eval("DBId") %>' CssClass="btn-action btn-delete"
                                                     OnClientClick="return confirm('Are you sure you want to delete this rule?');"
                                                     ToolTip="Delete this rule">
                                                     <i class="fa fa-trash"></i>
@@ -289,11 +291,11 @@
         margin-bottom: 18px;
     }
 
-    .form-group label {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text-light);
-    }
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
 
     .required-badge {
         color: #ef4444;
@@ -333,11 +335,11 @@
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .duration-input:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
+        .duration-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
 
     .duration-input-separator {
         display: flex;
@@ -362,11 +364,11 @@
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .pricing-select:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
+        .pricing-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
 
     .input-group-with-helper {
         display: flex;
@@ -412,11 +414,11 @@
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .pricing-input:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
+        .pricing-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
 
     /* Form Actions */
     .form-actions {
@@ -427,39 +429,39 @@
         border-top: 1px solid var(--border-light);
     }
 
-    .form-actions .btn {
-        flex: 1;
-        padding: 12px 16px;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: all 0.2s ease;
-    }
+        .form-actions .btn {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
 
-    .form-actions .btn-primary {
-        background-color: var(--primary);
-        color: white;
-        border: none;
-    }
+        .form-actions .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
 
-    .form-actions .btn-primary:hover {
-        background-color: var(--primary-dark);
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
+            .form-actions .btn-primary:hover {
+                background-color: var(--primary-dark);
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            }
 
-    .form-actions .btn-secondary {
-        background-color: var(--bg-light-tertiary);
-        color: var(--text-light);
-        border: 1px solid var(--border-light);
-    }
+        .form-actions .btn-secondary {
+            background-color: var(--bg-light-tertiary);
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
 
-    .form-actions .btn-secondary:hover {
-        background-color: var(--border-light);
-    }
+            .form-actions .btn-secondary:hover {
+                background-color: var(--border-light);
+            }
 
     .btn-lg {
         padding: 14px 24px !important;
@@ -475,16 +477,16 @@
         font-size: 14px;
     }
 
-    .quick-reference h3 {
-        margin: 0 0 12px 0;
-        font-size: 15px;
-        font-weight: 700;
-    }
+        .quick-reference h3 {
+            margin: 0 0 12px 0;
+            font-size: 15px;
+            font-weight: 700;
+        }
 
-    .quick-reference p {
-        margin: 0 0 12px 0;
-        line-height: 1.5;
-    }
+        .quick-reference p {
+            margin: 0 0 12px 0;
+            line-height: 1.5;
+        }
 
     .reference-example {
         background-color: rgba(255, 255, 255, 0.15);
@@ -493,29 +495,29 @@
         margin-top: 12px;
     }
 
-    .reference-example strong {
-        display: block;
-        margin-bottom: 8px;
-    }
+        .reference-example strong {
+            display: block;
+            margin-bottom: 8px;
+        }
 
-    .reference-example ul {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 8px 0;
-    }
+        .reference-example ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 8px 0;
+        }
 
-    .reference-example li {
-        padding: 4px 0;
-        font-size: 13px;
-    }
+        .reference-example li {
+            padding: 4px 0;
+            font-size: 13px;
+        }
 
-    .reference-example em {
-        font-style: italic;
-        opacity: 0.9;
-        display: block;
-        margin-top: 8px;
-        font-size: 12px;
-    }
+        .reference-example em {
+            font-style: italic;
+            opacity: 0.9;
+            display: block;
+            margin-top: 8px;
+            font-size: 12px;
+        }
 
     /* Grid Panel */
     .pricing-grid-panel {
@@ -636,20 +638,20 @@
         color: var(--primary);
     }
 
-    .btn-edit:hover {
-        background-color: var(--primary);
-        color: white;
-    }
+        .btn-edit:hover {
+            background-color: var(--primary);
+            color: white;
+        }
 
     .btn-delete {
         background-color: rgba(239, 68, 68, 0.1);
         color: #ef4444;
     }
 
-    .btn-delete:hover {
-        background-color: #ef4444;
-        color: white;
-    }
+        .btn-delete:hover {
+            background-color: #ef4444;
+            color: white;
+        }
 
     /* Empty State */
     .empty-state {
@@ -662,22 +664,22 @@
         text-align: center;
     }
 
-    .empty-state i {
-        font-size: 48px;
-        color: var(--border-light);
-        margin-bottom: 16px;
-    }
+        .empty-state i {
+            font-size: 48px;
+            color: var(--border-light);
+            margin-bottom: 16px;
+        }
 
-    .empty-state p {
-        margin: 0;
-        font-size: 16px;
-        font-weight: 600;
-    }
+        .empty-state p {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
 
-    .empty-state small {
-        display: block;
-        margin-top: 8px;
-    }
+        .empty-state small {
+            display: block;
+            margin-top: 8px;
+        }
 
     /* Responsive Design */
     @media (max-width: 1200px) {
@@ -723,9 +725,9 @@
             font-size: 12px;
         }
 
-        .pricing-table td {
-            padding: 12px 8px;
-        }
+            .pricing-table td {
+                padding: 12px 8px;
+            }
 
         .duration-input-group {
             grid-template-columns: 1fr;

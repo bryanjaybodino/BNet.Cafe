@@ -144,7 +144,6 @@
     <Content Include="Databases\Queries\Dashboard\TopUpUsers.sql" />
     <Content Include="Databases\Queries\Dashboard\RevenueTrend.sql" />
     <Content Include="Databases\Queries\Dashboard\ComputerUsage.sql" />
-    <Content Include="Databases\Queries\PricingRates\GetByCustomerType.sql" />
     <Content Include="Databases\Queries\PricingRates\DeleteById.sql" />
     <Content Include="Databases\Queries\PricingRates\GetAll.sql" />
     <Content Include="Databases\Queries\PricingRates\GetById.sql" />
