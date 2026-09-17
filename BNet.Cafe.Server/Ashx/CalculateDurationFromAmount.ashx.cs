@@ -1,53 +1,62 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
+using BNet.Cafe.Server.Repositories;
 
 namespace BNet.Cafe.Server.Ashx
 {
     /// <summary>
-    /// Summary description for CalculateDurationFromAmount
+    /// Handler to calculate time duration (minutes) from currency amount (₱).
+    /// Uses database-driven interval pricing with reverse linear interpolation.
     /// </summary>
     public class CalculateDurationFromAmount : IHttpHandler
     {
-
         public void ProcessRequest(HttpContext context)
         {
             context.Response.ContentType = "application/json";
 
-            // Parse currency amount from QueryString (e.g. ?amount=25) or POST body
-            decimal amount = 0m;
-            decimal.TryParse(context.Request["amount"], out amount);
-
-            int totalMinutes = CalculateDuration(amount);
-            string formattedTime = FormatMinutesToHours(totalMinutes);
-
-            var responsePayload = new
+            try
             {
-                amount = amount,
-                formattedAmount = $"₱ {amount:F2}",
-                totalMinutes = totalMinutes,
-                formattedTime = formattedTime
-            };
+                // Parse currency amount from QueryString (e.g. ?amount=25) or POST body
+                decimal amount = 0m;
+                decimal.TryParse(context.Request["amount"], out amount);
 
-            context.Response.Write(JsonConvert.SerializeObject(responsePayload));
+                // Get customer type (default: GUEST)
+                string customerType = context.Request["customerType"] ?? "GUEST";
+
+                // Calculate duration using database intervals
+                int totalMinutes = PricingRates.CalculateDurationFromPrice((double)amount, customerType);
+                string formattedTime = FormatMinutesToHours(totalMinutes);
+
+                var responsePayload = new
+                {
+                    success = true,
+                    amount = amount,
+                    formattedAmount = $"₱ {amount:F2}",
+                    totalMinutes = totalMinutes,
+                    formattedTime = formattedTime,
+                    customerType = customerType
+                };
+
+                context.Response.Write(JsonConvert.SerializeObject(responsePayload));
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new
+                {
+                    success = false,
+                    error = "Failed to calculate duration",
+                    message = ex.Message
+                };
+
+                context.Response.StatusCode = 500;
+                context.Response.Write(JsonConvert.SerializeObject(errorResponse));
+            }
         }
 
-        public static int CalculateDuration(decimal amount)
+        public static int CalculateDuration(decimal amount, string customerType = "GUEST")
         {
-            if (amount <= 0) return 0;
-
-            if (amount <= 5) return (int)Math.Round((amount / 5m) * 15m);
-            if (amount <= 10) return 15 + (int)Math.Round(((amount - 5m) / 5m) * 15m);
-            if (amount <= 15) return 30 + (int)Math.Round(((amount - 10m) / 5m) * 30m);
-            if (amount <= 25) return 60 + (int)Math.Round(((amount - 15m) / 10m) * 60m);
-            if (amount <= 40) return 120 + (int)Math.Round(((amount - 25m) / 15m) * 60m);
-            if (amount <= 50) return 180 + (int)Math.Round(((amount - 40m) / 10m) * 60m);
-
-            decimal extraAmount = amount - 50m;
-            int extraHoursInMins = (int)Math.Round((extraAmount / 10m) * 60m);
-            return 240 + extraHoursInMins;
+            return PricingRates.CalculateDurationFromPrice((double)amount, customerType);
         }
 
         private string FormatMinutesToHours(int totalMinutes)

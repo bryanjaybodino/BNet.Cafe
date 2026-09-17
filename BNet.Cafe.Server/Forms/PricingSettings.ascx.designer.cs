@@ -33,6 +33,15 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.HiddenField HiddenField_PriceId;
 
         /// <summary>
+        /// HiddenField_TotalMinutes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField HiddenField_TotalMinutes;
+
+        /// <summary>
         /// DropDownList_CustomerType control.
         /// </summary>
         /// <remarks>
@@ -42,13 +51,22 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.DropDownList DropDownList_CustomerType;
 
         /// <summary>
-        /// TextBox_Minutes control.
+        /// TextBox_Hours control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox_Minutes;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Hours;
+
+        /// <summary>
+        /// TextBox_Minutes_Only control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Minutes_Only;
 
         /// <summary>
         /// TextBox_Price control.
