@@ -48,6 +48,10 @@ namespace BNet.Cafe.Server.Forms.Modals
                             if (rental.Rows.Count > 0)
                             {
                                 billing = Convert.ToDouble(rental.Rows[0]["DBAmount"].ToString());
+                                if (billing == 0)
+                                {
+                                    billing = CalculateAmountFromDuration.CalculatePrice((int)duration.TotalMinutes);
+                                }
                             }
                             else
                             {
