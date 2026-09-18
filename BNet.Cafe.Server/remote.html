@@ -351,7 +351,7 @@
 
 
 
-        var ws = null, wsReady = false, _encoder = new TextEncoder();
+        var ws = null, wsReady = false, _encoder = new TextEncoder(), _decoder = new TextDecoder('utf-8');
         function connectWS() {
             var endpoint = 'ws://' + window.location.hostname + ':2050/ws/browser';
             ws = new WebSocket(endpoint);
@@ -369,6 +369,19 @@
                     // Always overwrite with the LATEST frame and drop queued frame
                     pendingFrame = evt.data;
                 }
+           
+                try {
+                    const jsonString = _decoder.decode(view.subarray(1));
+                    const data = JSON.parse(jsonString);
+
+                    // Get screenCount (with a fallback to 1 if it doesn't exist)
+                    if (data.screenCount !== undefined) {
+                        screenCount = parseInt(data.screenCount, 10) || 1;
+                        renderTabs(); // Re-render the UI tabs for multiple screens
+                    }
+                } catch (err) {
+                }
+
             };
             ws.onclose = function () { wsReady = false; setTimeout(connectWS, 3000); };
         }
