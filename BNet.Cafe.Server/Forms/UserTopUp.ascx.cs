@@ -1,4 +1,5 @@
 ﻿using BNet.Cafe.Server.Ashx;
+using BNet.Cafe.Server.ConstantData;
 using BNet.Cafe.Server.Repositories;
 using BNet.Cafe.Server.Services;
 using System;
@@ -46,6 +47,17 @@ namespace BNet.Cafe.Server.Forms
                     AlertService.ShowAlert(this, "This account is admin no need to top-up", "warning");
                     Panel_Form.Enabled = false;
                     LinkButton_Submit.Visible = false;
+                    return;
+                }
+
+                var pricingRates = new Repositories.PricingRates();
+                var data = pricingRates.GetAll(UserType.User, 0);
+                if (data.Rows.Count == 0)
+                {
+                    AlertService.ShowAlert(this, "No active pricing configuration found on your pricing settings. Please contact support if this issue persists.", "danger");
+                    Panel_Form.Enabled = false;
+                    LinkButton_Submit.Visible = false;
+                    return;
                 }
             }
             else

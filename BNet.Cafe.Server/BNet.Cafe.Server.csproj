@@ -231,6 +231,7 @@
     <Compile Include="Callback.aspx.designer.cs">
       <DependentUpon>Callback.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ConstantData\UserType.cs" />
     <Compile Include="ConstantData\RentalCommand.cs" />
     <Compile Include="Databases\DBContext.cs" />
     <Compile Include="Databases\DBMigration.cs" />

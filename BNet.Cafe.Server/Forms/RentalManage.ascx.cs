@@ -1,5 +1,7 @@
-﻿using BNet.Cafe.Server.Services;
+﻿using BNet.Cafe.Server.ConstantData;
+using BNet.Cafe.Server.Services;
 using Newtonsoft.Json; // Ensure Newtonsoft.Json is referenced
+using Newtonsoft.Json.Linq;
 using System;
 using System.Web.UI;
 
@@ -43,6 +45,24 @@ namespace BNet.Cafe.Server.Forms
                             HiddenField_InitialDuration.Value = duration;
                             HiddenField_InitialAmount.Value = string.IsNullOrEmpty(dbAmount) ? "0.00" : dbAmount;
                             DropDownList_Customer.SelectedValue = userId;
+
+                            var userType = int.TryParse(userId, out _) ? UserType.User : UserType.Guest;
+                            var pricingRates = new Repositories.PricingRates();
+                            var data = pricingRates.GetAll(userType, 0);
+
+                            if (data.Rows.Count == 0)
+                            {
+                                DisableFormAndShowAlert("No active pricing configuration found on your pricing settings. Please contact support if this issue persists.");
+                            }
+                            void DisableFormAndShowAlert(string alertMessage)
+                            {
+                                Label_Status.CssClass = "bnet-badge-status gray";
+                                Panel_Form.Enabled = false;
+                                Panel_Buttons.Visible = false;
+                                Label_HeaderText.Text = "Pricing Unavailable";
+                                AlertService.ShowAlert(this, alertMessage, "danger");
+                            }
+
                         }
                         Label_Status.CssClass = "bnet-badge-status red";
                     }
