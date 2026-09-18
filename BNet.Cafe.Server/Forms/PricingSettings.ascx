@@ -7,17 +7,25 @@
 
         <div class="pricing-settings-wrapper">
             <!-- Header Section -->
-            <div class="pricing-header">
-                <div>
-                    <h1 class="pricing-title">
-                        <i class="fa-solid fa-tags"></i>Pricing Intervals
-                    </h1>
-                    <p class="pricing-subtitle">
-                        Define pricing tiers based on duration. The system will interpolate prices between intervals.
-                   
-                    </p>
-                </div>
-            </div>
+                    <!-- Quick Reference -->
+                    <div class="quick-reference">
+                        <h3>💡 Quick Reference</h3>
+                        <p>
+                            Set price points at key intervals (30 min, 1 hr, 1.5 hrs, etc). 
+                           The system automatically calculates intermediate prices.
+                        </p>
+                        <div class="reference-example">
+                            <strong>Example Input:</strong>
+                            <ul>
+                                <li>0 hours + 30 minutes → ₱10.00</li>
+                                <li>1 hour + 0 minutes → ₱15.00</li>
+                                <li>1 hour + 30 minutes → ₱20.00</li>
+                                <li>2 hours + 0 minutes → ₱25.00</li>
+                                <li>4 hours + 0 minutes → ₱50.00</li>
+                            </ul>
+                            <em>45 mins will auto-calculate to ₱12.50</em>
+                        </div>
+                    </div>
 
             <!-- Main Content Grid -->
             <div class="pricing-container">
@@ -102,26 +110,6 @@
                                 CssClass="btn btn-primary btn-lg" OnClientClick="return ValidatePricing();" runat="server">
                                 <i class="fa fa-save"></i> Save Rule
                             </asp:LinkButton>
-                        </div>
-                    </div>
-
-                    <!-- Quick Reference -->
-                    <div class="quick-reference">
-                        <h3>💡 Quick Reference</h3>
-                        <p>
-                            Set price points at key intervals (30 min, 1 hr, 1.5 hrs, etc). 
-                           The system automatically calculates intermediate prices.
-                        </p>
-                        <div class="reference-example">
-                            <strong>Example Input:</strong>
-                            <ul>
-                                <li>0 hours + 30 minutes → ₱10.00</li>
-                                <li>1 hour + 0 minutes → ₱15.00</li>
-                                <li>1 hour + 30 minutes → ₱20.00</li>
-                                <li>2 hours + 0 minutes → ₱25.00</li>
-                                <li>4 hours + 0 minutes → ₱50.00</li>
-                            </ul>
-                            <em>45 mins will auto-calculate to ₱12.50</em>
                         </div>
                     </div>
                 </div>
@@ -221,9 +209,13 @@
         display: flex;
         flex-direction: column;
         gap: 24px;
-        padding: 20px;
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-top:20px;
         background-color: var(--bg-light);
         border-radius: 12px;
+        box-sizing: border-box;
+        width: 100%;
     }
 
     .pricing-header {
@@ -270,6 +262,7 @@
         border-radius: 12px;
         padding: 24px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box;
     }
 
     .form-section-title {
@@ -291,11 +284,11 @@
         margin-bottom: 18px;
     }
 
-        .form-group label {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-light);
-        }
+    .form-group label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-light);
+    }
 
     .required-badge {
         color: #ef4444;
@@ -332,14 +325,16 @@
         color: var(--text-light);
         font-size: 14px;
         font-weight: 600;
+        width: 100%;
+        box-sizing: border-box;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-        .duration-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
+    .duration-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
 
     .duration-input-separator {
         display: flex;
@@ -361,14 +356,16 @@
         background-color: var(--bg-light-secondary);
         color: var(--text-light);
         font-size: 14px;
+        width: 100%;
+        box-sizing: border-box;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-        .pricing-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
+    .pricing-select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
 
     .input-group-with-helper {
         display: flex;
@@ -390,6 +387,7 @@
         display: flex;
         align-items: center;
         position: relative;
+        width: 100%;
     }
 
     .currency-symbol {
@@ -398,6 +396,7 @@
         font-size: 16px;
         font-weight: 600;
         color: var(--text-light-secondary);
+        pointer-events: none;
     }
 
     .price-input-wrapper .pricing-input {
@@ -411,14 +410,16 @@
         background-color: var(--bg-light-secondary);
         color: var(--text-light);
         font-size: 14px;
+        width: 100%;
+        box-sizing: border-box;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-        .pricing-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
+    .pricing-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
 
     /* Form Actions */
     .form-actions {
@@ -429,39 +430,41 @@
         border-top: 1px solid var(--border-light);
     }
 
-        .form-actions .btn {
-            flex: 1;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-        }
+    .form-actions .btn {
+        flex: 1;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        box-sizing: border-box;
+    }
 
-        .form-actions .btn-primary {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-        }
+    .form-actions .btn-primary {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+    }
 
-            .form-actions .btn-primary:hover {
-                background-color: var(--primary-dark);
-                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-            }
+    .form-actions .btn-primary:hover {
+        background-color: var(--primary-dark);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
 
-        .form-actions .btn-secondary {
-            background-color: var(--bg-light-tertiary);
-            color: var(--text-light);
-            border: 1px solid var(--border-light);
-        }
+    .form-actions .btn-secondary {
+        background-color: var(--bg-light-tertiary);
+        color: var(--text-light);
+        border: 1px solid var(--border-light);
+    }
 
-            .form-actions .btn-secondary:hover {
-                background-color: var(--border-light);
-            }
+    .form-actions .btn-secondary:hover {
+        background-color: var(--border-light);
+    }
 
     .btn-lg {
         padding: 14px 24px !important;
@@ -475,18 +478,19 @@
         border-radius: 12px;
         padding: 20px;
         font-size: 14px;
+        box-sizing: border-box;
     }
 
-        .quick-reference h3 {
-            margin: 0 0 12px 0;
-            font-size: 15px;
-            font-weight: 700;
-        }
+    .quick-reference h3 {
+        margin: 0 0 12px 0;
+        font-size: 15px;
+        font-weight: 700;
+    }
 
-        .quick-reference p {
-            margin: 0 0 12px 0;
-            line-height: 1.5;
-        }
+    .quick-reference p {
+        margin: 0 0 12px 0;
+        line-height: 1.5;
+    }
 
     .reference-example {
         background-color: rgba(255, 255, 255, 0.15);
@@ -495,34 +499,35 @@
         margin-top: 12px;
     }
 
-        .reference-example strong {
-            display: block;
-            margin-bottom: 8px;
-        }
+    .reference-example strong {
+        display: block;
+        margin-bottom: 8px;
+    }
 
-        .reference-example ul {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 8px 0;
-        }
+    .reference-example ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 8px 0;
+    }
 
-        .reference-example li {
-            padding: 4px 0;
-            font-size: 13px;
-        }
+    .reference-example li {
+        padding: 4px 0;
+        font-size: 13px;
+    }
 
-        .reference-example em {
-            font-style: italic;
-            opacity: 0.9;
-            display: block;
-            margin-top: 8px;
-            font-size: 12px;
-        }
+    .reference-example em {
+        font-style: italic;
+        opacity: 0.9;
+        display: block;
+        margin-top: 8px;
+        font-size: 12px;
+    }
 
     /* Grid Panel */
     .pricing-grid-panel {
         display: flex;
         flex-direction: column;
+        min-width: 0; /* Prevents flex children from bursting out of grid bounds */
     }
 
     .grid-card {
@@ -534,6 +539,7 @@
         flex-direction: column;
         gap: 16px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box;
     }
 
     .grid-header {
@@ -565,21 +571,9 @@
     /* Pricing Table Customizations */
     .pricing-grid-container {
         min-height: auto;
-        max-height: 550px;
-    }
-
-    .pricing-table th {
-        background-color: var(--bg-light-tertiary);
-        color: var(--text-light-secondary);
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 12px;
-        letter-spacing: 0.5px;
-    }
-
-    .pricing-table td {
-        padding: 16px;
-        vertical-align: middle;
+        max-height: 420px;
+        overflow-x: auto; /* Keeps horizontal scroll enabled for long table rows on small screens */
+        -webkit-overflow-scrolling: touch;
     }
 
     .tier-badge {
@@ -590,6 +584,7 @@
         border-radius: 20px;
         font-size: 12px;
         font-weight: 600;
+        white-space: nowrap;
     }
 
     .duration-value {
@@ -608,6 +603,7 @@
         font-size: 16px;
         font-weight: 700;
         color: var(--primary);
+        white-space: nowrap;
     }
 
     .cell-actions {
@@ -631,6 +627,7 @@
         cursor: pointer;
         font-size: 14px;
         transition: all 0.2s ease;
+        text-decoration: none;
     }
 
     .btn-edit {
@@ -638,20 +635,20 @@
         color: var(--primary);
     }
 
-        .btn-edit:hover {
-            background-color: var(--primary);
-            color: white;
-        }
+    .btn-edit:hover {
+        background-color: var(--primary);
+        color: white;
+    }
 
     .btn-delete {
         background-color: rgba(239, 68, 68, 0.1);
         color: #ef4444;
     }
 
-        .btn-delete:hover {
-            background-color: #ef4444;
-            color: white;
-        }
+    .btn-delete:hover {
+        background-color: #ef4444;
+        color: white;
+    }
 
     /* Empty State */
     .empty-state {
@@ -664,24 +661,24 @@
         text-align: center;
     }
 
-        .empty-state i {
-            font-size: 48px;
-            color: var(--border-light);
-            margin-bottom: 16px;
-        }
+    .empty-state i {
+        font-size: 48px;
+        color: var(--border-light);
+        margin-bottom: 16px;
+    }
 
-        .empty-state p {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 600;
-        }
+    .empty-state p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
 
-        .empty-state small {
-            display: block;
-            margin-top: 8px;
-        }
+    .empty-state small {
+        display: block;
+        margin-top: 8px;
+    }
 
-    /* Responsive Design */
+    /* Responsive Design Adjustments */
     @media (max-width: 1200px) {
         .pricing-container {
             grid-template-columns: 1fr;
@@ -693,9 +690,11 @@
     }
 
     @media (max-width: 768px) {
-        .pricing-settings-wrapper {
-            padding: 12px;
-            gap: 16px;
+
+
+        .pricing-header {
+            flex-direction: column;
+            gap: 8px;
         }
 
         .pricing-title {
@@ -704,6 +703,7 @@
 
         .pricing-container {
             gap: 16px;
+            min-height: auto;
         }
 
         .form-card,
@@ -715,30 +715,54 @@
             flex-direction: column;
         }
 
+        .form-actions .btn {
+            width: 100%;
+            padding: 14px 16px; /* Larger tap targets */
+        }
+
         .grid-header {
-            flex-direction: column;
-            align-items: flex-start;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
             gap: 12px;
         }
 
-        .pricing-table {
-            font-size: 12px;
-        }
-
-            .pricing-table td {
-                padding: 12px 8px;
-            }
-
         .duration-input-group {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr auto 1fr; /* Keeps input fields side-by-side on mobile */
+            gap: 8px;
         }
 
         .duration-input-separator {
-            display: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding-top: 18px; /* Corrects alignment with text labels */
+        }
+
+        .btn-action {
+            width: 40px;
+            height: 40px; /* Touch-optimized size */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .form-card,
+        .grid-card,
+        .quick-reference {
+            padding: 14px 10px;
+        }
+
+        .duration-input {
+            padding: 10px 8px;
+            font-size: 13px;
+        }
+
+        .pricing-title {
+            font-size: 20px;
         }
     }
 </style>
-
 <!-- JavaScript for Duration Conversion -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
