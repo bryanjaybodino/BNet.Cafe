@@ -40,7 +40,7 @@
                 <!-- Left: Form Panel -->
                 <div class="pricing-form-panel">
                     <div class="form-card">
-                        <h2 class="form-section-title">
+                        <h2 class="form-section-title" style="padding-bottom:25px">
                             <i class="fa-solid fa-plus-circle"></i>Add/Edit Pricing Rule
                         </h2>
 
@@ -49,7 +49,7 @@
                             <label for="DropDownList_CustomerType">
                                 Customer Tier <span class="required-badge">*</span>
                             </label>
-                            <asp:DropDownList ID="DropDownList_CustomerType" AutoPostBack="true" runat="server" CssClass="form-control pricing-select">
+                            <asp:DropDownList ID="DropDownList_CustomerType" AutoPostBack="true" runat="server" CssClass="form-control bnet-select">
                                 <asp:ListItem Text="Guest / Walk-In" Value="GUEST / WALK-IN"></asp:ListItem>
                                 <asp:ListItem Text="Member" Value="USER"></asp:ListItem>
                             </asp:DropDownList>
@@ -119,6 +119,9 @@
                                 <i class="fa fa-save"></i> Save Rule
                             </asp:LinkButton>
                         </div>
+                        <br />
+                        <br />
+                        <br />
                     </div>
                 </div>
 
@@ -138,8 +141,7 @@
                         <!-- Grid Container with scroll -->
                         <div class="bnet-table-container pricing-grid-container">
                             <asp:GridView ID="GridView_Pricing" runat="server" AutoGenerateColumns="False" GridLines="None"
-                                CssClass="bnet-table pricing-table" OnRowCommand="GridView_Pricing_RowCommand"
-                                OnDataBound="GridView_Pricing_DataBound">
+                                CssClass="bnet-table pricing-table">
                                 <Columns>
 
                                     <asp:TemplateField HeaderText="Tier">
@@ -173,19 +175,27 @@
                                             </span>
                                         </ItemTemplate>
                                     </asp:TemplateField>
-
-                                    <asp:TemplateField HeaderText="Actions" HeaderStyle-Width="25%">
+                                    <asp:TemplateField HeaderText="Actions">
                                         <HeaderStyle Width="25%" CssClass="header-cell" />
                                         <ItemStyle Width="25%" CssClass="cell-actions" />
                                         <ItemTemplate>
                                             <div class="action-buttons">
-                                                <asp:LinkButton ID="LinkButton_Edit" runat="server" CommandName="EditRate"
-                                                    CommandArgument='<%# Eval("DBId") %>' CssClass="btn-action btn-edit"
-                                                    ToolTip="Edit this rule">
-                                                        <i class="fa fa-edit"></i>
-                                                    </asp:LinkButton>
+                                                <!-- Pure JS Edit Button -->
+                                                <button type="button"
+                                                    class="btn-action btn-edit"
+                                                    title="Edit this rule"
+                                                    data-id='<%# Eval("DBId") %>'
+                                                    data-tier='<%# Eval("DBCustomerType") %>'
+                                                    data-minutes='<%# Eval("DBMinutes") %>'
+                                                    data-price='<%# Eval("DBPrice") %>'
+                                                    onclick="editPricingRule(this)">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
 
-                                                <button type="button" class="btn-action btn-delete" title="Delete this rule"
+                                                <!-- Pure JS Delete Button -->
+                                                <button type="button"
+                                                    class="btn-action btn-delete"
+                                                    title="Delete this rule"
                                                     onclick="openPricingDeleteModal('<%# Eval("DBId") %>', '<%# FormatCustomerType(Eval("DBCustomerType").ToString()) %> - <%# FormatDuration(int.Parse(Eval("DBMinutes").ToString())) %>')">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -206,6 +216,6 @@
                 </div>
             </div>
         </div>
-        <uc1:PricingSettingDelete runat="server" id="PricingSettingDelete" />
+        <uc1:PricingSettingDelete runat="server" ID="PricingSettingDelete" />
     </ContentTemplate>
 </asp:UpdatePanel>

@@ -67,59 +67,11 @@ namespace BNet.Cafe.Server.Forms
             }
         }
 
-        protected void GridView_Pricing_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            if (e.CommandName == "EditRate")
-            {
-                string priceId = e.CommandArgument.ToString();
-                DataTable dt = pricingRepository.GetById(priceId);
-
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    DataRow row = dt.Rows[0];
-                    int totalMins = Convert.ToInt32(row["DBMinutes"]);
-
-                    HiddenField_PriceId.Value = row["DBId"].ToString();
-                    DropDownList_CustomerType.SelectedValue = row["DBCustomerType"].ToString();
-
-                    // Split stored minutes into Hours and Minutes controls
-                    TextBox_Hours.Text = (totalMins / 60).ToString();
-                    TextBox_Minutes_Only.Text = (totalMins % 60).ToString();
-                    TextBox_Price.Text = row["DBPrice"].ToString();
-
-                    LinkButton_Submit.Text = "<i class=\"fa fa-save\"></i> Update Rule";
-                }
-            }
-            else if (e.CommandName == "DeleteRate")
-            {
-                string priceId = e.CommandArgument.ToString();
-                bool isDeleted = pricingRepository.Delete(priceId);
-
-                if (isDeleted)
-                {
-                    ClearForm();
-                    AlertService.ShowAlert(UpdatePanel1, "Pricing rule deleted successfully.", "success");
-                }
-                else
-                {
-                    AlertService.ShowAlert(UpdatePanel1, "Failed to delete pricing rule.", "error");
-                }
-            }
-        }
 
         protected void LinkButton_Cancel_Click(object sender, EventArgs e)
         {
             ClearForm();
         }
-
-        protected void GridView_Pricing_DataBound(object sender, EventArgs e)
-        {
-            // Update rule count
-            int count = GridView_Pricing.Rows.Count;
-            // Note: You'll need to add a ScriptManager on the page and use ClientScript to update the count
-            // Or simply let the Grid display show the count via UpdatePanel
-        }
-
         private void ClearForm()
         {
             HiddenField_PriceId.Value = "0";

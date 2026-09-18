@@ -365,7 +365,7 @@
 /* Pricing Table Customizations */
 .pricing-grid-container {
     min-height: auto;
-    max-height: 420px;
+    max-height: 490px;
     overflow-x: auto; /* Keeps horizontal scroll enabled for long table rows on small screens */
     -webkit-overflow-scrolling: touch;
 }

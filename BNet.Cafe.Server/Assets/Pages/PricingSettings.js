@@ -163,3 +163,40 @@ function ValidatePricing() {
 
     return true;
 }
+
+
+
+
+function editPricingRule(buttonElement) {
+    // 1. Extract data attributes from clicked button
+    const id = buttonElement.getAttribute('data-id');
+    const tier = buttonElement.getAttribute('data-tier');
+    const totalMinutes = parseInt(buttonElement.getAttribute('data-minutes')) || 0;
+    const price = buttonElement.getAttribute('data-price');
+
+    // 2. Select form controls
+    const hiddenId = document.querySelector('[id$="HiddenField_PriceId"]');
+    const ddlTier = document.querySelector('[id$="DropDownList_CustomerType"]');
+    const txtHours = document.querySelector('[id$="TextBox_Hours"]');
+    const txtMinutes = document.querySelector('[id$="TextBox_Minutes_Only"]');
+    const txtPrice = document.querySelector('[id$="TextBox_Price"]');
+    const btnSubmit = document.querySelector('[id$="LinkButton_Submit"]');
+
+    // 3. Populate form controls
+    if (hiddenId) hiddenId.value = id;
+    if (ddlTier) ddlTier.value = tier;
+
+    // Split total minutes into Hours and Minutes
+    if (txtHours) txtHours.value = Math.floor(totalMinutes / 60);
+    if (txtMinutes) txtMinutes.value = totalMinutes % 60;
+    if (txtPrice) txtPrice.value = parseFloat(price).toFixed(2);
+
+    // 4. Update submit button text
+    if (btnSubmit) {
+        btnSubmit.innerHTML = '<i class="fa fa-save"></i> Update Rule';
+    }
+
+    // 5. Trigger input events to refresh duration & price display calculations
+    if (txtHours) txtHours.dispatchEvent(new Event('input'));
+    if (txtPrice) txtPrice.dispatchEvent(new Event('input'));
+}

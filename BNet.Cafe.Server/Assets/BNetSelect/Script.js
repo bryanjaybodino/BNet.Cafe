@@ -147,21 +147,21 @@ class BNetSelect {
         this.displayedCount += nextBatch.length;
     }
 
-    selectItem(value, label) {
+    selectItem(value, label, triggerChange = true) {
         this.selectedValue = value;
         this.selectedText = label;
 
         this.valueText.textContent = label;
         this.valueText.classList.remove('bnet-select-placeholder');
 
-        // Update CSS state in DOM
         this.optionsList.querySelectorAll('.bnet-select-option').forEach(el => {
             el.classList.toggle('selected', el.dataset.value === String(value));
         });
 
         this.close();
 
-        if (typeof this.onChange === 'function') {
+        // Only fire onChange if explicitly allowed
+        if (triggerChange && typeof this.onChange === 'function') {
             this.onChange({ value, label });
         }
     }
@@ -206,10 +206,8 @@ function initBNetSelects(selector = 'select.bnet-select') {
     const selectElements = document.querySelectorAll(selector);
 
     selectElements.forEach((aspSelect) => {
-        // Prevent duplicate initializations
         if (aspSelect.dataset.bnetSelectInitialized === "true") return;
 
-        // 1. Extract data and initial selection from native <select> options
         const extractedData = [];
         const initialSelectedValue = aspSelect.value;
         const placeholder = aspSelect.getAttribute('data-placeholder') ||
@@ -224,43 +222,41 @@ function initBNetSelects(selector = 'select.bnet-select') {
             }
         });
 
-        // 2. Hide the native select instead of clearing its options
         aspSelect.style.display = 'none';
 
-        // 3. Dynamically create and insert the UI container element right after the native select
         const container = document.createElement('div');
         if (aspSelect.disabled) {
             container.classList.add('disabled');
         }
         aspSelect.parentNode.insertBefore(container, aspSelect.nextSibling);
 
-        // 4. Instantiate BNetSelect
         const vsInstance = new BNetSelect({
             container: container,
             data: extractedData,
             pageSize: 25,
             placeholder: placeholder,
             onChange: function (selected) {
-                // Update native select value so ASP.NET receives it on postback
+                // Prevent trigger if the value hasn't actually changed
+                if (aspSelect.value === selected.value) return;
+
                 aspSelect.value = selected.value;
 
-                // Trigger standard HTML change event if other scripts rely on it
+                // ASP.NET AutoPostBack check:
+                // Dispatching the native 'change' event will trigger ASP.NET's 
+                // inline 'onchange' handler automatically.
                 aspSelect.dispatchEvent(new Event('change', { bubbles: true }));
-
-                // Optional: Uncomment below if instant WebForms PostBack is required:
-                // if (aspSelect.name) __doPostBack(aspSelect.name, '');
             }
         });
 
-        // 5. Sync initial selection state
+        // Sync initial selection state WITHOUT triggering the onChange callback
         if (initialSelectedValue) {
             const existingItem = extractedData.find(item => item.value === initialSelectedValue);
             if (existingItem) {
-                vsInstance.selectItem(existingItem.value, existingItem.label);
+                // Pass 'false' as the 3rd argument to prevent recursive postbacks
+                vsInstance.selectItem(existingItem.value, existingItem.label, false);
             }
         }
 
-        // Mark as initialized and store reference on the DOM element
         aspSelect.dataset.bnetSelectInitialized = "true";
         aspSelect.bnetSelect = vsInstance;
         aspSelect.BNetSelect = vsInstance;
