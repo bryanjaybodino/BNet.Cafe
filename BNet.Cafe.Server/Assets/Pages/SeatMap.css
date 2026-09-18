@@ -1,0 +1,222 @@
+﻿/* ==========================================
+   COMPUTER MAP / FLOOR PLAN LAYOUT
+   ========================================== */
+.map-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-light-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+.map-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+    .status-dot.green {
+        background-color: #10b981;
+    }
+
+    .status-dot.red {
+        background-color: #ef4444;
+    }
+
+    .status-dot.yellow {
+        background-color: #f59e0b;
+    }
+
+    .status-dot.gray {
+        background-color: #64748b;
+    }
+
+.map-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.zoom-controls, .history-controls {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-light-tertiary);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    padding: 2px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .action-btn:hover:not(:disabled) {
+        background-color: var(--border-light);
+    }
+
+    .action-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+.zoom-display {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0 8px;
+    min-width: 45px;
+    text-align: center;
+}
+
+.floor-plan-container {
+    position: relative;
+    width: 100%;
+    height: 650px;
+    background-color: var(--bg-light-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    overflow: hidden;
+    user-select: none;
+}
+
+.floor-plan-viewport {
+    position: absolute;
+    width: 3000px;
+    height: 3000px;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    background-image: radial-gradient(var(--border-light) 1px, transparent 0);
+    background-size: 20px 20px;
+}
+
+.seat-card {
+    position: absolute;
+    width: 110px;
+    height: 90px;
+    background-color: var(--bg-light-tertiary);
+    border: 2px solid var(--border-light);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: box-shadow 0.1s ease;
+    z-index: 2;
+}
+
+    .seat-card.edit-mode {
+        cursor: grab;
+        border-style: dashed;
+    }
+
+        .seat-card.edit-mode:active {
+            cursor: grabbing;
+        }
+
+    .seat-card.selected {
+        outline: 2px solid #3b82f6 !important;
+        outline-offset: 3px;
+        box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+    }
+
+    .seat-card .seat-icon {
+        font-size: 22px;
+        margin-bottom: 4px;
+    }
+
+    .seat-card .seat-name {
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .seat-card .seat-status {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    /* Status variants */
+    .seat-card.available {
+        background-color: #10b981;
+        border-color: #059669;
+        color: #ffffff;
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.25);
+    }
+
+    .seat-card.occupied {
+        background-color: #ef4444;
+        border-color: #dc2626;
+        color: #ffffff;
+        box-shadow: 0 0 8px rgba(239, 68, 68, 0.25);
+    }
+
+    .seat-card.paused {
+        background-color: #f59e0b;
+        border-color: #d97706;
+        color: #ffffff;
+        box-shadow: 0 0 8px rgba(245, 158, 11, 0.25);
+    }
+
+    .seat-card.offline {
+        background-color: rgba(100, 116, 139, 0.08);
+        border-color: #64748b;
+        color: #64748b;
+    }
+
+/* Selection Box & Alignment Lines */
+.selection-box {
+    position: absolute;
+    border: 1px dashed #3b82f6;
+    background-color: rgba(59, 130, 246, 0.15);
+    pointer-events: none;
+    z-index: 10;
+    display: none;
+}
+
+.guide-line {
+    position: absolute;
+    background-color: #ef4444;
+    z-index: 9;
+    pointer-events: none;
+    display: none;
+}
+
+    .guide-line.v-line {
+        width: 1px;
+        top: 0;
+        bottom: 0;
+    }
+
+    .guide-line.h-line {
+        height: 1px;
+        left: 0;
+        right: 0;
+    }
