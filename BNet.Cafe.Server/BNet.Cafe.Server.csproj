@@ -115,6 +115,8 @@
     <Content Include="Assets\BNetSelect\Style.css" />
     <Content Include="Assets\BNetTable\Style.css" />
     <Content Include="Assets\Pages\Computers.js" />
+    <Content Include="Assets\Pages\PriceSettings.css" />
+    <Content Include="Assets\Pages\PriceSettings.js" />
     <Content Include="Assets\Pages\UserCreate.js" />
     <Content Include="Assets\Pages\UserEdit.js" />
     <Content Include="Assets\Pages\UserTopUp.js" />

@@ -21,7 +21,6 @@ namespace BNet.Cafe.Server.Forms
             GridView_Pricing.DataSource = dt;
             GridView_Pricing.DataBind();
             Label_TotalRules.Text =GridView_Pricing.Rows.Count.ToString();
-            UpdatePanel1.Update();
         }
 
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
@@ -89,7 +88,6 @@ namespace BNet.Cafe.Server.Forms
                     TextBox_Price.Text = row["DBPrice"].ToString();
 
                     LinkButton_Submit.Text = "<i class=\"fa fa-save\"></i> Update Rule";
-                    UpdatePanel1.Update();
                 }
             }
             else if (e.CommandName == "DeleteRate")
@@ -112,7 +110,6 @@ namespace BNet.Cafe.Server.Forms
         protected void LinkButton_Cancel_Click(object sender, EventArgs e)
         {
             ClearForm();
-            UpdatePanel1.Update();
         }
 
         protected void GridView_Pricing_DataBound(object sender, EventArgs e)

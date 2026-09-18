@@ -11,11 +11,13 @@ function calculateDurationFromAmountBackend(amount) {
         return;
     }
 
+    var customerType = getCustomerType();
+
     var endpoint = /\.aspx$/i.test(window.location.pathname)
         ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateDurationFromAmount.ashx')
         : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateDurationFromAmount.ashx');
 
-    fetch(endpoint + '?amount=' + amount)
+    fetch(endpoint + '?amount=' + amount + '&customerType=' + encodeURIComponent(customerType))
         .then(function (response) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -64,11 +66,13 @@ function calculateRentalPriceBackend(totalMinutes) {
         return;
     }
 
+    var customerType = getCustomerType();
+
     var endpoint = /\.aspx$/i.test(window.location.pathname)
         ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateAmountFromDuration.ashx')
         : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateAmountFromDuration.ashx');
 
-    fetch(endpoint + '?minutes=' + totalMinutes)
+    fetch(endpoint + '?minutes=' + totalMinutes + '&customerType=' + encodeURIComponent(customerType))
         .then(function (response) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -152,11 +156,13 @@ function calculateAmount() {
     }
 
     if (extendedMinutes > 0) {
+        var customerType = getCustomerType();
+
         var endpoint = /\.aspx$/i.test(window.location.pathname)
             ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateAmountFromDuration.ashx')
             : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateAmountFromDuration.ashx');
 
-        fetch(endpoint + '?minutes=' + extendedMinutes)
+        fetch(endpoint + '?minutes=' + extendedMinutes + '&customerType=' + encodeURIComponent(customerType))
             .then(function (response) { return response.json(); })
             .then(function (data) {
                 if (data) {
@@ -223,15 +229,7 @@ function resetDuration() {
     calculateAmount();
 }
 
-function resetDuration() {
-    var durationInput = document.querySelector('[id$="TextBox_Duration"]');
-    var amountInput = document.querySelector('[id$="TextBox_Amount"]');
 
-    if (durationInput) durationInput.value = 0;
-    if (amountInput) amountInput.value = "0.00";
-
-    calculateAmount();
-}
 
 // Client validation before submission
 function Validate() {
@@ -275,4 +273,18 @@ if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManage
     prm.add_pageLoaded(function () {
         calculateAmount();
     });
+}
+
+
+function getCustomerType() {
+    var customerSelect = document.querySelector('[id$="DropDownList_Customer"]');
+    if (!customerSelect) return "GUEST";
+
+    var selectedValue = customerSelect.value || (customerSelect.options[customerSelect.selectedIndex] ? customerSelect.options[customerSelect.selectedIndex].text : "");
+
+    if (!selectedValue || selectedValue.trim() === "" || selectedValue.toUpperCase() === "SELECT") {
+        return "GUEST";
+    }
+
+    return selectedValue.toUpperCase().includes("MEMBER") ? "MEMBER" : "GUEST";
 }
