@@ -20,6 +20,13 @@ function initMapElements() {
 
     if (!floorContainer || !viewport) return;
 
+    // Detect mobile screen width (e.g., 768px or lower) and set initial zoom to 50%
+    if (window.innerWidth <= 768) {
+        zoomLevel = 0.5;
+    } else {
+        zoomLevel = 1.0;
+    }
+
     // Apply visual edit mode styles if edit mode was active prior to postback
     if (isEditMode) {
         const seats = document.querySelectorAll('.seat-card');
@@ -129,7 +136,11 @@ function adjustZoom(delta) {
 }
 
 function resetZoom() {
-    zoomLevel = 1.0;
+    if (window.innerWidth <= 768) {
+        zoomLevel = 0.5;
+    } else {
+        zoomLevel = 1.0;
+    }
     applyZoom();
 }
 
@@ -199,7 +210,138 @@ function bindEvents() {
     if (viewport) {
         viewport.removeEventListener('mousedown', handleMouseDown);
         viewport.addEventListener('mousedown', handleMouseDown);
+
+        // Touch event bindings for mobile
+        viewport.removeEventListener('touchstart', handleTouchStart);
+        viewport.addEventListener('touchstart', handleTouchStart, { passive: false });
     }
+}
+function handleTouchStart(e) {
+    if (!isEditMode) return;
+
+    // Prevent default scrolling and pull-to-refresh gestures
+    if (e.cancelable) e.preventDefault();
+
+    // Only handle single touch gestures for item dragging
+    if (e.touches.length !== 1) return;
+
+    const touch = e.touches[0];
+    const targetSeat = touch.target.closest('.seat-card');
+
+    if (!targetSeat) {
+        clearSelection();
+        return;
+    }
+
+    if (!selectedSeats.has(targetSeat)) {
+        clearSelection();
+        targetSeat.classList.add('selected');
+        selectedSeats.add(targetSeat);
+    }
+
+    saveState();
+
+    const startTouchX = touch.clientX;
+    const startTouchY = touch.clientY;
+
+    const initialPositions = new Map();
+    selectedSeats.forEach(seat => {
+        initialPositions.set(seat, {
+            left: seat.offsetLeft,
+            top: seat.offsetTop
+        });
+    });
+
+    const otherSeats = Array.from(document.querySelectorAll('.seat-card')).filter(s => !selectedSeats.has(s));
+
+    function onTouchMove(e) {
+        if (e.cancelable) e.preventDefault();
+        if (e.touches.length !== 1) return;
+
+        const currentTouch = e.touches[0];
+        const deltaX = (currentTouch.clientX - startTouchX) / zoomLevel;
+        const deltaY = (currentTouch.clientY - startTouchY) / zoomLevel;
+
+        let snapDx = 0;
+        let snapDy = 0;
+        let showV = false;
+        let showH = false;
+        let vLinePos = 0;
+        let hLinePos = 0;
+
+        const primarySeat = targetSeat;
+        const primaryInit = initialPositions.get(primarySeat);
+        let rawLeft = primaryInit.left + deltaX;
+        let rawTop = primaryInit.top + deltaY;
+
+        const snapThreshold = 6;
+        const pWidth = primarySeat.offsetWidth;
+        const pHeight = primarySeat.offsetHeight;
+
+        for (const other of otherSeats) {
+            const oLeft = other.offsetLeft;
+            const oTop = other.offsetTop;
+            const oRight = oLeft + other.offsetWidth;
+            const oBottom = oTop + other.offsetHeight;
+
+            // Vertical Alignment
+            if (Math.abs(rawLeft - oLeft) < snapThreshold) {
+                snapDx = oLeft - rawLeft;
+                showV = true; vLinePos = oLeft;
+            } else if (Math.abs(rawLeft + pWidth - oRight) < snapThreshold) {
+                snapDx = oRight - pWidth - rawLeft;
+                showV = true; vLinePos = oRight;
+            }
+
+            // Horizontal Alignment
+            if (Math.abs(rawTop - oTop) < snapThreshold) {
+                snapDy = oTop - rawTop;
+                showH = true; hLinePos = oTop;
+            } else if (Math.abs(rawTop + pHeight - oBottom) < snapThreshold) {
+                snapDy = oBottom - pHeight - rawTop;
+                showH = true; hLinePos = oBottom;
+            }
+        }
+
+        // Snap Guides
+        if (showV) {
+            guideVLine.style.left = `${vLinePos}px`;
+            guideVLine.style.display = 'block';
+        } else {
+            guideVLine.style.display = 'none';
+        }
+
+        if (showH) {
+            guideHLine.style.top = `${hLinePos}px`;
+            guideHLine.style.display = 'block';
+        } else {
+            guideHLine.style.display = 'none';
+        }
+
+        // Apply updated positions
+        selectedSeats.forEach(seat => {
+            const init = initialPositions.get(seat);
+            let newLeft = Math.max(0, init.left + deltaX + snapDx);
+            let newTop = Math.max(0, init.top + deltaY + snapDy);
+
+            if (!showV) newLeft = Math.round(newLeft / 10) * 10;
+            if (!showH) newTop = Math.round(newTop / 10) * 10;
+
+            seat.style.left = `${newLeft}px`;
+            seat.style.top = `${newTop}px`;
+        });
+    }
+
+    function onTouchEnd() {
+        hideGuides();
+        document.removeEventListener('touchmove', onTouchMove);
+        document.removeEventListener('touchend', onTouchEnd);
+        document.removeEventListener('touchcancel', onTouchEnd);
+    }
+
+    document.addEventListener('touchmove', onTouchMove, { passive: false });
+    document.addEventListener('touchend', onTouchEnd);
+    document.addEventListener('touchcancel', onTouchEnd);
 }
 
 function handleMouseDown(e) {

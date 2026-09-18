@@ -101,6 +101,7 @@
     border-radius: 12px;
     overflow: hidden;
     user-select: none;
+    touch-action: none;
 }
 
 .floor-plan-viewport {
@@ -220,3 +221,57 @@
         left: 0;
         right: 0;
     }
+
+
+
+/* Responsive Toolbar Breakpoints */
+@media (max-width: 768px) {
+    .map-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 10px;
+    }
+
+    .map-legend {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px 14px;
+    }
+
+    .map-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .history-controls,
+    .zoom-controls {
+        flex-grow: 1;
+        justify-content: center;
+    }
+
+    .floor-plan-container {
+        height: 70vh; /* Scalable viewport height for mobile screens */
+        overflow: auto; /* Enables touch scrolling across canvas */
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (max-width: 480px) {
+    .action-btn {
+        padding: 8px 12px; /* Bigger touch targets */
+    }
+
+        .seat-card .seat-icon {
+            font-size: 18px;
+        }
+
+        .seat-card .seat-name {
+            font-size: 11px;
+        }
+
+        .seat-card .seat-status {
+            font-size: 9px;
+        }
+}
