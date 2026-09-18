@@ -115,8 +115,8 @@
     <Content Include="Assets\BNetSelect\Style.css" />
     <Content Include="Assets\BNetTable\Style.css" />
     <Content Include="Assets\Pages\Computers.js" />
-    <Content Include="Assets\Pages\PriceSettings.css" />
-    <Content Include="Assets\Pages\PriceSettings.js" />
+    <Content Include="Assets\Pages\PricingSettings.css" />
+    <Content Include="Assets\Pages\PricingSettings.js" />
     <Content Include="Assets\Pages\UserCreate.js" />
     <Content Include="Assets\Pages\UserEdit.js" />
     <Content Include="Assets\Pages\UserTopUp.js" />
@@ -171,6 +171,7 @@
     <Content Include="Forms\Computers.ascx" />
     <Content Include="Forms\Dashboard.ascx" />
     <Content Include="Forms\Modals\ComputerDelete.ascx" />
+    <Content Include="Forms\Modals\PricingSettingDelete.ascx" />
     <Content Include="Forms\Modals\RemoteLogout.ascx" />
     <Content Include="Forms\Modals\RemoteMessage.ascx" />
     <Content Include="Forms\Modals\RemoteOpenTime.ascx" />
@@ -289,6 +290,13 @@
     </Compile>
     <Compile Include="Forms\Modals\ComputerDelete.ascx.designer.cs">
       <DependentUpon>ComputerDelete.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\PricingSettingDelete.ascx.cs">
+      <DependentUpon>PricingSettingDelete.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\PricingSettingDelete.ascx.designer.cs">
+      <DependentUpon>PricingSettingDelete.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Modals\RemoteLogout.ascx.cs">
       <DependentUpon>RemoteLogout.ascx</DependentUpon>

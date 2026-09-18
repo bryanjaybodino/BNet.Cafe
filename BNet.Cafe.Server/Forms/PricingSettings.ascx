@@ -1,8 +1,10 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PricingSettings.ascx.cs" Inherits="BNet.Cafe.Server.Forms.PricingSettings" %>
-<link href="Assets/Pages/PriceSettings.css" rel="stylesheet" />
+<%@ Register Src="~/Forms/Modals/PricingSettingDelete.ascx" TagPrefix="uc1" TagName="PricingSettingDelete" %>
+
+<link href="Assets/Pages/PricingSettings.css" rel="stylesheet" />
 <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
     <Scripts>
-        <asp:ScriptReference Path="~/Assets/Pages/PriceSettings.js" />
+        <asp:ScriptReference Path="~/Assets/Pages/PricingSettings.js" />
     </Scripts>
 </asp:ScriptManagerProxy>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
@@ -180,14 +182,13 @@
                                                 <asp:LinkButton ID="LinkButton_Edit" runat="server" CommandName="EditRate"
                                                     CommandArgument='<%# Eval("DBId") %>' CssClass="btn-action btn-edit"
                                                     ToolTip="Edit this rule">
-                                                    <i class="fa fa-edit"></i>
-                                                </asp:LinkButton>
-                                                <asp:LinkButton ID="LinkButton_Delete" runat="server" CommandName="DeleteRate"
-                                                    CommandArgument='<%# Eval("DBId") %>' CssClass="btn-action btn-delete"
-                                                    OnClientClick="return confirm('Are you sure you want to delete this rule?');"
-                                                    ToolTip="Delete this rule">
+                                                        <i class="fa fa-edit"></i>
+                                                    </asp:LinkButton>
+
+                                                <button type="button" class="btn-action btn-delete" title="Delete this rule"
+                                                    onclick="openPricingDeleteModal('<%# Eval("DBId") %>', '<%# FormatCustomerType(Eval("DBCustomerType").ToString()) %> - <%# FormatDuration(int.Parse(Eval("DBMinutes").ToString())) %>')">
                                                     <i class="fa fa-trash"></i>
-                                                </asp:LinkButton>
+                                                </button>
                                             </div>
                                         </ItemTemplate>
                                     </asp:TemplateField>
@@ -205,5 +206,6 @@
                 </div>
             </div>
         </div>
+        <uc1:PricingSettingDelete runat="server" id="PricingSettingDelete" />
     </ContentTemplate>
 </asp:UpdatePanel>
