@@ -34,10 +34,21 @@
         display: inline-block;
     }
 
-    .status-dot.green { background-color: #10b981; }
-    .status-dot.red { background-color: #ef4444; }
-    .status-dot.yellow { background-color: #f59e0b; }
-    .status-dot.gray { background-color: #64748b; }
+        .status-dot.green {
+            background-color: #10b981;
+        }
+
+        .status-dot.red {
+            background-color: #ef4444;
+        }
+
+        .status-dot.yellow {
+            background-color: #f59e0b;
+        }
+
+        .status-dot.gray {
+            background-color: #64748b;
+        }
 
     .map-controls {
         display: flex;
@@ -67,14 +78,14 @@
         justify-content: center;
     }
 
-    .action-btn:hover:not(:disabled) {
-        background-color: var(--border-light);
-    }
+        .action-btn:hover:not(:disabled) {
+            background-color: var(--border-light);
+        }
 
-    .action-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-    }
+        .action-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
 
     .zoom-display {
         font-size: 12px;
@@ -124,42 +135,57 @@
         z-index: 2;
     }
 
-    .seat-card.edit-mode {
-        cursor: grab;
-        border-style: dashed;
-    }
+        .seat-card.edit-mode {
+            cursor: grab;
+            border-style: dashed;
+        }
 
-    .seat-card.edit-mode:active {
-        cursor: grabbing;
-    }
+            .seat-card.edit-mode:active {
+                cursor: grabbing;
+            }
 
-    .seat-card.selected {
-        outline: 2px solid #3b82f6 !important;
-        outline-offset: 3px;
-        box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
-    }
+        .seat-card.selected {
+            outline: 2px solid #3b82f6 !important;
+            outline-offset: 3px;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+        }
 
-    .seat-card .seat-icon {
-        font-size: 22px;
-        margin-bottom: 4px;
-    }
+        .seat-card .seat-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
 
-    .seat-card .seat-name {
-        font-size: 12px;
-        font-weight: 700;
-    }
+        .seat-card .seat-name {
+            font-size: 12px;
+            font-weight: 700;
+        }
 
-    .seat-card .seat-status {
-        font-size: 10px;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
+        .seat-card .seat-status {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
 
-    /* Status variants */
-    .seat-card.available { border-color: #10b981; color: #10b981; }
-    .seat-card.occupied { border-color: #ef4444; color: #ef4444; }
-    .seat-card.paused { border-color: #f59e0b; color: #f59e0b; }
-    .seat-card.offline { border-color: #64748b; color: #64748b; }
+        /* Status variants */
+        .seat-card.available {
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .seat-card.occupied {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .seat-card.paused {
+            border-color: #f59e0b;
+            color: #f59e0b;
+        }
+
+        .seat-card.offline {
+            border-color: #64748b;
+            color: #64748b;
+        }
 
     /* Selection Box & Alignment Lines */
     .selection-box {
@@ -179,83 +205,87 @@
         display: none;
     }
 
-    .guide-line.v-line {
-        width: 1px;
-        top: 0;
-        bottom: 0;
-    }
+        .guide-line.v-line {
+            width: 1px;
+            top: 0;
+            bottom: 0;
+        }
 
-    .guide-line.h-line {
-        height: 1px;
-        left: 0;
-        right: 0;
-    }
+        .guide-line.h-line {
+            height: 1px;
+            left: 0;
+            right: 0;
+        }
 </style>
 
-<!-- Hidden field to send updated coordinates back to Server on save -->
-<asp:HiddenField ID="HiddenField_Positions" runat="server" ClientIDMode="Static"/>
+<asp:UpdatePanel ID="UpdatePanel1" runat="server">
+    <ContentTemplate>
+        <!-- Hidden field to send updated coordinates back to Server on save -->
+        <asp:HiddenField ID="HiddenField_Positions" runat="server" ClientIDMode="Static" />
 
-<div class="map-toolbar">
-    <div class="map-legend">
-        <span class="legend-item"><i class="status-dot green"></i>Available</span>
-        <span class="legend-item"><i class="status-dot red"></i>Occupied</span>
-        <span class="legend-item"><i class="status-dot yellow"></i>Paused</span>
-        <span class="legend-item"><i class="status-dot gray"></i>Offline</span>
-    </div>
+        <div class="map-toolbar">
+            <div class="map-legend">
+                <span class="legend-item"><i class="status-dot green"></i>Available</span>
+                <span class="legend-item"><i class="status-dot red"></i>Occupied</span>
+                <span class="legend-item"><i class="status-dot yellow"></i>Paused</span>
+                <span class="legend-item"><i class="status-dot gray"></i>Offline</span>
+            </div>
 
-    <div class="map-controls">
-        <!-- Undo / Redo Controls -->
-        <div class="history-controls">
-            <button type="button" id="btnUndo" class="action-btn" onclick="undo()" title="Undo (Ctrl+Z)" disabled>
-                <i class="fa-solid fa-rotate-left"></i>
-            </button>
-            <button type="button" id="btnRedo" class="action-btn" onclick="redo()" title="Redo (Ctrl+Y)" disabled>
-                <i class="fa-solid fa-rotate-right"></i>
-            </button>
-        </div>
-
-        <!-- Zoom Controls -->
-        <div class="zoom-controls">
-            <button type="button" class="action-btn" onclick="adjustZoom(-0.1)"><i class="fa-solid fa-minus"></i></button>
-            <span class="zoom-display" id="zoomText">100%</span>
-            <button type="button" class="action-btn" onclick="adjustZoom(0.1)"><i class="fa-solid fa-plus"></i></button>
-            <button type="button" class="action-btn" onclick="resetZoom()"><i class="fa-solid fa-arrow-rotate-left"></i></button>
-        </div>
-
-        <button type="button" id="btnEditMode" class="btn btn-secondary" onclick="toggleEditMode()">
-            <i class="fa-solid fa-arrows-up-down-left-right"></i>Enable Drag & Drop
-        </button>
-
-        <asp:Button ID="Button_SaveLayout" runat="server" Text="Save Layout"
-            CssClass="btn btn-primary d-none" OnClick="Button_SaveLayout_Click" OnClientClick="prepareLayoutSave()" />
-    </div>
-</div>
-
-<!-- Interactive Floor Plan Canvas Wrapper -->
-<div class="floor-plan-container" id="floorPlanContainer">
-    <div class="floor-plan-viewport" id="floorPlanViewport">
-        <div class="selection-box" id="selectionBox"></div>
-        <div class="guide-line v-line" id="guideVLine"></div>
-        <div class="guide-line h-line" id="guideHLine"></div>
-
-        <asp:Repeater ID="Repeater_Computers" runat="server">
-            <ItemTemplate>
-                <div class="seat-card <%# Eval("StatusClass") %>"
-                    data-id="<%# Eval("DBId") %>"
-                    data-name="<%# Eval("DBComputerName") %>"
-                    style="left: <%# Eval("PosX") %>px; top: <%# Eval("PosY") %>px;">
-                    <div class="seat-icon">
-                        <i class="fa-solid fa-desktop"></i>
-                    </div>
-                    <div class="seat-info">
-                        <span class="seat-name"><%# Eval("DBComputerName") %></span>
-                        <span class="seat-status"><%# Eval("StatusText") %></span>
-                    </div>
+            <div class="map-controls">
+                <!-- Undo / Redo Controls -->
+                <div class="history-controls">
+                    <button type="button" id="btnUndo" class="action-btn" onclick="undo()" title="Undo (Ctrl+Z)" disabled>
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                    <button type="button" id="btnRedo" class="action-btn" onclick="redo()" title="Redo (Ctrl+Y)" disabled>
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
                 </div>
-            </ItemTemplate>
-        </asp:Repeater>
-    </div>
-</div>
+
+                <!-- Zoom Controls -->
+                <div class="zoom-controls">
+                    <button type="button" class="action-btn" onclick="adjustZoom(-0.1)"><i class="fa-solid fa-minus"></i></button>
+                    <span class="zoom-display" id="zoomText">100%</span>
+                    <button type="button" class="action-btn" onclick="adjustZoom(0.1)"><i class="fa-solid fa-plus"></i></button>
+                    <button type="button" class="action-btn" onclick="resetZoom()"><i class="fa-solid fa-arrow-rotate-left"></i></button>
+                </div>
+
+                <button type="button" id="btnEditMode" class="btn btn-secondary" onclick="toggleEditMode()">
+                    <i class="fa-solid fa-arrows-up-down-left-right"></i>Enable Drag & Drop
+                </button>
+
+                <asp:Button ID="Button_SaveLayout" runat="server" Text="Save Layout"
+                    CssClass="btn btn-primary" OnClick="Button_SaveLayout_Click" OnClientClick="prepareLayoutSave()" />
+            </div>
+        </div>
+
+        <!-- Interactive Floor Plan Canvas Wrapper -->
+        <div class="floor-plan-container" id="floorPlanContainer">
+            <div class="floor-plan-viewport" id="floorPlanViewport">
+                <div class="selection-box" id="selectionBox"></div>
+                <div class="guide-line v-line" id="guideVLine"></div>
+                <div class="guide-line h-line" id="guideHLine"></div>
+
+                <asp:Repeater ID="Repeater_Computers" runat="server">
+                    <ItemTemplate>
+                        <div class="seat-card <%# Eval("StatusClass") %>"
+                            data-id="<%# Eval("DBId") %>"
+                            data-name="<%# Eval("DBComputerName") %>"
+                            style="left: <%# Eval("PosX") %>px; top: <%# Eval("PosY") %>px;">
+                            <div class="seat-icon">
+                                <i class="fa-solid fa-desktop"></i>
+                            </div>
+                            <div class="seat-info">
+                                <span class="seat-name"><%# Eval("DBComputerName") %></span>
+                                <span class="seat-status"><%# Eval("StatusText") %></span>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </div>
+        </div>
+    </ContentTemplate>
+</asp:UpdatePanel>
 
 <script>
     let isEditMode = false;
@@ -266,13 +296,46 @@
     const undoStack = [];
     const redoStack = [];
 
-    const floorContainer = document.getElementById('floorPlanContainer');
-    const viewport = document.getElementById('floorPlanViewport');
-    const selectionBox = document.getElementById('selectionBox');
-    const guideVLine = document.getElementById('guideVLine');
-    const guideHLine = document.getElementById('guideHLine');
-    const btnUndo = document.getElementById('btnUndo');
-    const btnRedo = document.getElementById('btnRedo');
+    // DOM References
+    let floorContainer, viewport, selectionBox, guideVLine, guideHLine, btnUndo, btnRedo;
+
+    function initMapElements() {
+        floorContainer = document.getElementById('floorPlanContainer');
+        viewport = document.getElementById('floorPlanViewport');
+        selectionBox = document.getElementById('selectionBox');
+        guideVLine = document.getElementById('guideVLine');
+        guideHLine = document.getElementById('guideHLine');
+        btnUndo = document.getElementById('btnUndo');
+        btnRedo = document.getElementById('btnRedo');
+
+        if (!floorContainer || !viewport) return;
+
+        // Apply visual edit mode styles if edit mode was active prior to postback
+        if (isEditMode) {
+            const seats = document.querySelectorAll('.seat-card');
+            seats.forEach(s => s.classList.add('edit-mode'));
+            const btn = document.getElementById('btnEditMode');
+            if (btn) {
+                btn.classList.replace('btn-secondary', 'btn-danger');
+                btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Lock Drag & Drop';
+            }
+        }
+
+        applyZoom();
+        bindEvents();
+        updateHistoryUI();
+    }
+
+    // Handle Page / UpdatePanel Lifecycle
+    document.addEventListener('DOMContentLoaded', function () {
+        initMapElements();
+    });
+
+    if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+            initMapElements();
+        });
+    }
 
     // ==========================================
     // 1. UNDO / REDO SYSTEM
@@ -324,8 +387,8 @@
     }
 
     function updateHistoryUI() {
-        btnUndo.disabled = undoStack.length === 0 || !isEditMode;
-        btnRedo.disabled = redoStack.length === 0 || !isEditMode;
+        if (btnUndo) btnUndo.disabled = undoStack.length === 0 || !isEditMode;
+        if (btnRedo) btnRedo.disabled = redoStack.length === 0 || !isEditMode;
     }
 
     // Keyboard Shortcuts for Undo/Redo
@@ -361,16 +424,18 @@
     }
 
     function applyZoom() {
+        if (!viewport) return;
         viewport.style.transform = `scale(${zoomLevel})`;
-        document.getElementById('zoomText').innerText = `${Math.round(zoomLevel * 100)}%`;
+        const zoomText = document.getElementById('zoomText');
+        if (zoomText) zoomText.innerText = `${Math.round(zoomLevel * 100)}%`;
     }
 
-    floorContainer.addEventListener('wheel', function (e) {
+    function handleWheelZoom(e) {
         if (e.ctrlKey) {
             e.preventDefault();
             adjustZoom(e.deltaY < 0 ? 0.1 : -0.1);
         }
-    }, { passive: false });
+    }
 
     // ==========================================
     // 3. TOGGLE EDIT MODE
@@ -384,13 +449,17 @@
         clearSelection();
 
         if (isEditMode) {
-            btn.classList.replace('btn-secondary', 'btn-danger');
-            btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Lock Drag & Drop';
+            if (btn) {
+                btn.classList.replace('btn-secondary', 'btn-danger');
+                btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Lock Drag & Drop';
+            }
             if (saveBtn) saveBtn.classList.remove('d-none');
             seats.forEach(s => s.classList.add('edit-mode'));
         } else {
-            btn.classList.replace('btn-danger', 'btn-secondary');
-            btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> Enable Drag & Drop';
+            if (btn) {
+                btn.classList.replace('btn-danger', 'btn-secondary');
+                btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> Enable Drag & Drop';
+            }
             if (saveBtn) saveBtn.classList.add('d-none');
             seats.forEach(s => s.classList.remove('edit-mode'));
         }
@@ -399,7 +468,7 @@
     }
 
     // ==========================================
-    // 4. SELECTION & MULTI-DRAG ENGINE
+    // 4. EVENT BINDING & INTERACTION ENGINE
     // ==========================================
     function clearSelection() {
         selectedSeats.forEach(seat => seat.classList.remove('selected'));
@@ -407,12 +476,23 @@
     }
 
     function hideGuides() {
-        guideVLine.style.display = 'none';
-        guideHLine.style.display = 'none';
+        if (guideVLine) guideVLine.style.display = 'none';
+        if (guideHLine) guideHLine.style.display = 'none';
     }
 
-    // Canvas Mouse Down (Selection Box or Dragging)
-    viewport.addEventListener('mousedown', function (e) {
+    function bindEvents() {
+        if (floorContainer) {
+            floorContainer.removeEventListener('wheel', handleWheelZoom);
+            floorContainer.addEventListener('wheel', handleWheelZoom, { passive: false });
+        }
+
+        if (viewport) {
+            viewport.removeEventListener('mousedown', handleMouseDown);
+            viewport.addEventListener('mousedown', handleMouseDown);
+        }
+    }
+
+    function handleMouseDown(e) {
         if (!isEditMode) return;
 
         const targetSeat = e.target.closest('.seat-card');
@@ -591,7 +671,7 @@
 
         document.addEventListener('mousemove', onDragMove);
         document.addEventListener('mouseup', onDragEnd);
-    });
+    }
 
     // ==========================================
     // 5. PREPARE PAYLOAD FOR SERVER

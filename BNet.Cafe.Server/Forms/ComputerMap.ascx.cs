@@ -1,10 +1,12 @@
-﻿using System;
+﻿using BNet.Cafe.Server.Ashx;
+using BNet.Cafe.Server.Repositories;
+using BNet.Cafe.Server.Services;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Web.Script.Serialization;
 using System.Web.UI;
-using BNet.Cafe.Server.Ashx;
-using BNet.Cafe.Server.Repositories;
 
 namespace BNet.Cafe.Server.Forms
 {
@@ -20,6 +22,14 @@ namespace BNet.Cafe.Server.Forms
             public int PosY { get; set; }
             public string StatusText { get; set; }
             public string StatusClass { get; set; }
+        }
+
+        // DTO for Deserializing the JSON Payload from HiddenField_Positions
+        public class ComputerPositionDto
+        {
+            public string id { get; set; }
+            public int x { get; set; }
+            public int y { get; set; }
         }
 
         protected void Page_PreRender(object sender, EventArgs e)
@@ -87,12 +97,47 @@ namespace BNet.Cafe.Server.Forms
         protected void Button_SaveLayout_Click(object sender, EventArgs e)
         {
             string rawData = HiddenField_Positions.Value;
-            // Raw JSON format: [{"id":"1","x":120,"y":50},{"id":"2","x":240,"y":50}]
+
             if (!string.IsNullOrEmpty(rawData))
             {
-                // Update database coordinates using Repository
-                // computers.UpdatePositions(rawData);
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                List<ComputerPositionDto> positions = serializer.Deserialize<List<ComputerPositionDto>>(rawData);
+
+                if (positions != null && positions.Count > 0)
+                {
+                    bool allSavedSuccessfully = true;
+
+                    foreach (var pos in positions)
+                    {
+                        // Save each seat's updated coordinates to the database
+                        bool isSuccess = computers.UpdatePosition(pos.id, pos.x.ToString(), pos.y.ToString());
+                        if (!isSuccess)
+                        {
+                            allSavedSuccessfully = false;
+                        }
+                    }
+
+                    if (allSavedSuccessfully)
+                    {
+                        AlertService.ShowAlert(UpdatePanel1, "Floor plan layout updated successfully.", "success");
+                    }
+                    else
+                    {
+                        AlertService.ShowAlert(UpdatePanel1, "Failed to update some computer positions. Please try again.", "error");
+                    }
+                }
+                else
+                {
+                    AlertService.ShowAlert(UpdatePanel1, "No layout changes were detected to save.", "warning");
+                }
             }
+            else
+            {
+                AlertService.ShowAlert(UpdatePanel1, "Unable to save layout. Position data is missing.", "error");
+            }
+
+            // Reload seats to reflect changes across the UI
+            LoadComputerSeats();
         }
     }
 }

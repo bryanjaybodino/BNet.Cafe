@@ -110,6 +110,24 @@ namespace BNet.Cafe.Server.Repositories
             return DBContext.SqlExecuteAsync(sql);
         }
 
+        public bool UpdatePosition(string id, string x, string y)
+        {
+            var scripts = new Dictionary<string, string>();
+            string DBId = dBScriptService.CleanUpToUpper(id);
+            string DBPosX = dBScriptService.CleanUpToUpper(x);
+            string DBPosY = dBScriptService.CleanUpToUpper(y);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBPosX", DBPosX);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBPosY", DBPosY);
+
+            Page page = HttpContext.Current.Handler as Page;
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Computers/Update.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+
+            return DBContext.SqlExecuteAsync(sql);
+        }
+
         public bool Delete(string id)
         {
             var scripts = new Dictionary<string, string>();

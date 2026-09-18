@@ -14,12 +14,16 @@ SELECT
 -- Insert new record if no conflict exists
 INSERT INTO computers (
     DBComputerName,
+    DBPosX,
+    DBPosY,
     DBDateCreated,
     DBTimeCreated,
     DBIsDeleted
 )
 SELECT 
     '{DBComputerName}',
+    '{DBPosX}',
+    '{DBPosY}',
     '{DBDateCreated}',
     '{DBTimeCreated}',
     '{DBIsDeleted}'
