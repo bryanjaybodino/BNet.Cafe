@@ -63,7 +63,7 @@ namespace BNet.Cafe.Server.Forms
             }
             else
             {
-                AlertService.ShowAlert(UpdatePanel1, "Failed to save pricing rule. Please try again.", "error");
+                AlertService.ShowAlert(UpdatePanel1, "Failed to save pricing rule or it's already exist. Please try again.", "error");
             }
         }
 

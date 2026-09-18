@@ -69,8 +69,11 @@ namespace BNet.Cafe.Server.Repositories
             Page page = HttpContext.Current.Handler as Page;
             string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/PricingRates/Create.sql");
             string sql = dBScriptService.Scripts(scripts, template);
+            var result = DBContext.SqlExecuteReaderAsync(sql);
+            int pricingRateExist = Convert.ToInt32(result["PricingRateExist"]);
 
-            return DBContext.SqlExecuteAsync(sql);
+            bool name = pricingRateExist != 1;
+            return name;
         }
 
         public bool Update(string id, string customerType, string minutes, string price)

@@ -12,26 +12,27 @@
 
         <div class="pricing-settings-wrapper">
             <!-- Header Section -->
-                    <!-- Quick Reference -->
-                    <div class="quick-reference">
-                        <h3>💡 Quick Reference</h3>
-                        <p>
-                            Set price points at key intervals (30 min, 1 hr, 1.5 hrs, etc). 
-                           The system automatically calculates intermediate prices.
-                        </p>
-                        <div class="reference-example">
-                            <strong>Example Input:</strong>
-                            <ul>
-                                <li>0 hours + 30 minutes → ₱10.00</li>
-                                <li>1 hour + 0 minutes → ₱15.00</li>
-                                <li>1 hour + 30 minutes → ₱20.00</li>
-                                <li>2 hours + 0 minutes → ₱25.00</li>
-                                <li>4 hours + 0 minutes → ₱50.00</li>
-                            </ul>
-                            <em>45 mins will auto-calculate to ₱12.50</em>
-                        </div>
+            <!-- Quick Reference -->
+            <div class="quick-reference">
+                <h3>💡 Quick Reference</h3>
+                <p>
+                    Set price points at key intervals. Intermediate durations (like 45 minutes) will be automatically calculated by the system.
+                </p>
+                <div class="reference-example">
+                    <strong>Example Manual Inputs:</strong>
+                    <ul>
+                        <li>0 hours + 30 minutes → ₱10.00</li>
+                        <li>1 hour + 0 minutes → ₱15.00</li>
+                        <li>1 hour + 30 minutes → ₱20.00</li>
+                        <li>2 hours + 0 minutes → ₱25.00</li>
+                        <li>4 hours + 0 minutes → ₱50.00</li>
+                    </ul>
+                    <div class="auto-calc-badge">
+                        <strong>⚡ Automatic Calculation:</strong>
+                        <p>45 minutes (between 30 min and 1 hr) automatically calculates to <b>₱12.50</b></p>
                     </div>
-
+                </div>
+            </div>
             <!-- Main Content Grid -->
             <div class="pricing-container">
                 <!-- Left: Form Panel -->
