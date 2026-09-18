@@ -168,6 +168,7 @@
     <Content Include="Forms\ComputerCreate.ascx" />
     <Content Include="Forms\ComputerEarnings.ascx" />
     <Content Include="Forms\ComputerEdit.ascx" />
+    <Content Include="Forms\ComputerMap.ascx" />
     <Content Include="Forms\Computers.ascx" />
     <Content Include="Forms\Dashboard.ascx" />
     <Content Include="Forms\Modals\ComputerDelete.ascx" />
@@ -269,6 +270,13 @@
     </Compile>
     <Compile Include="Forms\ComputerEdit.ascx.designer.cs">
       <DependentUpon>ComputerEdit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ComputerMap.ascx.cs">
+      <DependentUpon>ComputerMap.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\ComputerMap.ascx.designer.cs">
+      <DependentUpon>ComputerMap.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Computers.ascx.cs">
       <DependentUpon>Computers.ascx</DependentUpon>

@@ -17,6 +17,19 @@ namespace BNet.Cafe.Server.Databases.Tables
                 Type = DBMigration.DBColumns.type.VARCHAR
             });
 
+            list.Add(new DBMigration.DBColumns
+            {
+                ColumnName = "DBPosX",
+                Length = 100,
+                Type = DBMigration.DBColumns.type.VARCHAR
+            });
+            list.Add(new DBMigration.DBColumns
+            {
+                ColumnName = "DBPosY",
+                Length = 100,
+                Type = DBMigration.DBColumns.type.VARCHAR
+            });
+
             DBMigration tableCreation = new DBMigration();
             tableCreation.Create_Table(GetType().Name, list);
         }
