@@ -3,6 +3,7 @@ using BNet.Cafe.Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -15,7 +16,7 @@ namespace BNet.Cafe.Server.Repositories
         private readonly DBScriptService dBScriptService = new DBScriptService();
         private readonly GridviewPaginationService paginationService = new GridviewPaginationService();
 
-        public DataTable GetAll(string customerType = "", int pageIndex = 0, bool isDeleted = false)
+        public DataTable GetAll(string customerType = "", int pageIndex = -1, bool isDeleted = false)
         {
             var scripts = new Dictionary<string, string>();
             string DBIsDeleted = isDeleted ? "TRUE" : "FALSE";
@@ -24,7 +25,11 @@ namespace BNet.Cafe.Server.Repositories
 
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBCustomerType", DBCustomerType);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
+            if (pageIndex >= 0)
+            {
+                dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
+            }
+
 
             Page page = HttpContext.Current.Handler as Page;
             string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/PricingRates/GetAll.sql");
@@ -105,8 +110,13 @@ namespace BNet.Cafe.Server.Repositories
         /// <summary>
         /// Calculate price from duration (minutes) using database intervals
         /// Uses linear interpolation between price points
+        /// 
+        /// SOLUTION OPTIONS for pricing beyond maximum interval:
+        /// - OPTION 1: Linear Extrapolation (continues pricing at the same rate)
+        /// - OPTION 2: Price Cap (stops at maximum price)
+        /// - OPTION 3: Hourly Rate After Cap (fixed price + per-minute rate)
         /// </summary>
-        public static double CalculatePriceFromDuration(int totalMinutes, string customerType = "GUEST")
+        public static double CalculatePriceFromDuration(int totalMinutes, string customerType = "GUEST", int pricingModel = 1)
         {
             if (totalMinutes <= 0) return 0.0;
 
@@ -124,6 +134,7 @@ namespace BNet.Cafe.Server.Repositories
 
                 // Convert to list and sort by minutes
                 var pricingPoints = new List<PricingPoint>();
+                pricingPoints.Add(new PricingPoint { Minutes = 0, Price = 0 });
                 foreach (DataRow row in dt.Rows)
                 {
                     if (int.TryParse(row["DBMinutes"].ToString(), out int mins) &&
@@ -143,10 +154,10 @@ namespace BNet.Cafe.Server.Repositories
                 if (exactMatch != null)
                     return exactMatch.Price;
 
-                // If minutes exceed maximum, return highest price
+                // If minutes exceed maximum
                 if (totalMinutes > pricingPoints.Last().Minutes)
                 {
-                    return pricingPoints.Last().Price;
+                    return HandlePricingBeyondMaximum(totalMinutes, pricingPoints, pricingModel);
                 }
 
                 // Linear interpolation between two points
@@ -175,10 +186,88 @@ namespace BNet.Cafe.Server.Repositories
         }
 
         /// <summary>
+        /// Handle pricing for minutes beyond the maximum interval
+        /// </summary>
+        /// <param name="totalMinutes">Total minutes used</param>
+        /// <param name="pricingPoints">Sorted pricing points</param>
+        /// <param name="model">1 = Linear Extrapolation, 2 = Price Cap, 3 = Hourly Rate</param>
+        private static double HandlePricingBeyondMaximum(int totalMinutes, List<PricingPoint> pricingPoints, int model)
+        {
+            switch (model)
+            {
+                case 1: // OPTION 1: Linear Extrapolation
+                    // Continue pricing at the same rate as the last interval
+                    return LinearExtrapolation(totalMinutes, pricingPoints);
+
+                case 2: // OPTION 2: Price Cap (original behavior)
+                    return pricingPoints.Last().Price;
+
+                case 3: // OPTION 3: Hourly Rate After Cap
+                    // Fixed price for max interval + per-minute rate for additional minutes
+                    return PriceCapWithHourlyRate(totalMinutes, pricingPoints);
+
+                default:
+                    return pricingPoints.Last().Price;
+            }
+        }
+
+        /// <summary>
+        /// OPTION 1: Linear Extrapolation
+        /// Continues the pricing rate from the last two intervals
+        /// Example: If 300min=200 and 360min=250, rate is 0.833/min
+        /// For 420min: 250 + (420-360) * 0.833 = 299.99
+        /// </summary>
+        private static double LinearExtrapolation(int totalMinutes, List<PricingPoint> pricingPoints)
+        {
+            if (pricingPoints.Count < 2)
+                return pricingPoints.Last().Price;
+
+            // Get the rate from the last two points
+            double lastMinutes = pricingPoints.Last().Minutes;
+            double lastPrice = pricingPoints.Last().Price;
+            double prevMinutes = pricingPoints[pricingPoints.Count - 2].Minutes;
+            double prevPrice = pricingPoints[pricingPoints.Count - 2].Price;
+
+            // Calculate the rate (price per minute)
+            double ratePerMinute = (lastPrice - prevPrice) / (lastMinutes - prevMinutes);
+
+            // Extrapolate beyond maximum
+            double extrapolatedPrice = lastPrice + (totalMinutes - lastMinutes) * ratePerMinute;
+            return Math.Round(extrapolatedPrice, 2);
+        }
+
+        /// <summary>
+        /// OPTION 3: Price Cap with Hourly Rate
+        /// Charge maximum price for the included time, then add per-minute rate
+        /// Example: If cap is 6hrs=250, add 0.50 pesos per minute after
+        /// For 7hrs (420min): 250 + (420-360) * ratePerMinute
+        /// </summary>
+        private static double PriceCapWithHourlyRate(int totalMinutes, List<PricingPoint> pricingPoints)
+        {
+            double maxPrice = pricingPoints.Last().Price;
+            double maxMinutes = pricingPoints.Last().Minutes;
+
+            if (pricingPoints.Count < 2)
+                return maxPrice;
+
+            // Calculate hourly rate from the last interval
+            double prevMinutes = pricingPoints[pricingPoints.Count - 2].Minutes;
+            double prevPrice = pricingPoints[pricingPoints.Count - 2].Price;
+            double ratePerMinute = (maxPrice - prevPrice) / (maxMinutes - prevMinutes);
+
+            // Add the overage charges
+            int overtimeMinutes = totalMinutes - (int)maxMinutes;
+            double overtimeCharge = overtimeMinutes * ratePerMinute;
+
+            double totalPrice = maxPrice + overtimeCharge;
+            return Math.Round(totalPrice, 2);
+        }
+
+        /// <summary>
         /// Calculate duration (minutes) from price using database intervals
         /// Uses reverse linear interpolation
         /// </summary>
-        public static int CalculateDurationFromPrice(double amount, string customerType = "GUEST")
+        public static int CalculateDurationFromPrice(double amount, string customerType = "GUEST", int pricingModel = 1)
         {
             if (amount <= 0) return 0;
 
@@ -193,8 +282,9 @@ namespace BNet.Cafe.Server.Repositories
                     return 0;
                 }
 
-                // Convert to list and sort by minutes
+                // Convert to list and sort by price
                 var pricingPoints = new List<PricingPoint>();
+                pricingPoints.Add(new PricingPoint { Minutes = 0, Price = 0 });
                 foreach (DataRow row in dt.Rows)
                 {
                     if (int.TryParse(row["DBMinutes"].ToString(), out int mins) &&
@@ -214,10 +304,10 @@ namespace BNet.Cafe.Server.Repositories
                 if (exactMatch != null)
                     return exactMatch.Minutes;
 
-                // If amount exceeds maximum price, return maximum minutes
+                // If amount exceeds maximum price
                 if (amount > pricingPoints.Last().Price)
                 {
-                    return pricingPoints.Last().Minutes;
+                    return HandleDurationBeyondMaxPrice(amount, pricingPoints, pricingModel);
                 }
 
                 // Reverse linear interpolation between two points
@@ -243,6 +333,64 @@ namespace BNet.Cafe.Server.Repositories
             {
                 return 0;
             }
+        }
+
+        /// <summary>
+        /// Handle duration calculation for prices beyond the maximum
+        /// </summary>
+        private static int HandleDurationBeyondMaxPrice(double amount, List<PricingPoint> pricingPoints, int pricingModel)
+        {
+            switch (pricingModel)
+            {
+                case 1: // Linear Extrapolation
+                    return ReverseLinearExtrapolation(amount, pricingPoints);
+
+                case 2: // Price Cap (original behavior)
+                    return (int)pricingPoints.Last().Minutes;
+
+                case 3: // Hourly Rate After Cap
+                    return ReversePriceCapWithHourlyRate(amount, pricingPoints);
+
+                default:
+                    return (int)pricingPoints.Last().Minutes;
+            }
+        }
+
+        private static int ReverseLinearExtrapolation(double amount, List<PricingPoint> pricingPoints)
+        {
+            if (pricingPoints.Count < 2)
+                return (int)pricingPoints.Last().Minutes;
+
+            double lastMinutes = pricingPoints.Last().Minutes;
+            double lastPrice = pricingPoints.Last().Price;
+            double prevMinutes = pricingPoints[pricingPoints.Count - 2].Minutes;
+            double prevPrice = pricingPoints[pricingPoints.Count - 2].Price;
+
+            double ratePerMinute = (lastPrice - prevPrice) / (lastMinutes - prevMinutes);
+
+            double extrapolatedMinutes = lastMinutes + (amount - lastPrice) / ratePerMinute;
+            return (int)Math.Round(extrapolatedMinutes);
+        }
+
+        private static int ReversePriceCapWithHourlyRate(double amount, List<PricingPoint> pricingPoints)
+        {
+            double maxPrice = pricingPoints.Last().Price;
+            double maxMinutes = pricingPoints.Last().Minutes;
+
+            if (amount <= maxPrice)
+                return (int)maxMinutes;
+
+            if (pricingPoints.Count < 2)
+                return (int)maxMinutes;
+
+            double prevMinutes = pricingPoints[pricingPoints.Count - 2].Minutes;
+            double prevPrice = pricingPoints[pricingPoints.Count - 2].Price;
+            double ratePerMinute = (maxPrice - prevPrice) / (maxMinutes - prevMinutes);
+
+            double overtimeMinutes = (amount - maxPrice) / ratePerMinute;
+            double totalMinutes = maxMinutes + overtimeMinutes;
+
+            return (int)Math.Round(totalMinutes);
         }
 
         // Helper class for pricing points
