@@ -1,8 +1,8 @@
-﻿using System;
+﻿using BNet.Cafe.Client.Ashx;
+using BNet.Cafe.Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BNet.Cafe.Client.Services
 {
@@ -12,51 +12,62 @@ namespace BNet.Cafe.Client.Services
         {
             if (totalMinutes <= 0) return 0.0;
 
-            // 0 to 30 mins: Linear scale based on ₱10.00 / 30 mins (₱0.3333/min)
-            if (totalMinutes <= 30)
+            // Load rates from local JSON cache (Zero API Overhead)
+            List<PricingRateItem> rates = PricingRatesManager.ReadLocalRates();
+
+            if (rates == null || !rates.Any())
             {
+                // Fallback default calculation if JSON file is missing
                 return totalMinutes * (10.0 / 30.0);
             }
-            // 30 to 60 mins (1 hr): Interpolate from ₱10.00 up to ₱15.00
-            else if (totalMinutes <= 60)
+
+            // Filter active tiers sorted by minutes ascending
+            var Tiers = rates
+                .Where(r => !r.IsDeleted &&
+                            r.CustomerType.Equals("Guest / Walk-in", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(r => r.Minutes)
+                .ToList();
+
+            if (!Tiers.Any()) return 0.0;
+
+            // Target minutes is lower than lowest tier
+            if (totalMinutes <= Tiers.First().Minutes)
             {
-                double basePrice = 10.0;
-                int extraMins = totalMinutes - 30;
-                double ratePerMin = (15.0 - 10.0) / 30.0;
-                return basePrice + (extraMins * ratePerMin);
+                var minTier = Tiers.First();
+                return totalMinutes * (minTier.Price / minTier.Minutes);
             }
-            // 60 to 120 mins (2 hrs): Interpolate from ₱15.00 up to ₱25.00
-            else if (totalMinutes <= 120)
+
+            // Target minutes exceeds highest tier: calculate highest tier price + excess rate
+            var lastTier = Tiers.Last();
+            if (totalMinutes >= lastTier.Minutes)
             {
-                double basePrice = 15.0;
-                int extraMins = totalMinutes - 60;
-                double ratePerMin = (25.0 - 15.0) / 60.0;
-                return basePrice + (extraMins * ratePerMin);
+                int extraMins = totalMinutes - lastTier.Minutes;
+
+                // Calculate excess rate based on the last bracket slope (or standard ₱10/hr if only 1 tier exists)
+                double excessRatePerMin = Tiers.Count > 1
+                    ? (lastTier.Price - Tiers[Tiers.Count - 2].Price) / (lastTier.Minutes - Tiers[Tiers.Count - 2].Minutes)
+                    : 10.0 / 60.0;
+
+                return lastTier.Price + (extraMins * excessRatePerMin);
             }
-            // 120 to 180 mins (3 hrs): Interpolate from ₱25.00 up to ₱40.00
-            else if (totalMinutes <= 180)
+
+            // Interpolate price between intermediate tiers
+            for (int i = 0; i < Tiers.Count - 1; i++)
             {
-                double basePrice = 25.0;
-                int extraMins = totalMinutes - 120;
-                double ratePerMin = (40.0 - 25.0) / 60.0;
-                return basePrice + (extraMins * ratePerMin);
+                var lowerTier = Tiers[i];
+                var upperTier = Tiers[i + 1];
+
+                if (totalMinutes > lowerTier.Minutes && totalMinutes <= upperTier.Minutes)
+                {
+                    double basePrice = lowerTier.Price;
+                    int extraMins = totalMinutes - lowerTier.Minutes;
+                    double ratePerMin = (upperTier.Price - lowerTier.Price) / (upperTier.Minutes - lowerTier.Minutes);
+
+                    return basePrice + (extraMins * ratePerMin);
+                }
             }
-            // 180 to 240 mins (4 hrs): Interpolate from ₱40.00 up to ₱50.00
-            else if (totalMinutes <= 240)
-            {
-                double basePrice = 40.0;
-                int extraMins = totalMinutes - 180;
-                double ratePerMin = (50.0 - 40.0) / 60.0;
-                return basePrice + (extraMins * ratePerMin);
-            }
-            // Beyond 4 Hours (240+ mins): ₱50.00 + ₱10.00/hr (₱0.1667/min)
-            else
-            {
-                double basePrice = 50.0;
-                int extraMins = totalMinutes - 240;
-                double ratePerMin = 10.0 / 60.0;
-                return basePrice + (extraMins * ratePerMin);
-            }
+
+            return 0.0;
         }
     }
 }

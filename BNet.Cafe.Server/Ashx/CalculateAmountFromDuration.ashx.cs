@@ -21,8 +21,8 @@ namespace BNet.Cafe.Server.Ashx
                 int totalMinutes = 0;
                 int.TryParse(context.Request["minutes"], out totalMinutes);
 
-                // Get customer type (default: GUEST)
-                string customerType = context.Request["customerType"] ?? "GUEST";
+                // Get customer type (default: GUEST / WALK-IN)
+                string customerType = context.Request["customerType"] ?? "GUEST / WALK-IN";
 
                 // Calculate price using database intervals
                 double totalAmount = PricingRates.CalculatePriceFromDuration(totalMinutes, customerType);
@@ -53,7 +53,7 @@ namespace BNet.Cafe.Server.Ashx
                 context.Response.Write(JsonConvert.SerializeObject(errorResponse));
             }
         }
-        public static double CalculatePrice(int totalMinutes, string customerType= "GUEST")
+        public static double CalculatePrice(int totalMinutes, string customerType= "GUEST / WALK-IN")
         {
             return PricingRates.CalculatePriceFromDuration(totalMinutes, customerType);
         }

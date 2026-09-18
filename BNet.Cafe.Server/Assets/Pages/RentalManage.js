@@ -278,13 +278,13 @@ if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManage
 
 function getCustomerType() {
     var customerSelect = document.querySelector('[id$="DropDownList_Customer"]');
-    if (!customerSelect) return "GUEST";
+    if (!customerSelect) return "GUEST / WALK-IN";
 
     var selectedValue = customerSelect.value || (customerSelect.options[customerSelect.selectedIndex] ? customerSelect.options[customerSelect.selectedIndex].text : "");
 
     if (!selectedValue || selectedValue.trim() === "" || selectedValue.toUpperCase() === "SELECT") {
-        return "GUEST";
+        return "GUEST / WALK-IN";
     }
 
-    return selectedValue.toUpperCase().includes("MEMBER") ? "MEMBER" : "GUEST";
+    return selectedValue.toUpperCase().includes("MEMBER") ? "MEMBER" : "GUEST / WALK-IN";
 }

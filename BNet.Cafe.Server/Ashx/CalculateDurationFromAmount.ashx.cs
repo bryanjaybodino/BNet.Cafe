@@ -21,8 +21,8 @@ namespace BNet.Cafe.Server.Ashx
                 decimal amount = 0m;
                 decimal.TryParse(context.Request["amount"], out amount);
 
-                // Get customer type (default: GUEST)
-                string customerType = context.Request["customerType"] ?? "GUEST";
+                // Get customer type (default: GUEST / WALK-IN)
+                string customerType = context.Request["customerType"] ?? "GUEST / WALK-IN";
 
                 // Calculate duration using database intervals
                 int totalMinutes = PricingRates.CalculateDurationFromPrice((double)amount, customerType);

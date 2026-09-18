@@ -208,6 +208,9 @@
     <Compile Include="Ashx\CreateRentalHandler.ashx.cs">
       <DependentUpon>CreateRentalHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Ashx\GetPricingRates.ashx.cs">
+      <DependentUpon>GetPricingRates.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Ashx\LoginHandler.ashx.cs">
       <DependentUpon>LoginHandler.ashx</DependentUpon>
     </Compile>
@@ -425,6 +428,7 @@
     <Content Include="Ashx\LoginHandler.ashx" />
     <Content Include="Ashx\CreateBalanceHandler.ashx" />
     <Content Include="Ashx\UserHandler.ashx" />
+    <Content Include="Ashx\GetPricingRates.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

@@ -62,7 +62,7 @@ function calculateDurationFromAmountBackend(amount) {
         ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateDurationFromAmount.ashx')
         : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateDurationFromAmount.ashx');
 
-    fetch(endpoint + '?amount=' + amount + '&customerType=MEMBER')
+    fetch(endpoint + '?amount=' + amount + '&customerType=USER')
         .then(function (response) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');

@@ -116,7 +116,7 @@ namespace BNet.Cafe.Server.Repositories
         /// - OPTION 2: Price Cap (stops at maximum price)
         /// - OPTION 3: Hourly Rate After Cap (fixed price + per-minute rate)
         /// </summary>
-        public static double CalculatePriceFromDuration(int totalMinutes, string customerType = "GUEST", int pricingModel = 1)
+        public static double CalculatePriceFromDuration(int totalMinutes, string customerType = "GUEST / WALK-IN", int pricingModel = 1)
         {
             if (totalMinutes <= 0) return 0.0;
 
@@ -267,7 +267,7 @@ namespace BNet.Cafe.Server.Repositories
         /// Calculate duration (minutes) from price using database intervals
         /// Uses reverse linear interpolation
         /// </summary>
-        public static int CalculateDurationFromPrice(double amount, string customerType = "GUEST", int pricingModel = 1)
+        public static int CalculateDurationFromPrice(double amount, string customerType = "GUEST / WALK-IN", int pricingModel = 1)
         {
             if (amount <= 0) return 0;
 

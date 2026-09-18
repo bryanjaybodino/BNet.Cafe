@@ -86,7 +86,7 @@ namespace BNet.Cafe.Client
             lblStatusBadge.Text = $"● Station {clientName} Online";
             await Task.Delay(1000);
             _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
-
+            await PricingRatesManager.InitializeRatesAsync();
             var session = SessionManager.ReadSession();
             if (session != null)
             {

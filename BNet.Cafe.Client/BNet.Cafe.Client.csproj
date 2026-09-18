@@ -70,6 +70,8 @@
     <Reference Include="UIAutomationTypes" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ashx\_PricingRateItem.cs" />
+    <Compile Include="Ashx\PricingRatesHandler.cs" />
     <Compile Include="Ashx\_UserData.cs" />
     <Compile Include="Ashx\_ApiResponse.cs" />
     <Compile Include="Ashx\CreateBalanceHandler.cs" />
@@ -110,6 +112,7 @@
     <Compile Include="Services\ConfigHelper.cs" />
     <Compile Include="Services\NetworkUtility.cs" />
     <Compile Include="Services\PendingLogoutManager.cs" />
+    <Compile Include="Services\PricingRatesManager.cs" />
     <Compile Include="Services\SecurityAccessManager.cs" />
     <Compile Include="Services\SessionData.cs" />
     <Compile Include="Starter\EnvironmentHelper.cs" />
