@@ -764,6 +764,7 @@
     }
 </style>
 <!-- JavaScript for Duration Conversion -->
+<!-- JavaScript for Duration Conversion & Validation -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const hoursInput = document.querySelector('[id$="TextBox_Hours"]');
@@ -775,27 +776,48 @@
 
         // Function to calculate and display total duration
         function updateDurationDisplay() {
-            const hours = parseInt(hoursInput.value) || 0;
-            const minutes = parseInt(minutesInput.value) || 0;
+            const hoursInput = document.querySelector('[id$="TextBox_Hours"]');
+            const minutesInput = document.querySelector('[id$="TextBox_Minutes_Only"]');
+            const totalDurationDisplay = document.getElementById('TotalDurationDisplay');
+            const totalMinutesValue = document.getElementById('TotalMinutesValue');
+            const hiddenField = document.querySelector('[id$="HiddenField_TotalMinutes"]');
 
-            // Validate minutes
-            if (minutes > 59) {
-                minutesInput.value = 59;
-                return;
+            if (!hoursInput || !minutesInput || !totalDurationDisplay) return;
+
+            let hours = parseInt(hoursInput.value) || 0;
+            let minutes = parseInt(minutesInput.value) || 0;
+
+            // Cap hours at 24 max
+            if (hours > 24) {
+                hours = 24;
+                hoursInput.value = 24;
             }
 
-            // Calculate total minutes
+            // Cap minutes at 59 max
+            if (minutes > 59) {
+                minutes = 59;
+                minutesInput.value = 59;
+            }
+
+            // If 24 hours is reached, reset minutes to 0 so total does not exceed 24 hours
+            if (hours === 24 && minutes > 0) {
+                minutes = 0;
+                minutesInput.value = 0;
+            }
+
             const totalMinutes = (hours * 60) + minutes;
 
-            // Update displays
-            const displayText = formatDurationDisplay(totalMinutes);
-            totalDurationDisplay.textContent = displayText;
-            totalMinutesValue.textContent = totalMinutes;
+            totalDurationDisplay.textContent = formatDurationDisplay(totalMinutes);
+            if (totalMinutesValue) totalMinutesValue.textContent = totalMinutes;
+            if (hiddenField) hiddenField.value = totalMinutes;
+        }
 
-            // Store in hidden field for server-side use
-            const hiddenField = document.querySelector('[id$="HiddenField_TotalMinutes"]');
-            if (hiddenField) {
-                hiddenField.value = totalMinutes;
+        function updatePriceDisplay() {
+            const priceInput = document.querySelector('[id$="TextBox_Price"]');
+            const priceDisplay = document.getElementById('PriceDisplay');
+            if (priceInput && priceDisplay) {
+                const value = parseFloat(priceInput.value) || 0;
+                priceDisplay.textContent = '₱ ' + value.toFixed(2);
             }
         }
 
@@ -833,6 +855,37 @@
             // Initialize display on page load
             updateDurationDisplay();
         }
+
+        function bindPricingEvents() {
+            const hoursInput = document.querySelector('[id$="TextBox_Hours"]');
+            const minutesInput = document.querySelector('[id$="TextBox_Minutes_Only"]');
+            const priceInput = document.querySelector('[id$="TextBox_Price"]');
+
+            if (hoursInput && minutesInput) {
+                hoursInput.addEventListener('input', updateDurationDisplay);
+                minutesInput.addEventListener('input', updateDurationDisplay);
+                hoursInput.addEventListener('change', updateDurationDisplay);
+                minutesInput.addEventListener('change', updateDurationDisplay);
+            }
+
+            if (priceInput) {
+                priceInput.addEventListener('input', updatePriceDisplay);
+                priceInput.addEventListener('change', updatePriceDisplay);
+            }
+
+            // Immediately recalculate displays when controls update
+            updateDurationDisplay();
+            updatePriceDisplay();
+        }
+
+        // ASP.NET AJAX lifecycle hook: triggers on initial load and after UpdatePanel refreshes
+        if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+            Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(function () {
+                bindPricingEvents();
+            });
+        } else {
+            document.addEventListener('DOMContentLoaded', bindPricingEvents);
+        }
     });
 
     function ValidatePricing() {
@@ -848,6 +901,17 @@
 
         var hours = parseInt(hoursInput.value) || 0;
         var minutes = parseInt(minutesInput.value) || 0;
+
+        if (hours > 24 || (hours === 24 && minutes > 0)) {
+            alert('Maximum duration allowed is 24 hours (1,440 minutes).');
+            return false;
+        }
+
+        if (minutes > 59) {
+            alert('Minutes must be between 0 and 59.');
+            return false;
+        }
+
         var totalMinutes = (hours * 60) + minutes;
 
         if (totalMinutes <= 0) {
@@ -855,8 +919,8 @@
             return false;
         }
 
-        if (minutes > 59) {
-            alert('Minutes must be between 0 and 59.');
+        if (totalMinutes > 1440) {
+            alert('Maximum duration allowed is 24 hours (1,440 minutes).');
             return false;
         }
 
