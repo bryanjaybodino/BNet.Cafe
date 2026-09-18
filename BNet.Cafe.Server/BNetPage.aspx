@@ -48,6 +48,11 @@
                     </asp:HyperLink>
                 </li>
                 <li>
+                    <asp:HyperLink ID="HyperLink_SeatMap" runat="server" ToolTip="Computer" onclick="navigateTo('?Form=SeatMap'); return false;">
+            <i class="fas fa-map-location-dot"></i><span>Seat Map</span>
+                    </asp:HyperLink>
+                </li>
+                <li>
                     <asp:HyperLink ID="HyperLink_Remote" runat="server" ToolTip="Remote" onclick="navigateTo('?Form=Remote'); return false;">
             <i class="fas fa-display"></i><span>Remote</span>
                     </asp:HyperLink>

@@ -1,20 +1,21 @@
-﻿using BNet.Cafe.Server.Ashx;
-using BNet.Cafe.Server.Repositories;
+﻿using BNet.Cafe.Server.Repositories;
 using BNet.Cafe.Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace BNet.Cafe.Server.Forms
 {
-    public partial class ComputerMap : UserControl
+    public partial class SeatMap : System.Web.UI.UserControl
     {
         Repositories.Computers computers = new Repositories.Computers();
 
-        public class ComputerSeatViewModel
+        public class SeatMapViewModel
         {
             public string DBId { get; set; }
             public string DBComputerName { get; set; }
@@ -25,7 +26,7 @@ namespace BNet.Cafe.Server.Forms
         }
 
         // DTO for Deserializing the JSON Payload from HiddenField_Positions
-        public class ComputerPositionDto
+        public class SeatMapPositionDto
         {
             public string id { get; set; }
             public int x { get; set; }
@@ -43,7 +44,7 @@ namespace BNet.Cafe.Server.Forms
             ClientData clientData = new ClientData();
             var liveData = clientData.FetchData();
 
-            List<ComputerSeatViewModel> seatList = new List<ComputerSeatViewModel>();
+            List<SeatMapViewModel> seatList = new List<SeatMapViewModel>();
 
             foreach (DataRow row in dataTable.Rows)
             {
@@ -79,7 +80,7 @@ namespace BNet.Cafe.Server.Forms
                     }
                 }
 
-                seatList.Add(new ComputerSeatViewModel
+                seatList.Add(new SeatMapViewModel
                 {
                     DBId = dbId,
                     DBComputerName = compName,
@@ -101,7 +102,7 @@ namespace BNet.Cafe.Server.Forms
             if (!string.IsNullOrEmpty(rawData))
             {
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
-                List<ComputerPositionDto> positions = serializer.Deserialize<List<ComputerPositionDto>>(rawData);
+                List<SeatMapPositionDto> positions = serializer.Deserialize<List<SeatMapPositionDto>>(rawData);
 
                 if (positions != null && positions.Count > 0)
                 {

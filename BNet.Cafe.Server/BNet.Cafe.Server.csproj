@@ -168,7 +168,6 @@
     <Content Include="Forms\ComputerCreate.ascx" />
     <Content Include="Forms\ComputerEarnings.ascx" />
     <Content Include="Forms\ComputerEdit.ascx" />
-    <Content Include="Forms\ComputerMap.ascx" />
     <Content Include="Forms\Computers.ascx" />
     <Content Include="Forms\Dashboard.ascx" />
     <Content Include="Forms\Modals\ComputerDelete.ascx" />
@@ -181,6 +180,7 @@
     <Content Include="Forms\PricingSettings.ascx" />
     <Content Include="Forms\Remote.ascx" />
     <Content Include="Forms\RentalManage.ascx" />
+    <Content Include="Forms\SeatMap.ascx" />
     <Content Include="Forms\UserCreate.ascx" />
     <Content Include="Forms\UserEdit.ascx" />
     <Content Include="Forms\Users.ascx" />
@@ -271,13 +271,6 @@
     <Compile Include="Forms\ComputerEdit.ascx.designer.cs">
       <DependentUpon>ComputerEdit.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ComputerMap.ascx.cs">
-      <DependentUpon>ComputerMap.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Forms\ComputerMap.ascx.designer.cs">
-      <DependentUpon>ComputerMap.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Forms\Computers.ascx.cs">
       <DependentUpon>Computers.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -361,6 +354,13 @@
     </Compile>
     <Compile Include="Forms\RentalManage.ascx.designer.cs">
       <DependentUpon>RentalManage.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SeatMap.ascx.cs">
+      <DependentUpon>SeatMap.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\SeatMap.ascx.designer.cs">
+      <DependentUpon>SeatMap.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\UserCreate.ascx.cs">
       <DependentUpon>UserCreate.ascx</DependentUpon>

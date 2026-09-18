@@ -11,7 +11,7 @@ namespace BNet.Cafe.Server.Forms
 {
 
 
-    public partial class ComputerMap
+    public partial class SeatMap
     {
 
         /// <summary>

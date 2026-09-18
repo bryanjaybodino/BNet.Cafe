@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ComputerMap.ascx.cs" Inherits="BNet.Cafe.Server.Forms.ComputerMap" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SeatMap.ascx.cs" Inherits="BNet.Cafe.Server.Forms.SeatMap" %>
 
 <style>
     /* ==========================================
