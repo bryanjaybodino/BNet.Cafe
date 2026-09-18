@@ -1,4 +1,18 @@
-﻿function ValidateTopUp() {
+﻿function formatMinutes(totalMinutes) {
+    var mins = parseInt(totalMinutes, 10) || 0;
+    if (mins <= 0) return "0 hrs 0 mins";
+
+    var hours = Math.floor(mins / 60);
+    var remainingMins = mins % 60;
+
+    var hrsText = hours === 1 ? "1 hr" : hours + " hrs";
+    var minsText = remainingMins === 1 ? "1 min" : remainingMins + " mins";
+
+    if (hours === 0) return minsText;
+    if (remainingMins === 0) return hrsText;
+    return hrsText + " " + minsText;
+}
+function ValidateTopUp() {
     var amountInput = document.querySelector('[id$="TextBox_Amount"]');
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
 
@@ -57,7 +71,6 @@ function calculateDurationFromAmountBackend(amount) {
         return;
     }
 
-
     var endpoint = /\.aspx$/i.test(window.location.pathname)
         ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateDurationFromAmount.ashx')
         : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateDurationFromAmount.ashx');
@@ -71,16 +84,19 @@ function calculateDurationFromAmountBackend(amount) {
         })
         .then(function (data) {
             if (data) {
+                var minutes = data.totalMinutes || 0;
+
                 if (durationInput) {
-                    durationInput.value = data.totalMinutes;
+                    durationInput.value = minutes;
                 }
 
+                // Render formatted visual time (e.g., "1 hr 30 mins")
                 if (displayTime) {
-                    displayTime.innerText = data.formattedTime;
+                    displayTime.innerText = data.formattedTime || formatMinutes(minutes);
                 }
 
                 if (displayAmount) {
-                    displayAmount.innerText = data.formattedAmount;
+                    displayAmount.innerText = data.formattedAmount || ("₱ " + parseFloat(amount).toFixed(2));
                 }
             }
         })

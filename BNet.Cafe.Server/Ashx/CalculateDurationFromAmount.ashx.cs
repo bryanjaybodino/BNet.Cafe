@@ -54,7 +54,7 @@ namespace BNet.Cafe.Server.Ashx
             }
         }
 
-        public static int CalculateDuration(decimal amount, string customerType = "GUEST")
+        public static int CalculateDuration(decimal amount, string customerType = "GUEST / WALK-IN")
         {
             return PricingRates.CalculateDurationFromPrice((double)amount, customerType);
         }

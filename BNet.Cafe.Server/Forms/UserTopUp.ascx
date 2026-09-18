@@ -14,7 +14,7 @@
                     <h1>
                         <i class="fa-solid fa-wallet"></i>
                         User Balance Top-Up
-              </h1>
+                    </h1>
                     <p>Enter payment amount to credit account balance.</p>
                 </div>
 
@@ -42,16 +42,30 @@
                     </div>
                 </div>
 
-                <!-- Amount Top-Up Form -->
+                <!-- Form Inputs -->
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="<%= TextBox_Amount.ClientID %>">Amount Paid (₱) <span style="color: #ef4444;">*</span></label>
+                        <label for="<%= TextBox_Amount.ClientID %>">Amount Paid (₱) <span style="color: #ef4444; font-weight: 700;">*</span></label>
                         <asp:TextBox ID="TextBox_Amount" runat="server" CssClass="form-control" Text="0.00" TextMode="Number" step="0.01" min="0" oninput="NumberOnly(this); calculateTimeFromAmount();"></asp:TextBox>
                     </div>
 
                     <div class="form-group">
                         <label for="<%= TextBox_Duration.ClientID %>">Equivalent Duration (Minutes)</label>
                         <asp:TextBox ID="TextBox_Duration" runat="server" CssClass="form-control" Text="0" ReadOnly="true"></asp:TextBox>
+                    </div>
+                </div>
+
+                <!-- Conversion Preview Card dynamically matching Light and Dark theme variables -->
+                <div class="card" style="margin-bottom: 20px; padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="card-title-sm" style="display: block; margin-bottom: 4px;">Formatted Credit Time</span>
+                            <strong id="display_FormattedTime" style="font-size: 1.25rem; color: var(--primary);">0 hrs 0 mins</strong>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="card-title-sm" style="display: block; margin-bottom: 4px;">Total Charge</span>
+                            <strong id="display_TotalAmount" style="font-size: 1.25rem; color: #10b981;">₱ 0.00</strong>
+                        </div>
                     </div>
                 </div>
 
@@ -64,13 +78,12 @@
                 <div class="form-grid-action">
                     <span onclick="navigateTo('BNetPage.aspx?Form=Users')" class="btn btn-secondary">
                         <i class="fa-solid fa-arrow-left"></i>Back
-              </span>
+                    </span>
                     <asp:LinkButton ID="LinkButton_Submit" OnClick="LinkButton_Submit_Click" CssClass="btn btn-primary" OnClientClick="return ValidateTopUp();" runat="server">
-                  <i class="fa-solid fa-circle-check"></i> Process Top-Up
-              </asp:LinkButton>
+                        <i class="fa-solid fa-circle-check"></i> Process Top-Up
+                    </asp:LinkButton>
                 </div>
             </div>
         </asp:Panel>
-
     </ContentTemplate>
 </asp:UpdatePanel>
