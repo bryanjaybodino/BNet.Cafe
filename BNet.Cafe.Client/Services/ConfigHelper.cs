@@ -71,5 +71,20 @@ namespace BNet.Cafe.Client.Services
                 return ConfigurationManager.AppSettings["AppUrl"];
             }
         }
+
+        public static string FtpServerPath
+        {
+            get
+            {
+                string webSocketUrl = ConfigurationManager.AppSettings["WebSocketUrl"];
+
+                if (Uri.TryCreate(webSocketUrl, UriKind.Absolute, out Uri uri))
+                {
+                    return $"ftp://{uri.Host}/";
+                }
+
+                return string.Empty;
+            }
+        }
     }
 }

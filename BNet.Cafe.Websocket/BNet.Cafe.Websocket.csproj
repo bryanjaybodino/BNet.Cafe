@@ -36,6 +36,10 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BNet.FTPServer, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Offline Packages\BNet.FTPServer\BNet.FTPServer.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
@@ -54,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Services\ClientManager.cs" />
+    <Compile Include="Services\FTPServer.cs" />
     <Compile Include="Services\InputQueueManager.cs" />
     <Compile Include="Models\ByteCompressor.cs" />
     <Compile Include="Models\PortManager.cs" />
@@ -88,6 +93,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Offline Packages\BNet.FTPServer\BNet.FTPServer.dll" />
     <Content Include="Offline Packages\Newtonsoft.Json\Newtonsoft.Json.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

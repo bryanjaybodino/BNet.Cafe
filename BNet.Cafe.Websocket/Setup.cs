@@ -65,6 +65,7 @@ namespace BNet.Cafe.Websocket
                 _server.Start();
 
                 Task.Run(() => AcceptLoop());
+                Task.Run(() => Services.FTPServer.StartAsync());
             }
             catch
             {

@@ -5,6 +5,7 @@ using BNet.Cafe.Client.Services;
 using System;
 using System.Configuration;
 using System.Drawing;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -435,7 +436,55 @@ namespace BNet.Cafe.Client
         }
         private void Button_Print_Click(object sender, EventArgs e)
         {
-            // TODO: Open Print Manager / Service Dialog
+            try
+            {
+                string ftpPath = ConfigHelper.FtpServerPath; // Returns e.g. "ftp://192.168.1.2/"
+
+                if (string.IsNullOrEmpty(ftpPath))
+                {
+                    MessageBox.Show("FTP Server path is not configured.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                string currentPcName = ConfigHelper.GetClientNameFromIP();
+
+                // Ensure the path ends with a slash before appending the client directory name
+                if (!ftpPath.EndsWith("/"))
+                {
+                    ftpPath += "/";
+                }
+
+                string fullFtpFolderPath = $"{ftpPath}{currentPcName}";
+
+                // Attempt to create the directory via FTP if it does not already exist
+                try
+                {
+                    FtpWebRequest request = (FtpWebRequest)WebRequest.Create(fullFtpFolderPath);
+                    request.Method = WebRequestMethods.Ftp.MakeDirectory;
+                    // request.Credentials = new NetworkCredential("username", "password");
+
+                    using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                    {
+                        // Directory created successfully
+                    }
+                }
+                catch (WebException ex)
+                {
+                    FtpWebResponse response = (FtpWebResponse)ex.Response;
+                    // Ignore status code 550 (ActionNotTakenFileUnavailable) as it indicates the folder already exists
+                    if (response != null && response.StatusCode != FtpStatusCode.ActionNotTakenFileUnavailable)
+                    {
+                        // Optionally log other specific FTP response status codes here
+                    }
+                }
+
+                // Launch Windows File Explorer directly to the FTP directory path
+                System.Diagnostics.Process.Start("explorer.exe", fullFtpFolderPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to open printing folder: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void Button_Shop_Click(object sender, EventArgs e)
