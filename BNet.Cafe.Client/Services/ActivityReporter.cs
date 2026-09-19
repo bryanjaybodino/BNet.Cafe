@@ -4,6 +4,7 @@ using BNet.Cafe.Client.Services;
 using Newtonsoft.Json;
 using System;
 using System.Configuration;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Collections.Specialized.BitVector32;
@@ -79,7 +80,7 @@ namespace BNet.Cafe.Client
             bool isPaused = false;
             string timeStart = string.Empty;
             string timeEnd = string.Empty;
-
+            string ipAddress = NetworkUtility.GetLocalIPAddress(); 
             if (sessionData != null)
             {
                 timeStart = sessionData.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss");
@@ -87,13 +88,14 @@ namespace BNet.Cafe.Client
                 isPaused = sessionData.IsPaused;
             }
 
-            string clientName =  ConfigHelper.GetClientNameFromIP();
+            string clientName = ConfigHelper.GetClientNameFromIP();
             var payloadObj = new
             {
                 clientName = clientName,
                 timeStart = timeStart,
                 timeEnd = timeEnd,
                 isPaused = isPaused,
+                ipAddress = ipAddress,
             };
 
             string json = JsonConvert.SerializeObject(payloadObj);
