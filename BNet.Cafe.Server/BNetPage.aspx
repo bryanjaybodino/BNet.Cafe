@@ -14,16 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BNet Cafe</title>
     <link href="Assets/fontawesome/font-awesome.min.css" rel="stylesheet" />
-    <link href="Assets/Pages/Style.css" rel="stylesheet" />
-
-    <link href="Assets/BNetSelect/Style.css" rel="stylesheet" />
-    <link href="Assets/BNetModal/Style.css" rel="stylesheet" />
-    <link href="Assets/BNetAlert/Style.css" rel="stylesheet" />
-    <link href="Assets/BNetPageLoader/Style.css" rel="stylesheet" />
-    <link href="Assets/BNetTable/Style.css" rel="stylesheet" />
-    <link href="Assets/BNetDropdown/Style.css" rel="stylesheet" />
-    <link href="Assets/BNetBadge/Style.css" rel="stylesheet" />
-    <link href="Assets/BNetDatePicker/Style.css" rel="stylesheet" />
+    <% Response.Write(BNet.Cafe.Server.Services.FileCssHelper.StyleSheetVersion("Assets/bundle.min.css")); %>
 </head>
 <body>
     <div id="pageLoadingOverlay" class="loading-overlay">
@@ -106,17 +97,11 @@
             <!-- Main Content -->
             <div class="main-content">
                 <form runat="server" id="MainForm">
-                    <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
+                    <asp:ScriptManager ID="ScriptManager1" EnableCdn="false" EnablePageMethods="true" EnablePartialRendering="true" AsyncPostBackTimeout="99999999" ScriptMode="Release" ValidateRequestMode="Enabled" EnableScriptLocalization="true" EnableScriptGlobalization="true" LoadScriptsBeforeUI="false" CompositeScript-ScriptMode="Release" CompositeScript-ResourceUICultures="Release" runat="server"></asp:ScriptManager>
                     <asp:PlaceHolder ID="PlaceHolder_Container" runat="server"></asp:PlaceHolder>
                 </form>
             </div>
         </div>
     </div>
-    <script src="Assets/Pages/Script.js"></script>
-    <script src="Assets/BNetSelect/Script.js"></script>
-    <script src="Assets/BNetModal/Script.js"></script>
-    <script src="Assets/BNetAlert/Script.js"></script>
-    <script src="Assets/BNetPageLoader/Script.js"></script>
-    <script src="Assets/BNetDatePicker/Script.js"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BNet.Cafe.Server.Services;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace BNet.Cafe.Server
         {
             if (!IsPostBack)
             {
+                FileCssHelper.BundleCss();
+                FileJsHelpler.BundleBNetPageScripts(ScriptManager1);
                 if (userCookies.count == 0)
                 {
                     Response.Redirect("Login.aspx");

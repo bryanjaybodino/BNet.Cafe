@@ -426,6 +426,8 @@
       <DependentUpon>ResetPassword.aspx</DependentUpon>
     </Compile>
     <Compile Include="Services\ErrorLogService.cs" />
+    <Compile Include="Services\FileCssHelper.cs" />
+    <Compile Include="Services\FileJsHelpler.cs" />
     <Compile Include="Services\GridViewTemplateService.cs" />
     <Compile Include="Services\GridviewPaginationService.cs" />
     <Compile Include="Services\AlertService.cs" />
