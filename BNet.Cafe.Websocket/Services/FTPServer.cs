@@ -9,7 +9,10 @@ namespace BNet.Cafe.Websocket.Services
         public static Task StartAsync()
         {
             // Define the local directory path for printing documents
-            string rootFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PrintingFolder");
+            string rootFolder = Path.Combine(
+               Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+               "For Printing"
+            );
 
             // Ensure the folder exists on disk before starting the FTP server
             if (!Directory.Exists(rootFolder))
