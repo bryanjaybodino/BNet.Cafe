@@ -24,5 +24,13 @@ namespace BNet.Cafe.Server.Services
             ScriptManager1.CompositeScript.Scripts.Add(new ScriptReference("~/Assets/BNetPageLoader/Script.js"));
             ScriptManager1.CompositeScript.Scripts.Add(new ScriptReference("~/Assets/BNetDatePicker/Script.js"));
         }
+        public static void BundleAddScripts(ScriptManager ScriptManager1,string fileName)
+        {
+            try
+            {
+                ScriptManager1.CompositeScript.Scripts.Add(new ScriptReference($"~/Assets/{fileName}.js"));
+            }
+            catch { }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BNet.Cafe.Server.Services;
+﻿using BNet.Cafe.Server.Forms;
+using BNet.Cafe.Server.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +24,7 @@ namespace BNet.Cafe.Server
                     Response.Redirect("Login.aspx");
                 }
                 label_FullName.Text = userCookies.user_fullname.ToUpper();
-                if(userCookies.isUser)
+                if (userCookies.isUser)
                 {
                     Response.Redirect($"Portal.aspx?Email={userCookies.user_email}", false);
                 }
@@ -42,6 +43,7 @@ namespace BNet.Cafe.Server
             string formName = Request.QueryString["Form"] ?? "Dashboard";
             LoadMyUserControl(formName);
             LoadMyHyperLink(formName);
+            Load_Scripts(formName);
         }
 
         private void LoadMyUserControl(string formName)
@@ -99,7 +101,68 @@ namespace BNet.Cafe.Server
                 {
                     HyperLink_Billings.CssClass = "active";
                 }
+                else if (formName.Contains(HyperLink_SeatMap.ToolTip))
+                {
+                    HyperLink_SeatMap.CssClass = "active";
+                }
+                else if (formName.Contains(HyperLink_PricingSettings.ToolTip))
+                {
+                    HyperLink_PricingSettings.CssClass = "active";
+                }
             }
         }
+
+        private void Load_Scripts(string formName)
+        {
+            if (IsPostBack) return;
+
+            string[] scripts;
+
+            switch (formName)
+            {
+                case "Dashboard":
+                    scripts = new[] { "BNetChart/BNetBaseChart", "BNetChart/BNetBarChart", "BNetChart/BNetDonutChart", "BNetChart/BNetLineChart" };
+                    break;
+                case "Computers":
+                    scripts = new[] { "Pages/RemoteMessaging", "Pages/Computers" };
+                    break;
+                case "ComputerCreate":
+                    scripts = new[] { "Pages/ComputerCreate" };
+                    break;
+                case "ComputerEdit":
+                    scripts = new[] { "Pages/ComputerEdit" };
+                    break;
+                case "UserCreate":
+                    scripts = new[] { "Pages/UserCreate" };
+                    break;
+                case "UserEdit":
+                    scripts = new[] { "Pages/UserEdit" };
+                    break;
+                case "UserTopUp":
+                    scripts = new[] { "Pages/UserTopUp" };
+                    break;
+                case "Remote":
+                    scripts = new[] { "Pages/RemoteMessaging", "Pages/Computers" };
+                    break;
+                case "RentalManage":
+                    scripts = new[] { "Pages/RentalManage", "Pages/RemoteMessaging" };
+                    break;
+                case "SeatMap":
+                    scripts = new[] { "Pages/SeatMap", "Pages/Computers" };
+                    break;
+                case "PricingSettings":
+                    scripts = new[] { "Pages/PricingSettings" };
+                    break;
+                default:
+                    scripts = new string[0];
+                    break;
+            }
+
+            foreach (string script in scripts)
+            {
+                FileJsHelpler.BundleAddScripts(ScriptManager1, script);
+            }
+        }
+
     }
 }

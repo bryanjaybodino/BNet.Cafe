@@ -39,7 +39,7 @@
                     </asp:HyperLink>
                 </li>
                 <li>
-                    <asp:HyperLink ID="HyperLink_SeatMap" runat="server" ToolTip="Computer" onclick="navigateTo('?Form=SeatMap'); return false;">
+                    <asp:HyperLink ID="HyperLink_SeatMap" runat="server" ToolTip="SeatMap" onclick="navigateTo('?Form=SeatMap'); return false;">
             <i class="fas fa-map-location-dot"></i><span>Seat Map</span>
                     </asp:HyperLink>
                 </li>
@@ -59,7 +59,7 @@
                     </asp:HyperLink>
                 </li>
                 <li>
-                    <asp:HyperLink ID="HyperLink_PricingSettings" runat="server" ToolTip="Pricing Settings" onclick="navigateTo('?Form=PricingSettings'); return false;">
+                    <asp:HyperLink ID="HyperLink_PricingSettings" runat="server" ToolTip="PricingSettings" onclick="navigateTo('?Form=PricingSettings'); return false;">
             <i class="fas fa-cash-register"></i><span>Pricing Setting</span>
                     </asp:HyperLink>
                 </li>

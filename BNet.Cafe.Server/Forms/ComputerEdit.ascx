@@ -1,11 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ComputerEdit.ascx.cs" Inherits="BNet.Cafe.Server.Forms.ComputerEdit" %>
 <!-- Register script via ScriptManager to ensure compatibility with UpdatePanel -->
-<asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
-    <Scripts>
-        <asp:ScriptReference Path="~/Assets/Pages/ComputerEdit.js" />
-    </Scripts>
-</asp:ScriptManagerProxy>
-
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <div class="bnet-table-wrapper">

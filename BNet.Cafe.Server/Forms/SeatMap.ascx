@@ -1,12 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SeatMap.ascx.cs" Inherits="BNet.Cafe.Server.Forms.SeatMap" %>
 
 <link href="Assets/Pages/SeatMap.css" rel="stylesheet" />
-<asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
-    <Scripts>
-        <asp:ScriptReference Path="~/Assets/Pages/Computers.js" />
-        <asp:ScriptReference Path="~/Assets/Pages/SeatMap.js" />
-    </Scripts>
-</asp:ScriptManagerProxy>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <asp:LinkButton ID="LinkButton_Refresh" OnClick="LinkButton_Refresh_Click" runat="server"></asp:LinkButton>

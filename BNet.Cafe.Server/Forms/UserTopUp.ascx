@@ -1,10 +1,4 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="UserTopUp.ascx.cs" Inherits="BNet.Cafe.Server.Forms.UserTopUp" %>
-<asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
-    <Scripts>
-        <asp:ScriptReference Path="~/Assets/Pages/UserTopUp.js" />
-    </Scripts>
-</asp:ScriptManagerProxy>
-
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <asp:Panel ID="Panel_Form" runat="server">

@@ -1,11 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ComputerCreate.ascx.cs" Inherits="BNet.Cafe.Server.Forms.ComputerCreate" %>
 <!-- Register script via ScriptManager to ensure compatibility with UpdatePanel -->
-<asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
-    <Scripts>
-        <asp:ScriptReference Path="~/Assets/Pages/ComputerCreate.js" />
-    </Scripts>
-</asp:ScriptManagerProxy>
-
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <div class="bnet-table-wrapper">

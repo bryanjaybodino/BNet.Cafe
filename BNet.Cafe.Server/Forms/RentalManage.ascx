@@ -2,13 +2,6 @@
 <%@ Register Src="~/Forms/Modals/RemoteOpenTime.ascx" TagPrefix="uc1" TagName="RemoteOpenTime" %>
 
 <link href="Assets/Pages/RentalManage.css" rel="stylesheet" />
-<asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
-    <Scripts>
-        <asp:ScriptReference Path="~/Assets/Pages/RentalManage.js" />
-        <asp:ScriptReference Path="~/Assets/Pages/RemoteMessaging.js" />
-    </Scripts>
-</asp:ScriptManagerProxy>
-
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <!-- Hidden fields to store loaded DB state -->

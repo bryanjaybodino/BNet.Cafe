@@ -2,11 +2,6 @@
 <%@ Register Src="~/Forms/Modals/PricingSettingDelete.ascx" TagPrefix="uc1" TagName="PricingSettingDelete" %>
 
 <link href="Assets/Pages/PricingSettings.css" rel="stylesheet" />
-<asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
-    <Scripts>
-        <asp:ScriptReference Path="~/Assets/Pages/PricingSettings.js" />
-    </Scripts>
-</asp:ScriptManagerProxy>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
     <ContentTemplate>
         <asp:HiddenField ID="HiddenField_PriceId" runat="server" Value="0" />

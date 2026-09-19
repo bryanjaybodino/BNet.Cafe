@@ -2,13 +2,6 @@
 <%@ Register Src="~/Forms/Modals/RemoteMessage.ascx" TagPrefix="uc" TagName="RemoteMessage" %>
 
 <link href="Assets/Pages/Remote.css" rel="stylesheet" />
-<asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
-    <Scripts>
-        <asp:ScriptReference Path="~/Assets/Pages/Remote.js" />
-        <asp:ScriptReference Path="~/Assets/Pages/RemoteMessaging.js" />
-    </Scripts>
-</asp:ScriptManagerProxy>
-
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <!-- Remote Message Modal -->
