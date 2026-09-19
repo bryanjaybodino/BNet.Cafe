@@ -35,7 +35,25 @@ namespace BNet.Cafe.Server.Repositories
 
             return DBContext.SqlExecuteAsync(sql);
         }
+        public DataTable GetAll(string search = "", string userId = "", int pageIndex = 0, bool isDeleted = false)
+        {
+            var scripts = new Dictionary<string, string>();
+            string DBSearch = dBScriptService.CleanUpToUpper(search);
+            string DBUserId = dBScriptService.CleanUpToUpper(userId);
+            string DBIsDeleted = isDeleted ? "TRUE" : "FALSE";
+            string LIMIT = paginationService.SetPagination(pageIndex);
 
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", DBUserId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBSearch", DBSearch);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
+
+            Page page = HttpContext.Current.Handler as Page;
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Balances/GetAll.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+
+            return DBContext.SqlDataAdapterAsync(sql);
+        }
         public double GetBalanceByUserId(string id)
         {
             var scripts = new Dictionary<string, string>();

@@ -12,6 +12,7 @@ namespace BNet.Cafe.Server
     public partial class Login : System.Web.UI.Page
     {
         Sessions.User userCookies = new Sessions.User();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             // Prevent caching
@@ -29,34 +30,51 @@ namespace BNet.Cafe.Server
                 }
                 else
                 {
-                    try
-                    {
-                        // Generate CSRF state token
-                        string state = Guid.NewGuid().ToString();
-                        Session["oauth_state"] = state;
-                        Session["oauth_provider"] = "GOOGLE";
+                    //// Do not auto-redirect if the user explicitly clicked Logout
+                    //if (Request.QueryString["logout"] == "true")
+                    //{
+                    //    return;
+                    //}
 
-                        // Build OAuth authorization URL
-                        string clientId = ConfigurationManager.AppSettings["Google_ClientId"];
-                        string redirectUri = ConfigurationManager.AppSettings["Google_RedirectUri"];
-                        string authEndpoint = ConfigurationManager.AppSettings["Google_AuthorizationEndpoint"];
-
-                        string authUrl = string.Format(
-                            "{0}?client_id={1}&redirect_uri={2}&response_type=code&scope={3}&state={4}",
-                            authEndpoint,
-                            Uri.EscapeDataString(clientId),
-                            Uri.EscapeDataString(redirectUri),
-                            Uri.EscapeDataString("openid email profile"),
-                            Uri.EscapeDataString(state)
-                        );
-
-                        Response.Redirect(authUrl, false);
-                    }
-                    catch (Exception ex)
-                    {
-                        Response.Redirect("Login.aspx?error=" + Uri.EscapeDataString(ex.Message), false);
-                    }
+                    //InitiateGoogleOAuth();
                 }
+            }
+        }
+
+        protected void btnGoogleSignIn_Click(object sender, EventArgs e)
+        {
+            InitiateGoogleOAuth();
+        }
+
+        private void InitiateGoogleOAuth()
+        {
+            try
+            {
+                // Generate CSRF state token
+                string state = Guid.NewGuid().ToString();
+                Session["oauth_state"] = state;
+                Session["oauth_provider"] = "GOOGLE";
+
+                // Build OAuth authorization URL
+                string clientId = ConfigurationManager.AppSettings["Google_ClientId"];
+                string redirectUri = ConfigurationManager.AppSettings["Google_RedirectUri"];
+                string authEndpoint = ConfigurationManager.AppSettings["Google_AuthorizationEndpoint"];
+
+                string authUrl = string.Format(
+                    "{0}?client_id={1}&redirect_uri={2}&response_type=code&scope={3}&state={4}&prompt={5}",
+                    authEndpoint,
+                    Uri.EscapeDataString(clientId),
+                    Uri.EscapeDataString(redirectUri),
+                    Uri.EscapeDataString("openid email profile"),
+                    Uri.EscapeDataString(state),
+                    Uri.EscapeDataString("select_account")
+                );
+
+                Response.Redirect(authUrl, false);
+            }
+            catch (Exception ex)
+            {
+                Response.Redirect("Login.aspx?error=" + Uri.EscapeDataString(ex.Message), false);
             }
         }
     }
