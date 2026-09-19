@@ -347,10 +347,13 @@
                                 <asp:GridView ID="GridViewTable" runat="server" ShowHeaderWhenEmpty="true"
                                     AutoGenerateColumns="False" CssClass="bnet-table" GridLines="None"
                                     AllowPaging="True" OnPageIndexChanging="GridViewTable_PageIndexChanging">
-
                                     <Columns>
                                         <asp:BoundField DataField="DBDateCreated" HeaderText="Date" />
-                                        <asp:BoundField DataField="DBTimeCreated" HeaderText="Time" />
+                                        <asp:TemplateField HeaderText="Time">
+                                            <ItemTemplate>
+                                                <asp:Label ID="Label_DBTimeCreated" runat="server" Text='<%#Eval("DBTimeCreated").ToString() %>'></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
                                         <asp:BoundField DataField="DBFormattedDuration" HeaderText="Duration" />
                                         <asp:BoundField DataField="DBAmount" HeaderText="Amount" />
                                         <asp:BoundField DataField="DBDescription" HeaderText="Description" />

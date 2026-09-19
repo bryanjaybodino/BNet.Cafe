@@ -445,7 +445,8 @@ namespace BNet.Cafe.Client
 
         private void Button_History_Click(object sender, EventArgs e)
         {
-            // TODO: Open Transaction History Modal/Window
+            var userPortalForm = new UserPortalForm(userId);
+            userPortalForm.Show();
         }
     }
 }

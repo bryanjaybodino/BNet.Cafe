@@ -18,15 +18,36 @@ namespace BNet.Cafe.Server
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
-            // Redirect unauthenticated users
-            if (userSession.count == 0)
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
+                // Decrypt and check parameter safely
+                bool isLoginQuery = false;
+                if (!string.IsNullOrEmpty(Request.QueryString["UserId"]))
+                {
+                    string encryptedUserId = Request.QueryString["UserId"];
+                    string userId = SecuredDataService.Decrypted(encryptedUserId);
+                    isLoginQuery = !string.IsNullOrWhiteSpace(userId);
+
+                    if (isLoginQuery)
+                    {
+                        var userData = userRepo.GetById(userId);
+                        for (int i = 0; i < userData.Rows.Count; i++)
+                        {
+                            string _email = userData.Rows[i]["DBEmail"].ToString();
+                            string _password = userData.Rows[i]["DBPassword"].ToString();
+                            string _role = userData.Rows[i]["DBRole"].ToString();
+                            userSession.createCookies(_email, _password, _role);
+                        }
+                    }
+                }
+
+                // Redirect if unauthenticated AND NOT coming from a valid login query
+                if (userSession.count == 0 && !isLoginQuery)
+                {
+                    Response.Redirect("~/Login.aspx");
+                    return;
+                }
+
                 // Fetch account info using current email session
                 string email = userSession.user_email;
                 DataTable userTable = userRepo.GetByEmail(email);
@@ -66,6 +87,15 @@ namespace BNet.Cafe.Server
             // Fetch history records from the Balances repository queries
             DataTable data = balanceRepo.GetAll("", HiddenField_UserId.Value, GridViewTemplateService.GetPaginationIndex(GridViewTable));
             GridViewTemplateService.SetGridView(GridViewTable, data, Panel_Pagination);
+            for (int i = 0; i < GridViewTable.Rows.Count; i++)
+            {
+                try
+                {
+                    Label Label_DBTimeCreated = (Label)GridViewTable.Rows[i].FindControl("Label_DBTimeCreated");
+                    Label_DBTimeCreated.Text = Convert.ToDateTime(Label_DBTimeCreated.Text).ToString("hh:mm tt");
+                }
+                catch { }
+            }
         }
 
         protected void GridViewTable_PageIndexChanging(object sender, GridViewPageEventArgs e)

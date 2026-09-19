@@ -1,6 +1,6 @@
 ﻿namespace BNet.Cafe.Client
 {
-    partial class ResetPasswordForm
+    partial class UserPortalForm
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -60,9 +60,9 @@
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(80)))), ((int)(((byte)(236)))));
             this.lblTitle.Location = new System.Drawing.Point(22, 27);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(190, 32);
+            this.lblTitle.Size = new System.Drawing.Size(141, 32);
             this.lblTitle.TabIndex = 1;
-            this.lblTitle.Text = "Reset Password";
+            this.lblTitle.Text = "User Portal";
             // 
             // btnClose
             // 
@@ -114,7 +114,7 @@
             this.webView.TabIndex = 0;
             this.webView.ZoomFactor = 1D;
             // 
-            // ResetPasswordForm
+            // UserPortalForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -126,11 +126,12 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "ResetPasswordForm";
+            this.Name = "UserPortalForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "BNet Reset Password Form";
+            this.Text = "BNet User Portal Form";
             this.TopMost = true;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.UserPortalForm_Load);
             this.panelHeader.ResumeLayout(false);
             this.panelHeader.PerformLayout();
             this.panelBrowserContainer.ResumeLayout(false);

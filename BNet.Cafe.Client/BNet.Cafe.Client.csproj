@@ -113,6 +113,7 @@
     <Compile Include="Services\NetworkUtility.cs" />
     <Compile Include="Services\PendingLogoutManager.cs" />
     <Compile Include="Services\PricingRatesManager.cs" />
+    <Compile Include="Services\SecuredDataService.cs" />
     <Compile Include="Services\SecurityAccessManager.cs" />
     <Compile Include="Services\SessionData.cs" />
     <Compile Include="Starter\EnvironmentHelper.cs" />
@@ -150,6 +151,12 @@
     <Compile Include="Repositories\UserActivity.cs" />
     <Compile Include="Services\ScreenStreamer.cs" />
     <Compile Include="Starter\WatchdogManager.cs" />
+    <Compile Include="UserPortalForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserPortalForm.Designer.cs">
+      <DependentUpon>UserPortalForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="BNetCafeTimer.resx">
       <DependentUpon>BNetCafeTimer.cs</DependentUpon>
     </EmbeddedResource>
@@ -167,6 +174,12 @@
     </Compile>
     <EmbeddedResource Include="OAuthLoginForm.resx">
       <DependentUpon>OAuthLoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResetPasswordForm.resx">
+      <DependentUpon>ResetPasswordForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPortalForm.resx">
+      <DependentUpon>UserPortalForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />
