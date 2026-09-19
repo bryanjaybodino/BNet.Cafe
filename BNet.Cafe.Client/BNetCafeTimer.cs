@@ -478,6 +478,14 @@ namespace BNet.Cafe.Client
                     }
                 }
 
+                // Inform the user where to place their files
+                MessageBox.Show(
+                    $"Please place the files for printing into this folder: {currentPcName}",
+                    "Notice",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+
                 // Launch Windows File Explorer directly to the FTP directory path
                 System.Diagnostics.Process.Start("explorer.exe", fullFtpFolderPath);
             }
