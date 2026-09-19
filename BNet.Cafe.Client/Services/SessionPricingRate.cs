@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BNet.Cafe.Client.Services
 {
-    public static class PricingRatesManager
+    public static class SessionPricingRate
     {
         private static readonly string StorageDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),

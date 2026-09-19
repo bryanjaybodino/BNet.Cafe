@@ -126,11 +126,11 @@ namespace BNet.Cafe.Client
                 TimeSpan time = TimeSpan.FromSeconds(remainingSeconds);
                 string totalMinutes = ((int)time.TotalMinutes).ToString();
 
-                PendingLogoutManager.SavePendingLogout(userId, totalMinutes, "0", "LOGGING-OUT");
+                SessionLogout.SavePendingLogout(userId, totalMinutes, "0", "LOGGING-OUT");
 
                 _ = Task.Run(async () =>
                 {
-                    await PendingLogoutManager.ProcessPendingLogoutAsync();
+                    await SessionLogout.ProcessPendingLogoutAsync();
                 });
             }
             isPaused = false;

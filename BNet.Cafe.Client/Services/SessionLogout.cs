@@ -15,7 +15,7 @@ namespace BNet.Cafe.Client.Services
         public DateTime Timestamp { get; set; }
     }
 
-    public static class PendingLogoutManager
+    public static class SessionLogout
     {
         // Safe local directory for diskless write access across all Windows users
         private static readonly string PendingDirectory = Path.Combine(

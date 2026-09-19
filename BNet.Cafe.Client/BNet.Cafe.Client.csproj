@@ -111,8 +111,8 @@
     <Compile Include="Services\DisplayFormatter.cs" />
     <Compile Include="Services\ConfigHelper.cs" />
     <Compile Include="Services\NetworkUtility.cs" />
-    <Compile Include="Services\PendingLogoutManager.cs" />
-    <Compile Include="Services\PricingRatesManager.cs" />
+    <Compile Include="Services\SessionLogout.cs" />
+    <Compile Include="Services\SessionPricingRate.cs" />
     <Compile Include="Services\SecuredDataService.cs" />
     <Compile Include="Services\SecurityAccessManager.cs" />
     <Compile Include="Services\SessionData.cs" />

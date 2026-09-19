@@ -86,7 +86,7 @@ namespace BNet.Cafe.Client
             lblStatusBadge.Text = $"● Station {clientName} Online";
             await Task.Delay(1000);
             _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
-            await PricingRatesManager.InitializeRatesAsync();
+            await SessionPricingRate.InitializeRatesAsync();
             var session = SessionManager.ReadSession();
             if (session != null)
             {
@@ -161,10 +161,10 @@ namespace BNet.Cafe.Client
                 try
                 {
                     // First check: notepad / pending file exist?
-                    if (PendingLogoutManager.HasPendingLogout())
+                    if (SessionLogout.HasPendingLogout())
                     {
                         // Second check: check server & third: save to DB & fourth: remove file
-                        await PendingLogoutManager.ProcessPendingLogoutAsync();
+                        await SessionLogout.ProcessPendingLogoutAsync();
                     }
                 }
                 catch { }
