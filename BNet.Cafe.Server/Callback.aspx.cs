@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Web.Security;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace BNet.Cafe.Server
 {
@@ -30,14 +29,13 @@ namespace BNet.Cafe.Server
                 }
 
                 string returnedState = Request.QueryString["state"];
-                string storedState = Session["oauth_state"] as string;
 
-                if (string.IsNullOrEmpty(code) || returnedState != storedState)
+                // Validate code presence and state integrity/expiration
+                if (string.IsNullOrEmpty(code) || !ValidateOAuthState(returnedState))
                 {
                     Response.Redirect("Login.aspx?error=invalid_state", false);
                     return;
                 }
-
 
                 // Token exchange
                 string accessToken = ExchangeCodeForToken(code);
@@ -55,7 +53,6 @@ namespace BNet.Cafe.Server
                     return;
                 }
 
-
                 Repositories.Users users = new Repositories.Users();
                 DataTable dataTable = users.GetByEmail(userInfo.email);
                 string role = "USER";
@@ -70,7 +67,7 @@ namespace BNet.Cafe.Server
                     users.Create(userInfo.email, userInfo.email, userInfo.name, role);
                 }
 
-                // Store in session
+                // Store user details
                 Session["GoogleUser"] = userInfo;
                 Sessions.User userCookies = new Sessions.User();
                 userCookies.createCookies(userInfo.email, userInfo.name, role);
@@ -81,13 +78,55 @@ namespace BNet.Cafe.Server
                 }
                 else
                 {
-                    // Redirect to dashboard
                     Response.Redirect("BNetPage.aspx", false);
                 }
             }
             catch (Exception ex)
             {
                 Response.Redirect("Login.aspx?error=" + Uri.EscapeDataString(ex.Message), false);
+            }
+        }
+
+        /// <summary>
+        /// Validates encrypted state parameter without requiring ASP.NET Session
+        /// </summary>
+        private bool ValidateOAuthState(string returnedState)
+        {
+            if (string.IsNullOrEmpty(returnedState))
+            {
+                return false;
+            }
+
+            try
+            {
+                byte[] decodedBytes = MachineKey.Decode(returnedState, MachineKeyProtection.Encryption);
+                if (decodedBytes == null)
+                {
+                    return false;
+                }
+
+                string statePayload = Encoding.UTF8.GetString(decodedBytes);
+                string[] parts = statePayload.Split('|');
+
+                if (parts.Length < 2)
+                {
+                    return false;
+                }
+
+                long ticks = long.Parse(parts[0]);
+                DateTime createdAt = new DateTime(ticks, DateTimeKind.Utc);
+
+                // Reject state tokens older than 10 minutes
+                if (DateTime.UtcNow - createdAt > TimeSpan.FromMinutes(10))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -130,11 +169,10 @@ namespace BNet.Cafe.Server
                     responseJson = reader.ReadToEnd();
                 }
 
-                // Parse JSON response
                 var serializer = new JavaScriptSerializer();
                 var tokenData = serializer.Deserialize<Dictionary<string, object>>(responseJson);
 
-                if (tokenData.ContainsKey("access_token"))
+                if (tokenData != null && tokenData.ContainsKey("access_token"))
                 {
                     return tokenData["access_token"].ToString();
                 }
@@ -149,7 +187,6 @@ namespace BNet.Cafe.Server
                     using (var reader = new StreamReader(errorStream))
                     {
                         string errorResponse = reader.ReadToEnd();
-                        // Log error if needed
                     }
                 }
                 return null;

@@ -29,6 +29,9 @@
             this.Label_TimeoutDisplay = new System.Windows.Forms.Label();
             this.label_TotalAmount = new System.Windows.Forms.Label();
             this.Timer_Countdown = new System.Windows.Forms.Timer(this.components);
+            this.Button_Print = new BNet.Cafe.Client.Design.ModernButton();
+            this.Button_Shop = new BNet.Cafe.Client.Design.ModernButton();
+            this.Button_History = new BNet.Cafe.Client.Design.ModernButton();
             this.Button_AccountAction = new BNet.Cafe.Client.Design.ModernButton();
             this.Button_Logout = new BNet.Cafe.Client.Design.ModernButton();
             this.Panel_Header.SuspendLayout();
@@ -44,7 +47,7 @@
             this.Panel_Header.Dock = System.Windows.Forms.DockStyle.Top;
             this.Panel_Header.Location = new System.Drawing.Point(0, 0);
             this.Panel_Header.Name = "Panel_Header";
-            this.Panel_Header.Size = new System.Drawing.Size(300, 50);
+            this.Panel_Header.Size = new System.Drawing.Size(340, 50);
             this.Panel_Header.TabIndex = 0;
             this.Panel_Header.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Panel_Header_MouseDown);
             // 
@@ -52,7 +55,7 @@
             // 
             this.Label_ClientName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.Label_ClientName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
-            this.Label_ClientName.Location = new System.Drawing.Point(211, 12);
+            this.Label_ClientName.Location = new System.Drawing.Point(251, 12);
             this.Label_ClientName.Name = "Label_ClientName";
             this.Label_ClientName.Size = new System.Drawing.Size(77, 25);
             this.Label_ClientName.TabIndex = 1;
@@ -67,7 +70,7 @@
             this.Label_CustomerName.ForeColor = System.Drawing.Color.White;
             this.Label_CustomerName.Location = new System.Drawing.Point(12, 12);
             this.Label_CustomerName.Name = "Label_CustomerName";
-            this.Label_CustomerName.Size = new System.Drawing.Size(202, 25);
+            this.Label_CustomerName.Size = new System.Drawing.Size(232, 25);
             this.Label_CustomerName.TabIndex = 0;
             this.Label_CustomerName.Text = "Guest / Walk-in";
             this.Label_CustomerName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -79,7 +82,7 @@
             this.Label_SessionType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(99)))), ((int)(((byte)(102)))), ((int)(((byte)(241)))));
             this.Label_SessionType.Location = new System.Drawing.Point(15, 58);
             this.Label_SessionType.Name = "Label_SessionType";
-            this.Label_SessionType.Size = new System.Drawing.Size(270, 18);
+            this.Label_SessionType.Size = new System.Drawing.Size(310, 18);
             this.Label_SessionType.TabIndex = 1;
             this.Label_SessionType.Text = "PREPAID SESSION";
             this.Label_SessionType.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -91,7 +94,7 @@
             this.Label_TimerDisplay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(56)))), ((int)(((byte)(202)))));
             this.Label_TimerDisplay.Location = new System.Drawing.Point(15, 80);
             this.Label_TimerDisplay.Name = "Label_TimerDisplay";
-            this.Label_TimerDisplay.Size = new System.Drawing.Size(270, 55);
+            this.Label_TimerDisplay.Size = new System.Drawing.Size(310, 55);
             this.Label_TimerDisplay.TabIndex = 2;
             this.Label_TimerDisplay.Text = "00:00:00";
             this.Label_TimerDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -106,7 +109,7 @@
             this.Panel_Details.Controls.Add(this.label_TotalAmount);
             this.Panel_Details.Location = new System.Drawing.Point(15, 145);
             this.Panel_Details.Name = "Panel_Details";
-            this.Panel_Details.Size = new System.Drawing.Size(270, 140);
+            this.Panel_Details.Size = new System.Drawing.Size(310, 140);
             this.Panel_Details.TabIndex = 3;
             // 
             // Label_StartTime
@@ -115,7 +118,7 @@
             this.Label_StartTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.Label_StartTime.Location = new System.Drawing.Point(10, 10);
             this.Label_StartTime.Name = "Label_StartTime";
-            this.Label_StartTime.Size = new System.Drawing.Size(248, 22);
+            this.Label_StartTime.Size = new System.Drawing.Size(288, 22);
             this.Label_StartTime.TabIndex = 0;
             this.Label_StartTime.Text = "Started At: --:--";
             // 
@@ -125,7 +128,7 @@
             this.Label_TotalHours.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.Label_TotalHours.Location = new System.Drawing.Point(10, 40);
             this.Label_TotalHours.Name = "Label_TotalHours";
-            this.Label_TotalHours.Size = new System.Drawing.Size(248, 22);
+            this.Label_TotalHours.Size = new System.Drawing.Size(288, 22);
             this.Label_TotalHours.TabIndex = 1;
             this.Label_TotalHours.Text = "Purchased: 0 hr 0 min";
             // 
@@ -135,7 +138,7 @@
             this.Label_TimeoutDisplay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.Label_TimeoutDisplay.Location = new System.Drawing.Point(10, 70);
             this.Label_TimeoutDisplay.Name = "Label_TimeoutDisplay";
-            this.Label_TimeoutDisplay.Size = new System.Drawing.Size(248, 22);
+            this.Label_TimeoutDisplay.Size = new System.Drawing.Size(288, 22);
             this.Label_TimeoutDisplay.TabIndex = 2;
             this.Label_TimeoutDisplay.Text = "Timeout: --:--";
             // 
@@ -145,7 +148,7 @@
             this.label_TotalAmount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.label_TotalAmount.Location = new System.Drawing.Point(10, 102);
             this.label_TotalAmount.Name = "label_TotalAmount";
-            this.label_TotalAmount.Size = new System.Drawing.Size(248, 22);
+            this.label_TotalAmount.Size = new System.Drawing.Size(288, 22);
             this.label_TotalAmount.TabIndex = 3;
             this.label_TotalAmount.Text = "Total Amount: ₱ 0.00";
             // 
@@ -153,6 +156,57 @@
             // 
             this.Timer_Countdown.Interval = 1000;
             this.Timer_Countdown.Tick += new System.EventHandler(this.Timer_Countdown_Tick);
+            // 
+            // Button_Print
+            // 
+            this.Button_Print.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
+            this.Button_Print.BorderRadius = 8;
+            this.Button_Print.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Button_Print.FlatAppearance.BorderSize = 0;
+            this.Button_Print.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Button_Print.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.Button_Print.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(56)))), ((int)(((byte)(202)))));
+            this.Button_Print.Location = new System.Drawing.Point(15, 292);
+            this.Button_Print.Name = "Button_Print";
+            this.Button_Print.Size = new System.Drawing.Size(98, 40);
+            this.Button_Print.TabIndex = 6;
+            this.Button_Print.Text = "🖨️ Print";
+            this.Button_Print.UseVisualStyleBackColor = false;
+            this.Button_Print.Click += new System.EventHandler(this.Button_Print_Click);
+            // 
+            // Button_Shop
+            // 
+            this.Button_Shop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
+            this.Button_Shop.BorderRadius = 8;
+            this.Button_Shop.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Button_Shop.FlatAppearance.BorderSize = 0;
+            this.Button_Shop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Button_Shop.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.Button_Shop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(56)))), ((int)(((byte)(202)))));
+            this.Button_Shop.Location = new System.Drawing.Point(121, 292);
+            this.Button_Shop.Name = "Button_Shop";
+            this.Button_Shop.Size = new System.Drawing.Size(98, 40);
+            this.Button_Shop.TabIndex = 7;
+            this.Button_Shop.Text = "🛒 Shop";
+            this.Button_Shop.UseVisualStyleBackColor = false;
+            this.Button_Shop.Click += new System.EventHandler(this.Button_Shop_Click);
+            // 
+            // Button_History
+            // 
+            this.Button_History.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
+            this.Button_History.BorderRadius = 8;
+            this.Button_History.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Button_History.FlatAppearance.BorderSize = 0;
+            this.Button_History.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Button_History.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.Button_History.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(56)))), ((int)(((byte)(202)))));
+            this.Button_History.Location = new System.Drawing.Point(227, 292);
+            this.Button_History.Name = "Button_History";
+            this.Button_History.Size = new System.Drawing.Size(98, 40);
+            this.Button_History.TabIndex = 8;
+            this.Button_History.Text = "📜 History";
+            this.Button_History.UseVisualStyleBackColor = false;
+            this.Button_History.Click += new System.EventHandler(this.Button_History_Click);
             // 
             // Button_AccountAction
             // 
@@ -163,9 +217,9 @@
             this.Button_AccountAction.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button_AccountAction.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.Button_AccountAction.ForeColor = System.Drawing.Color.White;
-            this.Button_AccountAction.Location = new System.Drawing.Point(15, 295);
+            this.Button_AccountAction.Location = new System.Drawing.Point(15, 342);
             this.Button_AccountAction.Name = "Button_AccountAction";
-            this.Button_AccountAction.Size = new System.Drawing.Size(270, 38);
+            this.Button_AccountAction.Size = new System.Drawing.Size(310, 38);
             this.Button_AccountAction.TabIndex = 5;
             this.Button_AccountAction.Text = "Change Password";
             this.Button_AccountAction.UseVisualStyleBackColor = false;
@@ -181,9 +235,9 @@
             this.Button_Logout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button_Logout.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.Button_Logout.ForeColor = System.Drawing.Color.Crimson;
-            this.Button_Logout.Location = new System.Drawing.Point(15, 340);
+            this.Button_Logout.Location = new System.Drawing.Point(15, 387);
             this.Button_Logout.Name = "Button_Logout";
-            this.Button_Logout.Size = new System.Drawing.Size(270, 42);
+            this.Button_Logout.Size = new System.Drawing.Size(310, 42);
             this.Button_Logout.TabIndex = 4;
             this.Button_Logout.Text = "End Session / Logout";
             this.Button_Logout.UseVisualStyleBackColor = false;
@@ -194,8 +248,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.ClientSize = new System.Drawing.Size(300, 395);
+            this.ClientSize = new System.Drawing.Size(340, 445);
             this.ControlBox = false;
+            this.Controls.Add(this.Button_Print);
+            this.Controls.Add(this.Button_Shop);
+            this.Controls.Add(this.Button_History);
             this.Controls.Add(this.Button_AccountAction);
             this.Controls.Add(this.Button_Logout);
             this.Controls.Add(this.Panel_Details);
@@ -229,6 +286,9 @@
         private System.Windows.Forms.Label Label_TotalHours;
         private System.Windows.Forms.Label Label_TimeoutDisplay;
         private System.Windows.Forms.Label label_TotalAmount;
+        private BNet.Cafe.Client.Design.ModernButton Button_Print;
+        private BNet.Cafe.Client.Design.ModernButton Button_Shop;
+        private BNet.Cafe.Client.Design.ModernButton Button_History;
         private BNet.Cafe.Client.Design.ModernButton Button_AccountAction;
         private BNet.Cafe.Client.Design.ModernButton Button_Logout;
         private System.Windows.Forms.Timer Timer_Countdown;

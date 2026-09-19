@@ -87,10 +87,20 @@ namespace BNet.Cafe.Client
                     {
                         cancelArgs.Cancel = true;
                     }
-                    this.BeginInvoke(new Action(() =>
+                    this.BeginInvoke(new Action(async () =>
                     {
+                        Ashx.UserHandler userHandler = new Ashx.UserHandler();
+                        var response = await userHandler.UserAsync(userId);
+                        var user = response.Data;
+                        // Extract properties from the result
+                        string email = user.Email;
+                        string password = user.Password;
+
+                        // Construct the message string
+                        string message = $"Your account has been created.\n\nEmail: {email}\nPassword: {password}\n\nPlease top up at the counter to continue.";
+
                         MessageBox.Show(
-                            "Your account has been created. Please top up at the counter to continue.",
+                            message,
                             "Registered Successfully",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information

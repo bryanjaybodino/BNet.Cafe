@@ -45,7 +45,8 @@ namespace BNet.Cafe.Server.Ashx
                         TimeCreated = row["DBTimeCreated"].ToString(),
                         IsDeleted = Convert.ToBoolean(row["DBIsDeleted"]),
                         TotalDuration = Convert.ToInt32(row["DBTotalDuration"]),
-                        FormattedTotalDuration = row["DBFormattedTotalDuration"].ToString()
+                        FormattedTotalDuration = row["DBFormattedTotalDuration"].ToString(),
+                        Password = row["DBPassword"].ToString()
                     };
 
                     SendJsonResponse(context, true, "Login successful.", userData);
@@ -105,6 +106,9 @@ namespace BNet.Cafe.Server.Ashx
 
             [JsonProperty("formattedTotalDuration")]
             public string FormattedTotalDuration { get; set; }
+
+            [JsonProperty("password")]
+            public string Password { get; set; }
         }
     }
 }

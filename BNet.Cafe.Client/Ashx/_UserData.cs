@@ -35,5 +35,8 @@ namespace BNet.Cafe.Client.Ashx
 
         [JsonProperty("formattedTotalDuration")]
         public string FormattedTotalDuration { get; set; }
+
+        [JsonProperty("password")]
+        public string Password { get; set; }   
     }
 }

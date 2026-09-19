@@ -433,5 +433,19 @@ namespace BNet.Cafe.Client
                 oauthForm.Show();
             }
         }
+        private void Button_Print_Click(object sender, EventArgs e)
+        {
+            // TODO: Open Print Manager / Service Dialog
+        }
+
+        private void Button_Shop_Click(object sender, EventArgs e)
+        {
+            // TODO: Open Cafe Shop / Snack Ordering Form
+        }
+
+        private void Button_History_Click(object sender, EventArgs e)
+        {
+            // TODO: Open Transaction History Modal/Window
+        }
     }
 }

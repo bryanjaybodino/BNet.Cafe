@@ -1,11 +1,10 @@
 ﻿using BNet.Cafe.Server.Services;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
+using System.Text;
 using System.Web;
+using System.Web.Security;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace BNet.Cafe.Server
 {
@@ -28,16 +27,6 @@ namespace BNet.Cafe.Server
                 {
                     Response.Redirect("BNetPage.aspx", false);
                 }
-                else
-                {
-                    //// Do not auto-redirect if the user explicitly clicked Logout
-                    //if (Request.QueryString["logout"] == "true")
-                    //{
-                    //    return;
-                    //}
-
-                    //InitiateGoogleOAuth();
-                }
             }
         }
 
@@ -50,10 +39,9 @@ namespace BNet.Cafe.Server
         {
             try
             {
-                // Generate CSRF state token
-                string state = Guid.NewGuid().ToString();
-                Session["oauth_state"] = state;
-                Session["oauth_provider"] = "GOOGLE";
+                // Encrypt timestamp + nonce into state token to bypass WebBrowser/WebView session loss
+                string stateRaw = $"{DateTime.UtcNow.Ticks}|{Guid.NewGuid()}";
+                string encryptedState = MachineKey.Encode(Encoding.UTF8.GetBytes(stateRaw), MachineKeyProtection.Encryption);
 
                 // Build OAuth authorization URL
                 string clientId = ConfigurationManager.AppSettings["Google_ClientId"];
@@ -66,7 +54,7 @@ namespace BNet.Cafe.Server
                     Uri.EscapeDataString(clientId),
                     Uri.EscapeDataString(redirectUri),
                     Uri.EscapeDataString("openid email profile"),
-                    Uri.EscapeDataString(state),
+                    Uri.EscapeDataString(encryptedState),
                     Uri.EscapeDataString("select_account")
                 );
 
