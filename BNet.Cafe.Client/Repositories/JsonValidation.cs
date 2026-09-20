@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Script.Serialization;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BNet.Cafe.Client.Repositories
 {
@@ -19,15 +22,10 @@ namespace BNet.Cafe.Client.Repositories
             {
                 try
                 {
-                    var serializer = new JavaScriptSerializer();
-                    serializer.DeserializeObject(textMessage);
+                    JToken.Parse(textMessage);
                     return true;
                 }
-                catch (ArgumentException)
-                {
-                    return false;
-                }
-                catch (InvalidOperationException)
+                catch (JsonReaderException)
                 {
                     return false;
                 }

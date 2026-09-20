@@ -61,9 +61,9 @@ namespace BNet.Cafe.Server.Ashx
         {
             var responseObj = new
             {
-                Success = success,
-                Message = message,
-                Data = data
+                success = success,
+                message = message,
+                data = data
             };
 
             string jsonResponse = JsonConvert.SerializeObject(responseObj);
@@ -74,14 +74,31 @@ namespace BNet.Cafe.Server.Ashx
 
         public class UserData
         {
+            [JsonProperty("id")]
             public string Id { get; set; }
+
+            [JsonProperty("name")]
             public string Name { get; set; }
+
+            [JsonProperty("email")]
             public string Email { get; set; }
+
+            [JsonProperty("role")]
             public string Role { get; set; }
+
+            [JsonProperty("dateCreated")]
             public string DateCreated { get; set; }
+
+            [JsonProperty("timeCreated")]
             public string TimeCreated { get; set; }
+
+            [JsonProperty("isDeleted")]
             public bool IsDeleted { get; set; }
+
+            [JsonProperty("totalDuration")]
             public int TotalDuration { get; set; }
+
+            [JsonProperty("formattedTotalDuration")]
             public string FormattedTotalDuration { get; set; }
         }
     }

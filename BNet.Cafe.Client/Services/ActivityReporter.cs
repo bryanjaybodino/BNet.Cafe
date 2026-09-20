@@ -1,10 +1,13 @@
 ﻿using BNet.Cafe.Client.Models;
 using BNet.Cafe.Client.Repositories;
 using BNet.Cafe.Client.Services;
+using Newtonsoft.Json;
 using System;
+using System.Configuration;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+using static System.Collections.Specialized.BitVector32;
 
 namespace BNet.Cafe.Client
 {
@@ -62,8 +65,7 @@ namespace BNet.Cafe.Client
                 IPAddress = NetworkUtility.GetLocalIPAddress()
             };
 
-            var serializer = new JavaScriptSerializer();
-            string json = serializer.Serialize(payloadObj);
+            string json = JsonConvert.SerializeObject(payloadObj);
             byte[] jsonBytes = Utf8.GetBytes(json);
             byte[] frame = new byte[1 + jsonBytes.Length];
             frame[0] = 0x03;
@@ -96,9 +98,7 @@ namespace BNet.Cafe.Client
                 ipAddress = ipAddress,
             };
 
-
-            var serializer = new JavaScriptSerializer();
-            string json = serializer.Serialize(payloadObj);
+            string json = JsonConvert.SerializeObject(payloadObj);
             byte[] jsonBytes = Utf8.GetBytes(json);
             byte[] frame = new byte[1 + jsonBytes.Length];
             frame[0] = 0x03;

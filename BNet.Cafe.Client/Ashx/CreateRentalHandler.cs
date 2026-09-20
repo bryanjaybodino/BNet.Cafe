@@ -1,8 +1,10 @@
 ﻿using BNet.Cafe.Client.Services;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 namespace BNet.Cafe.Client.Ashx
 {
@@ -31,8 +33,9 @@ namespace BNet.Cafe.Client.Ashx
 
                 string jsonString = await response.Content.ReadAsStringAsync();
 
-                var serializer = new JavaScriptSerializer();
-                return serializer.Deserialize<ApiResponse>(jsonString);
+                // Newtonsoft handles lowercase-to-PascalCase mapping automatically by default,
+                // but JsonProperty explicit mapping ensures zero edge-case mismatches.
+                return JsonConvert.DeserializeObject<ApiResponse>(jsonString);
             }
         }
     }

@@ -30,12 +30,12 @@ namespace BNet.Cafe.Server.Ashx
 
                 var responsePayload = new
                 {
-                    Success = true,
-                    TotalMinutes = totalMinutes,
-                    FormattedTime = formattedTime,
-                    TotalAmount = Math.Round(totalAmount, 2),
-                    FormattedAmount = $"₱ {totalAmount:F2}",
-                    CustomerType = customerType
+                    success = true,
+                    totalMinutes = totalMinutes,
+                    formattedTime = formattedTime,
+                    totalAmount = Math.Round(totalAmount, 2),
+                    formattedAmount = $"₱ {totalAmount:F2}",
+                    customerType = customerType
                 };
 
                 context.Response.Write(JsonConvert.SerializeObject(responsePayload));
@@ -44,9 +44,9 @@ namespace BNet.Cafe.Server.Ashx
             {
                 var errorResponse = new
                 {
-                    Success = false,
-                    Error = "Failed to calculate price",
-                    Message = ex.Message
+                    success = false,
+                    error = "Failed to calculate price",
+                    message = ex.Message
                 };
 
                 context.Response.StatusCode = 500;
