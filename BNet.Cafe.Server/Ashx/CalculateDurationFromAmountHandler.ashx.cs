@@ -47,14 +47,7 @@ namespace BNet.Cafe.Server.Ashx
 
         private void SendJsonResponse(HttpContext context, bool success, string message, CalculateDurationFromAmountData data = null)
         {
-            var responseObj = new
-            {
-                success = success,
-                message = message,
-                data = data
-            };
-
-            string jsonResponse = JsonConvert.SerializeObject(responseObj);
+            string jsonResponse = JsonConvert.SerializeObject(data);
             context.Response.Write(jsonResponse);
         }
 

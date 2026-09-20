@@ -55,14 +55,7 @@ namespace BNet.Cafe.Server.Ashx
 
         private void SendJsonResponse(HttpContext context, bool success, string message, List<GetPricingRatesData> data = null)
         {
-            var responseObj = new
-            {
-                Success = success,
-                Message = message,
-                Data = data
-            };
-
-            string jsonResponse = JsonConvert.SerializeObject(responseObj, Formatting.Indented);
+            string jsonResponse = JsonConvert.SerializeObject(data, Formatting.Indented);
             context.Response.Write(jsonResponse);
         }
 
