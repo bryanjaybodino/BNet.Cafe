@@ -134,7 +134,9 @@
     <Content Include="Assets\BNetModal\Style.css" />
     <Content Include="Assets\Pages\RemoteMessaging.js" />
     <Content Include="BNetPage.aspx" />
-    <Content Include="index.html" />
+    <Content Include="Website\assets\font-awesome.min.css" />
+    <Content Include="Website\assets\fonts.googleapis.css" />
+    <Content Include="Website\index.html" />
     <Content Include="Callback.aspx" />
     <Content Include="Databases\Queries\Balances\Create.sql" />
     <Content Include="Databases\Queries\Balances\GetBalanceByUserId.sql" />
@@ -200,6 +202,7 @@
     <Content Include="Login.aspx" />
     <Content Include="ResetPassword.aspx" />
     <Content Include="Web.config" />
+    <Content Include="Website\assets\tailwindcss.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ashx\CalculateAmountFromDurationHandler.ashx.cs">
@@ -474,6 +477,10 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <Content Include="Website\assets\webfonts\fa-brands-400.woff2" />
+    <Content Include="Website\assets\webfonts\fa-regular-400.woff2" />
+    <Content Include="Website\assets\webfonts\fa-solid-900.woff2" />
+    <Content Include="Website\assets\webfonts\fa-v4compatibility.woff2" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
