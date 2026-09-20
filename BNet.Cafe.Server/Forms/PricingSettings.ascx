@@ -144,7 +144,7 @@
                                         <ItemStyle Width="20%" CssClass="cell-tier" />
                                         <ItemTemplate>
                                             <span class="tier-badge">
-                                                <%# FormatCustomerType(Eval("DBCustomerType").ToString()) %>
+                                                <%# Eval("DBCustomerType") %>
                                             </span>
                                         </ItemTemplate>
                                     </asp:TemplateField>
@@ -191,7 +191,7 @@
                                                 <button type="button"
                                                     class="btn-action btn-delete"
                                                     title="Delete this rule"
-                                                    onclick="openPricingDeleteModal('<%# Eval("DBId") %>', '<%# FormatCustomerType(Eval("DBCustomerType").ToString()) %> - <%# FormatDuration(int.Parse(Eval("DBMinutes").ToString())) %>')">
+                                                    onclick="openPricingDeleteModal('<%# Eval("DBId") %>', '<%# Eval("DBCustomerType") %> - <%# FormatDuration(int.Parse(Eval("DBMinutes").ToString())) %>')">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </div>
