@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Web.SessionState;
 using System.Windows.Forms;
 
 namespace BNet.Cafe.Client
@@ -248,8 +249,6 @@ namespace BNet.Cafe.Client
             {
                 Label_TimerDisplay.Text = "PAUSED";
                 Label_TimerDisplay.ForeColor = Color.FromArgb(217, 119, 6);
-                Label_TimeoutDisplay.Text = "Timeout: PAUSED";
-                Label_SessionType.Text = "SESSION PAUSED";
                 return;
             }
 
@@ -277,7 +276,24 @@ namespace BNet.Cafe.Client
             isPaused = true;
             Timer_Countdown.Stop();
 
-            SessionLogin.SaveSession(createdTime, endTime, userId, 0, isAdmin, isOpenTime, isPaused: true, remainingSeconds: remainingSeconds);
+            // Store the exact elapsed seconds at the moment of pausing
+            DateTime now = TimeService.Get();
+            if (isOpenTime)
+            {
+                remainingSeconds = (now - createdTime).TotalSeconds;
+            }
+
+            SessionLogin.SaveSession(
+                createdTime,
+                endTime,
+                userId,
+                0,
+                isAdmin,
+                isOpenTime,
+                isPaused: true,
+                remainingSeconds: remainingSeconds
+            );
+
             UpdateDisplay();
         }
 
@@ -286,11 +302,29 @@ namespace BNet.Cafe.Client
             if (!isPaused) return;
 
             isPaused = false;
-
             DateTime now = TimeService.Get();
-            endTime = now.AddSeconds(remainingSeconds);
 
-            SessionLogin.SaveSession(createdTime, endTime, userId, 0, isAdmin, isOpenTime, isPaused: false, remainingSeconds: remainingSeconds);
+            if (isOpenTime)
+            {
+                // Re-anchor createdTime so (now - createdTime) equals remainingSeconds
+                createdTime = now.AddSeconds(-remainingSeconds);
+            }
+            else
+            {
+                // For Prepaid sessions: end time shifts relative to right now
+                endTime = now.AddSeconds(remainingSeconds);
+            }
+
+            SessionLogin.SaveSession(
+                createdTime,
+                endTime,
+                userId,
+                0,
+                isAdmin,
+                isOpenTime,
+                isPaused: false,
+                remainingSeconds: remainingSeconds
+            );
 
             UpdateDisplay();
             Timer_Countdown.Start();
@@ -315,13 +349,23 @@ namespace BNet.Cafe.Client
 
             if (isPaused)
             {
+                // Load stored remaining elapsed seconds from disk
                 remainingSeconds = session.RemainingSeconds;
                 endTime = session.EndTime;
             }
             else
             {
                 endTime = session.EndTime;
-                remainingSeconds = isOpenTime ? (now - createdTime).TotalSeconds : (endTime - now).TotalSeconds;
+                if (isOpenTime)
+                {
+                    // For OpenTime, calculate elapsed seconds based on anchor createdTime
+                    remainingSeconds = Math.Max(0, (now - createdTime).TotalSeconds);
+                }
+                else
+                {
+                    // For Prepaid, calculate remaining seconds left until endTime
+                    remainingSeconds = Math.Max(0, (endTime - now).TotalSeconds);
+                }
             }
 
             if (isAdmin || isOpenTime || remainingSeconds > 0)
