@@ -27,15 +27,15 @@ function calculateDurationFromAmountBackend(amount) {
         .then(function (data) {
             if (data) {
                 if (durationInput) {
-                    durationInput.value = data.totalMinutes;
+                    durationInput.value = data.TotalMinutes;
                 }
 
                 if (displayTime) {
-                    displayTime.innerText = data.formattedTime;
+                    displayTime.innerText = data.FormattedTime;
                 }
 
                 if (displayAmount) {
-                    displayAmount.innerText = data.formattedAmount;
+                    displayAmount.innerText = data.FormattedAmount;
                 }
             }
         })
@@ -82,15 +82,15 @@ function calculateRentalPriceBackend(totalMinutes) {
         .then(function (data) {
             if (data) {
                 if (displayTime) {
-                    displayTime.innerText = data.formattedTime;
+                    displayTime.innerText = data.FormattedTime;
                 }
 
                 if (displayAmount) {
-                    displayAmount.innerText = data.formattedAmount;
+                    displayAmount.innerText = data.FormattedAmount;
                 }
 
                 if (amountInput) {
-                    amountInput.value = data.totalAmount.toFixed(2);
+                    amountInput.value = data.TotalAmount.toFixed(2);
                 }
             }
         })
@@ -166,7 +166,7 @@ function calculateAmount() {
             .then(function (response) { return response.json(); })
             .then(function (data) {
                 if (data) {
-                    var extensionCharge = data.totalAmount;
+                    var extensionCharge = data.TotalAmount;
                     var totalCharge = initialAmount + extensionCharge;
 
                     if (amountInput) amountInput.value = totalCharge.toFixed(2);

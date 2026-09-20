@@ -85,7 +85,7 @@ namespace BNet.Cafe.Server.Ashx
         private void SendResponse(HttpContext context, bool success, string message)
         {
             var serializer = new JavaScriptSerializer();
-            var responseData = new { success = success, message = message };
+            var responseData = new { Success = success, Message = message };
             context.Response.Write(serializer.Serialize(responseData));
         }
 

@@ -1,9 +1,8 @@
 ﻿using BNet.Cafe.Client.Services;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace BNet.Cafe.Client.Ashx
 {
@@ -28,7 +27,8 @@ namespace BNet.Cafe.Client.Ashx
 
                 string jsonString = await response.Content.ReadAsStringAsync();
 
-                return JsonConvert.DeserializeObject<BalanceApiResponse>(jsonString);
+                var serializer = new JavaScriptSerializer();
+                return serializer.Deserialize<BalanceApiResponse>(jsonString);
             }
         }
     }

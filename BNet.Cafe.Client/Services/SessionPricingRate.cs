@@ -1,10 +1,9 @@
 ﻿using BNet.Cafe.Client.Ashx;
-using BNet.Cafe.Client.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace BNet.Cafe.Client.Services
 {
@@ -63,7 +62,8 @@ namespace BNet.Cafe.Client.Services
                     Directory.CreateDirectory(StorageDirectory);
                 }
 
-                string json = JsonConvert.SerializeObject(rates, Formatting.Indented);
+                var serializer = new JavaScriptSerializer();
+                string json = serializer.Serialize(rates);
                 File.WriteAllText(FilePath, json);
             }
             catch (Exception ex)
@@ -79,7 +79,8 @@ namespace BNet.Cafe.Client.Services
             try
             {
                 string json = File.ReadAllText(FilePath);
-                return JsonConvert.DeserializeObject<List<PricingRateItem>>(json);
+                var serializer = new JavaScriptSerializer();
+                return serializer.Deserialize<List<PricingRateItem>>(json);
             }
             catch
             {

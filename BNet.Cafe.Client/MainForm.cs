@@ -3,19 +3,16 @@ using BNet.Cafe.Client.Design;
 using BNet.Cafe.Client.Models;
 using BNet.Cafe.Client.Repositories;
 using BNet.Cafe.Client.Services;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows.Forms;
 
 namespace BNet.Cafe.Client
@@ -292,7 +289,8 @@ namespace BNet.Cafe.Client
                         try
                         {
                             string json = Utf8.GetString(msg, 1, msg.Length - 1);
-                            int[] indices = JsonConvert.DeserializeObject<int[]>(json) ?? new int[0];
+                            var serializer = new JavaScriptSerializer();
+                            int[] indices = serializer.Deserialize<int[]>(json) ?? new int[0];
                             _requestedScreenIndices = indices;
 
                             var indexSet = new HashSet<int>(indices);
@@ -306,7 +304,8 @@ namespace BNet.Cafe.Client
                     else if (msgType == 0x30)
                     {
                         string json = Utf8.GetString(msg, 1, msg.Length - 1);
-                        var events = JsonConvert.DeserializeObject<List<RemoteInput>>(json);
+                        var serializer = new JavaScriptSerializer();
+                        var events = serializer.Deserialize<List<RemoteInput>>(json);
                         if (events != null)
                             foreach (var evt in events)
                                 try { RemoteController.Dispatch(evt); } catch { }
@@ -331,11 +330,13 @@ namespace BNet.Cafe.Client
 
             if (Repositories.JsonValidation.IsValidJson(textMessage))
             {
-                var jsonObject = JObject.Parse(textMessage);
-                string userId = jsonObject["userId"]?.ToString() ?? "Guest / Walk-in";
-                string duration = jsonObject["duration"]?.ToString() ?? "0";
-                string amount = jsonObject["amount"]?.ToString() ?? "0";
-                string dateTime = jsonObject["dateTime"]?.ToString() ?? TimeService.Get().ToString();
+                var serializer = new JavaScriptSerializer();
+                var jsonDict = serializer.Deserialize<Dictionary<string, object>>(textMessage);
+
+                string userId = jsonDict != null && jsonDict.ContainsKey("userId") && jsonDict["userId"] != null ? jsonDict["userId"].ToString() : "Guest / Walk-in";
+                string duration = jsonDict != null && jsonDict.ContainsKey("duration") && jsonDict["duration"] != null ? jsonDict["duration"].ToString() : "0";
+                string amount = jsonDict != null && jsonDict.ContainsKey("amount") && jsonDict["amount"] != null ? jsonDict["amount"].ToString() : "0";
+                string dateTime = jsonDict != null && jsonDict.ContainsKey("dateTime") && jsonDict["dateTime"] != null ? jsonDict["dateTime"].ToString() : TimeService.Get().ToString();
 
                 if (_BNetCafeTimer == null || _BNetCafeTimer.IsDisposed)
                 {

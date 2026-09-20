@@ -40,9 +40,9 @@ namespace BNet.Cafe.Server.Ashx
         {
             var responseObj = new
             {
-                success = success,
-                message = message,
-                data = data
+                Success = success,
+                Message = message,
+                Data = data
             };
 
             string jsonResponse = JsonConvert.SerializeObject(responseObj);

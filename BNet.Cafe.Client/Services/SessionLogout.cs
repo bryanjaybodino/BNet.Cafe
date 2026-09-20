@@ -1,8 +1,8 @@
 ﻿using BNet.Cafe.Client.Ashx;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace BNet.Cafe.Client.Services
 {
@@ -53,7 +53,8 @@ namespace BNet.Cafe.Client.Services
                     Timestamp = DateTime.Now
                 };
 
-                string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+                var serializer = new JavaScriptSerializer();
+                string json = serializer.Serialize(data);
                 File.WriteAllText(PendingFilePath, json);
             }
             catch (Exception ex)
@@ -70,7 +71,8 @@ namespace BNet.Cafe.Client.Services
             try
             {
                 string json = File.ReadAllText(PendingFilePath);
-                return JsonConvert.DeserializeObject<SessionLogoutData>(json);
+                var serializer = new JavaScriptSerializer();
+                return serializer.Deserialize<SessionLogoutData>(json);
             }
             catch
             {

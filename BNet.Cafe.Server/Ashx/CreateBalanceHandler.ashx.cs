@@ -47,8 +47,8 @@ namespace BNet.Cafe.Server.Ashx
         {
             var responseObj = new
             {
-                success = success,
-                message = message
+                Success = success,
+                Message = message
             };
 
             string jsonResponse = JsonConvert.SerializeObject(responseObj);

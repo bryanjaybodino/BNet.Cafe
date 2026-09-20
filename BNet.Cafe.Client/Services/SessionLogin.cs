@@ -1,7 +1,7 @@
 ﻿using BNet.Cafe.Client.Services;
-using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Web.Script.Serialization;
 
 namespace BNet.Cafe.Client
 {
@@ -50,7 +50,8 @@ namespace BNet.Cafe.Client
                     RemainingSeconds = remainingSeconds
                 };
 
-                string jsonContent = JsonConvert.SerializeObject(session, Formatting.Indented);
+                var serializer = new JavaScriptSerializer();
+                string jsonContent = serializer.Serialize(session);
                 File.WriteAllText(SessionFilePath, jsonContent);
             }
             catch (Exception ex)
@@ -66,7 +67,8 @@ namespace BNet.Cafe.Client
             try
             {
                 string jsonContent = File.ReadAllText(SessionFilePath);
-                return JsonConvert.DeserializeObject<SessionLoginData>(jsonContent);
+                var serializer = new JavaScriptSerializer();
+                return serializer.Deserialize<SessionLoginData>(jsonContent);
             }
             catch
             {

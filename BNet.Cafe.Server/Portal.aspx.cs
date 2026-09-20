@@ -38,6 +38,8 @@ namespace BNet.Cafe.Server
                             string _role = userData.Rows[i]["DBRole"].ToString();
                             userSession.createCookies(_email, _password, _role);
                         }
+                        //Removing the UserId
+                        Response.Redirect("Portal.aspx");
                         return;
                     }
                     else

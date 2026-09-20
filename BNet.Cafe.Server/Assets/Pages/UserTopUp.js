@@ -84,7 +84,7 @@ function calculateDurationFromAmountBackend(amount) {
         })
         .then(function (data) {
             if (data) {
-                var minutes = data.totalMinutes || 0;
+                var minutes = data.TotalMinutes || 0;
 
                 if (durationInput) {
                     durationInput.value = minutes;
@@ -92,11 +92,11 @@ function calculateDurationFromAmountBackend(amount) {
 
                 // Render formatted visual time (e.g., "1 hr 30 mins")
                 if (displayTime) {
-                    displayTime.innerText = data.formattedTime || formatMinutes(minutes);
+                    displayTime.innerText = data.FormattedTime || formatMinutes(minutes);
                 }
 
                 if (displayAmount) {
-                    displayAmount.innerText = data.formattedAmount || ("₱ " + parseFloat(amount).toFixed(2));
+                    displayAmount.innerText = data.FormattedAmount || ("₱ " + parseFloat(amount).toFixed(2));
                 }
             }
         })
