@@ -33,9 +33,12 @@ namespace BNet.Cafe.Client
                 }
             };
 
-            if (args.Contains(WatchdogManager.WatchdogArgument))
+            if (args.Length > 0 && args[0] == WatchdogManager.WatchdogArgument)
             {
-                WatchdogManager.RunWatchdogLoop();
+                if (args.Length > 1 && int.TryParse(args[1], out int parentPid))
+                {
+                    WatchdogManager.RunWatchdogLoop(parentPid);
+                }
                 return;
             }
 

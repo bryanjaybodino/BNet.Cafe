@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Management; // Add reference to System.Management in your project
 using System.Threading;
 
 namespace BNet.Cafe.Client
@@ -15,77 +16,60 @@ namespace BNet.Cafe.Client
             {
                 if (EnvironmentHelper.IsDevelopment) return;
 
-                string currentExe = Process.GetCurrentProcess().MainModule?.FileName;
-                if (string.IsNullOrEmpty(currentExe)) return;
+                string currentExe = Process.GetCurrentProcess().MainModule.FileName;
+                int currentPid = Process.GetCurrentProcess().Id;
 
-                string processName = Path.GetFileNameWithoutExtension(currentExe);
+                string commandLine = $"\"{currentExe}\" {WatchdogArgument} {currentPid}";
 
-                var currentProcesses = Process.GetProcessesByName(processName);
-                if (currentProcesses.Length <= 1)
+                // Use WMI to launch the process under 'wmiprvse.exe' instead of as a child process
+                using (var processClass = new ManagementClass("Win32_Process"))
                 {
-                    var startInfo = new ProcessStartInfo
-                    {
-                        FileName = currentExe,
-                        Arguments = WatchdogArgument,
-                        CreateNoWindow = true,
-                        UseShellExecute = true, // Must be true to break the process tree group
-                        WindowStyle = ProcessWindowStyle.Hidden
-                    };
-
-                    Process.Start(startInfo);
+                    var inParams = processClass.GetMethodParameters("Create");
+                    inParams["CommandLine"] = commandLine;
+                    processClass.InvokeMethod("Create", inParams, null);
                 }
             }
             catch { }
         }
 
-        public static void RunWatchdogLoop()
+        public static void RunWatchdogLoop(int parentPid)
         {
             if (EnvironmentHelper.IsDevelopment) return;
 
-            string currentExe = Process.GetCurrentProcess().MainModule?.FileName;
-            if (string.IsNullOrEmpty(currentExe)) return;
+            string currentExe = Process.GetCurrentProcess().MainModule.FileName;
 
-            string processName = Path.GetFileNameWithoutExtension(currentExe);
-            int currentPid = Process.GetCurrentProcess().Id;
-
-            while (true)
+            try
             {
-                Thread.Sleep(1500);
+                // Wait for the main app process to terminate
+                Process parentProcess = Process.GetProcessById(parentPid);
+                parentProcess.WaitForExit();
+            }
+            catch (ArgumentException)
+            {
+                // Main process already exited
+            }
 
-                // Find all running instances except this watchdog instance itself
-                var matchingProcesses = Process.GetProcessesByName(processName);
-                bool mainAppRunning = false;
+            // Wait 500ms to allow Windows to release file handles & Mutex
+            Thread.Sleep(500);
 
-                foreach (var proc in matchingProcesses)
+            // Restart the main application via WMI as well so it starts clean
+            try
+            {
+                using (var processClass = new ManagementClass("Win32_Process"))
                 {
-                    if (proc.Id != currentPid)
-                    {
-                        mainAppRunning = true;
-                        proc.Dispose();
-                        break;
-                    }
-                    proc.Dispose();
+                    var inParams = processClass.GetMethodParameters("Create");
+                    inParams["CommandLine"] = $"\"{currentExe}\"";
+                    processClass.InvokeMethod("Create", inParams, null);
                 }
-
-                // If the main application is no longer running, restart it
-                if (!mainAppRunning)
+            }
+            catch
+            {
+                // Fallback to standard process launch if WMI fails
+                Process.Start(new ProcessStartInfo
                 {
-                    // Allow time for mutexes and file locks to be released by Windows
-                    Thread.Sleep(1000);
-
-                    try
-                    {
-                        Process.Start(new ProcessStartInfo
-                        {
-                            FileName = currentExe,
-                            UseShellExecute = true
-                        });
-                    }
-                    catch { }
-
-                    // Exit watchdog loop after initiating restart
-                    break;
-                }
+                    FileName = currentExe,
+                    UseShellExecute = true
+                });
             }
         }
     }
