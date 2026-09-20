@@ -82,21 +82,6 @@ namespace BNet.Cafe.Server.Forms
             LinkButton_Submit.Text = "<i class=\"fa fa-save\"></i> Save Rule";
         }
 
-        /// <summary>
-        /// Format customer type for display
-        /// </summary>
-        protected string FormatCustomerType(string customerType)
-        {
-            switch (customerType?.ToUpper())
-            {
-                case "GUEST":
-                    return "Guest / Walk-In";
-                case "MEMBER":
-                    return "Member";
-                default:
-                    return customerType;
-            }
-        }
 
         /// <summary>
         /// Format minutes to hours and minutes display
