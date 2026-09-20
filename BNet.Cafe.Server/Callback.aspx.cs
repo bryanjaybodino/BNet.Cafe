@@ -74,7 +74,7 @@ namespace BNet.Cafe.Server
 
                 if (role == "USER")
                 {
-                    Response.Redirect($"Portal.aspx?UserId={userId}", false);
+                    Response.Redirect($"Portal.aspx", false);
                 }
                 else
                 {

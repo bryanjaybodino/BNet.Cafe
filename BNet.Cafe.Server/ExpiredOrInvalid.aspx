@@ -146,7 +146,7 @@
             </div>
 
 
-            <asp:HyperLink ID="HyperLink_Login" runat="server" NavigateUrl="~/Login.aspx" CssClass="btn-secondary-action">
+            <asp:HyperLink ID="HyperLink_Login" runat="server" NavigateUrl="~/Login.aspx" CssClass="btn-secondary-action" style="display:none">
                 <i class="fa-solid fa-arrow-left"></i> Return to Login
             </asp:HyperLink>
         </div>
