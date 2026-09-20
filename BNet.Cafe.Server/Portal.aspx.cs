@@ -38,6 +38,8 @@ namespace BNet.Cafe.Server
                             string _role = userData.Rows[i]["DBRole"].ToString();
                             userSession.createCookies(_email, _password, _role);
                         }
+                        Response.Redirect("~/Portal.aspx");
+                        return;
                     }
                 }
 
@@ -57,6 +59,7 @@ namespace BNet.Cafe.Server
                     DataRow userRow = userTable.Rows[0];
                     string userId = userRow["DBId"].ToString();
                     string name = userRow["DBName"].ToString();
+                    string duration = userRow["DBTotalDuration"].ToString();
 
                     // Set user interface headers
                     litUserName.Text = Server.HtmlEncode(name);
@@ -69,7 +72,7 @@ namespace BNet.Cafe.Server
                     // Load duration balance and transaction logs
                     HiddenField_UserId.Value = userId;
 
-                    double totalMinutes = balanceRepo.GetBalanceByUserId(HiddenField_UserId.Value);
+                    double totalMinutes = Convert.ToDouble(duration);
                     litTotalMinutes.Text = totalMinutes.ToString();
 
                     // Format total duration into readable text (hours and minutes)
