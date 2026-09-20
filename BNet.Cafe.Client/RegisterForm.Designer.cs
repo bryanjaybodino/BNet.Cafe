@@ -382,8 +382,10 @@
             this.Controls.Add(this.panelLeftHero);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "RegisterForm";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "BNet Cafe Client - Register";
+            this.TopMost = true;
             this.panelLeftHero.ResumeLayout(false);
             this.panelLeftHero.PerformLayout();
             this.panelSecurityWarning.ResumeLayout(false);

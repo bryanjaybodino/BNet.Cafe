@@ -29,7 +29,7 @@ namespace BNet.Cafe.Client
         {
             // Reset all borders to default state before validating
             ResetValidationState();
-
+            string role = "USER";
             string name = TextBox_FullName.Text.Trim();
             string email = TextBox_Email.Text.Trim();
             string password = TextBox_Password.Text;
@@ -87,17 +87,24 @@ namespace BNet.Cafe.Client
                 return;
             }
 
+            var userHandler = new UserHandler();
+            var data = await userHandler.GetByEmailAsync(email);
+            if (data != null && data.Success != false && data.Data != null)
+            {
+                TextBox_Email.BorderColor = _errorBorderColor;
+                MessageBox.Show($"{email} is already taken.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                TextBox_Email.Focus();
+                return;
+            }
+
             Button_SubmitRegister.Enabled = false;
 
             try
-            {
-                string role = "USER";
-
+            {          
                 ApiResponse response = await _createUserHandler.CreateUserAsync(email, password, name, role);
-
                 if (response != null && response.Success)
                 {
-                    MessageBox.Show("Account created successfully! You can now log in.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Account created successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.DialogResult = DialogResult.OK;
                     this.Close(); // Return to existing MainForm
                 }

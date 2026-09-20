@@ -14,13 +14,34 @@ namespace BNet.Cafe.Client.Ashx
     {
         private static readonly HttpClient client = new HttpClient();
 
-        public async Task<LoginApiResponse> UserAsync(string userId)
+        /// <summary>
+        /// Fetches user data by userId.
+        /// </summary>
+        public async Task<LoginApiResponse> GetByIdAsync(string userId)
         {
             var formData = new Dictionary<string, string>
             {
-                { "userId", userId },
+                { "userId", userId }
             };
 
+            return await ExecuteRequestAsync(formData);
+        }
+
+        /// <summary>
+        /// Fetches user data by email.
+        /// </summary>
+        public async Task<LoginApiResponse> GetByEmailAsync(string email)
+        {
+            var formData = new Dictionary<string, string>
+            {
+                { "email", email }
+            };
+
+            return await ExecuteRequestAsync(formData);
+        }
+
+        private async Task<LoginApiResponse> ExecuteRequestAsync(Dictionary<string, string> formData)
+        {
             using (var content = new FormUrlEncodedContent(formData))
             {
                 string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');

@@ -166,6 +166,7 @@
     <Content Include="Databases\Queries\Users\GetById.sql" />
     <Content Include="Databases\Queries\Users\Update.sql" />
     <Content Include="Databases\Queries\Users\UpdateCount.sql" />
+    <Content Include="ExpiredOrInvalid.aspx" />
     <Content Include="Forms\Billings.ascx" />
     <Content Include="Forms\ComputerCreate.ascx" />
     <Content Include="Forms\ComputerEarnings.ascx" />
@@ -251,6 +252,13 @@
     <Compile Include="Databases\Tables\pricing_rates.cs" />
     <Compile Include="Databases\Tables\rentals.cs" />
     <Compile Include="Databases\Tables\users.cs" />
+    <Compile Include="ExpiredOrInvalid.aspx.cs">
+      <DependentUpon>ExpiredOrInvalid.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExpiredOrInvalid.aspx.designer.cs">
+      <DependentUpon>ExpiredOrInvalid.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Billings.ascx.cs">
       <DependentUpon>Billings.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

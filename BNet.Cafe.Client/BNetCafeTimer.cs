@@ -188,7 +188,7 @@ namespace BNet.Cafe.Client
                 try
                 {
                     var userHandler = new UserHandler();
-                    var data = await userHandler.UserAsync(id);
+                    var data = await userHandler.GetByIdAsync(id);
                     if (data != null && data.Success && !string.IsNullOrWhiteSpace(data.Data?.Name))
                     {
                         return data.Data.Name;

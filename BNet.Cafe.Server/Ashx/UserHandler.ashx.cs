@@ -21,15 +21,23 @@ namespace BNet.Cafe.Server.Ashx
             try
             {
                 string id = context.Request["userId"];
+                string email = context.Request["email"];
 
+                DataTable dt = null;
 
-                if (string.IsNullOrWhiteSpace(id))
+                if (!string.IsNullOrWhiteSpace(id))
                 {
-                    SendJsonResponse(context, false, "User id is required.");
+                    dt = _usersRepository.GetById(id);
+                }
+                else if (!string.IsNullOrWhiteSpace(email))
+                {
+                    dt = _usersRepository.GetByEmail(email);
+                }
+                else
+                {
+                    SendJsonResponse(context, false, "User id or email is required.");
                     return;
                 }
-
-                DataTable dt = _usersRepository.GetById(id);
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -49,11 +57,11 @@ namespace BNet.Cafe.Server.Ashx
                         Password = row["DBPassword"].ToString()
                     };
 
-                    SendJsonResponse(context, true, "Login successful.", userData);
+                    SendJsonResponse(context, true, "User found successfully.", userData);
                 }
                 else
                 {
-                    SendJsonResponse(context, false, "Invalid email or password.");
+                    SendJsonResponse(context, false, "User not found.");
                 }
             }
             catch (Exception ex)
