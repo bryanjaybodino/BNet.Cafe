@@ -70,6 +70,8 @@
     <Reference Include="UIAutomationTypes" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ashx\GetBalanceHandler.cs" />
+    <Compile Include="Ashx\_BalanceData.cs" />
     <Compile Include="Ashx\_PricingRateItem.cs" />
     <Compile Include="Ashx\PricingRatesHandler.cs" />
     <Compile Include="Ashx\_UserData.cs" />
@@ -115,7 +117,7 @@
     <Compile Include="Services\SessionPricingRate.cs" />
     <Compile Include="Services\SecuredDataService.cs" />
     <Compile Include="Services\SecurityAccessManager.cs" />
-    <Compile Include="Services\SessionData.cs" />
+    <Compile Include="Services\SessionLogin.cs" />
     <Compile Include="Starter\EnvironmentHelper.cs" />
     <Compile Include="Starter\NativeMethods.cs" />
     <Compile Include="Services\ActivityReporter.cs" />

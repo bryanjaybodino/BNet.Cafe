@@ -125,13 +125,7 @@ namespace BNet.Cafe.Client
             {
                 TimeSpan time = TimeSpan.FromSeconds(remainingSeconds);
                 string totalMinutes = ((int)time.TotalMinutes).ToString();
-
                 SessionLogout.SavePendingLogout(userId, totalMinutes, "0", "LOGGING-OUT");
-
-                _ = Task.Run(async () =>
-                {
-                    await SessionLogout.ProcessPendingLogoutAsync();
-                });
             }
             isPaused = false;
             isOpenTime = false;
@@ -145,7 +139,7 @@ namespace BNet.Cafe.Client
             DateTime now = TimeService.Get();
             remainingSeconds = isOpenTime ? (now - createdTime).TotalSeconds : (endTime - now).TotalSeconds;
 
-            SessionManager.SaveSession(createdTime, endTime, userId, amount, isAdmin, isOpenTime, isPaused);
+            SessionLogin.SaveSession(createdTime, endTime, userId, amount, isAdmin, isOpenTime, isPaused);
 
             Label_ClientName.Text = ConfigHelper.GetClientNameFromIP();
             Label_CustomerName.Text = await ResolveDisplayNameAsync(userId);
@@ -283,7 +277,7 @@ namespace BNet.Cafe.Client
             isPaused = true;
             Timer_Countdown.Stop();
 
-            SessionManager.SaveSession(createdTime, endTime, userId, 0, isAdmin, isOpenTime, isPaused: true, remainingSeconds: remainingSeconds);
+            SessionLogin.SaveSession(createdTime, endTime, userId, 0, isAdmin, isOpenTime, isPaused: true, remainingSeconds: remainingSeconds);
             UpdateDisplay();
         }
 
@@ -296,7 +290,7 @@ namespace BNet.Cafe.Client
             DateTime now = TimeService.Get();
             endTime = now.AddSeconds(remainingSeconds);
 
-            SessionManager.SaveSession(createdTime, endTime, userId, 0, isAdmin, isOpenTime, isPaused: false, remainingSeconds: remainingSeconds);
+            SessionLogin.SaveSession(createdTime, endTime, userId, 0, isAdmin, isOpenTime, isPaused: false, remainingSeconds: remainingSeconds);
 
             UpdateDisplay();
             Timer_Countdown.Start();
@@ -304,7 +298,7 @@ namespace BNet.Cafe.Client
 
         private async Task ResumeExistingSessionAsync()
         {
-            var session = SessionManager.ReadSession();
+            var session = SessionLogin.ReadSession();
             if (session == null)
             {
                 ClearSessionFile();
@@ -386,14 +380,14 @@ namespace BNet.Cafe.Client
         {
             isOpenTime = false;
             Button_AccountAction.Visible = false;
-            if (SessionManager.Exists())
+            if (SessionLogin.Exists())
             {
                 userId = string.Empty;
                 isRunning = false;
                 Timer_Countdown.Stop();
                 remainingSeconds = 0;
                 this.Hide();
-                SessionManager.ClearSession();
+                SessionLogin.ClearSession();
             }
         }
 

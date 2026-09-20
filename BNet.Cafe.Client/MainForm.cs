@@ -87,7 +87,7 @@ namespace BNet.Cafe.Client
             await Task.Delay(1000);
             _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
             await SessionPricingRate.InitializeRatesAsync();
-            var session = SessionManager.ReadSession();
+            var session = SessionLogin.ReadSession();
             if (session != null)
             {
                 TriggerImmediateActivityReport();
@@ -103,7 +103,7 @@ namespace BNet.Cafe.Client
             {
 
                 // 1. Check disk on background thread
-                bool fileExists = SessionManager.Exists();
+                bool fileExists = SessionLogin.Exists();
 
                 // 2. Safe UI update on the UI thread
                 this.BeginInvoke((Action)(() =>
@@ -342,7 +342,7 @@ namespace BNet.Cafe.Client
                     _BNetCafeTimer = new BNetCafeTimer();
                 }
 
-                if (!SessionManager.Exists())
+                if (!SessionLogin.Exists())
                 {
                     _BNetCafeTimer.isAdmin = false;
                     _BNetCafeTimer.userId = userId;

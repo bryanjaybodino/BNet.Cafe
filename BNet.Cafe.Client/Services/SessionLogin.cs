@@ -5,7 +5,7 @@ using System.IO;
 
 namespace BNet.Cafe.Client
 {
-    public class SessionData
+    public class SessionLoginData
     {
         public DateTime CreatedTime { get; set; }
         public DateTime EndTime { get; set; }
@@ -17,7 +17,7 @@ namespace BNet.Cafe.Client
         public double RemainingSeconds { get; set; }
     }
 
-    public static class SessionManager
+    public static class SessionLogin
     {
         // Safe local directory for diskless write access across all Windows users
         private static readonly string SessionDirectory = Path.Combine(
@@ -38,7 +38,7 @@ namespace BNet.Cafe.Client
                     Directory.CreateDirectory(SessionDirectory);
                 }
 
-                var session = new SessionData
+                var session = new SessionLoginData
                 {
                     CreatedTime = createdTime,
                     EndTime = endTime,
@@ -59,14 +59,14 @@ namespace BNet.Cafe.Client
             }
         }
 
-        public static SessionData ReadSession()
+        public static SessionLoginData ReadSession()
         {
             if (!File.Exists(SessionFilePath)) return null;
 
             try
             {
                 string jsonContent = File.ReadAllText(SessionFilePath);
-                return JsonConvert.DeserializeObject<SessionData>(jsonContent);
+                return JsonConvert.DeserializeObject<SessionLoginData>(jsonContent);
             }
             catch
             {

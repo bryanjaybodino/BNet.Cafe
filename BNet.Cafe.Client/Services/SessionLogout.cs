@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BNet.Cafe.Client.Services
 {
-    public class PendingLogoutData
+    public class SessionLogoutData
     {
         public string UserId { get; set; }
         public string MinutesUsed { get; set; }
@@ -44,7 +44,7 @@ namespace BNet.Cafe.Client.Services
                     Directory.CreateDirectory(PendingDirectory);
                 }
 
-                var data = new PendingLogoutData
+                var data = new SessionLogoutData
                 {
                     UserId = userId,
                     MinutesUsed = minutesUsed,
@@ -63,14 +63,14 @@ namespace BNet.Cafe.Client.Services
         }
 
         // Read pending data
-        public static PendingLogoutData ReadPendingLogout()
+        public static SessionLogoutData ReadPendingLogout()
         {
             if (!HasPendingLogout()) return null;
 
             try
             {
                 string json = File.ReadAllText(PendingFilePath);
-                return JsonConvert.DeserializeObject<PendingLogoutData>(json);
+                return JsonConvert.DeserializeObject<SessionLogoutData>(json);
             }
             catch
             {

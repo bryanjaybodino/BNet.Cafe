@@ -133,7 +133,7 @@ namespace BNet.Cafe.Client.Repositories
 
             private static ActiveWindowInfo Capture()
             {
-                var result = new ActiveWindowInfo { CapturedAt = DateTime.Now };
+                var result = new ActiveWindowInfo { CapturedAt = TimeService.Get() };
 
                 IntPtr hwnd = GetForegroundWindow();
                 if (hwnd == IntPtr.Zero) return result;

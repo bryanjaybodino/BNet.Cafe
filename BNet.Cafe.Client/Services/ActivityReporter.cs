@@ -30,7 +30,7 @@ namespace BNet.Cafe.Client
             string timeStart = string.Empty;
             string timeEnd = string.Empty;
 
-            SessionData sessionData = SessionManager.ReadSession();
+            SessionLoginData sessionData = SessionLogin.ReadSession();
             bool isPaused = false;
 
             if (sessionData != null)
@@ -76,7 +76,7 @@ namespace BNet.Cafe.Client
 
         public async Task HeartBeat(AgentSession session)
         {
-            SessionData sessionData = SessionManager.ReadSession();
+            SessionLoginData sessionData = SessionLogin.ReadSession();
             bool isPaused = false;
             string timeStart = string.Empty;
             string timeEnd = string.Empty;
