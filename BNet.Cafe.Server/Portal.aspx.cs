@@ -28,7 +28,7 @@ namespace BNet.Cafe.Server
                     string userId = SecuredDataService.Decrypted(encryptedUserId);
                     isLoginQuery = !string.IsNullOrWhiteSpace(userId);
 
-                    if (isLoginQuery)
+                    if (isLoginQuery && !ConstantData.UserType.Guest.Equals(userId, StringComparison.InvariantCultureIgnoreCase))
                     {
                         var userData = userRepo.GetById(userId);
                         for (int i = 0; i < userData.Rows.Count; i++)
@@ -38,7 +38,13 @@ namespace BNet.Cafe.Server
                             string _role = userData.Rows[i]["DBRole"].ToString();
                             userSession.createCookies(_email, _password, _role);
                         }
-                        Response.Redirect("~/Portal.aspx");
+                        return;
+                    }
+                    else
+                    {
+                        // kapag walk in tapos inopen ang history 
+                        userSession.RemoveCookies();
+                        Response.Redirect("ExpiredOrInvalid.aspx");
                         return;
                     }
                 }
