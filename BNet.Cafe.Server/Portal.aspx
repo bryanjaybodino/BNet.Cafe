@@ -245,6 +245,25 @@
                 font-weight: 700;
             }
 
+        .balance-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .balance-card.session-card {
+            border-left: 4px solid #6366f1;
+        }
+
+        .balance-card.account-card {
+            border-left: 4px solid #10b981;
+        }
+
+            .balance-card.account-card .card-label {
+                color: #10b981;
+            }
+
         /* Mobile Responsive Adjustments */
         @media (max-width: 600px) {
             .portal-layout {
@@ -318,18 +337,36 @@
                     </div>
                 </div>
 
-                <!-- Account Balance Hero Card -->
-                <div class="balance-card">
-                    <div class="card-label">
-                        <i class="fa fa-clock"></i>Remaining Time Balance
+                <!-- Grid Container for Dual Balance Cards -->
+                <div class="balance-cards-grid">
+                    <!-- Card 1: Active Session Balance (Currently in Use) -->
+                    <div class="balance-card session-card">
+                        <div class="card-label">
+                            <i class="fa fa-play-circle"></i>Active Session Time
+                        </div>
+                        <div class="balance-value">
+                            <asp:Literal ID="litActiveSessionTime" runat="server">0 mins</asp:Literal>
+                        </div>
+                        <div class="balance-footer">
+                            Deducted for current session: <span>
+                                <asp:Literal ID="litActiveSessionMins" runat="server">0</asp:Literal>
+                                mins</span>
+                        </div>
                     </div>
-                    <div class="balance-value">
-                        <asp:Literal ID="litFormattedTime" runat="server">0 mins</asp:Literal>
-                    </div>
-                    <div class="balance-footer">
-                        Total minutes available: <span>
-                            <asp:Literal ID="litTotalMinutes" runat="server">0</asp:Literal>
-                            mins</span>
+
+                    <!-- Card 2: Account / Top-Up Balance (Unused / Mid-game Top-ups) -->
+                    <div class="balance-card account-card">
+                        <div class="card-label">
+                            <i class="fa fa-wallet"></i>Account Balance (Top-Ups)
+                        </div>
+                        <div class="balance-value">
+                            <asp:Literal ID="litAccountBalanceTime" runat="server">0 mins</asp:Literal>
+                        </div>
+                        <div class="balance-footer">
+                            Available to claim: <span>
+                                <asp:Literal ID="litAccountBalanceMins" runat="server">0</asp:Literal>
+                                mins</span>
+                        </div>
                     </div>
                 </div>
 
@@ -348,15 +385,36 @@
                                     AutoGenerateColumns="False" CssClass="bnet-table" GridLines="None"
                                     AllowPaging="True" OnPageIndexChanging="GridViewTable_PageIndexChanging">
                                     <Columns>
-                                        <asp:BoundField DataField="DBDateCreated" HeaderText="Date" />
-                                        <asp:TemplateField HeaderText="Time">
+                                        <asp:TemplateField HeaderText="Date">
                                             <ItemTemplate>
-                                                <asp:Label ID="Label_DBTimeCreated" runat="server" Text='<%#Eval("DBTimeCreated").ToString() %>'></asp:Label>
+                                                <asp:Label ID="Label_DBDateCreated" runat="server" Text='<%# Eval("DBDateCreated") %>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:BoundField DataField="DBFormattedDuration" HeaderText="Duration" />
-                                        <asp:BoundField DataField="DBAmount" HeaderText="Amount" />
-                                        <asp:BoundField DataField="DBDescription" HeaderText="Description" />
+                                        <asp:TemplateField HeaderText="Time">
+                                            <ItemTemplate>
+                                                <asp:Label ID="Label_DBTimeCreated" runat="server" Text='<%# Eval("DBTimeCreated") %>'></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Minutes">
+                                            <ItemTemplate>
+                                                <asp:Label ID="Label_DBDuration" runat="server" Text='<%# Eval("DBDuration") %>'></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Duration">
+                                            <ItemTemplate>
+                                                <asp:Label ID="Label_DBFormattedDuration" runat="server" Text='<%# Eval("DBFormattedDuration") %>'></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Amount">
+                                            <ItemTemplate>
+                                                <asp:Label ID="Label_DBAmount" runat="server" Text='<%# Eval("DBAmount") %>'></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Description">
+                                            <ItemTemplate>
+                                                <asp:Label ID="Label_DBDescription" runat="server" Text='<%# Eval("DBDescription") %>'></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
                                     </Columns>
                                     <EmptyDataTemplate>
                                         <div class="bnet-table-empty-container">

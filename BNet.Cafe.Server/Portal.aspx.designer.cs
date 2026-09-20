@@ -69,22 +69,40 @@ namespace BNet.Cafe.Server
         protected global::System.Web.UI.WebControls.Literal litUserEmail;
 
         /// <summary>
-        /// litFormattedTime control.
+        /// litActiveSessionTime control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litFormattedTime;
+        protected global::System.Web.UI.WebControls.Literal litActiveSessionTime;
 
         /// <summary>
-        /// litTotalMinutes control.
+        /// litActiveSessionMins control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litTotalMinutes;
+        protected global::System.Web.UI.WebControls.Literal litActiveSessionMins;
+
+        /// <summary>
+        /// litAccountBalanceTime control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litAccountBalanceTime;
+
+        /// <summary>
+        /// litAccountBalanceMins control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litAccountBalanceMins;
 
         /// <summary>
         /// UpdatePanel1 control.

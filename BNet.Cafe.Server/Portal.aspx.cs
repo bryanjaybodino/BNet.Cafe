@@ -59,9 +59,11 @@ namespace BNet.Cafe.Server
                     DataRow userRow = userTable.Rows[0];
                     string userId = userRow["DBId"].ToString();
                     string name = userRow["DBName"].ToString();
-                    string duration = userRow["DBTotalDuration"].ToString();
+                    double accountBalanceMinutes = Convert.ToDouble(userRow["DBTotalDuration"]);
 
-                    // Set user interface headers
+                    HiddenField_UserId.Value = userId;
+
+                    // Set user info
                     litUserName.Text = Server.HtmlEncode(name);
                     litUserEmail.Text = Server.HtmlEncode(email);
                     if (!string.IsNullOrEmpty(name))
@@ -69,36 +71,76 @@ namespace BNet.Cafe.Server
                         litAvatar.Text = name.Substring(0, 1).ToUpper();
                     }
 
-                    // Load duration balance and transaction logs
-                    HiddenField_UserId.Value = userId;
-
-                    double totalMinutes = Convert.ToDouble(duration);
-                    litTotalMinutes.Text = totalMinutes.ToString();
-
-                    // Format total duration into readable text (hours and minutes)
-                    TimeSpan timeSpan = TimeSpan.FromMinutes(totalMinutes);
-                    if (timeSpan.TotalHours >= 1)
-                    {
-                        litFormattedTime.Text = $"{(int)timeSpan.TotalHours} hr {(timeSpan.Minutes > 0 ? timeSpan.Minutes + " min" : "")}";
-                    }
-                    else
-                    {
-                        litFormattedTime.Text = $"{totalMinutes} min";
-                    }
+                    // 1. Account / Banked Balance Card (Top-ups while playing stay here)
+                    litAccountBalanceMins.Text = accountBalanceMinutes.ToString();
+                    litAccountBalanceTime.Text = FormatDuration(accountBalanceMinutes);
                 }
             }
-            // Fetch history records from the Balances repository queries
+
+            // Single call to fetch transaction logs and bind GridView
             DataTable data = balanceRepo.GetAll("", HiddenField_UserId.Value, GridViewTemplateService.GetPaginationIndex(GridViewTable));
             GridViewTemplateService.SetGridView(GridViewTable, data, Panel_Pagination);
+
+            double activeSessionMinutes = 0;
+            bool foundSession = false;
+
+            // Loop directly through GridView rows to format time and check active session using FindControl
             for (int i = 0; i < GridViewTable.Rows.Count; i++)
             {
+                GridViewRow row = GridViewTable.Rows[i];
+
+                // Format Time Label
                 try
                 {
-                    Label Label_DBTimeCreated = (Label)GridViewTable.Rows[i].FindControl("Label_DBTimeCreated");
-                    Label_DBTimeCreated.Text = Convert.ToDateTime(Label_DBTimeCreated.Text).ToString("hh:mm tt");
+                    Label Label_DBTimeCreated = (Label)row.FindControl("Label_DBTimeCreated");
+                    if (Label_DBTimeCreated != null && !string.IsNullOrEmpty(Label_DBTimeCreated.Text))
+                    {
+                        Label_DBTimeCreated.Text = Convert.ToDateTime(Label_DBTimeCreated.Text).ToString("hh:mm tt");
+                    }
                 }
                 catch { }
+
+                // Evaluate Active Session State from rendered GridView controls
+                if (!foundSession)
+                {
+                    Label Label_DBDescription = (Label)row.FindControl("Label_DBDescription");
+                    string description = Label_DBDescription != null ? Label_DBDescription.Text : "";
+
+                    if (description.Contains("LOGGING-OUT"))
+                    {
+                        activeSessionMinutes = 0;
+                        foundSession = true; // Session ended
+                    }
+                    else if (description.Contains("LOGGING-IN"))
+                    {
+                        Label Label_DBDuration = (Label)row.FindControl("Label_DBDuration");
+                        string durationText = Label_DBDuration != null ? Label_DBDuration.Text : "";
+
+                        // Extract digits/numbers from string like "-3 hrs 49 mins" or "-229"
+                        if (double.TryParse(System.Text.RegularExpressions.Regex.Match(durationText, @"\d+").Value, out double duration))
+                        {
+                            activeSessionMinutes = duration;
+                        }
+                        foundSession = true; // Active session entry found
+                    }
+                }
             }
+
+            // Update active session cards
+            litActiveSessionMins.Text = activeSessionMinutes.ToString();
+            litActiveSessionTime.Text = FormatDuration(activeSessionMinutes);
+        }
+
+        private string FormatDuration(double totalMinutes)
+        {
+            TimeSpan timeSpan = TimeSpan.FromMinutes(totalMinutes);
+            if (timeSpan.TotalHours >= 1)
+            {
+                int hours = (int)timeSpan.TotalHours;
+                int mins = timeSpan.Minutes;
+                return mins > 0 ? $"{hours} hr {mins} min" : $"{hours} hr";
+            }
+            return $"{totalMinutes} mins";
         }
 
         protected void GridViewTable_PageIndexChanging(object sender, GridViewPageEventArgs e)
