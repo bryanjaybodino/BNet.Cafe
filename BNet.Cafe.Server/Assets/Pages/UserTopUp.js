@@ -54,12 +54,12 @@ function calculateTimeFromAmount() {
     if (!amountInput) return;
 
     var amount = parseFloat(amountInput.value) || 0;
-    calculateDurationFromAmountBackend(amount);
+    CalculateDurationFromAmountHandlerBackend(amount);
 }
 
 
 
-function calculateDurationFromAmountBackend(amount) {
+function CalculateDurationFromAmountHandlerBackend(amount) {
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
     var displayTime = document.getElementById('display_FormattedTime');
     var displayAmount = document.getElementById('display_TotalAmount');
@@ -72,8 +72,8 @@ function calculateDurationFromAmountBackend(amount) {
     }
 
     var endpoint = /\.aspx$/i.test(window.location.pathname)
-        ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateDurationFromAmount.ashx')
-        : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateDurationFromAmount.ashx');
+        ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateDurationFromAmountHandler.ashx')
+        : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateDurationFromAmountHandler.ashx');
 
     fetch(endpoint + '?amount=' + amount + '&customerType=USER')
         .then(function (response) {

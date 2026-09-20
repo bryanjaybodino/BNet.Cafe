@@ -23,7 +23,7 @@ namespace BNet.Cafe.Client.Services
         }
 
         // Fetch once from API and cache locally
-        public static async Task<List<PricingRateItem>> InitializeRatesAsync(bool forceRefresh = true)
+        public static async Task<List<GetPricingRatesHandlerData>> InitializeRatesAsync(bool forceRefresh = true)
         {
             if (!forceRefresh && HasLocalRates())
             {
@@ -36,8 +36,8 @@ namespace BNet.Cafe.Client.Services
 
             try
             {
-                var handler = new PricingRatesHandler();
-                List<PricingRateItem> remoteRates = await handler.GetPricingRatesAsync();
+                var handler = new GetPricingRatesHandler();
+                List<GetPricingRatesHandlerData> remoteRates = await handler.GetPricingRatesAsync();
 
                 if (remoteRates != null && remoteRates.Count > 0)
                 {
@@ -51,10 +51,10 @@ namespace BNet.Cafe.Client.Services
             }
 
             // Fallback to local file if server call failed
-            return ReadLocalRates() ?? new List<PricingRateItem>();
+            return ReadLocalRates() ?? new List<GetPricingRatesHandlerData>();
         }
 
-        public static void SaveLocalRates(List<PricingRateItem> rates)
+        public static void SaveLocalRates(List<GetPricingRatesHandlerData> rates)
         {
             try
             {
@@ -72,14 +72,14 @@ namespace BNet.Cafe.Client.Services
             }
         }
 
-        public static List<PricingRateItem> ReadLocalRates()
+        public static List<GetPricingRatesHandlerData> ReadLocalRates()
         {
             if (!HasLocalRates()) return null;
 
             try
             {
                 string json = File.ReadAllText(FilePath);
-                return JsonConvert.DeserializeObject<List<PricingRateItem>>(json);
+                return JsonConvert.DeserializeObject<List<GetPricingRatesHandlerData>>(json);
             }
             catch
             {

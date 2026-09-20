@@ -50,12 +50,12 @@ namespace BNet.Cafe.Server.Forms.Modals
                                 billing = Convert.ToDouble(rental.Rows[0]["DBAmount"].ToString());
                                 if (billing == 0)
                                 {
-                                    billing = CalculateAmountFromDuration.CalculatePrice((int)duration.TotalMinutes);
+                                    billing = CalculateAmountFromDurationHandler.CalculatePrice((int)duration.TotalMinutes);
                                 }
                             }
                             else
                             {
-                                billing = CalculateAmountFromDuration.CalculatePrice((int)duration.TotalMinutes);
+                                billing = CalculateAmountFromDurationHandler.CalculatePrice((int)duration.TotalMinutes);
                             }
                             bool isSuccess = rentals.Update(rentalId, id, userId, totalTime.ToString().Replace(",", ""), billing.ToString().Replace(",", ""));
                             if (isSuccess)

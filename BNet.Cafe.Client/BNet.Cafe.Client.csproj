@@ -63,16 +63,16 @@
   <ItemGroup>
     <Compile Include="Ashx\CreateUserHandler.cs" />
     <Compile Include="Ashx\GetBalanceHandler.cs" />
-    <Compile Include="Ashx\_BalanceData.cs" />
-    <Compile Include="Ashx\_PricingRateItem.cs" />
-    <Compile Include="Ashx\PricingRatesHandler.cs" />
-    <Compile Include="Ashx\_UserData.cs" />
+    <Compile Include="Ashx\_GetBalanceHandlerData.cs" />
+    <Compile Include="Ashx\_GetPricingRatesHandlerData.cs" />
+    <Compile Include="Ashx\GetPricingRatesHandler.cs" />
+    <Compile Include="Ashx\_GetUserHandlerData.cs" />
     <Compile Include="Ashx\_ApiResponse.cs" />
     <Compile Include="Ashx\CreateBalanceHandler.cs" />
     <Compile Include="Ashx\CreateRentalHandler.cs" />
-    <Compile Include="Ashx\_LoginApiResponse.cs" />
-    <Compile Include="Ashx\LoginHandler.cs" />
-    <Compile Include="Ashx\UserHandler.cs" />
+    <Compile Include="Ashx\_GetLoginHandlerData.cs" />
+    <Compile Include="Ashx\GetLoginHandler.cs" />
+    <Compile Include="Ashx\GetUserHandler.cs" />
     <Compile Include="Design\ModernBadge.cs">
       <SubType>Component</SubType>
     </Compile>

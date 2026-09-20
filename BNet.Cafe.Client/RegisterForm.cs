@@ -87,7 +87,7 @@ namespace BNet.Cafe.Client
                 return;
             }
 
-            var userHandler = new UserHandler();
+            var userHandler = new GetUserHandler();
             var data = await userHandler.GetByEmailAsync(email);
             if (data != null && data.Success != false && data.Data != null)
             {

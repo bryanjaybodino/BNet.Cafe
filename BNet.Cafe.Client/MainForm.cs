@@ -465,7 +465,7 @@ namespace BNet.Cafe.Client
             }
             try
             {
-                LoginHandler loginHandler = new LoginHandler();
+                GetLoginHandler loginHandler = new GetLoginHandler();
                 var loginResponse = await loginHandler.LoginAsync(username, password);
 
                 // 2. Handle failed server response or null payload safely

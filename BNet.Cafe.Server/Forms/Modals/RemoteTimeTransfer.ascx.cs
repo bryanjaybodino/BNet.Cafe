@@ -95,7 +95,7 @@ namespace BNet.Cafe.Server.Forms.Modals
                 totalTime = 0;
             }
 
-            decimal billing = (decimal)CalculateAmountFromDuration.CalculatePrice(totalTime);
+            decimal billing = (decimal)CalculateAmountFromDurationHandler.CalculatePrice(totalTime);
 
 
             Repositories.Rentals rentals = new Repositories.Rentals();

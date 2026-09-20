@@ -1,5 +1,5 @@
 ﻿// Asynchronously fetch exact duration calculation from the backend ASHX Handler based on amount
-function calculateDurationFromAmountBackend(amount) {
+function CalculateDurationFromAmountHandlerBackend(amount) {
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
     var displayTime = document.getElementById('display_FormattedTime');
     var displayAmount = document.getElementById('display_TotalAmount');
@@ -14,8 +14,8 @@ function calculateDurationFromAmountBackend(amount) {
     var customerType = getCustomerType();
 
     var endpoint = /\.aspx$/i.test(window.location.pathname)
-        ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateDurationFromAmount.ashx')
-        : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateDurationFromAmount.ashx');
+        ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateDurationFromAmountHandler.ashx')
+        : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateDurationFromAmountHandler.ashx');
 
     fetch(endpoint + '?amount=' + amount + '&customerType=' + encodeURIComponent(customerType))
         .then(function (response) {
@@ -50,7 +50,7 @@ function calculateTimeFromAmount() {
     if (!amountInput) return;
 
     var amount = parseFloat(amountInput.value) || 0;
-    calculateDurationFromAmountBackend(amount);
+    CalculateDurationFromAmountHandlerBackend(amount);
 }
 
 // Asynchronously fetch exact rate calculation from the backend ASHX Handler
@@ -69,8 +69,8 @@ function calculateRentalPriceBackend(totalMinutes) {
     var customerType = getCustomerType();
 
     var endpoint = /\.aspx$/i.test(window.location.pathname)
-        ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateAmountFromDuration.ashx')
-        : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateAmountFromDuration.ashx');
+        ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateAmountFromDurationHandler.ashx')
+        : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateAmountFromDurationHandler.ashx');
 
     fetch(endpoint + '?minutes=' + totalMinutes + '&customerType=' + encodeURIComponent(customerType))
         .then(function (response) {
@@ -159,8 +159,8 @@ function calculateAmount() {
         var customerType = getCustomerType();
 
         var endpoint = /\.aspx$/i.test(window.location.pathname)
-            ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateAmountFromDuration.ashx')
-            : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateAmountFromDuration.ashx');
+            ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateAmountFromDurationHandler.ashx')
+            : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateAmountFromDurationHandler.ashx');
 
         fetch(endpoint + '?minutes=' + extendedMinutes + '&customerType=' + encodeURIComponent(customerType))
             .then(function (response) { return response.json(); })

@@ -201,11 +201,11 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ashx\CalculateAmountFromDuration.ashx.cs">
-      <DependentUpon>CalculateAmountFromDuration.ashx</DependentUpon>
+    <Compile Include="Ashx\CalculateAmountFromDurationHandler.ashx.cs">
+      <DependentUpon>CalculateAmountFromDurationHandler.ashx</DependentUpon>
     </Compile>
-    <Compile Include="Ashx\CalculateDurationFromAmount.ashx.cs">
-      <DependentUpon>CalculateDurationFromAmount.ashx</DependentUpon>
+    <Compile Include="Ashx\CalculateDurationFromAmountHandler.ashx.cs">
+      <DependentUpon>CalculateDurationFromAmountHandler.ashx</DependentUpon>
     </Compile>
     <Compile Include="Ashx\CreateBalanceHandler.ashx.cs">
       <DependentUpon>CreateBalanceHandler.ashx</DependentUpon>
@@ -216,17 +216,17 @@
     <Compile Include="Ashx\CreateUserHandler.ashx.cs">
       <DependentUpon>CreateUserHandler.ashx</DependentUpon>
     </Compile>
-    <Compile Include="Ashx\GetBalance.ashx.cs">
-      <DependentUpon>GetBalance.ashx</DependentUpon>
+    <Compile Include="Ashx\GetBalanceHandler.ashx.cs">
+      <DependentUpon>GetBalanceHandler.ashx</DependentUpon>
     </Compile>
-    <Compile Include="Ashx\GetPricingRates.ashx.cs">
-      <DependentUpon>GetPricingRates.ashx</DependentUpon>
+    <Compile Include="Ashx\GetPricingRatesHandler.ashx.cs">
+      <DependentUpon>GetPricingRatesHandler.ashx</DependentUpon>
     </Compile>
-    <Compile Include="Ashx\LoginHandler.ashx.cs">
-      <DependentUpon>LoginHandler.ashx</DependentUpon>
+    <Compile Include="Ashx\GetLoginHandler.ashx.cs">
+      <DependentUpon>GetLoginHandler.ashx</DependentUpon>
     </Compile>
-    <Compile Include="Ashx\UserHandler.ashx.cs">
-      <DependentUpon>UserHandler.ashx</DependentUpon>
+    <Compile Include="Ashx\GetUserHandler.ashx.cs">
+      <DependentUpon>GetUserHandler.ashx</DependentUpon>
     </Compile>
     <Compile Include="BNetPage.aspx.cs">
       <DependentUpon>BNetPage.aspx</DependentUpon>
@@ -457,14 +457,14 @@
     <Content Include="Assets\fontawesome\webfonts\fa-regular-400.woff2" />
     <Content Include="Assets\fontawesome\webfonts\fa-solid-900.woff2" />
     <Content Include="Assets\fontawesome\webfonts\fa-v4compatibility.woff2" />
-    <Content Include="Ashx\CalculateAmountFromDuration.ashx" />
-    <Content Include="Ashx\CalculateDurationFromAmount.ashx" />
+    <Content Include="Ashx\CalculateAmountFromDurationHandler.ashx" />
+    <Content Include="Ashx\CalculateDurationFromAmountHandler.ashx" />
     <Content Include="Ashx\CreateRentalHandler.ashx" />
-    <Content Include="Ashx\LoginHandler.ashx" />
+    <Content Include="Ashx\GetLoginHandler.ashx" />
     <Content Include="Ashx\CreateBalanceHandler.ashx" />
-    <Content Include="Ashx\UserHandler.ashx" />
-    <Content Include="Ashx\GetPricingRates.ashx" />
-    <Content Include="Ashx\GetBalance.ashx" />
+    <Content Include="Ashx\GetUserHandler.ashx" />
+    <Content Include="Ashx\GetPricingRatesHandler.ashx" />
+    <Content Include="Ashx\GetBalanceHandler.ashx" />
     <Content Include="Ashx\CreateUserHandler.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">

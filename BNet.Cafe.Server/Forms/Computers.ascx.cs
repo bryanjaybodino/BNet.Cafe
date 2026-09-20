@@ -63,7 +63,7 @@ namespace BNet.Cafe.Server.Forms
                             duration = TimeService.Get() - start;
                             hours = (int)duration.TotalHours;
                             minutes = duration.Minutes;
-                            billing = CalculateAmountFromDuration.CalculatePrice((int)duration.TotalMinutes);
+                            billing = CalculateAmountFromDurationHandler.CalculatePrice((int)duration.TotalMinutes);
                         }
                         else
                         {
@@ -74,7 +74,7 @@ namespace BNet.Cafe.Server.Forms
                             }
                             else
                             {
-                                billing = CalculateAmountFromDuration.CalculatePrice((int)duration.TotalMinutes);
+                                billing = CalculateAmountFromDurationHandler.CalculatePrice((int)duration.TotalMinutes);
                             }
                         }
 

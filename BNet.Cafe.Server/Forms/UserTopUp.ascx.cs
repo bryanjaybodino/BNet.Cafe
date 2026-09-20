@@ -70,7 +70,7 @@ namespace BNet.Cafe.Server.Forms
         {
             string userId = Request.QueryString["id"];
             string amount = TextBox_Amount.Text.Trim();
-            string duration = CalculateDurationFromAmount.CalculateDuration(Convert.ToDecimal(amount),UserType.User).ToString();
+            string duration = CalculateDurationFromAmountHandler.CalculateDuration(Convert.ToDecimal(amount),UserType.User).ToString();
             string description = TextBox_Description.Text.Trim();
 
             if (string.IsNullOrEmpty(description))

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BNet.Cafe.Client.Ashx
 {
-    public class LoginApiResponse
+    public class GetLoginHandlerData
     {
         [JsonProperty("success")]
         public bool Success { get; set; }
@@ -16,6 +16,6 @@ namespace BNet.Cafe.Client.Ashx
         public string Message { get; set; }
 
         [JsonProperty("data")]
-        public UserData Data { get; set; }
+        public GetUserHandlerData Data { get; set; }
     }
 }

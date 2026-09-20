@@ -13,7 +13,7 @@ namespace BNet.Cafe.Client.Services
             if (totalMinutes <= 0) return 0.0;
 
             // Load rates from local JSON cache (Zero API Overhead)
-            List<PricingRateItem> rates = SessionPricingRate.ReadLocalRates();
+            List<GetPricingRatesHandlerData> rates = SessionPricingRate.ReadLocalRates();
 
             if (rates == null || !rates.Any())
             {

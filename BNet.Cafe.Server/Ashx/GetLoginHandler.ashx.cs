@@ -6,7 +6,7 @@ using System.Web;
 
 namespace BNet.Cafe.Server.Ashx
 {
-    public class LoginHandler : IHttpHandler
+    public class GetLoginHandler : IHttpHandler
     {
         private readonly Users _usersRepository = new Users();
 
@@ -31,7 +31,7 @@ namespace BNet.Cafe.Server.Ashx
                 {
                     DataRow row = dt.Rows[0];
 
-                    var userData = new UserData
+                    var userData = new GetLoginHandlerData
                     {
                         Id = row["DBId"].ToString(),
                         Name = row["DBName"].ToString(),
@@ -57,7 +57,7 @@ namespace BNet.Cafe.Server.Ashx
             }
         }
 
-        private void SendJsonResponse(HttpContext context, bool success, string message, UserData data = null)
+        private void SendJsonResponse(HttpContext context, bool success, string message, GetLoginHandlerData data = null)
         {
             var responseObj = new
             {
@@ -72,7 +72,7 @@ namespace BNet.Cafe.Server.Ashx
 
         public bool IsReusable => false;
 
-        public class UserData
+        public class GetLoginHandlerData
         {
             [JsonProperty("id")]
             public string Id { get; set; }

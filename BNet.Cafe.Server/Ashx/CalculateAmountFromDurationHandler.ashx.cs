@@ -9,7 +9,7 @@ namespace BNet.Cafe.Server.Ashx
     /// Handler to calculate monetary amount (₱) from time duration (minutes).
     /// Uses database-driven interval pricing with linear interpolation.
     /// </summary>
-    public class CalculateAmountFromDuration : IHttpHandler
+    public class CalculateAmountFromDurationHandler : IHttpHandler
     {
         public void ProcessRequest(HttpContext context)
         {

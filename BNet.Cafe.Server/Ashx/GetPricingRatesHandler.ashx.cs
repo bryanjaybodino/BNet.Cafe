@@ -10,7 +10,7 @@ namespace BNet.Cafe.Server.Ashx
     /// <summary>
     /// Handler to fetch pricing rates without DB prefixes in response model
     /// </summary>
-    public class GetPricingRates : IHttpHandler
+    public class GetPricingRatesHandler : IHttpHandler
     {
         private readonly PricingRates _pricingRatesRepository = new PricingRates();
 
@@ -24,11 +24,11 @@ namespace BNet.Cafe.Server.Ashx
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    var ratesList = new List<PricingRateData>();
+                    var ratesList = new List<GetPricingRatesData>();
 
                     foreach (DataRow row in dt.Rows)
                     {
-                        ratesList.Add(new PricingRateData
+                        ratesList.Add(new GetPricingRatesData
                         {
                             Id = Convert.ToInt32(row["DBId"]),
                             CustomerType = row["DBCustomerType"].ToString(),
@@ -53,7 +53,7 @@ namespace BNet.Cafe.Server.Ashx
             }
         }
 
-        private void SendJsonResponse(HttpContext context, bool success, string message, List<PricingRateData> data = null)
+        private void SendJsonResponse(HttpContext context, bool success, string message, List<GetPricingRatesData> data = null)
         {
             var responseObj = new
             {
@@ -68,7 +68,7 @@ namespace BNet.Cafe.Server.Ashx
 
         public bool IsReusable => false;
 
-        public class PricingRateData
+        public class GetPricingRatesData
         {
             [JsonProperty("id")]
             public int Id { get; set; }

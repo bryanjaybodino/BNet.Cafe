@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace BNet.Cafe.Client.Ashx
 {
-    internal class LoginHandler
+    internal class GetLoginHandler
     {
         private static readonly HttpClient client = new HttpClient();
 
-        public async Task<LoginApiResponse> LoginAsync(string email, string password)
+        public async Task<GetLoginHandlerData> LoginAsync(string email, string password)
         {
             var formData = new Dictionary<string, string>
             {
@@ -23,14 +23,14 @@ namespace BNet.Cafe.Client.Ashx
             using (var content = new FormUrlEncodedContent(formData))
             {
                 string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
-                string handlerUrl = $"{baseUrl}/Ashx/LoginHandler.ashx";
+                string handlerUrl = $"{baseUrl}/Ashx/GetLoginHandler.ashx";
 
                 HttpResponseMessage response = await client.PostAsync(handlerUrl, content);
                 response.EnsureSuccessStatusCode();
 
                 string jsonString = await response.Content.ReadAsStringAsync();
 
-                return JsonConvert.DeserializeObject<LoginApiResponse>(jsonString);
+                return JsonConvert.DeserializeObject<GetLoginHandlerData>(jsonString);
             }
         }
     }

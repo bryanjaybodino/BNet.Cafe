@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BNet.Cafe.Client.Ashx
 {
-    public class PricingRateItem
+    public class GetPricingRatesHandlerData
     {
         [JsonProperty("id")]
         public int Id { get; set; }

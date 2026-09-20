@@ -8,7 +8,7 @@ namespace BNet.Cafe.Server.Ashx
     /// <summary>
     /// Summary description for GetBalance
     /// </summary>
-    public class GetBalance : IHttpHandler
+    public class GetBalanceHandler : IHttpHandler
     {
         private readonly Balances _balancesRepository = new Balances();
 

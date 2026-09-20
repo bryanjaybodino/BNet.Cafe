@@ -11,7 +11,7 @@ namespace BNet.Cafe.Client.Ashx
     {
         private static readonly HttpClient client = new HttpClient();
 
-        public async Task<BalanceApiResponse> GetBalanceAsync(string userId)
+        public async Task<GetBalanceHandlerData> GetBalanceAsync(string userId)
         {
             var formData = new Dictionary<string, string>
             {
@@ -21,14 +21,14 @@ namespace BNet.Cafe.Client.Ashx
             using (var content = new FormUrlEncodedContent(formData))
             {
                 string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
-                string handlerUrl = $"{baseUrl}/Ashx/GetBalance.ashx";
+                string handlerUrl = $"{baseUrl}/Ashx/GetBalanceHandler.ashx";
 
                 HttpResponseMessage response = await client.PostAsync(handlerUrl, content);
                 response.EnsureSuccessStatusCode();
 
                 string jsonString = await response.Content.ReadAsStringAsync();
 
-                return JsonConvert.DeserializeObject<BalanceApiResponse>(jsonString);
+                return JsonConvert.DeserializeObject<GetBalanceHandlerData>(jsonString);
             }
         }
     }

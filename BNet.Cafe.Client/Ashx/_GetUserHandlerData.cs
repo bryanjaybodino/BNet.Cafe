@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BNet.Cafe.Client.Ashx
 {
-    public class UserData
+    public class GetUserHandlerData
     {
         [JsonProperty("id")]
         public string Id { get; set; }
