@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNet Cafe Software | Free Internet Cafe Management System</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                            purple: '#8b5cf6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dark body {
+            background-color: #090d16;
+            color: #f1f5f9;
+        }
+
+        .light body {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        .cyber-grid {
+            background-size: 36px 36px;
+        }
+
+        .dark .cyber-grid {
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        .light .cyber-grid {
+            background-image: linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dark .custom-scrollbar::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+
+        .light .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .light .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="custom-scrollbar">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-md dark:bg-[#090d16]/80 bg-white/80 border-b dark:border-slate-800 border-slate-200 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+
+                <!-- Brand Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-cyan-500/20">
+                        B
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl font-bold tracking-tight dark:text-white text-slate-900">BNet<span class="text-cyan-500">.Cafe</span></span>
+                            <span class="px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">100% FREE</span>
+                        </div>
+                        <span class="block text-[10px] font-mono tracking-widest text-slate-400 uppercase -mt-0.5">Software Suite v4.8</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-medium dark:text-slate-300 text-slate-600">
+                    <a href="#overview" class="hover:text-cyan-500 transition-colors">Overview</a>
+                    <a href="#architecture" class="hover:text-cyan-500 transition-colors">Architecture</a>
+                    <a href="#config" class="hover:text-cyan-500 transition-colors">Configuration</a>
+                    <a href="#compatibility" class="hover:text-cyan-500 transition-colors">Setup & Diskless</a>
+                    <a href="#features" class="hover:text-cyan-500 transition-colors">Features List</a>
+                    <a href="#download" class="hover:text-cyan-500 transition-colors">Downloads</a>
+                </nav>
+
+                <!-- Light / Dark Mode Toggle & Free Pill -->
+                <div class="flex items-center gap-3">
+                    <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2.5 rounded-xl dark:bg-slate-800/80 bg-slate-100 dark:text-amber-400 text-slate-700 hover:opacity-80 border dark:border-slate-700 border-slate-300 transition-all" title="Toggle Theme">
+                        <i id="themeIcon" class="fa-solid fa-moon text-base"></i>
+                    </button>
+
+                    <a href="#download" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-950 bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-xl hover:brightness-110 transition-all shadow-md shadow-cyan-500/20">
+                        <i class="fa-solid fa-download"></i> Get Software
+                    </a>
+
+                    <button id="mobileMenuBtn" class="md:hidden p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobileMenu" class="hidden md:hidden border-b dark:border-slate-800 border-slate-200 dark:bg-[#0c111d] bg-white px-4 pt-2 pb-6 space-y-3">
+            <a href="#overview" class="block py-2 text-sm dark:text-slate-300 text-slate-700 hover:text-cyan-500">Overview</a>
+            <a href="#architecture" class="block py-2 text-sm dark:text-slate-300 text-slate-700 hover:text-cyan-500">Architecture</a>
+            <a href="#config" class="block py-2 text-sm dark:text-slate-300 text-slate-700 hover:text-cyan-500">Configuration</a>
+            <a href="#compatibility" class="block py-2 text-sm dark:text-slate-300 text-slate-700 hover:text-cyan-500">Setup & Diskless</a>
+            <a href="#features" class="block py-2 text-sm dark:text-slate-300 text-slate-700 hover:text-cyan-500">20 Features List</a>
+            <a href="#download" class="block py-2 text-sm text-cyan-500 font-bold">Download Free Version</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="overview" class="relative pt-12 pb-20 lg:pt-20 lg:pb-24 cyber-grid">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto space-y-6">
+
+                <!-- Free Banner Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full dark:bg-emerald-950/60 bg-emerald-50 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+                    <i class="fa-solid fa-shield-heart text-sm"></i> 100% Free & Open Computer Rental Management
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight dark:text-white text-slate-900 leading-tight">
+                    Reliable Cyber Cafe Control <br>
+                    <span class="bg-gradient-to-r from-cyan-500 via-emerald-500 to-purple-500 bg-clip-text text-transparent">
+                        Without Monthly Fees or Subscriptions
+                    </span>
+                </h1>
+
+                <p class="text-base sm:text-lg dark:text-slate-400 text-slate-600 font-normal leading-relaxed">
+                    BNet Cafe Software is a complete, lightweight computer rental management solution designed for esports arenas, cyber cafes, and computer labs. Engineered with high-speed WebSocket real-time communication and low memory footprint.
+                </p>
+
+                <!-- Software Components Stack Badges -->
+                <div class="pt-2 flex flex-wrap items-center justify-center gap-2.5">
+                    <span class="px-3.5 py-1.5 dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-lg text-xs font-mono dark:text-cyan-400 text-cyan-600 flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-server"></i> ASP.NET WebForms 4.8 (Server)
+                    </span>
+                    <span class="px-3.5 py-1.5 dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-lg text-xs font-mono dark:text-emerald-400 text-emerald-600 flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-desktop"></i> WinForms 4.8 (Client Interface)
+                    </span>
+                    <span class="px-3.5 py-1.5 dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-lg text-xs font-mono dark:text-purple-400 text-purple-600 flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-bolt"></i> WinForms 4.8 (WebSocket Engine)
+                    </span>
+                </div>
+
+                <!-- Call to Actions -->
+                <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#download" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-sm tracking-wide uppercase hover:shadow-lg hover:shadow-cyan-500/20 transition-all text-center">
+                        <i class="fa-solid fa-download mr-1.5"></i> Download Free Installers
+                    </a>
+                    <a href="#features" class="w-full sm:w-auto px-8 py-3.5 rounded-xl dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-300 hover:border-cyan-500 dark:text-slate-200 text-slate-700 font-semibold text-sm tracking-wide transition-all text-center">
+                        View All 20 Features
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- System Architecture Breakdown -->
+    <section id="architecture" class="py-16 dark:bg-[#0c111d] bg-slate-100/70 border-y dark:border-slate-800/80 border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-mono font-bold text-cyan-500 uppercase tracking-widest">System Architecture</span>
+                <h2 class="text-3xl font-extrabold dark:text-white text-slate-900 mt-1">3 Modular Core Components</h2>
+                <p class="dark:text-slate-400 text-slate-600 text-sm mt-2">Built on the stable .NET Framework 4.8 stack for reliable performance and fast deployment.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Architecture Card 1 -->
+                <div class="dark:bg-slate-900/80 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-server"></i>
+                    </div>
+                    <span class="text-xs font-mono text-cyan-500 font-semibold uppercase tracking-wider block">Central Timer & Dashboard</span>
+                    <h3 class="text-xl font-bold dark:text-white text-slate-900 mt-1">BNet.Cafe.Server</h3>
+                    <p class="text-xs font-mono dark:text-slate-400 text-slate-500 mt-0.5">ASP.Net Webform 4.8</p>
+                    <p class="dark:text-slate-400 text-slate-600 text-sm mt-3 leading-relaxed">
+                        The central web management portal and database hub. Operates the cafe timer, seat map overview, member accounts, shift logs, and administrative configurations.
+                    </p>
+                    <div class="mt-4 pt-3 border-t dark:border-slate-800 border-slate-100 space-y-2 text-xs font-mono dark:text-slate-300 text-slate-600">
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-500"></i> Responsive Mobile Web Admin</div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-500"></i> Central Printing Spooler</div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-500"></i> Historical Session Logs</div>
+                    </div>
+                </div>
+
+                <!-- Architecture Card 2 -->
+                <div class="dark:bg-slate-900/80 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-desktop"></i>
+                    </div>
+                    <span class="text-xs font-mono text-emerald-500 font-semibold uppercase tracking-wider block">Workstation Interface</span>
+                    <h3 class="text-xl font-bold dark:text-white text-slate-900 mt-1">BNet.Cafe.Client</h3>
+                    <p class="text-xs font-mono dark:text-slate-400 text-slate-500 mt-0.5">Windows Form 4.8</p>
+                    <p class="dark:text-slate-400 text-slate-600 text-sm mt-3 leading-relaxed">
+                        Lightweight fullscreen lockscreen application running on player workstations. Displays remaining session time floating HUD and user chat widget.
+                    </p>
+                    <div class="mt-4 pt-3 border-t dark:border-slate-800 border-slate-100 space-y-2 text-xs font-mono dark:text-slate-300 text-slate-600">
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Secure Kiosk Lockscreen</div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Google SSO Member Sign-In</div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Floating On-Screen HUD Timer</div>
+                    </div>
+                </div>
+
+                <!-- Architecture Card 3 -->
+                <div class="dark:bg-slate-900/80 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <span class="text-xs font-mono text-purple-500 font-semibold uppercase tracking-wider block">Realtime Communication Engine</span>
+                    <h3 class="text-xl font-bold dark:text-white text-slate-900 mt-1">BNet.Cafe.Websocket</h3>
+                    <p class="text-xs font-mono dark:text-slate-400 text-slate-500 mt-0.5">Windows Form 4.8 Service</p>
+                    <p class="dark:text-slate-400 text-slate-600 text-sm mt-3 leading-relaxed">
+                        High-throughput socket pipeline responsible for ultra-fast bi-directional data transfer, instant remote screen streaming, and PC commands.
+                    </p>
+                    <div class="mt-4 pt-3 border-t dark:border-slate-800 border-slate-100 space-y-2 text-xs font-mono dark:text-slate-300 text-slate-600">
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-500"></i> Real-time Screen Streaming</div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-500"></i> Low Bandwidth Overhead</div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-500"></i> Automatic Network Reconnect</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Client Configuration Section -->
+    <section id="config" class="py-16 border-b dark:border-slate-800/80 border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-mono font-bold text-cyan-500 uppercase tracking-widest">Configuration Settings</span>
+                <h2 class="text-3xl font-extrabold dark:text-white text-slate-900 mt-1">Client Executable Config</h2>
+                <p class="dark:text-slate-400 text-slate-600 text-sm mt-2">Default settings for <code>BNet.Cafe.Client.exe.config</code> controlling server connection and auto-identification.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-8 items-start">
+                <!-- XML Code View -->
+                <div class="lg:col-span-7 rounded-2xl dark:bg-slate-950 bg-slate-900 border dark:border-slate-800 border-slate-800 overflow-hidden shadow-xl">
+                    <div class="flex items-center justify-between px-4 py-3 bg-slate-800/50 border-b border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-regular fa-file-code text-cyan-400"></i>
+                            <span class="text-xs font-mono text-slate-300 font-bold">BNet.Cafe.Client.exe.config</span>
+                        </div>
+                        <button onclick="copyConfigCode()" id="copyBtn" class="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> <span>Copy XML</span>
+                        </button>
+                    </div>
+                    <div class="p-4 overflow-x-auto">
+                        <pre id="configCode" class="font-mono text-xs text-cyan-300 leading-relaxed"><code>&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;configuration&gt;
+	&lt;startup&gt;
+		&lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.8" /&gt;
+	&lt;/startup&gt;
+	&lt;appSettings&gt;
+		&lt;!-- ==================================================================== --&gt;
+		&lt;!-- SERVER CONNECTION SETTINGS                                           --&gt;
+		&lt;!-- ==================================================================== --&gt;
+		&lt;!-- WebSocket real-time communication endpoint --&gt;
+		&lt;add key="WebSocketUrl" value="ws://192.168.1.2:2050" /&gt;
+
+		&lt;!-- BNet Cafe Server Web API base address --&gt;
+		&lt;add key="AppUrl" value="http://192.168.1.2:2000/BNet.Cafe.Server/" /&gt;
+
+		&lt;!-- ==================================================================== --&gt;
+		&lt;!-- CLIENT IDENTIFICATION SETTINGS                                       --&gt;
+		&lt;!-- ==================================================================== --&gt;
+		&lt;!-- 
+		  CLIENT NAME CONFIGURATION:
+		  
+		  1. TRADITIONAL SETUP (Local Hard Drive):
+		     - Set explicit PC name here (e.g., value="PC-01").
+		     - Do NOT use spaces (e.g., use "PC-01" instead of "PC 01").
+		     
+		  2. DISKLESS SETUP (Shared Master Image):
+		     - Leave value empty (value="").
+		     - Client name will auto-resolve from local IP address offset:
+		       * 192.168.1.101 -&gt; PC-01
+		       * 192.168.1.102 -&gt; PC-02
+		       * 192.168.1.103 -&gt; PC-03
+		--&gt;
+		&lt;add key="ClientName" value="" /&gt;
+	&lt;/appSettings&gt;
+&lt;/configuration&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Config Key Explanations -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="p-5 rounded-2xl dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 shadow-sm space-y-2">
+                        <div class="flex items-center gap-2 text-cyan-500 font-bold text-sm">
+                            <i class="fa-solid fa-bolt"></i> WebSocket Server Endpoint
+                        </div>
+                        <p class="font-mono text-xs text-emerald-500 font-semibold">ws://192.168.1.2:2050</p>
+                        <p class="text-xs dark:text-slate-400 text-slate-600 leading-relaxed">
+                            Defines the low-latency socket stream address used for real-time remote commands, live screen previews, and workstation lock states.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 shadow-sm space-y-2">
+                        <div class="flex items-center gap-2 text-cyan-500 font-bold text-sm">
+                            <i class="fa-solid fa-globe"></i> Web API Base Address
+                        </div>
+                        <p class="font-mono text-xs text-purple-400 font-semibold">http://192.168.1.2:2000/BNet.Cafe.Server/</p>
+                        <p class="text-xs dark:text-slate-400 text-slate-600 leading-relaxed">
+                            Base web directory for HTTP API requests, member authentication, account log transfers, and centralized server data.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 shadow-sm space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2 text-cyan-500 font-bold text-sm">
+                                <i class="fa-solid fa-laptop-code"></i> Auto Client IP Offset
+                            </div>
+                            <span class="px-2 py-0.5 text-[10px] font-mono font-bold rounded bg-cyan-500/10 text-cyan-500 border border-cyan-500/20">Diskless Ready</span>
+                        </div>
+                        <p class="font-mono text-xs text-slate-400 font-semibold">ClientName=""</p>
+                        <p class="text-xs dark:text-slate-400 text-slate-600 leading-relaxed">
+                            When <code>ClientName</code> is empty, the software auto-calculates client IDs using the workstation's local IP address offset (e.g., <code>192.168.1.101</code> automatically resolves to <code>PC-01</code>).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Setup Environment & Compatibility -->
+    <section id="compatibility" class="py-16 dark:bg-[#0c111d] bg-slate-100/70 border-b dark:border-slate-800/80 border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-8 items-center">
+
+                <div class="lg:col-span-6 space-y-4">
+                    <span class="text-xs font-mono font-bold text-cyan-500 uppercase tracking-widest">Network & Disk Environment</span>
+                    <h2 class="text-3xl font-extrabold dark:text-white text-slate-900">Diskless & Traditional Cafe Setup</h2>
+                    <p class="dark:text-slate-400 text-slate-600 text-sm leading-relaxed">
+                        BNet Cafe Software is engineered to integrate smoothly with both modern diskless boot networks and standard local hard drive configurations. Designed as an accessible alternative to software systems like GCafe timer and ICafe timer.
+                    </p>
+
+                    <div class="grid sm:grid-cols-2 gap-4 pt-2">
+                        <div class="p-4 rounded-xl dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 shadow-sm">
+                            <div class="flex items-center gap-2 text-cyan-500 font-bold text-sm mb-1">
+                                <i class="fa-solid fa-hard-drive"></i> Diskless Systems
+                            </div>
+                            <p class="text-xs dark:text-slate-400 text-slate-500 leading-relaxed">
+                                Compatible with CCBoot, Richtech, iCafeCloud, and standard SAN boot client images without registry conflicts.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 shadow-sm">
+                            <div class="flex items-center gap-2 text-emerald-500 font-bold text-sm mb-1">
+                                <i class="fa-solid fa-server"></i> Traditional PC Setups
+                            </div>
+                            <p class="text-xs dark:text-slate-400 text-slate-500 leading-relaxed">
+                                Deploy directly to local Windows installations (Win 7/10/11) with instant client configuration.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6">
+                    <div class="p-6 rounded-2xl dark:bg-slate-900/90 bg-white border dark:border-slate-800 border-slate-200 shadow-lg space-y-4 font-mono text-xs">
+                        <div class="flex items-center justify-between pb-3 border-b dark:border-slate-800 border-slate-200">
+                            <span class="font-bold dark:text-white text-slate-900">SYSTEM COMPATIBILITY MATRIX</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-500 font-bold">VERIFIED</span>
+                        </div>
+
+                        <div class="space-y-3 dark:text-slate-300 text-slate-700">
+                            <div class="flex justify-between items-center">
+                                <span>Operating Systems:</span>
+                                <span class="dark:text-slate-400 text-slate-500">Windows 7 / 8 / 10 / 11 / Server</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>Framework Requirement:</span>
+                                <span class="dark:text-slate-400 text-slate-500">Microsoft .NET Framework 4.8</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>Network Protocol:</span>
+                                <span class="dark:text-slate-400 text-slate-500">TCP/IP, WebSockets, Central FTP</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>Authentication:</span>
+                                <span class="dark:text-slate-400 text-slate-500">Google OAuth 2.0 / Admin Auth</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>Software Cost:</span>
+                                <span class="text-emerald-500 font-bold">100% Free / Open Access</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature List Grid (All 20 Features) -->
+    <section id="features" class="py-20 border-b dark:border-slate-800/80 border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-mono font-bold text-cyan-500 uppercase tracking-widest">Complete Functionality</span>
+                <h2 class="text-3xl font-extrabold dark:text-white text-slate-900 mt-1">20 Core System Features</h2>
+                <p class="dark:text-slate-400 text-slate-600 text-sm mt-2">Comprehensive suite of tools built for internet cafe administration, timing, and customer member management.</p>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                <!-- Feature 1 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-cyan-500 text-lg mb-2"><i class="fa-regular fa-clock"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">1. Open Time</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Pay-after-use open timing mode for flexible customer sessions.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-cyan-500 text-lg mb-2"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">2. Set Specific Time</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Prepaid time allocation with automatic client workstation lock upon expiration.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-cyan-500 text-lg mb-2"><i class="fa-solid fa-right-left"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">3. Transfer Time</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Seamlessly transfer active session time to any available PC terminal.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-cyan-500 text-lg mb-2"><i class="fa-regular fa-comment-dots"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">4. Message PC Client</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Send popup messages or announcements directly to selected workstation screens.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-emerald-500 text-lg mb-2"><i class="fa-solid fa-chart-line"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">5. PC Activity Monitoring</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Track open programs, process usage, and workstation active states.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-emerald-500 text-lg mb-2"><i class="fa-solid fa-display"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">6. Remote Desktop</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Live screen mirroring via BNet.Cafe.Websocket service for support.</p>
+                </div>
+
+                <!-- Feature 7 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-emerald-500 text-lg mb-2"><i class="fa-solid fa-user-shield"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">7. Administrator Control</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Central management control over all connected workstations and permissions.</p>
+                </div>
+
+                <!-- Feature 8 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-emerald-500 text-lg mb-2"><i class="fa-brands fa-google"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">8. Gmail Login</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Direct Gmail authentication integration for both admins and customers.</p>
+                </div>
+
+                <!-- Feature 9 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-purple-500 text-lg mb-2"><i class="fa-solid fa-mobile-screen"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">9. Mobile Responsive Web</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Access and manage the server dashboard from any smartphone or tablet.</p>
+                </div>
+
+                <!-- Feature 10 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-purple-500 text-lg mb-2"><i class="fa-solid fa-id-card"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">10. Customer Membership</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Google Sign In membership registration and profile synchronization.</p>
+                </div>
+
+                <!-- Feature 11 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-purple-500 text-lg mb-2"><i class="fa-solid fa-floppy-disk"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">11. Save Remaining Hours</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Unused member rental hours are saved automatically for future visits.</p>
+                </div>
+
+                <!-- Feature 12 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-purple-500 text-lg mb-2"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">12. History Records & Logs</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Comprehensive audit trail of past computer usage, logins, and sessions.</p>
+                </div>
+
+                <!-- Feature 13 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-amber-500 text-lg mb-2"><i class="fa-solid fa-pause"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">13. Pause / Resume Time</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Temporarily hold customer timer when stepping away or changing seats.</p>
+                </div>
+
+                <!-- Feature 14 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-amber-500 text-lg mb-2"><i class="fa-solid fa-key"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">14. Change Password</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Secure administrator and customer password modification tools.</p>
+                </div>
+
+                <!-- Feature 15 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-amber-500 text-lg mb-2"><i class="fa-solid fa-print"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">15. Centralized FTP Printing</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Built-in FTP server spooler for centralized print request management.</p>
+                </div>
+
+                <!-- Feature 16 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-amber-500 text-lg mb-2"><i class="fa-solid fa-sliders"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">16. Walk-In & Member Management</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Separate session settings for walk-in guests and registered accounts.</p>
+                </div>
+
+                <!-- Feature 17 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-cyan-500 text-lg mb-2"><i class="fa-solid fa-map-location-dot"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">17. Visual Seat Map</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Live visual layout overview of all PC workstations and status indicators.</p>
+                </div>
+
+                <!-- Feature 18 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-cyan-500 text-lg mb-2"><i class="fa-solid fa-users-gear"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">18. Membership Portal</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Dedicated online web portal for customer account overview.</p>
+                </div>
+
+                <!-- Feature 19 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-cyan-500 text-lg mb-2"><i class="fa-solid fa-gauge-high"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">19. Real-Time Dashboard</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Overview dashboard for occupancy rate and session metrics.</p>
+                </div>
+
+                <!-- Feature 20 -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-500/50 transition-all">
+                    <div class="text-emerald-500 text-lg mb-2"><i class="fa-solid fa-gift"></i></div>
+                    <h3 class="text-sm font-bold dark:text-white text-slate-900">20. Free Access Perks</h3>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">100% free software without licensing costs or restrictions.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Downloads Section -->
+    <section id="download" class="py-20 border-t dark:border-slate-800/80 border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-mono font-bold text-cyan-500 uppercase tracking-widest">Free Distribution</span>
+                <h2 class="text-3xl font-extrabold dark:text-white text-slate-900 mt-1">Download BNet Cafe Software</h2>
+                <p class="dark:text-slate-400 text-slate-600 text-sm mt-2">Download individual software modules for server deployment and client workstation setup.</p>
+            </div>
+
+            <!-- Download Packages -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Server Release -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-500 font-bold">SERVER WEB APP</span>
+                            <span class="text-xs font-mono dark:text-slate-500 text-slate-400">v4.8.0</span>
+                        </div>
+                        <h3 class="text-lg font-bold dark:text-white text-slate-900 mt-3">BNet.Cafe.Server</h3>
+                        <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">ASP.NET WebForm 4.8 central web server files, SQL setup, and Central FTP Spooler.</p>
+
+                        <div class="mt-4 space-y-1 text-xs font-mono dark:text-slate-400 text-slate-500">
+                            <p><i class="fa-solid fa-angle-right text-cyan-500 mr-1"></i> IIS / Web Server Host</p>
+                            <p><i class="fa-solid fa-angle-right text-cyan-500 mr-1"></i> .NET Framework 4.8 Runtime</p>
+                        </div>
+                    </div>
+
+                    <a href="javascript:void(0)" class="mt-6 w-full py-2.5 bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold text-xs uppercase rounded-xl transition-all text-center block">
+                        <i class="fa-solid fa-download mr-1"></i> Download Server
+                    </a>
+                </div>
+
+                <!-- Client Release -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-500 font-bold">CLIENT LOCK</span>
+                            <span class="text-xs font-mono dark:text-slate-500 text-slate-400">v4.8.0</span>
+                        </div>
+                        <h3 class="text-lg font-bold dark:text-white text-slate-900 mt-3">BNet.Cafe.Client</h3>
+                        <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Windows Form 4.8 workstation lockscreen software and floating HUD client.</p>
+
+                        <div class="mt-4 space-y-1 text-xs font-mono dark:text-slate-400 text-slate-500">
+                            <p><i class="fa-solid fa-angle-right text-emerald-500 mr-1"></i> Windows 7 / 10 / 11</p>
+                            <p><i class="fa-solid fa-angle-right text-emerald-500 mr-1"></i> Diskless Client Image Ready</p>
+                        </div>
+                    </div>
+
+                    <a href="javascript:void(0)" class="mt-6 w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs uppercase rounded-xl transition-all text-center block">
+                        <i class="fa-solid fa-download mr-1"></i> Download Client
+                    </a>
+                </div>
+
+                <!-- WebSocket Release -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded text-[10px] font-mono bg-purple-500/10 text-purple-500 font-bold">WEBSOCKET SERVICE</span>
+                            <span class="text-xs font-mono dark:text-slate-500 text-slate-400">v4.8.0</span>
+                        </div>
+                        <h3 class="text-lg font-bold dark:text-white text-slate-900 mt-3">BNet.Cafe.Websocket</h3>
+                        <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Windows Form 4.8 socket router service for real-time streaming and command pipe.</p>
+
+                        <div class="mt-4 space-y-1 text-xs font-mono dark:text-slate-400 text-slate-500">
+                            <p><i class="fa-solid fa-angle-right text-purple-500 mr-1"></i> Background Windows Service</p>
+                            <p><i class="fa-solid fa-angle-right text-purple-500 mr-1"></i> High-speed binary protocol</p>
+                        </div>
+                    </div>
+
+                    <a href="javascript:void(0)" class="mt-6 w-full py-2.5 bg-purple-500 hover:bg-purple-600 text-slate-950 font-bold text-xs uppercase rounded-xl transition-all text-center block">
+                        <i class="fa-solid fa-download mr-1"></i> Download WebSocket
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="dark:bg-[#070a11] bg-slate-200/80 border-t dark:border-slate-800 border-slate-300 py-10 text-xs dark:text-slate-400 text-slate-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded bg-cyan-500 text-slate-950 font-black flex items-center justify-center text-xs">B</div>
+                    <span class="font-bold dark:text-white text-slate-900 text-sm">BNet Cafe Software</span>
+                    <span class="text-[10px] font-mono text-emerald-500">100% Free Software</span>
+                </div>
+
+                <p>&copy; 2026 BNet Cafe Software. ASP.NET & Windows Forms 4.8 Suite.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Handlers -->
+    <script>
+        function initTheme() {
+         
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+                updateThemeIcon(true);
+            } else {
+                // Default to light mode for new visitors
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                updateThemeIcon(false);
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            if (isDark) {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                localStorage.setItem('theme', 'light');
+                updateThemeIcon(false);
+            } else {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                updateThemeIcon(true);
+            }
+        }
+
+        function updateThemeIcon(isDark) {
+            const icon = document.getElementById('themeIcon');
+            if (isDark) {
+                icon.className = 'fa-solid fa-sun text-amber-400';
+            } else {
+                icon.className = 'fa-solid fa-moon text-slate-700';
+            }
+        }
+
+        function copyConfigCode() {
+            const codeText = document.getElementById('configCode').innerText;
+            navigator.clipboard.writeText(codeText).then(() => {
+                const copyBtn = document.getElementById('copyBtn');
+                copyBtn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">Copied!</span>';
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> <span>Copy XML</span>';
+                }, 2000);
+            });
+        }
+
+        // Mobile Menu Toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function () {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Initialize theme on page load
+        initTheme();
+    </script>
+</body>
+</html>

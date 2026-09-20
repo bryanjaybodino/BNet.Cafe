@@ -134,6 +134,7 @@
     <Content Include="Assets\BNetModal\Style.css" />
     <Content Include="Assets\Pages\RemoteMessaging.js" />
     <Content Include="BNetPage.aspx" />
+    <Content Include="index.html" />
     <Content Include="Callback.aspx" />
     <Content Include="Databases\Queries\Balances\Create.sql" />
     <Content Include="Databases\Queries\Balances\GetBalanceByUserId.sql" />
