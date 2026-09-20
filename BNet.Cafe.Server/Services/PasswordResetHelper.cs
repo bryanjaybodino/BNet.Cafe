@@ -7,7 +7,7 @@ namespace BNet.Cafe.Server.Services
     {
         public static string GenerateResetUrl(string userId)
         {
-            long expiryTicks = DateTime.UtcNow.AddMinutes(10).Ticks;
+            long expiryTicks = DateTime.UtcNow.AddMinutes(5).Ticks;
             string payload = $"{userId}|{expiryTicks}";
 
             // 1. Encrypt raw payload
