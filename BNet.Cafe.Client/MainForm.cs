@@ -547,10 +547,18 @@ namespace BNet.Cafe.Client
 
         private void Button_Register_Click(object sender, EventArgs e)
         {
-            using (OAuthLoginForm regForm = new OAuthLoginForm())
+            // Hide main form before showing registration
+            this.Hide();
+
+            using (RegisterForm registerForm = new RegisterForm())
             {
-                regForm.ShowDialog(this);
+                registerForm.ShowDialog();
             }
+
+            // Restore and force layout recalculation
+            this.Show();
+            this.PerformLayout();
+            this.Refresh();
         }
     }
 }

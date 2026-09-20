@@ -462,14 +462,31 @@ namespace BNet.Cafe.Client
         {
             if (IsMemberUser())
             {
-                var resetForm = new ResetPasswordForm();
-                resetForm.Show();
-                resetForm.ResetPassword(userId);
+                string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
+                string handlerUrl = $"{baseUrl}/ResetPassword.aspx?UserId={SecuredDataService.Encrypted(userId)}";
+
+                if (!string.IsNullOrEmpty(handlerUrl))
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = handlerUrl,
+                        UseShellExecute = true
+                    });
+                }
             }
             else if (IsWalkInUser())
             {
-                var oauthForm = new OAuthLoginForm();
-                oauthForm.Show();
+                this.Hide();
+
+                using (RegisterForm registerForm = new RegisterForm())
+                {
+                    registerForm.ShowDialog();
+                }
+
+                // Restore and force layout recalculation
+                this.Show();
+                this.PerformLayout();
+                this.Refresh();
             }
         }
         private void Button_Print_Click(object sender, EventArgs e)
@@ -540,8 +557,17 @@ namespace BNet.Cafe.Client
 
         private void Button_History_Click(object sender, EventArgs e)
         {
-            var userPortalForm = new UserPortalForm(userId);
-            userPortalForm.Show();
+            string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
+            string handlerUrl = $"{baseUrl}/Portal.aspx?UserId={SecuredDataService.Encrypted(userId)}";
+
+            if (!string.IsNullOrEmpty(handlerUrl))
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = handlerUrl,
+                    UseShellExecute = true
+                });
+            }
         }
     }
 }

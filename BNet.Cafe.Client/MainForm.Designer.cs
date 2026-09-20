@@ -29,17 +29,17 @@
             this.labelHeroTitle = new System.Windows.Forms.Label();
             this.panelRightContent = new System.Windows.Forms.Panel();
             this.panelLoginContainer = new System.Windows.Forms.Panel();
-            this.lblStatusBadge = new BNet.Cafe.Client.Design.ModernBadge();
             this.lblCopyright = new System.Windows.Forms.Label();
-            this.Button_Login = new BNet.Cafe.Client.Design.ModernButton();
-            this.Button_Register = new BNet.Cafe.Client.Design.ModernButton();
-            this.TextBox_Password = new BNet.Cafe.Client.Design.ModernTextBox();
             this.lblPassword = new System.Windows.Forms.Label();
-            this.TextBox_Username = new BNet.Cafe.Client.Design.ModernTextBox();
             this.lblUsername = new System.Windows.Forms.Label();
             this.lblSubtitle = new System.Windows.Forms.Label();
             this.lblWelcome = new System.Windows.Forms.Label();
             this.lblCategory = new System.Windows.Forms.Label();
+            this.lblStatusBadge = new BNet.Cafe.Client.Design.ModernBadge();
+            this.Button_Login = new BNet.Cafe.Client.Design.ModernButton();
+            this.Button_Register = new BNet.Cafe.Client.Design.ModernButton();
+            this.TextBox_Password = new BNet.Cafe.Client.Design.ModernTextBox();
+            this.TextBox_Username = new BNet.Cafe.Client.Design.ModernTextBox();
             this.panelLeftHero.SuspendLayout();
             this.panelRightContent.SuspendLayout();
             this.panelLoginContainer.SuspendLayout();
@@ -185,23 +185,10 @@
             this.panelLoginContainer.Controls.Add(this.lblSubtitle);
             this.panelLoginContainer.Controls.Add(this.lblWelcome);
             this.panelLoginContainer.Controls.Add(this.lblCategory);
-            this.panelLoginContainer.Location = new System.Drawing.Point(165, 100);
+            this.panelLoginContainer.Location = new System.Drawing.Point(139, 100);
             this.panelLoginContainer.Name = "panelLoginContainer";
-            this.panelLoginContainer.Size = new System.Drawing.Size(400, 480);
+            this.panelLoginContainer.Size = new System.Drawing.Size(472, 480);
             this.panelLoginContainer.TabIndex = 0;
-            // 
-            // lblStatusBadge
-            // 
-            this.lblStatusBadge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(252)))), ((int)(((byte)(231)))));
-            this.lblStatusBadge.BorderRadius = 14;
-            this.lblStatusBadge.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.lblStatusBadge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
-            this.lblStatusBadge.Location = new System.Drawing.Point(104, 429);
-            this.lblStatusBadge.Name = "lblStatusBadge";
-            this.lblStatusBadge.Size = new System.Drawing.Size(190, 28);
-            this.lblStatusBadge.TabIndex = 9;
-            this.lblStatusBadge.Text = "● Station PC-01 Online";
-            this.lblStatusBadge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblCopyright
             // 
@@ -209,54 +196,10 @@
             this.lblCopyright.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
             this.lblCopyright.Location = new System.Drawing.Point(6, 399);
             this.lblCopyright.Name = "lblCopyright";
-            this.lblCopyright.Size = new System.Drawing.Size(388, 20);
+            this.lblCopyright.Size = new System.Drawing.Size(463, 20);
             this.lblCopyright.TabIndex = 8;
             this.lblCopyright.Text = "© 2026 BNet Cafe Client · All rights reserved";
             this.lblCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // Button_Login
-            // 
-            this.Button_Login.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(80)))), ((int)(((byte)(236)))));
-            this.Button_Login.BorderRadius = 12;
-            this.Button_Login.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Button_Login.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Button_Login.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
-            this.Button_Login.ForeColor = System.Drawing.Color.White;
-            this.Button_Login.Location = new System.Drawing.Point(6, 293);
-            this.Button_Login.Name = "Button_Login";
-            this.Button_Login.Size = new System.Drawing.Size(388, 46);
-            this.Button_Login.TabIndex = 7;
-            this.Button_Login.Text = "Sign In";
-            this.Button_Login.UseVisualStyleBackColor = false;
-            this.Button_Login.Click += new System.EventHandler(this.Button_Login_Click);
-            // 
-            // Button_Register
-            // 
-            this.Button_Register.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.Button_Register.BorderRadius = 12;
-            this.Button_Register.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Button_Register.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Button_Register.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
-            this.Button_Register.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.Button_Register.Location = new System.Drawing.Point(6, 345);
-            this.Button_Register.Name = "Button_Register";
-            this.Button_Register.Size = new System.Drawing.Size(388, 46);
-            this.Button_Register.TabIndex = 8;
-            this.Button_Register.Text = "Sign Up With Goolge";
-            this.Button_Register.UseVisualStyleBackColor = false;
-            this.Button_Register.Click += new System.EventHandler(this.Button_Register_Click);
-            // 
-            // TextBox_Password
-            // 
-            this.TextBox_Password.BackColor = System.Drawing.Color.White;
-            this.TextBox_Password.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.TextBox_Password.BorderRadius = 10;
-            this.TextBox_Password.Location = new System.Drawing.Point(6, 228);
-            this.TextBox_Password.Name = "TextBox_Password";
-            this.TextBox_Password.Padding = new System.Windows.Forms.Padding(12, 10, 12, 10);
-            this.TextBox_Password.PasswordChar = '•';
-            this.TextBox_Password.Size = new System.Drawing.Size(388, 44);
-            this.TextBox_Password.TabIndex = 6;
             // 
             // lblPassword
             // 
@@ -269,18 +212,6 @@
             this.lblPassword.TabIndex = 5;
             this.lblPassword.Text = "Password";
             // 
-            // TextBox_Username
-            // 
-            this.TextBox_Username.BackColor = System.Drawing.Color.White;
-            this.TextBox_Username.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.TextBox_Username.BorderRadius = 10;
-            this.TextBox_Username.Location = new System.Drawing.Point(6, 148);
-            this.TextBox_Username.Name = "TextBox_Username";
-            this.TextBox_Username.Padding = new System.Windows.Forms.Padding(12, 10, 12, 10);
-            this.TextBox_Username.PasswordChar = '\0';
-            this.TextBox_Username.Size = new System.Drawing.Size(388, 44);
-            this.TextBox_Username.TabIndex = 4;
-            // 
             // lblUsername
             // 
             this.lblUsername.AutoSize = true;
@@ -288,9 +219,9 @@
             this.lblUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.lblUsername.Location = new System.Drawing.Point(3, 125);
             this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(182, 20);
+            this.lblUsername.Size = new System.Drawing.Size(108, 20);
             this.lblUsername.TabIndex = 3;
-            this.lblUsername.Text = "Username or Member ID";
+            this.lblUsername.Text = "Email Address";
             // 
             // lblSubtitle
             // 
@@ -324,6 +255,75 @@
             this.lblCategory.Size = new System.Drawing.Size(121, 20);
             this.lblCategory.TabIndex = 0;
             this.lblCategory.Text = "CLIENT PORTAL";
+            // 
+            // lblStatusBadge
+            // 
+            this.lblStatusBadge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(252)))), ((int)(((byte)(231)))));
+            this.lblStatusBadge.BorderRadius = 14;
+            this.lblStatusBadge.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.lblStatusBadge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
+            this.lblStatusBadge.Location = new System.Drawing.Point(145, 429);
+            this.lblStatusBadge.Name = "lblStatusBadge";
+            this.lblStatusBadge.Size = new System.Drawing.Size(190, 28);
+            this.lblStatusBadge.TabIndex = 9;
+            this.lblStatusBadge.Text = "● Station PC-01 Online";
+            this.lblStatusBadge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // Button_Login
+            // 
+            this.Button_Login.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(80)))), ((int)(((byte)(236)))));
+            this.Button_Login.BorderRadius = 12;
+            this.Button_Login.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Button_Login.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Button_Login.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
+            this.Button_Login.ForeColor = System.Drawing.Color.White;
+            this.Button_Login.Location = new System.Drawing.Point(6, 293);
+            this.Button_Login.Name = "Button_Login";
+            this.Button_Login.Size = new System.Drawing.Size(463, 46);
+            this.Button_Login.TabIndex = 7;
+            this.Button_Login.Text = "Sign In";
+            this.Button_Login.UseVisualStyleBackColor = false;
+            this.Button_Login.Click += new System.EventHandler(this.Button_Login_Click);
+            // 
+            // Button_Register
+            // 
+            this.Button_Register.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.Button_Register.BorderRadius = 12;
+            this.Button_Register.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Button_Register.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Button_Register.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
+            this.Button_Register.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.Button_Register.Location = new System.Drawing.Point(6, 345);
+            this.Button_Register.Name = "Button_Register";
+            this.Button_Register.Size = new System.Drawing.Size(463, 46);
+            this.Button_Register.TabIndex = 8;
+            this.Button_Register.Text = "Register for membership";
+            this.Button_Register.UseVisualStyleBackColor = false;
+            this.Button_Register.Click += new System.EventHandler(this.Button_Register_Click);
+            // 
+            // TextBox_Password
+            // 
+            this.TextBox_Password.BackColor = System.Drawing.Color.White;
+            this.TextBox_Password.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.TextBox_Password.BorderRadius = 10;
+            this.TextBox_Password.Location = new System.Drawing.Point(6, 228);
+            this.TextBox_Password.Name = "TextBox_Password";
+            this.TextBox_Password.Padding = new System.Windows.Forms.Padding(12, 10, 12, 10);
+            this.TextBox_Password.PasswordChar = '•';
+            this.TextBox_Password.Size = new System.Drawing.Size(463, 44);
+            this.TextBox_Password.TabIndex = 6;
+            // 
+            // TextBox_Username
+            // 
+            this.TextBox_Username.BackColor = System.Drawing.Color.White;
+            this.TextBox_Username.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.TextBox_Username.BorderRadius = 10;
+            this.TextBox_Username.Location = new System.Drawing.Point(6, 148);
+            this.TextBox_Username.Name = "TextBox_Username";
+            this.TextBox_Username.Padding = new System.Windows.Forms.Padding(12, 10, 12, 10);
+            this.TextBox_Username.PasswordChar = '\0';
+            this.TextBox_Username.Size = new System.Drawing.Size(463, 44);
+            this.TextBox_Username.TabIndex = 4;
             // 
             // MainForm
             // 

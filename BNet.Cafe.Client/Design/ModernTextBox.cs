@@ -8,9 +8,19 @@ namespace BNet.Cafe.Client.Design
     public class ModernTextBox : Panel
     {
         private readonly TextBox innerTextBox = new TextBox();
+        private Color _borderColor = Color.FromArgb(226, 232, 240);
 
         public int BorderRadius { get; set; } = 10;
-        public Color BorderColor { get; set; } = Color.FromArgb(226, 232, 240);
+
+        public Color BorderColor
+        {
+            get => _borderColor;
+            set
+            {
+                _borderColor = value;
+                this.Invalidate(); // Forces the panel to immediately redraw its border
+            }
+        }
 
         public override string Text
         {
@@ -41,9 +51,17 @@ namespace BNet.Cafe.Client.Design
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            using (GraphicsPath path = GetRoundedPath(this.ClientRectangle, BorderRadius))
+            UpdateRegion();
+        }
+
+        private void UpdateRegion()
+        {
+            if (this.Width > 0 && this.Height > 0)
             {
-                this.Region = new Region(path);
+                using (GraphicsPath path = GetRoundedPath(this.ClientRectangle, BorderRadius))
+                {
+                    this.Region = new Region(path);
+                }
             }
         }
 
@@ -52,11 +70,10 @@ namespace BNet.Cafe.Client.Design
             base.OnPaint(e);
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            Rectangle borderRect = this.ClientRectangle;
-            borderRect.Width -= 1;
-            borderRect.Height -= 1;
+            // Offset by 1px so the stroke isn't clipped out by this.Region
+            Rectangle borderRect = new Rectangle(0, 0, this.Width - 1, this.Height - 1);
 
-            using (Pen pen = new Pen(BorderColor, 1.5f))
+            using (Pen pen = new Pen(_borderColor, 2f))
             using (GraphicsPath path = GetRoundedPath(borderRect, BorderRadius))
             {
                 e.Graphics.DrawPath(pen, path);
@@ -67,6 +84,10 @@ namespace BNet.Cafe.Client.Design
         {
             GraphicsPath path = new GraphicsPath();
             int diameter = radius * 2;
+
+            if (diameter > rect.Width) diameter = rect.Width;
+            if (diameter > rect.Height) diameter = rect.Height;
+
             path.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);
             path.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);
             path.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);

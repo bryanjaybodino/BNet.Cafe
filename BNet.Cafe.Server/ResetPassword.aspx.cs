@@ -15,7 +15,7 @@ namespace BNet.Cafe.Server
         {
             if (!IsPostBack)
             {
-                string userIdParam = Request.QueryString["userId"];
+                string userIdParam = SecuredDataService.Decrypted(Request.QueryString["userId"]);
                 string token = Request.QueryString["token"];
 
                 // 1. Initial request from WinForms WebView (?userId=1)

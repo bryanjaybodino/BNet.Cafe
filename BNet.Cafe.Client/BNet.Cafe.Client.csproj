@@ -38,15 +38,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.4255.0, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.4255-prerelease\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.4255.0, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.4255-prerelease\lib\net462\Microsoft.Web.WebView2.WinForms.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.4255.0, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.4255-prerelease\lib\net462\Microsoft.Web.WebView2.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
@@ -70,6 +61,7 @@
     <Reference Include="UIAutomationTypes" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ashx\CreateUserHandler.cs" />
     <Compile Include="Ashx\GetBalanceHandler.cs" />
     <Compile Include="Ashx\_BalanceData.cs" />
     <Compile Include="Ashx\_PricingRateItem.cs" />
@@ -96,17 +88,11 @@
     <Compile Include="NotificationForm.Designer.cs">
       <DependentUpon>NotificationForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="OAuthLoginForm.cs">
+    <Compile Include="RegisterForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OAuthLoginForm.Designer.cs">
-      <DependentUpon>OAuthLoginForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ResetPasswordForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ResetPasswordForm.Designer.cs">
-      <DependentUpon>ResetPasswordForm.cs</DependentUpon>
+    <Compile Include="RegisterForm.Designer.cs">
+      <DependentUpon>RegisterForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\AppFocusHelper.cs" />
     <Compile Include="Services\CalculateRentalPrice.cs" />
@@ -153,12 +139,6 @@
     <Compile Include="Repositories\UserActivity.cs" />
     <Compile Include="Services\ScreenStreamer.cs" />
     <Compile Include="Starter\WatchdogManager.cs" />
-    <Compile Include="UserPortalForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserPortalForm.Designer.cs">
-      <DependentUpon>UserPortalForm.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="BNetCafeTimer.resx">
       <DependentUpon>BNetCafeTimer.cs</DependentUpon>
     </EmbeddedResource>
@@ -174,17 +154,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="OAuthLoginForm.resx">
-      <DependentUpon>OAuthLoginForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ResetPasswordForm.resx">
-      <DependentUpon>ResetPasswordForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserPortalForm.resx">
-      <DependentUpon>UserPortalForm.cs</DependentUpon>
+    <EmbeddedResource Include="RegisterForm.resx">
+      <DependentUpon>RegisterForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -202,11 +175,4 @@
     <Content Include="Offline Packages\Newtonsoft.Json\Newtonsoft.Json.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.4255-prerelease\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.4255-prerelease\build\Microsoft.Web.WebView2.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.4255-prerelease\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.4255-prerelease\build\Microsoft.Web.WebView2.targets'))" />
-  </Target>
 </Project>
