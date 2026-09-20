@@ -9,19 +9,25 @@ namespace BNet.Cafe.Client.Ashx
 {
     public class PricingRateItem
     {
-        [JsonProperty("DBId")]
+        [JsonProperty("id")]
         public int Id { get; set; }
 
-        [JsonProperty("DBCustomerType")]
+        [JsonProperty("customerType")]
         public string CustomerType { get; set; }
 
-        [JsonProperty("DBMinutes")]
+        [JsonProperty("minutes")]
         public int Minutes { get; set; }
 
-        [JsonProperty("DBPrice")]
+        [JsonProperty("price")]
         public double Price { get; set; }
 
-        [JsonProperty("DBIsDeleted")]
+        [JsonProperty("dateCreated")]
+        public string DateCreated { get; set; }
+
+        [JsonProperty("timeCreated")]
+        public string TimeCreated { get; set; }
+
+        [JsonProperty("isDeleted")]
         public bool IsDeleted { get; set; }
     }
 }
