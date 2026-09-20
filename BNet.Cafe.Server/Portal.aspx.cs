@@ -38,13 +38,15 @@ namespace BNet.Cafe.Server
                             string _role = userData.Rows[i]["DBRole"].ToString();
                             userSession.createCookies(_email, _password, _role);
                         }
+
+                        Response.Redirect("~/Portal.aspx");
                         return;
                     }
                     else
                     {
                         // kapag walk in tapos inopen ang history 
                         userSession.RemoveCookies();
-                        Response.Redirect("ExpiredOrInvalid.aspx");
+                        Response.Redirect("~/ExpiredOrInvalid.aspx");
                         return;
                     }
                 }

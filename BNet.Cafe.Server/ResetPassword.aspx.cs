@@ -29,7 +29,7 @@ namespace BNet.Cafe.Server
                 // 2. Validate token on redirected reload (?token=...)
                 if (string.IsNullOrEmpty(token))
                 {
-                    Response.Redirect("ExpiredOrInvalid.aspx");
+                    Response.Redirect("~/ExpiredOrInvalid.aspx");
                     return;
                 }
 
@@ -37,7 +37,7 @@ namespace BNet.Cafe.Server
 
                 if (isExpired || !isValid)
                 {
-                    Response.Redirect("ExpiredOrInvalid.aspx");
+                    Response.Redirect("~/ExpiredOrInvalid.aspx");
                     return;
                 }
 
@@ -51,7 +51,7 @@ namespace BNet.Cafe.Server
 
             if (string.IsNullOrEmpty(userId))
             {
-                Response.Redirect("ExpiredOrInvalid.aspx");
+                Response.Redirect("~/ExpiredOrInvalid.aspx");
                 return;
             }
 
