@@ -64,21 +64,23 @@
                     <div class="summary-item">
                         <span class="summary-label"><i class="fa-solid fa-hourglass-half"></i>Total Time</span>
                         <span id="display_FormattedTime" class="summary-value highlight-time">0 hrs 0 mins</span>
-                        <small id="display_TimeBreakdown" style="display:none; color: #6b7280; font-size: 12px; margin-top: 4px;"></small>
+                        <small id="display_TimeBreakdown" style="display: none; color: #6b7280; font-size: 12px; margin-top: 4px;"></small>
                     </div>
                     <div class="summary-divider"></div>
                     <div class="summary-item">
                         <span class="summary-label"><i class="fa-solid fa-peso-sign"></i>Total Amount</span>
                         <span id="display_TotalAmount" class="summary-value highlight-amount">₱ 0.00</span>
-                        <small id="display_AmountBreakdown" style="display:none; color: #10b981; font-size: 12px; font-weight: 600; margin-top: 4px;"></small>
+                        <small id="display_AmountBreakdown" style="display: none; color: #10b981; font-size: 12px; font-weight: 600; margin-top: 4px;"></small>
                     </div>
                 </div>
-                
+
                 <asp:Panel ID="Panel_Buttons" runat="server">
                     <!-- Form Actions -->
                     <div class="form-grid-action">
                         <span onclick="navigateTo('BNetPage.aspx?Form=Computers')" class="btn btn-secondary">Back</span>
-                        <span id="LinkButton_OpenTime" runat="server" class="btn btn-danger" onclick="openOpenTimeModal('<%= Label_RentalId.Text %>','<%= TextBox_ComputerName.Text %>','<%= DropDownList_Customer.SelectedValue %>','<%= Label_Status.Text %>')"><i class="fa fa-hourglass"></i>Open Time</span>
+                        <span id="LinkButton_OpenTime" runat="server">
+                            <a class="btn btn-danger" onclick="openOpenTimeModal('<%= Label_RentalId.Text %>','<%= TextBox_ComputerName.Text %>','<%= DropDownList_Customer.SelectedValue %>','<%= Label_Status.Text %>')"><i class="fa fa-hourglass"></i>Open Time</a>
+                        </span>
                         <asp:LinkButton ID="LinkButton_Submit" OnClick="LinkButton_Submit_Click" CssClass="btn btn-primary" OnClientClick="return Validate();" runat="server">
                             <i class="fa fa-save"></i>Add Rental
                         </asp:LinkButton>
