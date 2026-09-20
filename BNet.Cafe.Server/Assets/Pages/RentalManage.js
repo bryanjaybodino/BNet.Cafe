@@ -24,8 +24,10 @@ function CalculateDurationFromAmountHandlerBackend(amount) {
             }
             return response.json();
         })
-        .then(function (data) {
-            if (data) {
+        .then(function (response) {
+            if (response && response.success && response.data) {
+                var data = response.data;
+
                 if (durationInput) {
                     durationInput.value = data.totalMinutes;
                 }
@@ -79,8 +81,10 @@ function calculateRentalPriceBackend(totalMinutes) {
             }
             return response.json();
         })
-        .then(function (data) {
-            if (data) {
+        .then(function (response) {
+            if (response && response.success && response.data) {
+                var data = response.data;
+
                 if (displayTime) {
                     displayTime.innerText = data.formattedTime;
                 }
@@ -164,8 +168,9 @@ function calculateAmount() {
 
         fetch(endpoint + '?minutes=' + extendedMinutes + '&customerType=' + encodeURIComponent(customerType))
             .then(function (response) { return response.json(); })
-            .then(function (data) {
-                if (data) {
+            .then(function (response) {
+                if (response && response.success && response.data) {
+                    var data = response.data;
                     var extensionCharge = data.totalAmount;
                     var totalCharge = initialAmount + extensionCharge;
 
@@ -229,8 +234,6 @@ function resetDuration() {
     calculateAmount();
 }
 
-
-
 // Client validation before submission
 function Validate() {
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
@@ -275,26 +278,20 @@ if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManage
     });
 }
 
-
 function getCustomerType() {
     var customerSelect = document.querySelector('[id$="DropDownList_Customer"]');
     if (!customerSelect) return "GUEST / WALK-IN";
 
-    // 1. Get the value or the display text of the selected option
     var selectedOption = customerSelect.options[customerSelect.selectedIndex];
     var selectedText = selectedOption ? selectedOption.text.trim() : "";
     var selectedValue = customerSelect.value ? customerSelect.value.trim() : "";
 
-    // Combine both to check against empty/default states
     var textToCheck = (selectedText || selectedValue).toUpperCase();
 
-
-    // 2. Validate against empty or "SELECT" placeholder options
     if (textToCheck == '-- SELECT CUSTOMER --') {
         return "GUEST / WALK-IN";
     }
 
-    // 3. Match keyword
     var customerType = textToCheck.includes("GUEST / WALK-IN") ? "GUEST / WALK-IN" : "USER";
     return customerType;
-}  
+}

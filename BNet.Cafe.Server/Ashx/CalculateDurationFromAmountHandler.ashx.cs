@@ -28,30 +28,34 @@ namespace BNet.Cafe.Server.Ashx
                 int totalMinutes = PricingRates.CalculateDurationFromPrice((double)amount, customerType);
                 string formattedTime = FormatMinutesToHours(totalMinutes);
 
-                var responsePayload = new
+                var responsePayload = new CalculateDurationFromAmountData
                 {
-                    success = true,
-                    amount = amount,
-                    formattedAmount = $"₱ {amount:F2}",
-                    totalMinutes = totalMinutes,
-                    formattedTime = formattedTime,
-                    customerType = customerType
+                    Amount = amount,
+                    FormattedAmount = $"₱ {amount:F2}",
+                    TotalMinutes = totalMinutes,
+                    FormattedTime = formattedTime,
+                    CustomerType = customerType
                 };
 
-                context.Response.Write(JsonConvert.SerializeObject(responsePayload));
+                SendJsonResponse(context, true, "Duration calculated successfully.", responsePayload);
             }
             catch (Exception ex)
             {
-                var errorResponse = new
-                {
-                    success = false,
-                    error = "Failed to calculate duration",
-                    message = ex.Message
-                };
-
-                context.Response.StatusCode = 500;
-                context.Response.Write(JsonConvert.SerializeObject(errorResponse));
+                SendJsonResponse(context, false, $"Failed to calculate duration: {ex.Message}");
             }
+        }
+
+        private void SendJsonResponse(HttpContext context, bool success, string message, CalculateDurationFromAmountData data = null)
+        {
+            var responseObj = new
+            {
+                success = success,
+                message = message,
+                data = data
+            };
+
+            string jsonResponse = JsonConvert.SerializeObject(responseObj);
+            context.Response.Write(jsonResponse);
         }
 
         public static int CalculateDuration(decimal amount, string customerType = "GUEST / WALK-IN")
@@ -78,5 +82,23 @@ namespace BNet.Cafe.Server.Ashx
         }
 
         public bool IsReusable => false;
+
+        public class CalculateDurationFromAmountData
+        {
+            [JsonProperty("amount")]
+            public decimal Amount { get; set; }
+
+            [JsonProperty("formattedAmount")]
+            public string FormattedAmount { get; set; }
+
+            [JsonProperty("totalMinutes")]
+            public int TotalMinutes { get; set; }
+
+            [JsonProperty("formattedTime")]
+            public string FormattedTime { get; set; }
+
+            [JsonProperty("customerType")]
+            public string CustomerType { get; set; }
+        }
     }
 }

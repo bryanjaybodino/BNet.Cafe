@@ -28,35 +28,41 @@ namespace BNet.Cafe.Server.Ashx
                 double totalAmount = PricingRates.CalculatePriceFromDuration(totalMinutes, customerType);
                 string formattedTime = FormatMinutesToHours(totalMinutes);
 
-                var responsePayload = new
+                var responsePayload = new CalculateAmountFromDurationData
                 {
-                    success = true,
-                    totalMinutes = totalMinutes,
-                    formattedTime = formattedTime,
-                    totalAmount = Math.Round(totalAmount, 2),
-                    formattedAmount = $"₱ {totalAmount:F2}",
-                    customerType = customerType
+                    TotalMinutes = totalMinutes,
+                    FormattedTime = formattedTime,
+                    TotalAmount = Math.Round(totalAmount, 2),
+                    FormattedAmount = $"₱ {totalAmount:F2}",
+                    CustomerType = customerType
                 };
 
-                context.Response.Write(JsonConvert.SerializeObject(responsePayload));
+                SendJsonResponse(context, true, "Price calculated successfully.", responsePayload);
             }
             catch (Exception ex)
             {
-                var errorResponse = new
-                {
-                    success = false,
-                    error = "Failed to calculate price",
-                    message = ex.Message
-                };
-
-                context.Response.StatusCode = 500;
-                context.Response.Write(JsonConvert.SerializeObject(errorResponse));
+                SendJsonResponse(context, false, $"Failed to calculate price: {ex.Message}");
             }
         }
-        public static double CalculatePrice(int totalMinutes, string customerType= "GUEST / WALK-IN")
+
+        private void SendJsonResponse(HttpContext context, bool success, string message, CalculateAmountFromDurationData data = null)
+        {
+            var responseObj = new
+            {
+                success = success,
+                message = message,
+                data = data
+            };
+
+            string jsonResponse = JsonConvert.SerializeObject(responseObj);
+            context.Response.Write(jsonResponse);
+        }
+
+        public static double CalculatePrice(int totalMinutes, string customerType = "GUEST / WALK-IN")
         {
             return PricingRates.CalculatePriceFromDuration(totalMinutes, customerType);
         }
+
         private string FormatMinutesToHours(int totalMinutes)
         {
             if (totalMinutes <= 0) return "0 hrs 0 mins";
@@ -76,5 +82,23 @@ namespace BNet.Cafe.Server.Ashx
         }
 
         public bool IsReusable => false;
+
+        public class CalculateAmountFromDurationData
+        {
+            [JsonProperty("totalMinutes")]
+            public int TotalMinutes { get; set; }
+
+            [JsonProperty("formattedTime")]
+            public string FormattedTime { get; set; }
+
+            [JsonProperty("totalAmount")]
+            public double TotalAmount { get; set; }
+
+            [JsonProperty("formattedAmount")]
+            public string FormattedAmount { get; set; }
+
+            [JsonProperty("customerType")]
+            public string CustomerType { get; set; }
+        }
     }
 }

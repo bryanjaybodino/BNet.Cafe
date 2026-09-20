@@ -12,6 +12,7 @@
     if (remainingMins === 0) return hrsText;
     return hrsText + " " + minsText;
 }
+
 function ValidateTopUp() {
     var amountInput = document.querySelector('[id$="TextBox_Amount"]');
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
@@ -47,7 +48,6 @@ function disableSubmitButton() {
     }
 }
 
-
 // Automatically compute duration when Admin manually inputs/changes the Amount
 function calculateTimeFromAmount() {
     var amountInput = document.querySelector('[id$="TextBox_Amount"]');
@@ -56,8 +56,6 @@ function calculateTimeFromAmount() {
     var amount = parseFloat(amountInput.value) || 0;
     CalculateDurationFromAmountHandlerBackend(amount);
 }
-
-
 
 function CalculateDurationFromAmountHandlerBackend(amount) {
     var durationInput = document.querySelector('[id$="TextBox_Duration"]');
@@ -82,8 +80,9 @@ function CalculateDurationFromAmountHandlerBackend(amount) {
             }
             return response.json();
         })
-        .then(function (data) {
-            if (data) {
+        .then(function (response) {
+            if (response && response.success && response.data) {
+                var data = response.data;
                 var minutes = data.totalMinutes || 0;
 
                 if (durationInput) {
