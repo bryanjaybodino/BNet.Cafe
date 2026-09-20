@@ -35,54 +35,8 @@
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .dark body {
-            background-color: #090d16;
-            color: #f1f5f9;
-        }
-
-        .light body {
-            background-color: #f8fafc;
-            color: #0f172a;
-        }
-
-        .cyber-grid {
-            background-size: 36px 36px;
-        }
-
-        .dark .cyber-grid {
-            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-        }
-
-        .light .cyber-grid {
-            background-image: linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
-        }
-
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .dark .custom-scrollbar::-webkit-scrollbar-track {
-            background: #090d16;
-        }
-
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-
-        .light .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-
-        .light .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
+        body{font-family:'Inter',sans-serif;transition:background-color 0.3s ease,color 0.3s ease}.dark body{background-color:#090d16;color:#f1f5f9}.light body{background-color:#f8fafc;color:#0f172a}.cyber-grid{background-size:36px 36px}.dark .cyber-grid{background-image:linear-gradient(to right,rgb(255 255 255 / .03) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255 / .03) 1px,transparent 1px)}.light .cyber-grid{background-image:linear-gradient(to right,rgb(15 23 42 / .03) 1px,transparent 1px),linear-gradient(to bottom,rgb(15 23 42 / .03) 1px,transparent 1px)}.custom-scrollbar::-webkit-scrollbar{width:8px}.dark .custom-scrollbar::-webkit-scrollbar-track{background:#090d16}.dark .custom-scrollbar::-webkit-scrollbar-thumb{background:#1e293b;border-radius:4px}.light .custom-scrollbar::-webkit-scrollbar-track{background:#f1f5f9}.light .custom-scrollbar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+        .messenger-button{position:fixed;bottom:25px;right:25px;width:auto;height:50px;padding:0 15px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border-radius:50px;display:flex;align-items:center;justify-content:center;gap:.6rem;text-decoration:none;box-shadow:0 4px 12px rgb(37 99 235 / .4);transition:all 0.3s ease;z-index:5000;line-height:1;color:#fff;cursor:pointer}.messenger-button i{font-size:1.5rem}.messenger-button span{font-size:.95rem;font-weight:600;white-space:nowrap}.messenger-button:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgb(37 99 235 / .6)}.messenger-button:active{transform:scale(.95)}[data-theme="dark"] .messenger-button{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 4px 12px rgb(37 99 235 / .6)}[data-theme="dark"] .messenger-button:hover{box-shadow:0 8px 20px rgb(59 130 246 / .7)}.messenger-button .icon-default,.messenger-button .text-default{display:inline}.messenger-button .icon-loading{display:none;animation:spin 1s linear infinite}.messenger-button.loading .icon-default,.messenger-button.loading .text-default{display:none}.messenger-button.loading .icon-loading{display:inline}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.messenger-button .text-loading{display:none;cursor:pointer;font-size:.8rem}.messenger-button.loading .text-loading{display:inline}.messenger-button.loading .text-loading:hover::after{content:' (click to close)';font-size:.7rem}
     </style>
 </head>
 <body class="custom-scrollbar">
@@ -678,7 +632,7 @@
     <!-- JavaScript Handlers -->
     <script>
         function initTheme() {
-         
+
             if (localStorage.getItem('theme') === 'dark') {
                 document.documentElement.classList.remove('light');
                 document.documentElement.classList.add('dark');
@@ -734,6 +688,42 @@
 
         // Initialize theme on page load
         initTheme();
+
+
+        function handleMessengerClick(el) {
+            // Better mobile detection
+            const isMobile = window.matchMedia("(max-width: 1024px)").matches ||
+                ('ontouchstart' in window) ||
+                navigator.maxTouchPoints > 0;
+
+            // Prevent multiple clicks
+            if (el.classList.contains('loading')) return;
+
+            // Show loading only on mobile
+            if (isMobile) {
+                el.classList.add('loading');
+            }
+
+            // Open messenger
+            window.open('https://m.me/bodino.a.bryanjay', '_blank');
+
+            // Remove loading after 15 seconds (mobile only)
+            if (isMobile) {
+                setTimeout(function () {
+                    el.classList.remove('loading');
+                }, 15000);
+            }
+        }
     </script>
+
+    <a href="javascript:void(0);"
+       onclick="handleMessengerClick(this)"
+       class="messenger-button"
+       title="Message on Facebook Messenger">
+        <i class="fab fa-facebook-messenger icon-default"></i>
+        <i class="fas fa-spinner icon-loading"></i>
+        <span class="text-default">Chat Now</span>
+        <span class="text-loading">Opening...</span>
+    </a>
 </body>
 </html>
