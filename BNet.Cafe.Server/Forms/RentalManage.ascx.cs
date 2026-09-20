@@ -50,6 +50,13 @@ namespace BNet.Cafe.Server.Forms
                             var pricingRates = new Repositories.PricingRates();
                             var data = pricingRates.GetAll(userType, 0);
 
+
+                            //Bawal mag open time si member since hourly base na siya
+                            if (userType == UserType.User)
+                            {
+                                LinkButton_OpenTime.Visible = false;
+                            }
+
                             if (data.Rows.Count == 0)
                             {
                                 DisableFormAndShowAlert("No active pricing configuration found on your pricing settings. Please contact support if this issue persists.");
