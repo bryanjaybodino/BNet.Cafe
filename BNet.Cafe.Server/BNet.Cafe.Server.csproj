@@ -134,6 +134,8 @@
     <Content Include="Assets\BNetModal\Style.css" />
     <Content Include="Assets\Pages\RemoteMessaging.js" />
     <Content Include="BNetPage.aspx" />
+    <Content Include="Databases\Queries\Balances\GetCount.sql" />
+    <Content Include="Forms\TopUp.ascx" />
     <Content Include="Website\assets\font-awesome.min.css" />
     <Content Include="Website\assets\fonts.googleapis.css" />
     <Content Include="Website\index.html" />
@@ -381,6 +383,13 @@
     </Compile>
     <Compile Include="Forms\SeatMap.ascx.designer.cs">
       <DependentUpon>SeatMap.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TopUp.ascx.cs">
+      <DependentUpon>TopUp.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\TopUp.ascx.designer.cs">
+      <DependentUpon>TopUp.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\UserCreate.ascx.cs">
       <DependentUpon>UserCreate.ascx</DependentUpon>

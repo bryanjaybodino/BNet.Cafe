@@ -86,7 +86,7 @@ namespace BNet.Cafe.Server
             }
 
             // Single call to fetch transaction logs and bind GridView
-            DataTable data = balanceRepo.GetAll("", HiddenField_UserId.Value, GridViewTemplateService.GetPaginationIndex(GridViewTable));
+            DataTable data = balanceRepo.GetAll("", HiddenField_UserId.Value,"", GridViewTemplateService.GetPaginationIndex(GridViewTable));
             GridViewTemplateService.SetGridView(GridViewTable, data, Panel_Pagination);
 
             double activeSessionMinutes = 0;

@@ -59,6 +59,11 @@
                     </asp:HyperLink>
                 </li>
                 <li>
+                    <asp:HyperLink ID="HyperLink_TopUp" runat="server" ToolTip="TopUp" onclick="navigateTo('?Form=TopUp'); return false;">
+            <i class="fas fa-trophy"></i><span>Top-Up</span>
+                    </asp:HyperLink>
+                </li>
+                <li>
                     <asp:HyperLink ID="HyperLink_PricingSettings" runat="server" ToolTip="PricingSettings" onclick="navigateTo('?Form=PricingSettings'); return false;">
             <i class="fas fa-cash-register"></i><span>Pricing Setting</span>
                     </asp:HyperLink>

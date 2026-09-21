@@ -3,7 +3,6 @@ using BNet.Cafe.Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 
@@ -35,7 +34,8 @@ namespace BNet.Cafe.Server.Repositories
 
             return DBContext.SqlExecuteAsync(sql);
         }
-        public DataTable GetAll(string search = "", string userId = "", int pageIndex = 0, bool isDeleted = false)
+
+        public DataTable GetAll(string search = "", string userId = "", string dateRange = "", int pageIndex = 0, bool isDeleted = false)
         {
             var scripts = new Dictionary<string, string>();
             string DBSearch = dBScriptService.CleanUpToUpper(search);
@@ -43,9 +43,20 @@ namespace BNet.Cafe.Server.Repositories
             string DBIsDeleted = isDeleted ? "TRUE" : "FALSE";
             string LIMIT = paginationService.SetPagination(pageIndex);
 
+            string DBDateStart = "";
+            string DBDateEnd = "";
+            if (dateRange.Contains(","))
+            {
+                var date = dateRange.Split(',');
+                DBDateStart = date[0];
+                DBDateEnd = date[1];
+            }
+
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", DBUserId);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBSearch", DBSearch);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateStart", DBDateStart);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateEnd", DBDateEnd);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
 
             Page page = HttpContext.Current.Handler as Page;
@@ -54,6 +65,53 @@ namespace BNet.Cafe.Server.Repositories
 
             return DBContext.SqlDataAdapterAsync(sql);
         }
+
+        public CountBalances GetCount(string userId = "", string dateRange = "")
+        {
+            string DBDateStart = "";
+            string DBDateEnd = "";
+            if (dateRange.Contains(","))
+            {
+                var date = dateRange.Split(',');
+                DBDateStart = date[0];
+                DBDateEnd = date[1];
+            }
+
+            CountBalances countBalances = new CountBalances();
+            var scripts = new Dictionary<string, string>();
+            string DBUserId = dBScriptService.CleanUpToUpper(userId);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", DBUserId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateStart", DBDateStart);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateEnd", DBDateEnd);
+
+            Page page = HttpContext.Current.Handler as Page;
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Balances/GetCount.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+            var data = DBContext.SqlDataAdapterAsync(sql);
+
+            string total = "0";
+            string users = "0";
+            string income = "0";
+            string duration = "0 min";
+
+            if (data.Rows.Count > 0)
+            {
+                total = data.Rows[0]["DBTotalTransactions"].ToString();
+                users = data.Rows[0]["DBTotalUsers"].ToString();
+                income = data.Rows[0]["DBTotalIncome"].ToString();
+                duration = data.Rows[0]["DBTotalFormattedDuration"].ToString();
+            }
+
+            countBalances.Total = total;
+            countBalances.Users = users;
+            countBalances.Income = income;
+            countBalances.Duration = duration;
+
+            return countBalances;
+        }
+
         public double GetBalanceByUserId(string id)
         {
             var scripts = new Dictionary<string, string>();
@@ -73,6 +131,14 @@ namespace BNet.Cafe.Server.Repositories
                 totalBalance = Convert.ToDouble(balance);
             }
             return totalBalance;
+        }
+
+        public class CountBalances
+        {
+            public string Total { get; set; }
+            public string Users { get; set; }
+            public string Income { get; set; }
+            public string Duration { get; set; }
         }
     }
 }

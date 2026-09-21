@@ -109,6 +109,10 @@ namespace BNet.Cafe.Server
                 {
                     HyperLink_PricingSettings.CssClass = "active";
                 }
+                else if (formName.Contains(HyperLink_TopUp.ToolTip))
+                {
+                    HyperLink_TopUp.CssClass = "active";
+                }
             }
         }
 

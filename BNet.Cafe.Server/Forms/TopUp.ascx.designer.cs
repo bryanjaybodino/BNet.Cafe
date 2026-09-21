@@ -7,128 +7,101 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BNet.Cafe.Server
+namespace BNet.Cafe.Server.Forms
 {
 
 
-    public partial class BNetPage
+    public partial class TopUp
     {
 
         /// <summary>
-        /// HyperLink_Dashboard control.
+        /// UpdatePanel1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Dashboard;
+        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
-        /// HyperLink_Computers control.
+        /// LinkButton_Refresh control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Computers;
+        protected global::System.Web.UI.WebControls.LinkButton LinkButton_Refresh;
 
         /// <summary>
-        /// HyperLink_SeatMap control.
+        /// Label_TotalTopUps control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_SeatMap;
+        protected global::System.Web.UI.WebControls.Label Label_TotalTopUps;
 
         /// <summary>
-        /// HyperLink_Remote control.
+        /// Label_Users control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Remote;
+        protected global::System.Web.UI.WebControls.Label Label_Users;
 
         /// <summary>
-        /// HyperLink_Billings control.
+        /// Label_Duration control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Billings;
+        protected global::System.Web.UI.WebControls.Label Label_Duration;
 
         /// <summary>
-        /// HyperLink_Users control.
+        /// Label_Income control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Users;
+        protected global::System.Web.UI.WebControls.Label Label_Income;
 
         /// <summary>
-        /// HyperLink_TopUp control.
+        /// TextBox_Search control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_TopUp;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Search;
 
         /// <summary>
-        /// HyperLink_PricingSettings control.
+        /// TextBox_DateRage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_PricingSettings;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_DateRage;
 
         /// <summary>
-        /// Label_InitialName control.
+        /// GridViewTable control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label_InitialName;
+        protected global::System.Web.UI.WebControls.GridView GridViewTable;
 
         /// <summary>
-        /// label_FullName control.
+        /// Panel_Pagination control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label label_FullName;
-
-        /// <summary>
-        /// MainForm control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm MainForm;
-
-        /// <summary>
-        /// ScriptManager1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.ScriptManager ScriptManager1;
-
-        /// <summary>
-        /// PlaceHolder_Container control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder PlaceHolder_Container;
+        protected global::System.Web.UI.WebControls.Panel Panel_Pagination;
     }
 }
