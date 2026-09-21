@@ -86,14 +86,28 @@
                         <i class="fas fa-moon"></i>
                     </button>
                     <div class="user-menu">
-                        <div class="user-avatar">
-                            <asp:Label ID="Label_InitialName" runat="server" Text=""></asp:Label>
-                        </div>
-                        <div style="font-size: 13px;">
-                            <div style="font-weight: 600; color: var(--text-light);">
-                                <asp:Label ID="label_FullName" runat="server" Text=""></asp:Label>
+
+
+                        <div class="bnet-dropdown" tabindex="0">
+                            <div class="user-menu" style="cursor: pointer;">
+                                <div class="user-avatar">
+                                    <asp:Label ID="Label_InitialName" runat="server" Text=""></asp:Label>
+                                </div>
+                                <div style="font-size: 13px;">
+                                    <div style="font-weight: 600; color: var(--text-light);">
+                                        <asp:Label ID="label_FullName" runat="server" Text=""></asp:Label>
+                                    </div>
+                                    <div style="color: var(--text-light-secondary); font-size: 12px;">Admin</div>
+                                </div>
+                                <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
                             </div>
-                            <div style="color: var(--text-light-secondary); font-size: 12px;">Admin</div>
+
+                            <div class="bnet-dropdown-menu" style="right: 0; left: auto;">
+                                <a href="BNetPage.aspx?Logout=true" class="bnet-dropdown-item">
+                                    <i class="fas fa-right-from-bracket"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

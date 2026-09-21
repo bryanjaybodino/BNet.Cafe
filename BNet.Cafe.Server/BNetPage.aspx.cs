@@ -15,18 +15,26 @@ namespace BNet.Cafe.Server
         Sessions.User userCookies = new Sessions.User();
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (!IsPostBack)
             {
+                if (Request.QueryString["Logout"] != null)
+                {
+                    userCookies.RemoveCookies();
+                    Response.Redirect("~/Login.aspx"); // Redirect to your login page
+                    return;
+                }
+
                 FileCssHelper.BundleCss();
                 FileJsHelpler.BundleBNetPageScripts(ScriptManager1);
                 if (userCookies.count == 0)
                 {
-                    Response.Redirect("Login.aspx");
+                    Response.Redirect("~/Login.aspx");
                 }
                 label_FullName.Text = userCookies.user_fullname.ToUpper();
                 if (userCookies.isUser)
                 {
-                    Response.Redirect($"Portal.aspx?Email={userCookies.user_email}", false);
+                    Response.Redirect($"~/Portal.aspx?Email={userCookies.user_email}", false);
                 }
 
 
