@@ -6,7 +6,7 @@
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
-        <asp:LinkButton ID="LinkButton_Refresh" OnClick="LinkButton_Refresh_Click" runat="server"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton_Refresh" runat="server"></asp:LinkButton>
 
         <div class="cards-grid cards-grid-compact">
             <!-- Total Computers Card -->
@@ -75,17 +75,28 @@
         </div>
         <div class="bnet-table-wrapper">
             <div class="bnet-table-toolbar">
-                <div class="search-box">
-                    <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" placeholder="Search computers..." />
+                <!-- Group filters together inline -->
+                <div class="toolbar-filters">
+                    <div class="search-box">
+                        <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" placeholder="Search computers..." />
+                    </div>
+                    <div class="search-box" style="min-width:200px!important">
+                        <asp:DropDownList ID="DropDownList_Status" AutoPostBack="true" runat="server"  CssClass="form-control bnet-select">
+                            <asp:ListItem Text="All Status" Value="All"></asp:ListItem>
+                            <asp:ListItem Text="Occupied" Value="Occupied"></asp:ListItem>
+                            <asp:ListItem Text="Available" Value="Available"></asp:ListItem>
+                            <asp:ListItem Text="Paused" Value="Paused"></asp:ListItem>
+                            <asp:ListItem Text="Offline" Value="Offline"></asp:ListItem>
+                        </asp:DropDownList>
+                    </div>
                 </div>
-                <div style="display: flex; gap: 8px;">
 
+                <div style="display: flex; gap: 8px;">
                     <a class="btn btn-secondary" onclick="openPauseModal('')">
                         <i class="fa-solid fa-circle-pause"></i>Pause / Resume Time
-           
-                    </a>
+            </a>
                     <asp:HyperLink ID="HyperLink_Add" NavigateUrl="~/BNetPage.aspx?Form=ComputerCreate" CssClass="btn btn-primary" runat="server">
-                 + Add Computer 
+                + Add Computer 
             </asp:HyperLink>
                 </div>
             </div>
@@ -102,33 +113,32 @@
                     <Columns>
                         <asp:TemplateField HeaderText="Action" ItemStyle-Width="120px">
                             <ItemTemplate>
-                                <!-- Pure CSS Click-Triggered Dropdown -->
                                 <div class="bnet-dropdown" tabindex="0">
                                     <button type="button" class="bnet-dropdown-toggle">
                                         Command <i class="fa-solid fa-chevron-down"></i>
                                     </button>
                                     <div class="bnet-dropdown-menu">
-                                        <asp:Panel ID="Panel_ManageRental" Visible="false" runat="server">
+                                        <asp:Panel ID="Panel_ManageRental" Visible='<%# Eval("IsManageRentalVisible") %>' runat="server">
                                             <a onclick="navigateTo('BNetPage.aspx?Form=RentalManage&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                                 <i class="fa-regular fa-clock"></i>Manage Rental Session
                                             </a>
                                         </asp:Panel>
-                                        <asp:Panel ID="Panel_Logout" Visible="false" runat="server">
+                                        <asp:Panel ID="Panel_Logout" Visible='<%# Eval("IsLogoutVisible") %>' runat="server">
                                             <a class="bnet-dropdown-item"
                                                 onclick="openLogoutModal(this, '<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
                                                 <i class="fa-solid fa-right-from-bracket"></i>Log Out
                                             </a>
                                         </asp:Panel>
-                                        <asp:Panel ID="Panel_Transfer" Visible="false" runat="server">
+                                        <asp:Panel ID="Panel_Transfer" Visible='<%# Eval("IsTransferVisible") %>' runat="server">
                                             <a class="bnet-dropdown-item"
                                                 onclick="openTransferModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
                                                 <i class="fa-solid fa-right-left"></i>Transfer Session
-                                        </a>
+                                            </a>
                                         </asp:Panel>
-                                        <asp:Panel ID="Panel_PauseResume" Visible="false" runat="server">
+                                        <asp:Panel ID="Panel_PauseResume" Visible='<%# Eval("IsPauseResumeVisible") %>' runat="server">
                                             <a class="bnet-dropdown-item" onclick="openPauseModal('<%# Eval("DBComputerName") %>')">
                                                 <i class="fa-solid fa-circle-pause"></i>Pause / Resume Time
-                                        </a>
+                                            </a>
                                         </asp:Panel>
                                         <a onclick="navigateTo('BNetPage.aspx?Form=ComputerEarnings&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                             <i class="fa-solid fa-clock-rotate-left"></i>Session History
@@ -144,40 +154,47 @@
                                 </div>
                             </ItemTemplate>
                         </asp:TemplateField>
+
                         <asp:TemplateField HeaderText="Computer Name" ItemStyle-Width="200px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_DBId" Visible="false" runat="server" Text='<%#Eval("DBId") %>'></asp:Label>
-                                <asp:Label ID="Label_DBComputerName" runat="server" Text='<%#Eval("DBComputerName") %>'></asp:Label>
+                                <asp:Label ID="Label_DBId" Visible="false" runat="server" Text='<%# Eval("DBId") %>'></asp:Label>
+                                <asp:Label ID="Label_DBComputerName" runat="server" Text='<%# Eval("DBComputerName") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
+
                         <asp:TemplateField HeaderText="IP Address" ItemStyle-Width="200px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_IPAddress" runat="server" Text=""></asp:Label>
+                                <asp:Label ID="Label_IPAddress" runat="server" Text='<%# Eval("IPAddress") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
+
                         <asp:TemplateField HeaderText="Time Start" ItemStyle-Width="200px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_TimeStart" runat="server" Text=""></asp:Label>
+                                <asp:Label ID="Label_TimeStart" runat="server" Text='<%# Eval("TimeStart") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
+
                         <asp:TemplateField HeaderText="Time End" ItemStyle-Width="200px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_TimeEnd" runat="server" Text=""></asp:Label>
+                                <asp:Label ID="Label_TimeEnd" runat="server" Text='<%# Eval("TimeEnd") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
+
                         <asp:TemplateField HeaderText="Total Hours" ItemStyle-Width="200px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_TotalHours" runat="server" Text=""></asp:Label>
+                                <asp:Label ID="Label_TotalHours" runat="server" Text='<%# Eval("TotalHours") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
+
                         <asp:TemplateField HeaderText="Status" ItemStyle-Width="200px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_Status" runat="server" Text=""></asp:Label>
+                                <asp:Label ID="Label_Status" runat="server" Text='<%# Eval("Status") %>' CssClass='<%# Eval("StatusCssClass") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
+
                         <asp:TemplateField HeaderText="Billing" ItemStyle-Width="200px">
                             <ItemTemplate>
-                                <asp:Label ID="Label_Billing" runat="server" Text=""></asp:Label>
+                                <asp:Label ID="Label_Billing" runat="server" Text='<%# Eval("Billing") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>

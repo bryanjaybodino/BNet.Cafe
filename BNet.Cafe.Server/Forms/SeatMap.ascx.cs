@@ -140,9 +140,6 @@ namespace BNet.Cafe.Server.Forms
             // Reload seats to reflect changes across the UI
             LoadComputerSeats();
         }
-        protected void LinkButton_Refresh_Click(object sender, EventArgs e)
-        {
-            // Explicitly handles the refresh postback so Web Forms does not re-fire previous events
-        }
+
     }
 }

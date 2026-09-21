@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Users.ascx.cs" Inherits="BNet.Cafe.Server.Forms.Users" %>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
-        <asp:LinkButton ID="LinkButton_Refresh" OnClick="LinkButton_Refresh_Click" runat="server"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton_Refresh" runat="server"></asp:LinkButton>
 
         <div class="bnet-table-wrapper">
             <div class="bnet-table-toolbar">

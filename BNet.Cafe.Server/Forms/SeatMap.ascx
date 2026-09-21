@@ -3,7 +3,7 @@
 <link href="Assets/Pages/SeatMap.css" rel="stylesheet" />
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
-        <asp:LinkButton ID="LinkButton_Refresh" OnClick="LinkButton_Refresh_Click" runat="server"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton_Refresh" runat="server"></asp:LinkButton>
         <!-- Hidden field to send updated coordinates back to Server on save -->
         <asp:HiddenField ID="HiddenField_Positions" runat="server" ClientIDMode="Static" />
 

@@ -78,6 +78,15 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.TextBox TextBox_Search;
 
         /// <summary>
+        /// DropDownList_Status control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_Status;
+
+        /// <summary>
         /// HyperLink_Add control.
         /// </summary>
         /// <remarks>

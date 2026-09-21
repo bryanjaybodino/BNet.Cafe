@@ -16,7 +16,7 @@ namespace BNet.Cafe.Server.Repositories
         private readonly DBScriptService dBScriptService = new DBScriptService();
         private readonly GridviewPaginationService paginationService = new GridviewPaginationService();
 
-        public DataTable GetAll(string search = "", int pageIndex = 0, bool isDeleted = false)
+        public DataTable GetAll(string search = "", int pageIndex = -1, bool isDeleted = false)
         {
             var scripts = new Dictionary<string, string>();
             string DBComputerName = dBScriptService.CleanUpToUpper(search);
@@ -25,8 +25,10 @@ namespace BNet.Cafe.Server.Repositories
 
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerName", DBComputerName);
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
-
+            if (pageIndex >= 0)
+            {
+                dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
+            }
             Page page = HttpContext.Current.Handler as Page;
             string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Computers/GetAll.sql");
             string sql = dBScriptService.Scripts(scripts, template);

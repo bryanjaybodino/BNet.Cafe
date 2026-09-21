@@ -3,7 +3,7 @@
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
-        <asp:LinkButton ID="LinkButton_Refresh" OnClick="LinkButton_Refresh_Click" runat="server"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton_Refresh" runat="server"></asp:LinkButton>
         <asp:HiddenField ID="HiddenField_ChartData" runat="server" />
 
         <div class="bnet-table-toolbar dashboard-toolbar">

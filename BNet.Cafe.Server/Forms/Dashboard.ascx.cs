@@ -108,10 +108,6 @@ namespace BNet.Cafe.Server.Forms
                 : input.Replace("\\", "\\\\").Replace("\"", "\\\"");
         }
 
-        protected void LinkButton_Refresh_Click(object sender, EventArgs e)
-        {
-        }
-
         protected void TextBox_DateRage_TextChanged(object sender, EventArgs e)
         {
         }

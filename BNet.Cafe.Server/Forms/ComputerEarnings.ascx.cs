@@ -48,10 +48,5 @@ namespace BNet.Cafe.Server.Forms
         {
             GridViewTable.PageIndex = 0;
         }
-
-        protected void LinkButton_Refresh_Click(object sender, EventArgs e)
-        {
-            // Handles explicit refresh trigger without re-executing stale postback actions
-        }
     }
 }
