@@ -271,6 +271,7 @@ namespace BNet.Cafe.Client
 
         public void PauseTimer()
         {
+            double amount = 0;
             if (isPaused) return;
 
             isPaused = true;
@@ -281,13 +282,20 @@ namespace BNet.Cafe.Client
             if (isOpenTime)
             {
                 remainingSeconds = (now - createdTime).TotalSeconds;
+                TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
+                amount = CalculateRentalPrice.CalculatePrice((int)time.TotalMinutes);
+            }
+            else
+            {
+                var session = SessionLogin.ReadSession();
+                amount = session.Amount;
             }
 
             SessionLogin.SaveSession(
                 createdTime,
                 endTime,
                 userId,
-                0,
+                amount,
                 isAdmin,
                 isOpenTime,
                 isPaused: true,
@@ -299,6 +307,7 @@ namespace BNet.Cafe.Client
 
         public void ResumeTimer()
         {
+            double amount = 0;
             if (!isPaused) return;
 
             isPaused = false;
@@ -308,18 +317,22 @@ namespace BNet.Cafe.Client
             {
                 // Re-anchor createdTime so (now - createdTime) equals remainingSeconds
                 createdTime = now.AddSeconds(-remainingSeconds);
+                TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
+                amount = CalculateRentalPrice.CalculatePrice((int)time.TotalMinutes);
             }
             else
             {
                 // For Prepaid sessions: end time shifts relative to right now
                 endTime = now.AddSeconds(remainingSeconds);
+                var session = SessionLogin.ReadSession();
+                amount = session.Amount;
             }
 
             SessionLogin.SaveSession(
                 createdTime,
                 endTime,
                 userId,
-                0,
+                amount,
                 isAdmin,
                 isOpenTime,
                 isPaused: false,
@@ -388,6 +401,7 @@ namespace BNet.Cafe.Client
                     Label_SessionType.Text = "OPEN TIME SESSION";
                     Label_TotalHours.Text = "Purchased: Pay-as-you-go";
                     Label_TimeoutDisplay.Text = "Timeout: Continuous";
+                    label_TotalAmount.Text = $"Total Amount: ₱ {session.Amount:N2}";
                 }
                 else
                 {
