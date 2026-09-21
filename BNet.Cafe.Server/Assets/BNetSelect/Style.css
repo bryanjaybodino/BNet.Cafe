@@ -85,7 +85,7 @@
 
 /* Infinite Scroll List Area */
 .bnet-select-options-list {
-    max-height: 220px;
+    max-height: 250px;
     overflow-y: auto;
     list-style: none;
     margin: 0;

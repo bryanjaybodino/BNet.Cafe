@@ -87,6 +87,7 @@
                             <asp:ListItem Text="Available" Value="Available"></asp:ListItem>
                             <asp:ListItem Text="Paused" Value="Paused"></asp:ListItem>
                             <asp:ListItem Text="Offline" Value="Offline"></asp:ListItem>
+                            <asp:ListItem Text="Administrator" Value="Administrator"></asp:ListItem>
                         </asp:DropDownList>
                     </div>
                 </div>
