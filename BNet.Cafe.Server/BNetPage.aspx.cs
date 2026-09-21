@@ -139,16 +139,16 @@ namespace BNet.Cafe.Server
                     scripts = new[] { "Pages/RemoteMessaging", "Pages/Computers" };
                     break;
                 case "ComputerCreate":
-                    scripts = new[] { "Pages/ComputerCreate" };
+                    scripts = new[] { "Pages/ComputerManage" };
                     break;
                 case "ComputerEdit":
-                    scripts = new[] { "Pages/ComputerEdit" };
+                    scripts = new[] { "Pages/ComputerManage" };
                     break;
                 case "UserCreate":
-                    scripts = new[] { "Pages/UserCreate" };
+                    scripts = new[] { "Pages/UserManage" };
                     break;
                 case "UserEdit":
-                    scripts = new[] { "Pages/UserEdit" };
+                    scripts = new[] { "Pages/UserManage" };
                     break;
                 case "UserTopUp":
                     scripts = new[] { "Pages/UserTopUp" };

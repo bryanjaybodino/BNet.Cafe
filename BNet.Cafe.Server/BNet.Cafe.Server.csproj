@@ -119,8 +119,7 @@
     <Content Include="Assets\Pages\PricingSettings.css" />
     <Content Include="Assets\Pages\PricingSettings.js" />
     <Content Include="Assets\Pages\SeatMap.js" />
-    <Content Include="Assets\Pages\UserCreate.js" />
-    <Content Include="Assets\Pages\UserEdit.js" />
+    <Content Include="Assets\Pages\UserManage.js" />
     <Content Include="Assets\Pages\UserTopUp.js" />
     <Content Include="Assets\Pages\RentalManage.css" />
     <Content Include="Assets\fontawesome\font-awesome.min.css" />

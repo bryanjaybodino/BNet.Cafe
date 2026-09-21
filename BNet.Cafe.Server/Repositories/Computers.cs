@@ -82,6 +82,8 @@ namespace BNet.Cafe.Server.Repositories
             string DBComputerName = dBScriptService.CleanUpToUpper(computerName);
 
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerName", DBComputerName);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBPosX", "0");
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBPosY", "0");
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeCreated", TimeService.Get().ToString("HH:mm:ss"));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
