@@ -37,6 +37,9 @@
                                             <a onclick="navigateTo('BNetPage.aspx?Form=UserTopUp&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                                 <i class="fa-regular fa-credit-card"></i>Top-up
                                             </a>
+                                            <a onclick="navigateTo('BNetPage.aspx?Form=UserBonus&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
+                                                <i class="fa-regular fa-plus-square"></i>Bonus
+                                            </a>
                                         </asp:Panel>
                                         <a onclick="navigateTo('BNetPage.aspx?Form=UserEdit&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                             <i class="fa-solid fa-pen-to-square"></i>Edit User

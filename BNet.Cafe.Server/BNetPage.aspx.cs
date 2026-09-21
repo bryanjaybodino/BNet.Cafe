@@ -145,6 +145,9 @@ namespace BNet.Cafe.Server
                 case "UserTopUp":
                     scripts = new[] { "Pages/UserTopUp" };
                     break;
+                case "UserBonus":
+                    scripts = new[] { "Pages/UserTopUp" };
+                    break;
                 case "Remote":
                     scripts = new[] { "Pages/RemoteMessaging", "Pages/Remote" };
                     break;

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="UserTopUp.ascx.cs" Inherits="BNet.Cafe.Server.Forms.UserTopUp" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="UserBonus.ascx.cs" Inherits="BNet.Cafe.Server.Forms.UserBonus" %>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <asp:Panel ID="Panel_Form" runat="server">
@@ -7,9 +7,9 @@
                 <div class="content-header">
                     <h1>
                         <i class="fa-solid fa-wallet"></i>
-                        Top-Up
+                        Bonus Credit
                     </h1>
-                    <p>Enter payment amount to credit account balance.</p>
+                    <p>Enter bonus credit for your loyal member.</p>
                 </div>
 
                 <!-- User Details Banner -->
@@ -65,7 +65,7 @@
 
                 <div class="form-group">
                     <label for="<%= TextBox_Description.ClientID %>">Description / Remarks</label>
-                    <asp:TextBox ID="TextBox_Description" runat="server" Enabled="false" CssClass="form-control" Text="Top-Up Load Credit"></asp:TextBox>
+                    <asp:TextBox ID="TextBox_Description" runat="server" Enabled="false" CssClass="form-control" Text="Bonus Credit"></asp:TextBox>
                 </div>
 
                 <!-- Action Buttons -->
