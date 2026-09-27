@@ -16,6 +16,13 @@ namespace BNet.Cafe.Client
 
         public RegisterForm()
         {
+            // Reduce controls flicking on show
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
+                          ControlStyles.UserPaint |
+                          ControlStyles.DoubleBuffer |
+                          ControlStyles.OptimizedDoubleBuffer, true);
+            this.UpdateStyles();
+
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
@@ -24,7 +31,6 @@ namespace BNet.Cafe.Client
             this.MaximizeBox = false;
             this.MinimizeBox = false;
         }
-
         private async void Button_SubmitRegister_Click(object sender, EventArgs e)
         {
             // Reset all borders to default state before validating

@@ -547,18 +547,26 @@ namespace BNet.Cafe.Client
 
         private void Button_Register_Click(object sender, EventArgs e)
         {
-            // Hide main form before showing registration
-            this.Hide();
+            // 1. Pause active window polling so LockScreen() isn't continuously called in the background
+            UserActivity.ActiveWindowMonitor.StopPolling();
 
             using (RegisterForm registerForm = new RegisterForm())
             {
-                registerForm.ShowDialog();
+                // 3. Keep TopMost on RegisterForm so it stays above MainForm
+                registerForm.TopMost = true;
+                registerForm.StartPosition = FormStartPosition.CenterScreen;
+                // 2. Stop the global keyboard hook to allow typing in the registration form
+                UnlockScreen();
+                // 4. Pass 'this' as owner so RegisterForm displays directly OVER MainForm without hiding MainForm
+                registerForm.ShowDialog(this);
             }
 
-            // Restore and force layout recalculation
-            this.Show();
-            this.PerformLayout();
-            this.Refresh();
+            // 5. Re-enable security hooks and window monitoring when RegisterForm closes
+            if (!SessionLogin.Exists())
+            {
+                LockScreen();
+            }
+            UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
         }
     }
 }
