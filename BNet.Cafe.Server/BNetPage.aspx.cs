@@ -1,9 +1,13 @@
 ﻿using BNet.Cafe.Server.Forms;
 using BNet.Cafe.Server.Services;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -13,6 +17,9 @@ namespace BNet.Cafe.Server
     public partial class BNetPage : System.Web.UI.Page
     {
         Sessions.User userCookies = new Sessions.User();
+
+        private const string SHA_FILE_NAME = "CurrentCommitSha";
+        private string ShaFolderPath => Server.MapPath("~/App_Data/");
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -45,6 +52,12 @@ namespace BNet.Cafe.Server
                         .Select(name => name[0])
                 ).ToUpper();
 
+
+                // Run GitHub check asynchronously once per session
+                if (Session["GitHubUpdateChecked"] == null)
+                {
+                    RegisterAsyncTask(new PageAsyncTask(CheckGitHubUpdateAsync));
+                }
             }
 
             // Get the "Form" query string parameter value, default to "Dashboard" if missing
@@ -121,6 +134,10 @@ namespace BNet.Cafe.Server
                 {
                     HyperLink_TopUp.CssClass = "active";
                 }
+                else if (formName.Contains(HyperLink_Commits.ToolTip))
+                {
+                    HyperLink_Commits.CssClass = "active";
+                }
             }
         }
 
@@ -178,6 +195,67 @@ namespace BNet.Cafe.Server
                 FileJsHelpler.BundleAddScripts(ScriptManager1, script);
             }
         }
+        private async Task CheckGitHubUpdateAsync()
+        {
+            try
+            {
+                if (!Directory.Exists(ShaFolderPath))
+                {
+                    Directory.CreateDirectory(ShaFolderPath);
+                }
 
+                string localSavedSha = FileTextHelper.GetText(ShaFolderPath, SHA_FILE_NAME).Trim();
+
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("User-Agent", "BNet-Cafe-Server-App");
+
+                    string apiUrl = "https://api.github.com/repos/bryanjaybodino/BNet.Cafe.Timer/commits/main";
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string json = await response.Content.ReadAsStringAsync();
+                        JObject root = JObject.Parse(json);
+
+                        string latestSha = root.Value<string>("sha") ?? string.Empty;
+
+                        Session["GitHubUpdateChecked"] = true;
+
+                        // Trigger modal if it's the first load OR if a new commit exists
+                        if (string.IsNullOrEmpty(localSavedSha) || !string.Equals(localSavedSha, latestSha, StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Save latest SHA to text file so it doesn't show again
+                            FileTextHelper.UpdateText(latestSha, ShaFolderPath, SHA_FILE_NAME);
+
+                            string commitMsg = root.SelectToken("commit.message")?.ToString() ?? "";
+                            string authorName = root.SelectToken("commit.author.name")?.ToString() ?? "Contributor";
+                            string commitDateStr = root.SelectToken("commit.author.date")?.ToString() ?? "";
+                            string htmlUrl = root.Value<string>("html_url");
+
+                            DateTime.TryParse(commitDateStr, out DateTime commitDate);
+
+                            var updatePayload = new
+                            {
+                                sha = latestSha.Length >= 7 ? latestSha.Substring(0, 7) : latestSha,
+                                message = commitMsg.Split('\n')[0],
+                                author = authorName,
+                                date = commitDate.ToString("MMM dd, yyyy HH:mm"),
+                                url = htmlUrl
+                            };
+
+                            string jsonPayload = JsonConvert.SerializeObject(updatePayload);
+                            string script = $"setTimeout(function() {{ if (typeof showGitHubUpdateModal === 'function') {{ showGitHubUpdateModal({jsonPayload}); }} }}, 200);";
+
+                            ScriptManager.RegisterStartupScript(this, GetType(), "ShowGitHubUpdate", script, true);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Silently ignore network or file access exceptions
+            }
+        }
     }
 }

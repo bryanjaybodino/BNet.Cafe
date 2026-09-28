@@ -15,6 +15,15 @@ namespace BNet.Cafe.Server
     {
 
         /// <summary>
+        /// GitHubUpdateModal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::BNet.Cafe.Server.Forms.Modals.GitHubUpdateModal GitHubUpdateModal;
+
+        /// <summary>
         /// HyperLink_Dashboard control.
         /// </summary>
         /// <remarks>
@@ -85,6 +94,15 @@ namespace BNet.Cafe.Server
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink HyperLink_PricingSettings;
+
+        /// <summary>
+        /// HyperLink_Commits control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Commits;
 
         /// <summary>
         /// Label_InitialName control.

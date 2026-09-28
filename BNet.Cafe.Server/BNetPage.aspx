@@ -1,5 +1,8 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" Async="true" EnableEventValidation="false" AsyncTimeout="1000000000" CodeBehind="BNetPage.aspx.cs" Inherits="BNet.Cafe.Server.BNetPage" %>
 
+<%@ Register Src="~/Forms/Modals/GitHubUpdateModal.ascx" TagPrefix="uc1" TagName="GitHubUpdateModal" %>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,6 +24,8 @@
         <div class="loading-spinner"></div>
     </div>
     <div class="container">
+        <!-- Include GitHub Update Modal -->
+        <uc1:GitHubUpdateModal runat="server" ID="GitHubUpdateModal" />
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="logo">
@@ -66,6 +71,11 @@
                 <li>
                     <asp:HyperLink ID="HyperLink_PricingSettings" runat="server" ToolTip="PricingSettings" onclick="navigateTo('?Form=PricingSettings'); return false;">
             <i class="fas fa-cash-register"></i><span>Pricing Setting</span>
+                    </asp:HyperLink>
+                </li>
+                <li>
+                    <asp:HyperLink ID="HyperLink_Commits" runat="server" ToolTip="GitHubCommitsFeed" onclick="navigateTo('?Form=GitHubCommitsFeed'); return false;">
+            <i class="fab fa-github"></i><span>Commits</span>
                     </asp:HyperLink>
                 </li>
             </ul>

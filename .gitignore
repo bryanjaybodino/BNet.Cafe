@@ -367,3 +367,4 @@ FodyWeavers.xsd
 # Ignore SQL scripts
 /SQL Scripts/**/*.sql
 
+/BNet.Cafe.Server/App_Data/CurrentCommitSha.txt
