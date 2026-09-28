@@ -47,9 +47,10 @@ namespace BNet.Cafe.Server
 
                 // Check lock status on full page load/refresh
                 string ip = IPAddressChecker.GetClientIP();
+                string key = ip + "_login";
                 string ipOnlyKey = ip + "_";
 
-                if (LockUser.IsLocked(ipOnlyKey))
+                if (LockUser.IsLocked(key) || LockUser.IsLocked(ipOnlyKey))
                 {
                     int secondsLeft = LockUser.GetRemainingLockedMinutes(ipOnlyKey);
                     if (secondsLeft > 0)

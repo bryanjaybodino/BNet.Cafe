@@ -123,14 +123,10 @@ function handleSubmit() {
     var u = document.getElementById('TextBox_Email');
     var p = document.getElementById('TextBox_Password');
 
-    if (u) {
-        var emailVal = u.value.trim();
-        if (!emailVal || !emailVal.includes('@')) {
-            showError('Please enter a valid email address.');
-            return false;
-        }
+    if (u && !u.value) {
+        showError('Please enter your username or email.');
+        return false;
     }
-
     if (p && !p.value) {
         showError('Please enter your password.');
         return false;

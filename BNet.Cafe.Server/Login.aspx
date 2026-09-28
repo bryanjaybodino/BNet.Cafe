@@ -58,7 +58,7 @@
 
                             <!-- Email Input -->
                             <div class="field">
-                                <label for="TextBox_Email">Email address</label>
+                                <label for="TextBox_Email">Username or Email</label>
                                 <div class="input-wrap">
                                     <span class="field-icon">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -66,7 +66,7 @@
                                             <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                                         </svg>
                                     </span>
-                                    <asp:TextBox ID="TextBox_Email" runat="server" CssClass="field-input" placeholder="admin@bnetcafe.com" autocomplete="username" />
+                                    <asp:TextBox ID="TextBox_Email" runat="server" CssClass="field-input" placeholder="Enter your username or email" autocomplete="username" />
                                 </div>
                             </div>
 
