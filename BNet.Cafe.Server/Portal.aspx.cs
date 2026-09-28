@@ -20,6 +20,7 @@ namespace BNet.Cafe.Server
         {
             if (!IsPostBack)
             {
+                FileJsHelpler.BundleAddScripts(ScriptManager1, "Portal/Script");
                 // Decrypt and check parameter safely
                 bool isLoginQuery = false;
                 if (!string.IsNullOrEmpty(Request.QueryString["UserId"]))

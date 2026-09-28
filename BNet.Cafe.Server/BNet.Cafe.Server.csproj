@@ -114,6 +114,8 @@
     <Content Include="Assets\BNetSelect\Script.js" />
     <Content Include="Assets\BNetSelect\Style.css" />
     <Content Include="Assets\BNetTable\Style.css" />
+    <Content Include="Assets\Login\Script.js" />
+    <Content Include="Assets\Login\Style.css" />
     <Content Include="Assets\Pages\Computers.js" />
     <Content Include="Assets\Pages\SeatMap.css" />
     <Content Include="Assets\Pages\PricingSettings.css" />
@@ -132,6 +134,8 @@
     <Content Include="Assets\BNetModal\Script.js" />
     <Content Include="Assets\BNetModal\Style.css" />
     <Content Include="Assets\Pages\RemoteMessaging.js" />
+    <Content Include="Assets\Portal\Script.js" />
+    <Content Include="Assets\Portal\Style.css" />
     <Content Include="BNetPage.aspx" />
     <Content Include="Databases\Queries\Balances\GetCount.sql" />
     <Content Include="Forms\TopUp.ascx" />
