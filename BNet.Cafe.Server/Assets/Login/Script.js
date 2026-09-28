@@ -1,4 +1,4 @@
-﻿// 1. Convert Password input to type=password (bypasses TextMode=SingleLine limitation)
+﻿// 1. Password Field Initialization
 (function () {
     var pw = document.getElementById('TextBox_Password');
     if (pw) {
@@ -7,7 +7,7 @@
     }
 })();
 
-// 2. SVG Eye Password Toggle
+// 2. SVG Eye Toggle
 function togglePw() {
     var inp = document.getElementById('TextBox_Password');
     var iconOff = document.getElementById('pwIconHide');
@@ -26,11 +26,25 @@ function togglePw() {
     inp.focus();
 }
 
-// 3. Login Lock Enforcement
-var _lockUnlockCheck = null;
+// 3. Login Lock Enforcement & LocalStorage Backup
 var _loginTimerInterval = null;
 
 function enforceLoginLock(seconds) {
+    var sec = parseInt(seconds, 10);
+    if (isNaN(sec) || sec <= 0) {
+        unlockUI();
+        return;
+    }
+
+    // Save end time in localStorage as client fallback on refresh
+    var lockEndTime = Date.now() + (sec * 1000);
+    localStorage.setItem('bnet_login_lock_until', lockEndTime.toString());
+
+    lockUI();
+    runCountdown();
+}
+
+function lockUI() {
     var emailEl = document.getElementById('TextBox_Email');
     var pwEl = document.getElementById('TextBox_Password');
     var btnEl = document.getElementById('LinkButton_Login');
@@ -38,50 +52,58 @@ function enforceLoginLock(seconds) {
     if (emailEl) { emailEl.disabled = true; emailEl.setAttribute('readonly', 'readonly'); }
     if (pwEl) { pwEl.disabled = true; pwEl.setAttribute('readonly', 'readonly'); }
     if (btnEl) { btnEl.disabled = true; btnEl.style.pointerEvents = 'none'; btnEl.style.opacity = '0.5'; }
-
-    showErrorWithTimer('Account locked. Try again in', seconds);
-
-    if (_lockUnlockCheck) clearInterval(_lockUnlockCheck);
-    _lockUnlockCheck = setInterval(function () {
-        if (!_loginTimerInterval) {
-            clearInterval(_lockUnlockCheck);
-            _lockUnlockCheck = null;
-            if (emailEl) { emailEl.disabled = false; emailEl.removeAttribute('readonly'); }
-            if (pwEl) { pwEl.disabled = false; pwEl.removeAttribute('readonly'); }
-            if (btnEl) { btnEl.disabled = false; btnEl.style.pointerEvents = ''; btnEl.style.opacity = ''; }
-            hideError();
-        }
-    }, 500);
 }
 
-function showErrorWithTimer(message, seconds) {
+function unlockUI() {
+    localStorage.removeItem('bnet_login_lock_until');
+    if (_loginTimerInterval) { clearInterval(_loginTimerInterval); _loginTimerInterval = null; }
+
+    var emailEl = document.getElementById('TextBox_Email');
+    var pwEl = document.getElementById('TextBox_Password');
+    var btnEl = document.getElementById('LinkButton_Login');
+
+    if (emailEl) { emailEl.disabled = false; emailEl.removeAttribute('readonly'); }
+    if (pwEl) { pwEl.disabled = false; pwEl.removeAttribute('readonly'); }
+    if (btnEl) { btnEl.disabled = false; btnEl.style.pointerEvents = ''; btnEl.style.opacity = ''; }
+
+    hideError();
+}
+
+function runCountdown() {
     if (_loginTimerInterval) clearInterval(_loginTimerInterval);
-    var remaining = seconds;
 
     function update() {
-        var m = Math.floor(remaining / 60);
-        var s = remaining % 60;
-        var timeStr = m > 0 ? m + 'm ' + (s < 10 ? '0' : '') + s + 's' : s + 's';
-        showError(message + ' ' + timeStr);
-        if (remaining <= 0) {
-            clearInterval(_loginTimerInterval);
-            _loginTimerInterval = null;
+        var lockUntil = parseInt(localStorage.getItem('bnet_login_lock_until') || '0', 10);
+        var now = Date.now();
+        var remainingMs = lockUntil - now;
+
+        if (remainingMs <= 0) {
+            unlockUI();
+            return;
         }
-        remaining--;
+
+        var remainingSec = Math.ceil(remainingMs / 1000);
+        var m = Math.floor(remainingSec / 60);
+        var s = remainingSec % 60;
+        var timeStr = m > 0 ? m + 'm ' + (s < 10 ? '0' : '') + s + 's' : s + 's';
+
+        showError('Too many failed attempts. Try again in ' + timeStr);
     }
 
     update();
     _loginTimerInterval = setInterval(update, 1000);
 }
 
-// 4. Server Lock Initialization check on load
+// 4. Auto-Check Storage Lock state on DOM Load / Refresh
 document.addEventListener('DOMContentLoaded', function () {
-    if (typeof window.loginLockedSeconds !== 'undefined' && window.loginLockedSeconds > 0) {
-        enforceLoginLock(window.loginLockedSeconds);
+    var lockUntil = parseInt(localStorage.getItem('bnet_login_lock_until') || '0', 10);
+    if (lockUntil > Date.now()) {
+        lockUI();
+        runCountdown();
     }
 });
 
-// 5. Unified Error Box Handler
+// 5. Global Error Box Controllers
 function showError(msg) {
     var box = document.getElementById('errorBox');
     var txt = document.getElementById('errorMsg');
@@ -91,12 +113,11 @@ function showError(msg) {
 }
 
 function hideError() {
-    if (_loginTimerInterval) { clearInterval(_loginTimerInterval); _loginTimerInterval = null; }
     var box = document.getElementById('errorBox');
     if (box) box.style.display = 'none';
 }
 
-// 6. Form Submission Validation
+// 6. Form Submission Handler
 function handleSubmit() {
     hideError();
     var u = document.getElementById('TextBox_Email');

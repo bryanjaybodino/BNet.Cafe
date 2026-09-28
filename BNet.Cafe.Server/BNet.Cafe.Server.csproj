@@ -469,6 +469,7 @@
     <Compile Include="Services\GridViewTemplateService.cs" />
     <Compile Include="Services\GridviewPaginationService.cs" />
     <Compile Include="Services\AlertService.cs" />
+    <Compile Include="Services\IPAddressChecker.cs" />
     <Compile Include="Services\NetworkUtility.cs" />
     <Compile Include="Services\PasswordResetHelper.cs" />
     <Compile Include="Services\RemoteMessagingService.cs" />
