@@ -31,7 +31,7 @@ namespace BNet.Cafe.Server.Databases.Tables
             list.Add(new DBMigration.DBColumns
             {
                 ColumnName = "DBRole",
-                Length = 5,
+                Length = 6,
                 Type = DBMigration.DBColumns.type.VARCHAR
             });
             DBMigration tableCreation = new DBMigration();

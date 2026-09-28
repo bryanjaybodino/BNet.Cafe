@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="UserBonus.ascx.cs" Inherits="BNet.Cafe.Server.Forms.UserBonus" %>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
+        <asp:HiddenField ID="HiddenField_Role" runat="server" />
         <asp:Panel ID="Panel_Form" runat="server">
             <div class="bnet-table-wrapper">
                 <!-- Header -->

@@ -7,7 +7,7 @@
         <!-- Hidden fields to store loaded DB state -->
         <asp:HiddenField ID="HiddenField_InitialDuration" runat="server" Value="0" />
         <asp:HiddenField ID="HiddenField_InitialAmount" runat="server" Value="0.00" />
-
+        <asp:HiddenField ID="HiddenField_Role" runat="server" />
         <asp:Panel ID="Panel_Form" runat="server">
             <div class="bnet-table-wrapper">
                 <div class="content-header" style="margin-bottom: 20px;">

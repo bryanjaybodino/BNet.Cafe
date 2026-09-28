@@ -46,13 +46,22 @@ namespace BNet.Cafe.Server.Forms
                             HiddenField_InitialAmount.Value = string.IsNullOrEmpty(dbAmount) ? "0.00" : dbAmount;
                             DropDownList_Customer.SelectedValue = userId;
 
-                            var userType = int.TryParse(userId, out _) ? UserType.User : UserType.Guest;
+                            string userType = UserType.Guest;
+                            if (int.TryParse(userId, out _))
+                            {
+                                Repositories.Users customers = new Repositories.Users();
+                                var userData = customers.GetById(userId);
+                                if (userData.Rows.Count > 0)
+                                {
+                                    userType = userData.Rows[0]["DBRole"].ToString();
+                                }
+                            }
+                            HiddenField_Role.Value = userType;
                             var pricingRates = new Repositories.PricingRates();
                             var data = pricingRates.GetAll(userType, 0);
 
-
                             //Bawal mag open time si member since hourly base na siya
-                            if (userType == UserType.User)
+                            if (userType != UserType.Guest)
                             {
                                 LinkButton_OpenTime.Visible = false;
                             }

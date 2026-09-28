@@ -27,9 +27,9 @@ function Validate() {
     if (!emailInput || !emailInput.value.trim()) {
         if (emailInput) emailInput.classList.add('is-invalid');
         errors.push('Please enter an email address.');
-    } else if (!emailRegex.test(emailInput.value.trim())) {
-        emailInput.classList.add('is-invalid');
-        errors.push('Please enter a valid email address.');
+    //} else if (!emailRegex.test(emailInput.value.trim())) {
+    //    emailInput.classList.add('is-invalid');
+    //    errors.push('Please enter a valid email address.');
     } else {
         emailInput.classList.add('is-valid');
     }

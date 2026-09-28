@@ -277,24 +277,6 @@ if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManage
 
 
 function getCustomerType() {
-    var customerSelect = document.querySelector('[id$="DropDownList_Customer"]');
-    if (!customerSelect) return "GUEST / WALK-IN";
-
-    // 1. Get the value or the display text of the selected option
-    var selectedOption = customerSelect.options[customerSelect.selectedIndex];
-    var selectedText = selectedOption ? selectedOption.text.trim() : "";
-    var selectedValue = customerSelect.value ? customerSelect.value.trim() : "";
-
-    // Combine both to check against empty/default states
-    var textToCheck = (selectedText || selectedValue).toUpperCase();
-
-
-    // 2. Validate against empty or "SELECT" placeholder options
-    if (textToCheck == '-- SELECT CUSTOMER --') {
-        return "GUEST / WALK-IN";
-    }
-
-    // 3. Match keyword
-    var customerType = textToCheck.includes("GUEST / WALK-IN") ? "GUEST / WALK-IN" : "USER";
-    return customerType;
+    var customerType = document.querySelector('[id$="HiddenField_Role"]');
+    return customerType.value.toUpperCase();
 }  

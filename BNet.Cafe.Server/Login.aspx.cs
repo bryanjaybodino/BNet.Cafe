@@ -95,7 +95,7 @@ namespace BNet.Cafe.Server
 
                 userCookies.createCookies(Email, Name, Role);
 
-                if (Role == "USER")
+                if (Role !=ConstantData.UserType.Admin)
                 {
                     Response.Redirect("Portal.aspx", false);
                 }

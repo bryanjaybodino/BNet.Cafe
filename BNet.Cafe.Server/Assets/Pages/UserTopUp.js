@@ -48,7 +48,7 @@ function CalculateDurationFromAmountHandlerBackend(amount) {
         ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateDurationFromAmountHandler.ashx')
         : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateDurationFromAmountHandler.ashx');
 
-    fetch(endpoint + '?amount=' + amount + '&customerType=USER')
+    fetch(endpoint + '?amount=' + amount + '&customerType=' + getCustomerType())
         .then(function (response) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -94,7 +94,7 @@ function CalculateAmountFromDurationHandlerBackend(totalMinutes) {
         ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/CalculateAmountFromDurationHandler.ashx')
         : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/CalculateAmountFromDurationHandler.ashx');
 
-    fetch(endpoint + '?minutes=' + totalMinutes + '&customerType=USER')
+    fetch(endpoint + '?minutes=' + totalMinutes + '&customerType=' + getCustomerType())
         .then(function (response) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -164,3 +164,7 @@ if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManage
         calculateTimeFromAmount();
     });
 }
+function getCustomerType() {
+    var customerType = document.querySelector('[id$="HiddenField_Role"]');
+    return customerType.value.toUpperCase();
+}  

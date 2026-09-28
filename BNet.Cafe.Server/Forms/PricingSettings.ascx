@@ -46,7 +46,8 @@
                             </label>
                             <asp:DropDownList ID="DropDownList_CustomerType" AutoPostBack="true" runat="server" CssClass="form-control bnet-select">
                                 <asp:ListItem Text="Guest / Walk-In" Value="GUEST / WALK-IN"></asp:ListItem>
-                                <asp:ListItem Text="Member" Value="USER"></asp:ListItem>
+                                <asp:ListItem Text="Member" Value="MEMBER"></asp:ListItem>
+                                <asp:ListItem Text="VIP" Value="VIP"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
 

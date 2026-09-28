@@ -38,11 +38,11 @@ namespace BNet.Cafe.Server.Forms
                 Label_UserName.Text = userData.Rows[0]["DBName"].ToString();
                 Label_UserEmail.Text = userData.Rows[0]["DBEmail"].ToString();
                 string role = userData.Rows[0]["DBRole"].ToString();
-
+                HiddenField_Role.Value = role;
                 double totalMinutes = balances.GetBalanceByUserId(userId);
                 Label_CurrentBalance.Text = $"{totalMinutes} Mins";
 
-                if (role == "ADMIN")
+                if (role == ConstantData.UserType.Admin)
                 {
                     AlertService.ShowAlert(this, "This account is admin no need to top-up", "warning");
                     Panel_Form.Enabled = false;
@@ -51,7 +51,7 @@ namespace BNet.Cafe.Server.Forms
                 }
 
                 var pricingRates = new Repositories.PricingRates();
-                var data = pricingRates.GetAll(UserType.User, 0);
+                var data = pricingRates.GetAll(role, 0);
                 if (data.Rows.Count == 0)
                 {
                     AlertService.ShowAlert(this, "No active pricing configuration found on your pricing settings. Please contact support if this issue persists.", "danger");
@@ -70,7 +70,7 @@ namespace BNet.Cafe.Server.Forms
         {
             string userId = Request.QueryString["id"];
             string amount = TextBox_Amount.Text.Trim();
-            string duration = CalculateDurationFromAmountHandler.CalculateDuration(Convert.ToDecimal(amount),UserType.User).ToString();
+            string duration = CalculateDurationFromAmountHandler.CalculateDuration(Convert.ToDecimal(amount), HiddenField_Role.Value).ToString();
             string description = TextBox_Description.Text.Trim();
 
             if (string.IsNullOrEmpty(description))

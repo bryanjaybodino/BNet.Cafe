@@ -55,7 +55,7 @@ namespace BNet.Cafe.Server
 
                 Repositories.Users users = new Repositories.Users();
                 DataTable dataTable = users.GetByEmail(userInfo.email);
-                string role = "USER";
+                string role = "";
                 string userId = "";
                 if (dataTable.Rows.Count > 0)
                 {
@@ -72,7 +72,7 @@ namespace BNet.Cafe.Server
                 Sessions.User userCookies = new Sessions.User();
                 userCookies.createCookies(userInfo.email, userInfo.name, role);
 
-                if (role == "USER")
+                if (role != ConstantData.UserType.Admin)
                 {
                     Response.Redirect($"Portal.aspx", false);
                 }

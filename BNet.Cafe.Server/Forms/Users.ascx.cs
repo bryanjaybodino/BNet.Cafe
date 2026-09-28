@@ -20,8 +20,21 @@ namespace BNet.Cafe.Server.Forms
             {
                 Label Label_DBRole = (Label)GridViewTable.Rows[i].FindControl("Label_DBRole");
                 Panel Panel_TopUp = (Panel)GridViewTable.Rows[i].FindControl("Panel_TopUp");
-                Panel_TopUp.Visible= (Label_DBRole.Text.ToUpper() == "USER") ; 
-                
+                Panel_TopUp.Visible = (Label_DBRole.Text.ToUpper() != ConstantData.UserType.Admin);
+
+                if (Label_DBRole.Text.ToUpper() == ConstantData.UserType.Admin)
+                {
+                    Label_DBRole.CssClass = "bnet-badge-status yellow";
+                }
+                if (Label_DBRole.Text.ToUpper() == ConstantData.UserType.Member)
+                {
+                    Label_DBRole.CssClass = "bnet-badge-status blue";
+                }
+                if (Label_DBRole.Text.ToUpper() == ConstantData.UserType.VIP)
+                {
+                    Label_DBRole.CssClass = "bnet-badge-status green";
+                }
+
             }
         }
 

@@ -32,7 +32,8 @@
                 <div class="form-group">
                     <label for="<%= DropDownList_Role.ClientID %>">Role <span style="color: #ef4444;">*</span></label>
                     <asp:DropDownList ID="DropDownList_Role" runat="server" CssClass="form-control">
-                        <asp:ListItem Text="User" Value="USER" Selected="True"></asp:ListItem>
+                        <asp:ListItem Text="Member" Value="MEMBER" Selected="True"></asp:ListItem>
+                        <asp:ListItem Text="VIP" Value="VIP"></asp:ListItem>
                         <asp:ListItem Text="Admin" Value="ADMIN"></asp:ListItem>
                     </asp:DropDownList>
                 </div>

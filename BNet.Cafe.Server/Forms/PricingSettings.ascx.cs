@@ -78,7 +78,6 @@ namespace BNet.Cafe.Server.Forms
             TextBox_Hours.Text = string.Empty; 
             TextBox_Minutes_Only.Text = string.Empty;
             TextBox_Price.Text = string.Empty;
-            DropDownList_CustomerType.SelectedIndex = 0;
             LinkButton_Submit.Text = "<i class=\"fa fa-save\"></i> Save Rule";
         }
 

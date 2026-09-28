@@ -35,7 +35,7 @@ namespace BNet.Cafe.Client
         {
             // Reset all borders to default state before validating
             ResetValidationState();
-            string role = "USER";
+            string role = "MEMBER";
             string name = TextBox_FullName.Text.Trim();
             string email = TextBox_Email.Text.Trim();
             string password = TextBox_Password.Text;
@@ -75,13 +75,13 @@ namespace BNet.Cafe.Client
             }
 
             // 2. Email Format Validation
-            if (!IsValidEmail(email))
-            {
-                TextBox_Email.BorderColor = _errorBorderColor;
-                MessageBox.Show("Please enter a valid email address (e.g. user@example.com).", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                TextBox_Email.Focus();
-                return;
-            }
+            //if (!IsValidEmail(email))
+            //{
+            //    TextBox_Email.BorderColor = _errorBorderColor;
+            //    MessageBox.Show("Please enter a valid email address (e.g. user@example.com).", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    TextBox_Email.Focus();
+            //    return;
+            //}
 
             // 3. Confirm Password Match Validation
             if (password != confirmPassword)

@@ -323,9 +323,9 @@
             this.lblEmail.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.lblEmail.Location = new System.Drawing.Point(3, 190);
             this.lblEmail.Name = "lblEmail";
-            this.lblEmail.Size = new System.Drawing.Size(108, 20);
+            this.lblEmail.Size = new System.Drawing.Size(202, 20);
             this.lblEmail.TabIndex = 5;
-            this.lblEmail.Text = "Email Address";
+            this.lblEmail.Text = "Username or Email Address";
             // 
             // TextBox_FullName
             // 
