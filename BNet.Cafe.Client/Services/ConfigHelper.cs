@@ -82,13 +82,10 @@ namespace BNet.Cafe.Client.Services
         {
             get
             {
-                string value = GetOrCreateSetting(
-                    "AccountCreationAllowed",
-                    "true");
+                string value = GetOrCreateSetting("AccountCreationAllowed", "true");
 
-                return bool.TryParse(value, out bool result)
-                    ? result
-                    : true;
+                // Returns false only if the value equals "false" (case-insensitive); defaults to true otherwise
+                return !string.Equals(value?.Trim(), "false", StringComparison.OrdinalIgnoreCase);
             }
         }
 
@@ -99,6 +96,21 @@ namespace BNet.Cafe.Client.Services
                 return GetOrCreateSetting(
                     "WebSocketUrl",
                     "ws://localhost:8080");
+            }
+        }
+
+        public static string AutoShutDownInterval
+        {
+            get
+            {
+                string rawValue = GetOrCreateSetting("AutoShutDownInterval", "300");
+
+                if (int.TryParse(rawValue?.Trim(), out int timeout))
+                {
+                    return timeout.ToString();
+                }
+
+                return "300";
             }
         }
 

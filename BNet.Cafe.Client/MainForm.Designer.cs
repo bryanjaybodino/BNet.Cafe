@@ -197,9 +197,9 @@
             this.lblStatusBadge.BorderRadius = 14;
             this.lblStatusBadge.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
             this.lblStatusBadge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(101)))), ((int)(((byte)(52)))));
-            this.lblStatusBadge.Location = new System.Drawing.Point(145, 429);
+            this.lblStatusBadge.Location = new System.Drawing.Point(6, 429);
             this.lblStatusBadge.Name = "lblStatusBadge";
-            this.lblStatusBadge.Size = new System.Drawing.Size(190, 28);
+            this.lblStatusBadge.Size = new System.Drawing.Size(463, 28);
             this.lblStatusBadge.TabIndex = 9;
             this.lblStatusBadge.Text = "● Station PC-01 Online";
             this.lblStatusBadge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

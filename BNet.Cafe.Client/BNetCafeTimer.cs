@@ -493,6 +493,12 @@ namespace BNet.Cafe.Client
             }
             else if (IsWalkInUser())
             {
+                if (!ConfigHelper.IsAccountCreationAllowed)
+                {
+                    MessageBox.Show("Account creation is disabled.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 this.Hide();
 
                 using (RegisterForm registerForm = new RegisterForm())
