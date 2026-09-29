@@ -17,6 +17,7 @@
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RegisterForm));
             this.panelLeftHero = new System.Windows.Forms.Panel();
             this.panelSecurityWarning = new System.Windows.Forms.Panel();
             this.lblSecurityWarningIcon = new System.Windows.Forms.Label();
@@ -381,6 +382,7 @@
             this.Controls.Add(this.panelRightContent);
             this.Controls.Add(this.panelLeftHero);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "RegisterForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

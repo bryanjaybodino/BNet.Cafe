@@ -18,7 +18,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BNetCafeTimer));
             this.Panel_Header = new System.Windows.Forms.Panel();
+            this.Button_Minimize = new System.Windows.Forms.Button();
             this.Label_ClientName = new System.Windows.Forms.Label();
             this.Label_CustomerName = new System.Windows.Forms.Label();
             this.Label_SessionType = new System.Windows.Forms.Label();
@@ -41,6 +43,7 @@
             // Panel_Header
             // 
             this.Panel_Header.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(80)))), ((int)(((byte)(236)))));
+            this.Panel_Header.Controls.Add(this.Button_Minimize);
             this.Panel_Header.Controls.Add(this.Label_ClientName);
             this.Panel_Header.Controls.Add(this.Label_CustomerName);
             this.Panel_Header.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -51,13 +54,33 @@
             this.Panel_Header.TabIndex = 0;
             this.Panel_Header.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Panel_Header_MouseDown);
             // 
+            // Button_Minimize
+            // 
+            this.Button_Minimize.BackColor = System.Drawing.Color.Transparent;
+            this.Button_Minimize.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Button_Minimize.FlatAppearance.BorderSize = 0;
+            this.Button_Minimize.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(99)))), ((int)(((byte)(102)))), ((int)(((byte)(241)))));
+            this.Button_Minimize.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(70)))), ((int)(((byte)(229)))));
+            this.Button_Minimize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Button_Minimize.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.Button_Minimize.ForeColor = System.Drawing.Color.White;
+            this.Button_Minimize.Location = new System.Drawing.Point(302, 10);
+            this.Button_Minimize.Margin = new System.Windows.Forms.Padding(0);
+            this.Button_Minimize.Name = "Button_Minimize";
+            this.Button_Minimize.Size = new System.Drawing.Size(30, 30);
+            this.Button_Minimize.TabIndex = 2;
+            this.Button_Minimize.Text = "─";
+            this.Button_Minimize.UseCompatibleTextRendering = true;
+            this.Button_Minimize.UseVisualStyleBackColor = false;
+            this.Button_Minimize.Click += new System.EventHandler(this.Button_Minimize_Click);
+            // 
             // Label_ClientName
             // 
-            this.Label_ClientName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.Label_ClientName.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.Label_ClientName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
-            this.Label_ClientName.Location = new System.Drawing.Point(251, 12);
+            this.Label_ClientName.Location = new System.Drawing.Point(220, 12);
             this.Label_ClientName.Name = "Label_ClientName";
-            this.Label_ClientName.Size = new System.Drawing.Size(77, 25);
+            this.Label_ClientName.Size = new System.Drawing.Size(75, 25);
             this.Label_ClientName.TabIndex = 1;
             this.Label_ClientName.Text = "PC-00";
             this.Label_ClientName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -70,7 +93,7 @@
             this.Label_CustomerName.ForeColor = System.Drawing.Color.White;
             this.Label_CustomerName.Location = new System.Drawing.Point(12, 12);
             this.Label_CustomerName.Name = "Label_CustomerName";
-            this.Label_CustomerName.Size = new System.Drawing.Size(232, 25);
+            this.Label_CustomerName.Size = new System.Drawing.Size(200, 25);
             this.Label_CustomerName.TabIndex = 0;
             this.Label_CustomerName.Text = "Guest / Walk-in";
             this.Label_CustomerName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -261,6 +284,7 @@
             this.Controls.Add(this.Panel_Header);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "BNetCafeTimer";
@@ -277,6 +301,7 @@
 
         #endregion
         private System.Windows.Forms.Panel Panel_Header;
+        private System.Windows.Forms.Button Button_Minimize;
         private System.Windows.Forms.Label Label_ClientName;
         private System.Windows.Forms.Label Label_CustomerName;
         private System.Windows.Forms.Label Label_SessionType;

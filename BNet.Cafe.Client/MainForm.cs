@@ -82,6 +82,7 @@ namespace BNet.Cafe.Client
         private async void MainForm_Load(object sender, EventArgs e)
         {
             string clientName = ConfigHelper.GetClientNameFromIP();
+            Button_Register.Visible = ConfigHelper.IsAccountCreationAllowed;
             lblBigPcName.Text = clientName;
             lblStatusBadge.Text = $"● Station {clientName} Online";
             await Task.Delay(1000);

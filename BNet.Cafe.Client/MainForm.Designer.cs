@@ -17,6 +17,7 @@
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panelLeftHero = new System.Windows.Forms.Panel();
             this.lblBigPcName = new System.Windows.Forms.Label();
             this.labelStat3Val = new System.Windows.Forms.Label();
@@ -29,17 +30,17 @@
             this.labelHeroTitle = new System.Windows.Forms.Label();
             this.panelRightContent = new System.Windows.Forms.Panel();
             this.panelLoginContainer = new System.Windows.Forms.Panel();
+            this.lblStatusBadge = new BNet.Cafe.Client.Design.ModernBadge();
             this.lblCopyright = new System.Windows.Forms.Label();
+            this.Button_Login = new BNet.Cafe.Client.Design.ModernButton();
+            this.Button_Register = new BNet.Cafe.Client.Design.ModernButton();
+            this.TextBox_Password = new BNet.Cafe.Client.Design.ModernTextBox();
             this.lblPassword = new System.Windows.Forms.Label();
+            this.TextBox_Username = new BNet.Cafe.Client.Design.ModernTextBox();
             this.lblUsername = new System.Windows.Forms.Label();
             this.lblSubtitle = new System.Windows.Forms.Label();
             this.lblWelcome = new System.Windows.Forms.Label();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.lblStatusBadge = new BNet.Cafe.Client.Design.ModernBadge();
-            this.Button_Login = new BNet.Cafe.Client.Design.ModernButton();
-            this.Button_Register = new BNet.Cafe.Client.Design.ModernButton();
-            this.TextBox_Password = new BNet.Cafe.Client.Design.ModernTextBox();
-            this.TextBox_Username = new BNet.Cafe.Client.Design.ModernTextBox();
             this.panelLeftHero.SuspendLayout();
             this.panelRightContent.SuspendLayout();
             this.panelLoginContainer.SuspendLayout();
@@ -190,72 +191,6 @@
             this.panelLoginContainer.Size = new System.Drawing.Size(472, 480);
             this.panelLoginContainer.TabIndex = 0;
             // 
-            // lblCopyright
-            // 
-            this.lblCopyright.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.lblCopyright.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
-            this.lblCopyright.Location = new System.Drawing.Point(6, 399);
-            this.lblCopyright.Name = "lblCopyright";
-            this.lblCopyright.Size = new System.Drawing.Size(463, 20);
-            this.lblCopyright.TabIndex = 8;
-            this.lblCopyright.Text = "© 2026 BNet Cafe Client · All rights reserved";
-            this.lblCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblPassword
-            // 
-            this.lblPassword.AutoSize = true;
-            this.lblPassword.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.lblPassword.Location = new System.Drawing.Point(3, 205);
-            this.lblPassword.Name = "lblPassword";
-            this.lblPassword.Size = new System.Drawing.Size(76, 20);
-            this.lblPassword.TabIndex = 5;
-            this.lblPassword.Text = "Password";
-            // 
-            // lblUsername
-            // 
-            this.lblUsername.AutoSize = true;
-            this.lblUsername.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.lblUsername.Location = new System.Drawing.Point(3, 125);
-            this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(108, 20);
-            this.lblUsername.TabIndex = 3;
-            this.lblUsername.Text = "Email Address";
-            // 
-            // lblSubtitle
-            // 
-            this.lblSubtitle.AutoSize = true;
-            this.lblSubtitle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblSubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblSubtitle.Location = new System.Drawing.Point(3, 76);
-            this.lblSubtitle.Name = "lblSubtitle";
-            this.lblSubtitle.Size = new System.Drawing.Size(263, 21);
-            this.lblSubtitle.TabIndex = 2;
-            this.lblSubtitle.Text = "Sign in to start your internet session.";
-            // 
-            // lblWelcome
-            // 
-            this.lblWelcome.AutoSize = true;
-            this.lblWelcome.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Bold);
-            this.lblWelcome.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblWelcome.Location = new System.Drawing.Point(0, 30);
-            this.lblWelcome.Name = "lblWelcome";
-            this.lblWelcome.Size = new System.Drawing.Size(276, 50);
-            this.lblWelcome.TabIndex = 1;
-            this.lblWelcome.Text = "Welcome back";
-            // 
-            // lblCategory
-            // 
-            this.lblCategory.AutoSize = true;
-            this.lblCategory.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.lblCategory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(80)))), ((int)(((byte)(236)))));
-            this.lblCategory.Location = new System.Drawing.Point(3, 10);
-            this.lblCategory.Name = "lblCategory";
-            this.lblCategory.Size = new System.Drawing.Size(121, 20);
-            this.lblCategory.TabIndex = 0;
-            this.lblCategory.Text = "CLIENT PORTAL";
-            // 
             // lblStatusBadge
             // 
             this.lblStatusBadge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(252)))), ((int)(((byte)(231)))));
@@ -268,6 +203,17 @@
             this.lblStatusBadge.TabIndex = 9;
             this.lblStatusBadge.Text = "● Station PC-01 Online";
             this.lblStatusBadge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblCopyright
+            // 
+            this.lblCopyright.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.lblCopyright.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
+            this.lblCopyright.Location = new System.Drawing.Point(6, 399);
+            this.lblCopyright.Name = "lblCopyright";
+            this.lblCopyright.Size = new System.Drawing.Size(463, 20);
+            this.lblCopyright.TabIndex = 8;
+            this.lblCopyright.Text = "© 2026 BNet Cafe Client · All rights reserved";
+            this.lblCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Button_Login
             // 
@@ -313,6 +259,17 @@
             this.TextBox_Password.Size = new System.Drawing.Size(463, 44);
             this.TextBox_Password.TabIndex = 6;
             // 
+            // lblPassword
+            // 
+            this.lblPassword.AutoSize = true;
+            this.lblPassword.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.lblPassword.Location = new System.Drawing.Point(3, 205);
+            this.lblPassword.Name = "lblPassword";
+            this.lblPassword.Size = new System.Drawing.Size(76, 20);
+            this.lblPassword.TabIndex = 5;
+            this.lblPassword.Text = "Password";
+            // 
             // TextBox_Username
             // 
             this.TextBox_Username.BackColor = System.Drawing.Color.White;
@@ -325,6 +282,50 @@
             this.TextBox_Username.Size = new System.Drawing.Size(463, 44);
             this.TextBox_Username.TabIndex = 4;
             // 
+            // lblUsername
+            // 
+            this.lblUsername.AutoSize = true;
+            this.lblUsername.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.lblUsername.Location = new System.Drawing.Point(3, 125);
+            this.lblUsername.Name = "lblUsername";
+            this.lblUsername.Size = new System.Drawing.Size(108, 20);
+            this.lblUsername.TabIndex = 3;
+            this.lblUsername.Text = "Email Address";
+            // 
+            // lblSubtitle
+            // 
+            this.lblSubtitle.AutoSize = true;
+            this.lblSubtitle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.lblSubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblSubtitle.Location = new System.Drawing.Point(3, 76);
+            this.lblSubtitle.Name = "lblSubtitle";
+            this.lblSubtitle.Size = new System.Drawing.Size(263, 21);
+            this.lblSubtitle.TabIndex = 2;
+            this.lblSubtitle.Text = "Sign in to start your internet session.";
+            // 
+            // lblWelcome
+            // 
+            this.lblWelcome.AutoSize = true;
+            this.lblWelcome.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Bold);
+            this.lblWelcome.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.lblWelcome.Location = new System.Drawing.Point(0, 30);
+            this.lblWelcome.Name = "lblWelcome";
+            this.lblWelcome.Size = new System.Drawing.Size(276, 50);
+            this.lblWelcome.TabIndex = 1;
+            this.lblWelcome.Text = "Welcome back";
+            // 
+            // lblCategory
+            // 
+            this.lblCategory.AutoSize = true;
+            this.lblCategory.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.lblCategory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(88)))), ((int)(((byte)(80)))), ((int)(((byte)(236)))));
+            this.lblCategory.Location = new System.Drawing.Point(3, 10);
+            this.lblCategory.Name = "lblCategory";
+            this.lblCategory.Size = new System.Drawing.Size(121, 20);
+            this.lblCategory.TabIndex = 0;
+            this.lblCategory.Text = "CLIENT PORTAL";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -334,6 +335,7 @@
             this.Controls.Add(this.panelRightContent);
             this.Controls.Add(this.panelLeftHero);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "BNet Cafe Client";

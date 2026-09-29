@@ -48,7 +48,7 @@ namespace BNet.Cafe.Client
         {
             this.FormBorderStyle = FormBorderStyle.None;
             this.TopMost = false;
-            this.ShowInTaskbar = false;
+            this.ShowInTaskbar = true;
         }
 
         private void Panel_Header_MouseDown(object sender, MouseEventArgs e)
@@ -59,7 +59,10 @@ namespace BNet.Cafe.Client
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
             }
         }
-
+        private void Button_Minimize_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
         private bool IsMemberUser()
         {
             return !string.IsNullOrWhiteSpace(userId)
