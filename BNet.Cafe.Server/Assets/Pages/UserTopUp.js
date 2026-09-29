@@ -148,23 +148,41 @@ function ValidateTopUp() {
     return true;
 }
 
+function getCustomerType() {
+    var customerType = document.querySelector('[id$="HiddenField_Role"]');
+    return customerType.value.toUpperCase();
+}  
+
+
 function disableSubmitButton() {
     var btn = document.querySelector('[id$="LinkButton_Submit"]');
     if (btn) {
         btn.classList.add('disabled');
         btn.style.pointerEvents = 'none';
-        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Processing...';
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Saving...';
     }
 }
 
-// Re-run initial calculation on ASP.NET WebForms UpdatePanel partial postbacks
 if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManager) {
     var prm = Sys.WebForms.PageRequestManager.getInstance();
-    prm.add_pageLoaded(function () {
-        calculateTimeFromAmount();
+
+    // Triggered after UpdatePanel content updates
+    prm.add_pageLoaded(function (sender, args) {
+        var panelsUpdated = args.get_panelsUpdated();
+        if (panelsUpdated.length > 0) {
+            // Re-disable button during redirect window if needed
+            disableSubmitButton();
+            calculateTimeFromAmount();
+        }
+    });
+
+    // Triggered when an async postback finishes (success or error)
+    prm.add_endRequest(function (sender, args) {
+        var btn = document.querySelector('[id$="LinkButton_Submit"]');
+        if (btn) {
+            btn.classList.remove('disabled');
+            btn.style.pointerEvents = 'auto';
+            btn.innerHTML = 'Submit'; // Restore original text/HTML
+        }
     });
 }
-function getCustomerType() {
-    var customerType = document.querySelector('[id$="HiddenField_Role"]');
-    return customerType.value.toUpperCase();
-}  

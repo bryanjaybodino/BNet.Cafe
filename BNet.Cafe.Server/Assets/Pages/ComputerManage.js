@@ -26,15 +26,25 @@ function disableSubmitButton() {
     }
 }
 
-// Keep the button disabled after UpdatePanel updates
 if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManager) {
     var prm = Sys.WebForms.PageRequestManager.getInstance();
-    // After UpdatePanel content updates on page
+
+    // Triggered after UpdatePanel content updates
     prm.add_pageLoaded(function (sender, args) {
         var panelsUpdated = args.get_panelsUpdated();
         if (panelsUpdated.length > 0) {
-            // Re-disable button during the 1.5s AlertService redirect window
+            // Re-disable button during redirect window if needed
             disableSubmitButton();
+        }
+    });
+
+    // Triggered when an async postback finishes (success or error)
+    prm.add_endRequest(function (sender, args) {
+        var btn = document.querySelector('[id$="LinkButton_Submit"]');
+        if (btn) {
+            btn.classList.remove('disabled');
+            btn.style.pointerEvents = 'auto';
+            btn.innerHTML = 'Submit'; // Restore original text/HTML
         }
     });
 }

@@ -1,6 +1,6 @@
 ﻿UPDATE `computers` 
 SET 
-    `DBComputerName` = '{DBComputerName}'
+    `DBComputerName` = '{DBComputerName}',
     `DBPosX` = '{DBPosX}',
     `DBPosY` = '{DBPosY}',
     `DBId` = '{DBId}' 
