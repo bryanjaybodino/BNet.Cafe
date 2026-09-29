@@ -97,7 +97,9 @@ namespace BNet.Cafe.Client
         public MainForm()
         {
             InitializeComponent();
-
+            this.AcceptButton = Button_Login;
+            TextBox_Username.KeyDown += TextBox_Username_KeyDown;
+            TextBox_Password.KeyDown += TextBox_Password_KeyDown;
             if (!EnvironmentHelper.IsDevelopment)
             {
                 this.FormBorderStyle = FormBorderStyle.None;
@@ -146,7 +148,23 @@ namespace BNet.Cafe.Client
             lblStatusBadge.BackColor = System.Drawing.Color.FromArgb(220, 252, 231);
             lblStatusBadge.ForeColor = System.Drawing.Color.FromArgb(22, 101, 52);
         }
+        private void TextBox_Username_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // Prevents the beep sound
+                Button_Login_Click(sender, e);
+            }
+        }
 
+        private void TextBox_Password_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // Prevents the beep sound
+                Button_Login_Click(sender, e);
+            }
+        }
         private void IdleShutdownTimer_Tick(object sender, EventArgs e)
         {
             //If Zero dont no auto shutdown
