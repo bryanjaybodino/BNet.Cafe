@@ -13,7 +13,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
-using System.Runtime.InteropServices; //Required for Win32 API
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,7 +28,7 @@ namespace BNet.Cafe.Client
         private const int SendTimeoutMs = 600;
         private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
 
-        //Win32 API to monitor system-wide Mouse & Keyboard inactivity
+        // Win32 API to monitor system-wide Mouse & Keyboard inactivity
         [StructLayout(LayoutKind.Sequential)]
         private struct LASTINPUTINFO
         {
@@ -39,7 +39,6 @@ namespace BNet.Cafe.Client
         [DllImport("user32.dll")]
         private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
 
-        //Track manual keyboard timestamps when KeyboardHook intercepts input
         private static uint _lastManualInputTick = 0;
 
         private static uint GetIdleTimeMs()
@@ -53,7 +52,6 @@ namespace BNet.Cafe.Client
                 apiTick = lastInputInfo.dwTime;
             }
 
-            // Take the most recent user activity between Win32 GetLastInputInfo and Hook triggers
             uint mostRecentTick = Math.Max(apiTick, _lastManualInputTick);
             uint currentTick = (uint)Environment.TickCount;
 
@@ -63,22 +61,10 @@ namespace BNet.Cafe.Client
             return 0;
         }
 
-        //Auto-shutdown variables
-        private System.Windows.Forms.Timer _idleShutdownTimer;
-        private const int InputIdleThresholdSeconds = 10; // Trigger countdown if no mouse/keyboard input for 10s
-        private int IdleTimeoutSeconds
-        {
-            get
-            {
-                if (int.TryParse(ConfigHelper.AutoShutDownInterval?.Trim(), out int timeout))
-                {
-                    return timeout;
-                }
-                return 300;
-            }
-        }
+        private System.Windows.Forms.Timer _idleCheckTimer;
+        private SlideshowOverlayForm _slideshowForm;
+        private const int InputIdleThresholdSeconds = 10; // Trigger slideshow if idle for 10s
 
-        private int _remainingIdleSeconds = 300; // 5 minutes total countdown (300 seconds)
         private volatile bool _paused = true;
         private readonly SemaphoreSlim _resumeSignal = new SemaphoreSlim(0, 1);
         private readonly ConcurrentDictionary<int, byte[]> _pendingFrames = new ConcurrentDictionary<int, byte[]>();
@@ -94,6 +80,7 @@ namespace BNet.Cafe.Client
         private readonly ScreenStreamer _screenStreamer = new ScreenStreamer();
         private readonly ActivityReporter _activityReporter = new ActivityReporter();
         private WallpaperService _wallpaperService = new WallpaperService();
+
         public MainForm()
         {
             InitializeComponent();
@@ -110,49 +97,61 @@ namespace BNet.Cafe.Client
                 this.MinimizeBox = false;
             }
 
-            //Initialize idle timer
-            InitializeIdleShutdownTimer();
+            InitializeIdleCheckTimer();
         }
 
-        //Auto-Shutdown Helper Methods
-        private void InitializeIdleShutdownTimer()
+        private void InitializeIdleCheckTimer()
         {
-            _remainingIdleSeconds = IdleTimeoutSeconds;
-            _idleShutdownTimer = new System.Windows.Forms.Timer();
-            _idleShutdownTimer.Interval = 1000; // 1 second interval
-            _idleShutdownTimer.Tick += IdleShutdownTimer_Tick;
+            _idleCheckTimer = new System.Windows.Forms.Timer();
+            _idleCheckTimer.Interval = 1000;
+            _idleCheckTimer.Tick += IdleCheckTimer_Tick;
         }
 
-        private void StartIdleCountdown()
+        private void StartIdleMonitor()
         {
             _lastManualInputTick = (uint)Environment.TickCount;
-            _remainingIdleSeconds = IdleTimeoutSeconds;
-            _idleShutdownTimer.Start();
+            _idleCheckTimer.Start();
         }
 
-        private void StopIdleCountdown()
+        private void StopIdleMonitor()
         {
-            _idleShutdownTimer.Stop();
-            _remainingIdleSeconds = IdleTimeoutSeconds;
+            _idleCheckTimer.Stop();
+            CloseSlideshowOverlay();
+            ResetStatusBadge();
+        }
+
+        private void ResetStatusBadge()
+        {
             string clientName = ConfigHelper.GetClientNameFromIP();
             lblStatusBadge.Text = $"● Station {clientName} Online";
             lblStatusBadge.BackColor = System.Drawing.Color.FromArgb(220, 252, 231);
             lblStatusBadge.ForeColor = System.Drawing.Color.FromArgb(22, 101, 52);
         }
 
-        private void ResetIdleCountdown()
+        private void ShowSlideshowOverlay()
         {
-            _remainingIdleSeconds = IdleTimeoutSeconds;
-            string clientName = ConfigHelper.GetClientNameFromIP();
-            lblStatusBadge.Text = $"● Station {clientName} Online";
-            lblStatusBadge.BackColor = System.Drawing.Color.FromArgb(220, 252, 231);
-            lblStatusBadge.ForeColor = System.Drawing.Color.FromArgb(22, 101, 52);
+            if (_slideshowForm == null || _slideshowForm.IsDisposed)
+            {
+                _slideshowForm = new SlideshowOverlayForm();
+                _slideshowForm.FormClosed += (s, args) => _slideshowForm = null;
+                _slideshowForm.Show(this);
+            }
         }
+
+        private void CloseSlideshowOverlay()
+        {
+            if (_slideshowForm != null && !_slideshowForm.IsDisposed)
+            {
+                _slideshowForm.CloseOverlay();
+                _slideshowForm = null;
+            }
+        }
+
         private void TextBox_Username_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.SuppressKeyPress = true; // Prevents the beep sound
+                e.SuppressKeyPress = true;
                 Button_Login_Click(sender, e);
             }
         }
@@ -161,106 +160,67 @@ namespace BNet.Cafe.Client
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.SuppressKeyPress = true; // Prevents the beep sound
+                e.SuppressKeyPress = true;
                 Button_Login_Click(sender, e);
             }
         }
-        private void IdleShutdownTimer_Tick(object sender, EventArgs e)
-        {
-            //If Zero dont no auto shutdown
-            if (_remainingIdleSeconds == 0)
-            {
-                _idleShutdownTimer.Stop();
-                return;
-            }
 
-            // If an active session exists, cancel countdown immediately
+        private void IdleCheckTimer_Tick(object sender, EventArgs e)
+        {
             if (SessionLogin.Exists())
             {
-                StopIdleCountdown();
+                StopIdleMonitor();
                 return;
             }
 
-            // Calculate current physical idle time in seconds
             uint idleMs = GetIdleTimeMs();
             uint idleSeconds = idleMs / 1000;
 
-            //If user touches mouse or keyboard, reset the countdown completely
             if (idleSeconds < InputIdleThresholdSeconds)
             {
-                ResetIdleCountdown();
+                CloseSlideshowOverlay();
+                ResetStatusBadge();
                 return;
             }
 
-            // User has been physically idle for at least 10 seconds -> tick down the 5-minute timer
-            _remainingIdleSeconds--;
-
-            if (_remainingIdleSeconds <= 0)
-            {
-                _idleShutdownTimer.Stop();
-                ShutdownSystem();
-                return;
-            }
-
-            UpdateShutdownBadgeUI();
-        }
-
-        private void UpdateShutdownBadgeUI()
-        {
-            TimeSpan ts = TimeSpan.FromSeconds(_remainingIdleSeconds);
-            lblStatusBadge.Text = $"⚠️ Auto-Shutdown in: {ts.Minutes:D2}:{ts.Seconds:D2}";
-            lblStatusBadge.BackColor = System.Drawing.Color.FromArgb(254, 226, 226);
-            lblStatusBadge.ForeColor = System.Drawing.Color.FromArgb(185, 28, 28);
-        }
-
-        private void ShutdownSystem()
-        {
-            try
-            {
-                Process.Start("shutdown", "/s /t 10 /f /c \"No physical activity detected for 10 seconds. PC shutting down.\"");
-                Application.Exit();
-            }
-            catch { }
+            ShowSlideshowOverlay();
         }
 
         public void LockScreen()
         {
-            // Stop Wallpaper
             _wallpaperService?.Stop();
 
-            // 1. Always check InvokeRequired FIRST before touching any UI properties
             if (this.InvokeRequired)
             {
                 this.BeginInvoke(new Action(LockScreen));
                 return;
             }
 
-            // 2. Start global low-level hooks
             KeyboardHook.Start();
 
-            ////// 4. Show and force focus
             this.Show();
             this.BringToFront();
             this.Activate();
             this.Focus();
 
-            //Start monitoring idle input when screen locks
-            StartIdleCountdown();
+            StartIdleMonitor();
         }
 
         public void UnlockScreen()
         {
+            CloseSlideshowOverlay();
             _wallpaperService?.StartAsync();
 
             KeyboardHook.Stop();
-
-            //Stop idle countdown when screen unlocks
-            StopIdleCountdown();
+            StopIdleMonitor();
         }
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            CloseSlideshowOverlay();
             _wallpaperService?.Stop();
         }
+
         private async void MainForm_Load(object sender, EventArgs e)
         {
             string clientName = ConfigHelper.GetClientNameFromIP();
@@ -279,32 +239,25 @@ namespace BNet.Cafe.Client
                 _BNetCafeTimer.Show();
                 ClearTitleCache();
 
-                //Active session running on startup -> stop idle countdown
-                StopIdleCountdown();
+                StopIdleMonitor();
             }
             else
             {
-                //No session on startup -> start idle monitor
-                StartIdleCountdown();
+                StartIdleMonitor();
             }
 
             _screenStreamer.RebuildScreenKeyCache(ScreenCaptured.GetScreenCount(), _deviceInfo.ClientName);
 
             UserActivity.ActiveWindowMonitor.OnPolled += async info =>
             {
-
-                // 1. Check disk on background thread
                 bool fileExists = SessionLogin.Exists();
 
-                // 2. Safe UI update on the UI thread
                 this.BeginInvoke((Action)(() =>
                 {
                     if (!fileExists)
                     {
-                        // NO ACTIVE SESSION: Show MainForm (login screen), Hide Timer
                         if (!_BNetCafeTimer.Visible && !this.Visible)
                         {
-                            // Unlocks keyboard so user can type in username/password
                             LockScreen();
                         }
 
@@ -315,24 +268,19 @@ namespace BNet.Cafe.Client
                     }
                     else
                     {
-                        // ACTIVE SESSION RUNNING: Hide MainForm, Show Timer
                         if (this.Visible)
                         {
                             this.Hide();
-
-                            //Stop idle countdown when session starts
-                            StopIdleCountdown();
+                            StopIdleMonitor();
                         }
 
                         if (!_BNetCafeTimer.Visible)
                         {
                             _BNetCafeTimer.Show();
-                            // Stops hook during active session as well
                             UnlockScreen();
                         }
                     }
                 }));
-
 
                 if (!_BNetCafeTimer.isAdmin)
                 {
@@ -341,7 +289,6 @@ namespace BNet.Cafe.Client
                 var sess = _currentSession;
                 if (sess == null || !sess.IsOpen) return;
                 await _activityReporter.SendActivityInfoAsync(sess, info, _deviceInfo);
-
             };
 
             UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
@@ -349,22 +296,22 @@ namespace BNet.Cafe.Client
             _ = Task.Run(RunAgentLoop);
         }
 
-        //Update input timestamp on user typing
         private void TextBox_Username_TextChanged(object sender, EventArgs e)
         {
             _lastManualInputTick = (uint)Environment.TickCount;
-            ResetIdleCountdown();
+            CloseSlideshowOverlay();
+            ResetStatusBadge();
         }
 
         private void TextBox_Password_TextChanged(object sender, EventArgs e)
         {
             _lastManualInputTick = (uint)Environment.TickCount;
-            ResetIdleCountdown();
+            CloseSlideshowOverlay();
+            ResetStatusBadge();
         }
 
         protected override void WndProc(ref Message m)
         {
-            //Intercept Windows mouse/key messages on the Form to keep track of user activity
             const int WM_MOUSEMOVE = 0x0200;
             const int WM_LBUTTONDOWN = 0x0201;
             const int WM_RBUTTONDOWN = 0x0204;
@@ -384,19 +331,17 @@ namespace BNet.Cafe.Client
             {
                 try
                 {
-                    // First check: notepad / pending file exist?
                     if (SessionLogout.HasPendingLogout())
                     {
-                        // Second check: check server & third: save to DB & fourth: remove file
                         await SessionLogout.ProcessPendingLogoutAsync();
                     }
                 }
                 catch { }
 
-                // Poll every 10 seconds for offline logouts to re-sync
                 await Task.Delay(10000);
             }
         }
+
         private async Task RunAgentLoop()
         {
             string wsUrl = ConfigHelper.WebSocketUrl;
@@ -602,7 +547,6 @@ namespace BNet.Cafe.Client
                 }
                 ClearTitleCache();
                 TriggerImmediateActivityReport();
-
             }
             else if (textMessage == "LOGOUT")
             {
@@ -626,9 +570,8 @@ namespace BNet.Cafe.Client
                     MessageBoxOptions.ServiceNotification
                 );
             }
-
-
         }
+
         private async void TriggerImmediateActivityReport()
         {
             await Task.Delay(1000).ContinueWith(_ =>
@@ -639,6 +582,7 @@ namespace BNet.Cafe.Client
 
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
+
         private static async Task<byte[]> ReceiveFullMessage(WebSocket ws, byte[] buffer)
         {
             WebSocketReceiveResult result;
@@ -679,7 +623,6 @@ namespace BNet.Cafe.Client
             string username = TextBox_Username.Text.Trim();
             string password = TextBox_Password.Text;
 
-            // 1. Check offline admin bypass first before network calls
             bool isLocalAdmin = (username == "BNetAdmin" && password == "@12345");
 
             if (isLocalAdmin)
@@ -692,7 +635,6 @@ namespace BNet.Cafe.Client
                 GetLoginHandler loginHandler = new GetLoginHandler();
                 var loginResponse = await loginHandler.LoginAsync(username, password);
 
-                // 2. Handle failed server response or null payload safely
                 if (loginResponse == null || (!loginResponse.Success && !isLocalAdmin))
                 {
                     MessageBox.Show(
@@ -706,7 +648,6 @@ namespace BNet.Cafe.Client
                     return;
                 }
 
-                // 3. Admin Check (Server role OR Local Admin credentials)
                 bool isAdmin = isLocalAdmin || string.Equals(loginResponse?.Data?.Role, "ADMIN", StringComparison.OrdinalIgnoreCase);
 
                 if (isAdmin)
@@ -715,7 +656,6 @@ namespace BNet.Cafe.Client
                     return;
                 }
 
-                // 4. Insufficient Balance Check
                 if (loginResponse.Data == null || loginResponse.Data.TotalDuration <= 0)
                 {
                     MessageBox.Show(
@@ -727,7 +667,6 @@ namespace BNet.Cafe.Client
                     return;
                 }
 
-                // 5. Standard User Rental Process
                 string userId = loginResponse.Data.Id.ToString();
                 string durationMinutes = loginResponse.Data.TotalDuration.ToString();
                 string clientName = ConfigHelper.GetClientNameFromIP();
@@ -745,14 +684,11 @@ namespace BNet.Cafe.Client
                 TextBox_Username.Text = string.Empty;
                 TextBox_Password.Text = string.Empty;
 
-                //Stop idle countdown when successfully logged in
-                StopIdleCountdown();
-
+                StopIdleMonitor();
                 TriggerImmediateActivityReport();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // Prevent system termination on network failure or server disconnect
                 MessageBox.Show(
                     "Unable to connect to the server. Please check your network connection or try again later.",
                     "Server Unavailable",
@@ -761,7 +697,6 @@ namespace BNet.Cafe.Client
                 );
             }
 
-
             async void AdminLogin()
             {
                 _BNetCafeTimer.isAdmin = true;
@@ -769,11 +704,8 @@ namespace BNet.Cafe.Client
                 TextBox_Username.Text = string.Empty;
                 TextBox_Password.Text = string.Empty;
 
-                //Stop idle countdown on admin login
-                StopIdleCountdown();
-
+                StopIdleMonitor();
                 TriggerImmediateActivityReport();
-                return;
             }
         }
 
@@ -784,21 +716,17 @@ namespace BNet.Cafe.Client
                 MessageBox.Show("Account creation is disabled.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            // 1. Pause active window polling so LockScreen() isn't continuously called in the background
+
             UserActivity.ActiveWindowMonitor.StopPolling();
 
             using (RegisterForm registerForm = new RegisterForm())
             {
-                // 3. Keep TopMost on RegisterForm so it stays above MainForm
                 registerForm.TopMost = true;
                 registerForm.StartPosition = FormStartPosition.CenterScreen;
-                // 2. Stop the global keyboard hook to allow typing in the registration form
                 UnlockScreen();
-                // 4. Pass 'this' as owner so RegisterForm displays directly OVER MainForm without hiding MainForm
                 registerForm.ShowDialog(this);
             }
 
-            // 5. Re-enable security hooks and window monitoring when RegisterForm closes
             if (!SessionLogin.Exists())
             {
                 LockScreen();

@@ -88,6 +88,15 @@ namespace BNet.Cafe.Client.Services
                 return !string.Equals(value?.Trim(), "false", StringComparison.OrdinalIgnoreCase);
             }
         }
+        public static bool IsDesktopSlideShow
+        {
+            get
+            {
+                string value = GetOrCreateSetting("DesktopSlideShow", "false");
+                // Returns false only if the value equals "false" (case-insensitive); defaults to true otherwise
+                return !string.Equals(value?.Trim(), "false", StringComparison.OrdinalIgnoreCase);
+            }
+        }
 
         public static string WebSocketUrl
         {

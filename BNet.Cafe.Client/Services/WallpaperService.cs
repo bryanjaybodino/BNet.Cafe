@@ -56,6 +56,7 @@ namespace BNet.Cafe.Client.Services
         /// </summary>
         public async Task StartAsync()
         {
+
             SaveOriginalWallpaper();
             await SyncWallpapersFromServerAsync();
             RefreshImagesAndApply();
@@ -64,7 +65,7 @@ namespace BNet.Cafe.Client.Services
         /// <summary>
         /// Synchronizes wallpaper images from remote server to local folder (downloads new/updated ones, removes deleted ones).
         /// </summary>
-        public async Task SyncWallpapersFromServerAsync()
+        private async Task SyncWallpapersFromServerAsync()
         {
             try
             {
@@ -134,8 +135,12 @@ namespace BNet.Cafe.Client.Services
             RestoreOriginalWallpaper();
         }
 
-        public void RefreshImagesAndApply()
+        private void RefreshImagesAndApply()
         {
+            if (!ConfigHelper.IsDesktopSlideShow)
+            {
+                return;
+            }
             var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".bmp" };
 
             if (Directory.Exists(_wallpaperFolderPath))
@@ -187,6 +192,10 @@ namespace BNet.Cafe.Client.Services
 
         private void SaveOriginalWallpaper()
         {
+            if (!ConfigHelper.IsDesktopSlideShow)
+            {
+                return;
+            }
             StringBuilder sb = new StringBuilder(260);
             SystemParametersInfo(SPI_GETDESKWALLPAPER, (uint)sb.Capacity, sb, 0);
             _originalWallpaperPath = sb.ToString();

@@ -111,6 +111,12 @@
     <Compile Include="Services\SecurityAccessManager.cs" />
     <Compile Include="Services\SessionLogin.cs" />
     <Compile Include="Services\WallpaperService.cs" />
+    <Compile Include="SlideshowOverlayForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SlideshowOverlayForm.Designer.cs">
+      <DependentUpon>SlideshowOverlayForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Starter\EnvironmentHelper.cs" />
     <Compile Include="Starter\NativeMethods.cs" />
     <Compile Include="Services\ActivityReporter.cs" />
@@ -163,6 +169,9 @@
     </Compile>
     <EmbeddedResource Include="RegisterForm.resx">
       <DependentUpon>RegisterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SlideshowOverlayForm.resx">
+      <DependentUpon>SlideshowOverlayForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
