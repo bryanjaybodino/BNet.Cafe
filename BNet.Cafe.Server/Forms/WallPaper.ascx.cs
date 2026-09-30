@@ -28,7 +28,8 @@ namespace BNet.Cafe.Server.Forms
             }
         }
 
-        private void LoadExistingWallpapers()
+        // Change this line in Wallpaper.ascx.cs:
+        public void LoadExistingWallpapers()
         {
             string uploadFolder = Server.MapPath("~/Uploads/Wallpapers/");
             if (!Directory.Exists(uploadFolder))
@@ -62,47 +63,12 @@ namespace BNet.Cafe.Server.Forms
                 });
             }
 
-            // Set MaxJsonLength to int.MaxValue to support large base64 image strings
             JavaScriptSerializer serializer = new JavaScriptSerializer
             {
                 MaxJsonLength = int.MaxValue
             };
 
             HiddenField_WallpaperData.Value = serializer.Serialize(existingList);
-        }
-        protected void LinkButton_Delete_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string fileName = HiddenField_DeleteTarget.Value;
-                if (!string.IsNullOrEmpty(fileName))
-                {
-                    DeleteFileFromServer(fileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                AlertService.ShowAlert(UpdatePanel1, "Delete failed: " + ex.Message, "error");
-            }
-        }
-        private void DeleteFileFromServer(string fileName)
-        {
-            try
-            {
-                string path = Server.MapPath("~/Uploads/Wallpapers/" + fileName);
-                if (File.Exists(path))
-                {
-                    File.Delete(path);
-                }
-
-                // Refresh hidden field data so client updates UI automatically
-                LoadExistingWallpapers();
-                AlertService.ShowAlert(UpdatePanel1, $"{fileName} deleted successfully.", "success");
-            }
-            catch (Exception ex)
-            {
-                AlertService.ShowAlert(UpdatePanel1, "Error deleting file: " + ex.Message, "error");
-            }
         }
 
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
@@ -117,7 +83,6 @@ namespace BNet.Cafe.Server.Forms
 
             try
             {
-                // Set MaxJsonLength when deserializing large JSON data back from client
                 JavaScriptSerializer serializer = new JavaScriptSerializer
                 {
                     MaxJsonLength = int.MaxValue

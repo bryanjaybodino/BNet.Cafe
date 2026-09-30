@@ -1,27 +1,5 @@
 ﻿// Global scope binding to prevent re-declaration errors
 var wallpaperList = window.wallpaperList || [];
-let deleteModalInstance = null;
-let pendingDeleteId = null;
-
-// Modal Manager
-function getDeleteWallpaperModal() {
-    if (!deleteModalInstance) {
-        deleteModalInstance = new BNetModal('#deleteWallpaperModal');
-    }
-    return deleteModalInstance;
-}
-
-function openDeleteWallpaperModal(id, name) {
-    pendingDeleteId = id;
-    const nameTarget = document.getElementById('deleteWallpaperTargetName');
-    if (nameTarget) nameTarget.innerText = name;
-    getDeleteWallpaperModal().open();
-}
-
-function closeDeleteWallpaperModal() {
-    pendingDeleteId = null;
-    getDeleteWallpaperModal().close();
-}
 
 // Handle UpdatePanel Async Postback Life Cycle
 document.addEventListener('DOMContentLoaded', function () {
@@ -181,37 +159,6 @@ function removeWallpaper(id) {
     } else {
         wallpaperList = wallpaperList.filter(wp => wp.id !== id);
         renderWallpaperPreviews();
-    }
-}
-
-function confirmWallpaperDeletion() {
-    if (!pendingDeleteId) return;
-
-    const item = wallpaperList.find(wp => wp.id === pendingDeleteId);
-    if (!item) return;
-
-    const targetField = document.querySelector('[id$="HiddenField_DeleteTarget"]');
-    const deleteBtn = document.querySelector('[id$="LinkButton_Delete"]');
-    const wallpaperDataField = document.querySelector('[id$="HiddenField_WallpaperData"]');
-
-    if (targetField && deleteBtn) {
-        targetField.value = item.name;
-
-        // Clear large Base64 hidden field payload before deleting to avoid huge HTTP POST requests
-        if (wallpaperDataField) {
-            wallpaperDataField.value = '';
-        }
-
-        // UI Feedback on Modal Delete Button
-        const confirmBtn = document.getElementById('btnConfirmDelete');
-        if (confirmBtn) {
-            confirmBtn.classList.add('disabled');
-            confirmBtn.style.pointerEvents = 'none';
-            confirmBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Deleting...';
-        }
-
-        // Trigger LinkButton click natively
-        deleteBtn.click();
     }
 }
 

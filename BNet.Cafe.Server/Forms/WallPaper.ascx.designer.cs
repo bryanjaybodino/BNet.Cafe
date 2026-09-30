@@ -33,24 +33,6 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.HiddenField HiddenField_WallpaperData;
 
         /// <summary>
-        /// HiddenField_DeleteTarget control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField HiddenField_DeleteTarget;
-
-        /// <summary>
-        /// LinkButton_Delete control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton LinkButton_Delete;
-
-        /// <summary>
         /// LinkButton_Submit control.
         /// </summary>
         /// <remarks>
@@ -58,5 +40,14 @@ namespace BNet.Cafe.Server.Forms
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton LinkButton_Submit;
+
+        /// <summary>
+        /// WallpaperDeleteModal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::BNet.Cafe.Server.Forms.Modals.WallpaperDelete WallpaperDeleteModal;
     }
 }

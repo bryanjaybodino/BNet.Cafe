@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Wallpaper.ascx.cs" Inherits="BNet.Cafe.Server.Forms.Wallpaper" %>
+<%@ Register Src="~/Forms/Modals/WallpaperDelete.ascx" TagPrefix="uc1" TagName="WallpaperDelete" %>
 <link href="Assets/Pages/Wallpaper.css" rel="stylesheet" />
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -19,12 +20,8 @@
                 <input type="file" id="fileInput" multiple accept="image/jpeg,image/png,image/webp" class="d-none" />
             </div>
 
-            <!-- Hidden Field for JSON Array & File Target ID -->
+            <!-- Hidden Field for JSON Array -->
             <asp:HiddenField ID="HiddenField_WallpaperData" runat="server" />
-            <asp:HiddenField ID="HiddenField_DeleteTarget" runat="server" />
-
-            <!-- Hidden LinkButton Trigger for Server-Side Deletion -->
-            <asp:LinkButton ID="LinkButton_Delete" OnClick="LinkButton_Delete_Click" runat="server" Style="display:none;" />
 
             <!-- Gallery Header & Controls -->
             <div id="previewHeader" class="preview-header d-none">
@@ -44,24 +41,7 @@
             </div>
         </div>
 
-        <!-- Wallpaper Delete Confirmation Modal -->
-        <div id="deleteWallpaperModal" class="bnet-modal-overlay">
-            <div class="bnet-modal-container">
-                <div class="bnet-modal-header">
-                    <h3 class="bnet-modal-title">Confirm Deletion</h3>
-                    <span class="bnet-modal-close" onclick="closeDeleteWallpaperModal()">&times;</span>
-                </div>
-                <div class="bnet-modal-body">
-                    <p>Are you sure you want to delete <strong id="deleteWallpaperTargetName"></strong> from the server?</p>
-                    <p style="color: var(--text-light-secondary); font-size: 13px; margin-top: 6px;">This action cannot be undone.</p>
-                </div>
-                <div class="bnet-modal-footer">
-                    <span class="btn btn-secondary" onclick="closeDeleteWallpaperModal()">Cancel</span>
-                    <button type="button" class="btn btn-danger" id="btnConfirmDelete" onclick="confirmWallpaperDeletion()">
-                        Delete
-                    </button>
-                </div>
-            </div>
-        </div>
+        <!-- Wallpaper Delete Modal Control -->
+        <uc1:WallpaperDelete runat="server" ID="WallpaperDeleteModal" />
     </ContentTemplate>
 </asp:UpdatePanel>
