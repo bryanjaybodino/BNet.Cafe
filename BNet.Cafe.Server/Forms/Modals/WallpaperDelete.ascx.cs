@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using BNet.Cafe.Server.Services;
@@ -22,7 +23,7 @@ namespace BNet.Cafe.Server.Forms.Modals
                 string fileName = HiddenField_DeleteTarget.Value;
                 if (!string.IsNullOrEmpty(fileName))
                 {
-                    DeleteFileFromServer(fileName);
+                    DeleteFileAndReindexServer(fileName);
                 }
             }
             catch (Exception ex)
@@ -31,24 +32,77 @@ namespace BNet.Cafe.Server.Forms.Modals
             }
         }
 
-        private void DeleteFileFromServer(string fileName)
+        private void DeleteFileAndReindexServer(string fileName)
         {
             try
             {
-                string path = Server.MapPath("~/Uploads/Wallpapers/" + fileName);
+                string uploadFolder = Server.MapPath("~/Uploads/Wallpapers/");
+                string path = Path.Combine(uploadFolder, fileName);
+
+                // 1. Delete target file if it exists
                 if (File.Exists(path))
                 {
                     File.Delete(path);
                 }
 
-                // Refresh parent control's data so HiddenField_WallpaperData is updated
+                // 2. Re-index remaining PNG files sequentially (1.png, 2.png, 3.png, ...)
+                if (Directory.Exists(uploadFolder))
+                {
+                    ReindexRemainingWallpapers(uploadFolder);
+                }
+
+                // 3. Refresh parent control's data so HiddenField_WallpaperData gets updated
                 RefreshParentGallery();
 
-                AlertService.ShowAlert(this, $"{fileName} deleted successfully.", "success");
+                AlertService.ShowAlert(this, $"{fileName} deleted and wallpapers re-indexed successfully.", "success");
             }
             catch (Exception ex)
             {
                 AlertService.ShowAlert(this, "Error deleting file: " + ex.Message, "error");
+            }
+        }
+
+        private void ReindexRemainingWallpapers(string uploadFolder)
+        {
+            // Get all remaining PNG files and sort them numerically by their current index
+            var files = Directory.GetFiles(uploadFolder, "*.png")
+                .Select(f => new FileInfo(f))
+                .OrderBy(f =>
+                {
+                    int number;
+                    return int.TryParse(Path.GetFileNameWithoutExtension(f.Name), out number) ? number : int.MaxValue;
+                })
+                .ToList();
+
+            // Temporary directory to avoid file lock / name collision issues during bulk rename
+            string tempFolder = Path.Combine(uploadFolder, "TempReindex_" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(tempFolder);
+
+            try
+            {
+                // Step A: Move remaining files to temporary directory with new 1..N sequence names
+                for (int i = 0; i < files.Count; i++)
+                {
+                    int newIndex = i + 1;
+                    string tempPath = Path.Combine(tempFolder, $"{newIndex}.png");
+                    File.Move(files[i].FullName, tempPath);
+                }
+
+                // Step B: Move indexed files back to main upload folder
+                var tempFiles = Directory.GetFiles(tempFolder, "*.png");
+                foreach (var tempFile in tempFiles)
+                {
+                    string targetPath = Path.Combine(uploadFolder, Path.GetFileName(tempFile));
+                    File.Move(tempFile, targetPath);
+                }
+            }
+            finally
+            {
+                // Step C: Clean up temporary folder
+                if (Directory.Exists(tempFolder))
+                {
+                    Directory.Delete(tempFolder, true);
+                }
             }
         }
 
