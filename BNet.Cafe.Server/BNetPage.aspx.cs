@@ -153,49 +153,43 @@ namespace BNet.Cafe.Server
 
             string[] scripts;
 
-            switch (formName)
+            switch (formName?.ToUpper())
             {
-                case "Dashboard":
+                case "DASHBOARD":
                     scripts = new[] { "BNetChart/BNetBaseChart", "BNetChart/BNetBarChart", "BNetChart/BNetDonutChart", "BNetChart/BNetLineChart" };
                     break;
-                case "Computers":
+                case "COMPUTERS":
                     scripts = new[] { "Pages/RemoteMessaging", "Pages/Computers" };
                     break;
-                case "ComputerCreate":
+                case "COMPUTERCREATE":
+                case "COMPUTEREDIT":
                     scripts = new[] { "Pages/ComputerManage" };
                     break;
-                case "ComputerEdit":
-                    scripts = new[] { "Pages/ComputerManage" };
-                    break;
-                case "UserCreate":
+                case "USERCREATE":
+                case "USEREDIT":
                     scripts = new[] { "Pages/UserManage" };
                     break;
-                case "UserEdit":
-                    scripts = new[] { "Pages/UserManage" };
-                    break;
-                case "UserTopUp":
+                case "USERTOPUP":
+                case "USERBONUS":
                     scripts = new[] { "Pages/UserTopUp" };
                     break;
-                case "UserBonus":
-                    scripts = new[] { "Pages/UserTopUp" };
-                    break;
-                case "Remote":
+                case "REMOTE":
                     scripts = new[] { "Pages/RemoteMessaging", "Pages/Remote" };
                     break;
-                case "RentalManage":
+                case "RENTALMANAGE":
                     scripts = new[] { "Pages/RentalManage", "Pages/RemoteMessaging" };
                     break;
-                case "SeatMap":
+                case "SEATMAP":
                     scripts = new[] { "Pages/SeatMap", "Pages/Computers" };
                     break;
-                case "PricingSettings":
+                case "PRICINGSETTINGS":
                     scripts = new[] { "Pages/PricingSettings" };
                     break;
-                case "Wallpaper":
+                case "WALLPAPER":
                     scripts = new[] { "Pages/Wallpaper" };
                     break;
                 default:
-                    scripts = new string[0];
+                    scripts = Array.Empty<string>();
                     break;
             }
 

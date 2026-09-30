@@ -368,3 +368,4 @@ FodyWeavers.xsd
 /SQL Scripts/**/*.sql
 
 /BNet.Cafe.Server/App_Data/CurrentCommitSha.txt
+/BNet.Cafe.Server/Uploads/Wallpapers
