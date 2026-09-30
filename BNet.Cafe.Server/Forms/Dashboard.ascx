@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Dashboard.ascx.cs" Inherits="BNet.Cafe.Server.Forms.Dashboard" %>
-<link href="Assets/BNetChart/BNetChart.css" rel="stylesheet" />
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>

@@ -138,6 +138,12 @@ namespace BNet.Cafe.Server
                 {
                     HyperLink_Commits.CssClass = "active";
                 }
+                else if (formName.Contains(HyperLink_WallPaper.ToolTip))
+                {
+                    HyperLink_WallPaper.CssClass = "active";
+                }
+
+                
             }
         }
 
@@ -184,6 +190,9 @@ namespace BNet.Cafe.Server
                     break;
                 case "PricingSettings":
                     scripts = new[] { "Pages/PricingSettings" };
+                    break;
+                case "Wallpaper":
+                    scripts = new[] { "Pages/Wallpaper" };
                     break;
                 default:
                     scripts = new string[0];

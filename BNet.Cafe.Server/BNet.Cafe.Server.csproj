@@ -135,6 +135,8 @@
     <Content Include="Assets\BNetModal\Script.js" />
     <Content Include="Assets\BNetModal\Style.css" />
     <Content Include="Assets\Pages\RemoteMessaging.js" />
+    <Content Include="Assets\Pages\Wallpaper.css" />
+    <Content Include="Assets\Pages\Wallpaper.js" />
     <Content Include="Assets\Portal\Script.js" />
     <Content Include="Assets\Portal\Style.css" />
     <Content Include="BNetPage.aspx" />
@@ -143,6 +145,7 @@
     <Content Include="Forms\Modals\GitHubUpdateModal.ascx" />
     <Content Include="Forms\TopUp.ascx" />
     <Content Include="Forms\UserBonus.ascx" />
+    <Content Include="Forms\Wallpaper.ascx" />
     <Content Include="Website\assets\font-awesome.min.css" />
     <Content Include="Website\assets\fonts.googleapis.css" />
     <Content Include="Website\index.html" />
@@ -446,6 +449,13 @@
     </Compile>
     <Compile Include="Forms\UserTopUp.ascx.designer.cs">
       <DependentUpon>UserTopUp.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Wallpaper.ascx.cs">
+      <DependentUpon>Wallpaper.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Wallpaper.ascx.designer.cs">
+      <DependentUpon>Wallpaper.ascx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
