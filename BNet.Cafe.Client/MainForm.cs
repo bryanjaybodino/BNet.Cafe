@@ -93,7 +93,7 @@ namespace BNet.Cafe.Client
 
         private readonly ScreenStreamer _screenStreamer = new ScreenStreamer();
         private readonly ActivityReporter _activityReporter = new ActivityReporter();
-        private WallpaperService _wallpaperService;
+        private WallpaperService _wallpaperService = new WallpaperService();
         public MainForm()
         {
             InitializeComponent();
@@ -225,6 +225,9 @@ namespace BNet.Cafe.Client
 
         public void LockScreen()
         {
+            // Stop Wallpaper
+            _wallpaperService?.Stop();
+
             // 1. Always check InvokeRequired FIRST before touching any UI properties
             if (this.InvokeRequired)
             {
@@ -247,6 +250,8 @@ namespace BNet.Cafe.Client
 
         public void UnlockScreen()
         {
+            _wallpaperService?.StartAsync();
+
             KeyboardHook.Stop();
 
             //Stop idle countdown when screen unlocks
@@ -262,10 +267,6 @@ namespace BNet.Cafe.Client
             lblBigPcName.Text = clientName;
             lblStatusBadge.Text = $"● Station {clientName} Online";
             await Task.Delay(1000);
-
-
-            var wallpaperService = new WallpaperService(10000); // 10 sec slideshow
-            await wallpaperService.StartAsync();
 
             _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
             await SessionPricingRate.InitializeRatesAsync();

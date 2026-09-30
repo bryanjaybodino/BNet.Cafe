@@ -1,5 +1,6 @@
 ﻿using BNet.Cafe.Client.Ashx;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -61,7 +62,7 @@ namespace BNet.Cafe.Client.Services
         }
 
         /// <summary>
-        /// Synchronizes wallpaper images from remote server to local folder.
+        /// Synchronizes wallpaper images from remote server to local folder (downloads new/updated ones, removes deleted ones).
         /// </summary>
         public async Task SyncWallpapersFromServerAsync()
         {
@@ -71,22 +72,59 @@ namespace BNet.Cafe.Client.Services
 
                 if (result != null && result.Success && result.Data?.FileNames != null)
                 {
-                    foreach (var fileName in result.Data.FileNames)
+                    var serverFileNames = new HashSet<string>(result.Data.FileNames, StringComparer.OrdinalIgnoreCase);
+
+                    // 1. Remove local files that no longer exist on the server
+                    if (Directory.Exists(_wallpaperFolderPath))
+                    {
+                        var localFiles = Directory.GetFiles(_wallpaperFolderPath);
+                        foreach (var localFilePath in localFiles)
+                        {
+                            string localFileName = Path.GetFileName(localFilePath);
+
+                            if (!serverFileNames.Contains(localFileName))
+                            {
+                                TryDeleteFile(localFilePath);
+                            }
+                        }
+                    }
+
+                    // 2. Download server files and overwrite existing local files
+                    foreach (var fileName in serverFileNames)
                     {
                         string savePath = Path.Combine(_wallpaperFolderPath, fileName);
 
-                        // Only download if file doesn't already exist locally
-                        if (!File.Exists(savePath))
+                        // Safely delete existing file before downloading to ensure it overwrites cleanly
+                        if (File.Exists(savePath))
                         {
-                            await _downloadHandler.DownloadWallpaperToFileAsync(fileName, savePath);
+                            TryDeleteFile(savePath);
                         }
+
+                        await _downloadHandler.DownloadWallpaperToFileAsync(fileName, savePath);
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Optional: Log exception or handle network failure gracefully
-                System.Diagnostics.Debug.WriteLine($"Error downloading wallpapers: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error syncing wallpapers: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Helper method to safely delete a file without throwing exceptions if it's locked by Windows.
+        /// </summary>
+        private void TryDeleteFile(string filePath)
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Unable to delete file {filePath}: {ex.Message}");
             }
         }
 
