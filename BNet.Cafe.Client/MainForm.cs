@@ -93,7 +93,7 @@ namespace BNet.Cafe.Client
 
         private readonly ScreenStreamer _screenStreamer = new ScreenStreamer();
         private readonly ActivityReporter _activityReporter = new ActivityReporter();
-
+        private WallpaperService _wallpaperService;
         public MainForm()
         {
             InitializeComponent();
@@ -252,13 +252,21 @@ namespace BNet.Cafe.Client
             //Stop idle countdown when screen unlocks
             StopIdleCountdown();
         }
-
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _wallpaperService?.Stop();
+        }
         private async void MainForm_Load(object sender, EventArgs e)
         {
             string clientName = ConfigHelper.GetClientNameFromIP();
             lblBigPcName.Text = clientName;
             lblStatusBadge.Text = $"● Station {clientName} Online";
             await Task.Delay(1000);
+
+
+            _wallpaperService = new WallpaperService(intervalMs: 10000); // 10 seconds per slide
+            _wallpaperService.Start();
+
             _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
             await SessionPricingRate.InitializeRatesAsync();
             var session = SessionLogin.ReadSession();
