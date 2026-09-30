@@ -506,6 +506,7 @@
     </Compile>
     <Compile Include="Services\ErrorLogService.cs" />
     <Compile Include="Services\FileCssHelper.cs" />
+    <Compile Include="Services\FileImageHelper.cs" />
     <Compile Include="Services\FileJsHelpler.cs" />
     <Compile Include="Services\FileTextHelper.cs" />
     <Compile Include="Services\GridViewTemplateService.cs" />

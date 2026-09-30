@@ -105,6 +105,9 @@ namespace BNet.Cafe.Server.Forms
                 int nextIndex = GetNextFileIndex(uploadFolder);
                 int savedCount = 0;
 
+                // Initialize helper instance
+                FileImageHelper helper = new FileImageHelper();
+
                 foreach (var wallpaper in wallpapers)
                 {
                     if (wallpaper.isExisting) continue;
@@ -112,14 +115,15 @@ namespace BNet.Cafe.Server.Forms
                     string base64Data = wallpaper.base64.Substring(wallpaper.base64.IndexOf(",") + 1);
                     byte[] imageBytes = Convert.FromBase64String(base64Data);
 
-                    using (MemoryStream ms = new MemoryStream(imageBytes))
-                    using (Image img = Image.FromStream(ms))
-                    {
-                        string targetPath = Path.Combine(uploadFolder, $"{nextIndex}.png");
-                        img.Save(targetPath, ImageFormat.Png);
-                        nextIndex++;
-                        savedCount++;
-                    }
+                    // Reduce file size using FileImageHelper before saving
+                    // quality: 90L to maintaining high visual quality while reducing bytes
+                    byte[] compressedBytes = helper.CompressImageByteQuality(imageBytes, quality: 90L);
+
+                    string targetPath = Path.Combine(uploadFolder, $"{nextIndex}.png");
+                    File.WriteAllBytes(targetPath, compressedBytes);
+
+                    nextIndex++;
+                    savedCount++;
                 }
 
                 AlertService.ShowAlert(UpdatePanel1, $"{savedCount} new wallpaper(s) successfully saved.", "success");
