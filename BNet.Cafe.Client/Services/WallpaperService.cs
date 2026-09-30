@@ -1,8 +1,10 @@
-﻿using System;
+﻿using BNet.Cafe.Client.Ashx;
+using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BNet.Cafe.Client.Services
@@ -22,6 +24,9 @@ namespace BNet.Cafe.Client.Services
 
         private readonly Timer _slideshowTimer;
         private readonly string _wallpaperFolderPath;
+        private readonly GetWallpaperCountHandler _countHandler;
+        private readonly DownloadWallpaperHandler _downloadHandler;
+
         private string _originalWallpaperPath;
         private string[] _imageFiles = new string[0];
         private int _currentImageIndex = -1;
@@ -29,8 +34,10 @@ namespace BNet.Cafe.Client.Services
         public WallpaperService(int intervalMs = 10000)
         {
             _wallpaperFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Wallpaper");
+            _countHandler = new GetWallpaperCountHandler();
+            _downloadHandler = new DownloadWallpaperHandler();
 
-            // Ensure directory exists
+            // Ensure local directory exists
             if (!Directory.Exists(_wallpaperFolderPath))
             {
                 Directory.CreateDirectory(_wallpaperFolderPath);
@@ -43,10 +50,44 @@ namespace BNet.Cafe.Client.Services
             _slideshowTimer.Tick += SlideshowTimer_Tick;
         }
 
-        public void Start()
+        /// <summary>
+        /// Asynchronously fetches wallapers from server and starts the wallpaper service.
+        /// </summary>
+        public async Task StartAsync()
         {
             SaveOriginalWallpaper();
+            await SyncWallpapersFromServerAsync();
             RefreshImagesAndApply();
+        }
+
+        /// <summary>
+        /// Synchronizes wallpaper images from remote server to local folder.
+        /// </summary>
+        public async Task SyncWallpapersFromServerAsync()
+        {
+            try
+            {
+                var result = await _countHandler.GetWallpaperCountAsync();
+
+                if (result != null && result.Success && result.Data?.FileNames != null)
+                {
+                    foreach (var fileName in result.Data.FileNames)
+                    {
+                        string savePath = Path.Combine(_wallpaperFolderPath, fileName);
+
+                        // Only download if file doesn't already exist locally
+                        if (!File.Exists(savePath))
+                        {
+                            await _downloadHandler.DownloadWallpaperToFileAsync(fileName, savePath);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Optional: Log exception or handle network failure gracefully
+                System.Diagnostics.Debug.WriteLine($"Error downloading wallpapers: {ex.Message}");
+            }
         }
 
         public void Stop()

@@ -233,6 +233,9 @@
     <Compile Include="Ashx\CreateUserHandler.ashx.cs">
       <DependentUpon>CreateUserHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Ashx\DownloadWallpaperHandler.ashx.cs">
+      <DependentUpon>DownloadWallpaperHandler.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Ashx\GetBalanceHandler.ashx.cs">
       <DependentUpon>GetBalanceHandler.ashx</DependentUpon>
     </Compile>
@@ -244,6 +247,9 @@
     </Compile>
     <Compile Include="Ashx\GetUserHandler.ashx.cs">
       <DependentUpon>GetUserHandler.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Ashx\GetWallpaperCountHandler.ashx.cs">
+      <DependentUpon>GetWallpaperCountHandler.ashx</DependentUpon>
     </Compile>
     <Compile Include="BNetPage.aspx.cs">
       <DependentUpon>BNetPage.aspx</DependentUpon>
@@ -527,6 +533,8 @@
     <Content Include="Ashx\GetPricingRatesHandler.ashx" />
     <Content Include="Ashx\GetBalanceHandler.ashx" />
     <Content Include="Ashx\CreateUserHandler.ashx" />
+    <Content Include="Ashx\GetWallpaperCountHandler.ashx" />
+    <Content Include="Ashx\DownloadWallpaperHandler.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

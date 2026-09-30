@@ -264,8 +264,8 @@ namespace BNet.Cafe.Client
             await Task.Delay(1000);
 
 
-            _wallpaperService = new WallpaperService(intervalMs: 10000); // 10 seconds per slide
-            _wallpaperService.Start();
+            var wallpaperService = new WallpaperService(10000); // 10 sec slideshow
+            await wallpaperService.StartAsync();
 
             _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
             await SessionPricingRate.InitializeRatesAsync();
