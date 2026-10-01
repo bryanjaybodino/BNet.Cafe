@@ -126,6 +126,13 @@
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
+                    <EmptyDataTemplate>
+                        <div style="text-align: center; color: var(--text-light-secondary); padding: 30px 10px;">
+                            <i class="fa-solid fa-inbox"
+                                style="font-size: 32px; margin-bottom: 8px; color: var(--border-light);"></i>
+                            <div>No Item</div>
+                        </div>
+                    </EmptyDataTemplate>
                 </asp:GridView>
             </div>
             <asp:Panel ID="Panel_Pagination" runat="server" />

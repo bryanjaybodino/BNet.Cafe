@@ -75,6 +75,6 @@ namespace BNet.Cafe.Server.Forms
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UserControl InventoryDeleteModal;
+        protected global::BNet.Cafe.Server.Forms.Modals.InventoryDelete InventoryDeleteModal;
     }
 }
