@@ -150,6 +150,12 @@
     <Content Include="Databases\Queries\InventoryItems\UpdateStock.sql" />
     <Content Include="Databases\Queries\InventoryItems\Update.sql" />
     <Content Include="Databases\Queries\InventoryItems\UpdateCount.sql" />
+    <Content Include="Databases\Queries\InventoryTransactions\Create.sql" />
+    <Content Include="Databases\Queries\InventoryTransactions\DeleteById.sql" />
+    <Content Include="Databases\Queries\InventoryTransactions\GetAll.sql" />
+    <Content Include="Databases\Queries\InventoryTransactions\GetById.sql" />
+    <Content Include="Databases\Queries\InventoryTransactions\Update.sql" />
+    <Content Include="Databases\Queries\InventoryTransactions\UpdateCount.sql" />
     <Content Include="Databases\Queries\Suppliers\DeleteById.sql" />
     <Content Include="Databases\Queries\Suppliers\GetAll.sql" />
     <Content Include="Databases\Queries\Suppliers\GetById.sql" />
@@ -578,6 +584,7 @@
     <Compile Include="Repositories\ClientData.cs" />
     <Compile Include="Repositories\Dashboard.cs" />
     <Compile Include="Repositories\InventoryItems.cs" />
+    <Compile Include="Repositories\InventoryTransactions.cs" />
     <Compile Include="Repositories\PricingRates.cs" />
     <Compile Include="Repositories\Rentals.cs" />
     <Compile Include="Repositories\Suppliers.cs" />
