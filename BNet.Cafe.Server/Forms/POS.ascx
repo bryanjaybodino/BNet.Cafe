@@ -1,4 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="POS.ascx.cs" Inherits="BNet.Cafe.Server.Forms.POS" %>
+<%@ Register Src="~/Forms/Modals/POSReceipt.ascx" TagPrefix="uc1" TagName="POSReceipt" %>
+
 
 <style>
     /* POS Components */
@@ -462,5 +464,6 @@
                 </div>
             </div>
         </div>
+        <uc1:POSReceipt runat="server" id="POSReceipt" />
     </ContentTemplate>
 </asp:UpdatePanel>

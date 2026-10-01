@@ -172,6 +172,7 @@
     <Content Include="Forms\InventoryEdit.ascx" />
     <Content Include="Forms\Modals\GitHubUpdateModal.ascx" />
     <Content Include="Forms\Modals\InventoryDelete.ascx" />
+    <Content Include="Forms\Modals\POSReceipt.ascx" />
     <Content Include="Forms\Modals\SupplierDelete.ascx" />
     <Content Include="Forms\Modals\WallpaperDelete.ascx" />
     <Content Include="Forms\POS.ascx" />
@@ -411,6 +412,13 @@
     </Compile>
     <Compile Include="Forms\Modals\InventoryDelete.ascx.designer.cs">
       <DependentUpon>InventoryDelete.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\POSReceipt.ascx.cs">
+      <DependentUpon>POSReceipt.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\POSReceipt.ascx.designer.cs">
+      <DependentUpon>POSReceipt.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Modals\PricingSettingDelete.ascx.cs">
       <DependentUpon>PricingSettingDelete.ascx</DependentUpon>

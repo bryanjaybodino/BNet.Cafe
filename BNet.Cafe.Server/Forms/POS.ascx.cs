@@ -205,6 +205,13 @@ namespace BNet.Cafe.Server.Forms
                 return;
             }
 
+            // Compute total payable before clearing cart state
+            double totalAmount = 0;
+            foreach (DataRow row in cart.Rows)
+            {
+                totalAmount += Convert.ToDouble(row["Subtotal"]);
+            }
+
             string userId = "ADMIN";
             bool allSuccess = true;
 
@@ -221,7 +228,9 @@ namespace BNet.Cafe.Server.Forms
             {
                 ClearCart();
                 LoadCatalog(TextBox_Search.Text.Trim());
-                AlertService.ShowAlert(UpdatePanel1, "Sale completed successfully!", "success");
+
+                // Open POSReceipt control passing total amount
+                POSReceipt.Show(totalAmount);
             }
             else
             {
