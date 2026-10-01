@@ -10,14 +10,20 @@ namespace BNet.Cafe.Server.Forms
     {
         private readonly InventoryItems itemsRepo = new InventoryItems();
         private readonly InventoryTransactions transactionsRepo = new InventoryTransactions();
-        Sessions.User userCookies = new Sessions.User();
+        private readonly Sessions.User userCookies = new Sessions.User();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 LoadItems();
-                LoadRecentLogs();
             }
+        }
+
+        protected void Page_PreRender(object sender, EventArgs e)
+        {
+            DataTable dt = transactionsRepo.GetAll("STOCK_IN", GridViewTemplateService.GetPaginationIndex(GridView_StockIn));
+            GridViewTemplateService.SetGridView(GridView_StockIn, dt, Panel_Pagination);
         }
 
         private void LoadItems()
@@ -30,11 +36,9 @@ namespace BNet.Cafe.Server.Forms
             DropDownList_Item.Items.Insert(0, new ListItem("-- Select Item --", ""));
         }
 
-        private void LoadRecentLogs()
+        protected void GridView_StockIn_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            DataTable dt = transactionsRepo.GetAll("STOCK_IN");
-            GridView_StockIn.DataSource = dt;
-            GridView_StockIn.DataBind();
+            GridView_StockIn.PageIndex = e.NewPageIndex;
         }
 
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
@@ -54,7 +58,6 @@ namespace BNet.Cafe.Server.Forms
             if (success)
             {
                 ClearForm();
-                LoadRecentLogs();
                 AlertService.ShowAlert(UpdatePanel1, "Stock successfully added to inventory.", "success");
             }
             else
