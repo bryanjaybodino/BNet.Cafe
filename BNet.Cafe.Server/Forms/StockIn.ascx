@@ -7,8 +7,8 @@
                 <!-- Form Panel -->
                 <div class="pricing-form-panel">
                     <div class="form-card">
-                        <h2 class="form-section-title" style="padding-bottom:25px">
-                            <i class="fa-solid fa-boxes-packing"></i> Stock In / Restock
+                        <h2 class="form-section-title" style="padding-bottom: 25px">
+                            <i class="fa-solid fa-boxes-packing"></i>Stock In / Restock
                         </h2>
 
                         <!-- Select Item -->
@@ -25,7 +25,7 @@
                             <label for="TextBox_Quantity">
                                 Restock Quantity <span class="required-badge">*</span>
                             </label>
-                            <asp:TextBox ID="TextBox_Quantity" runat="server" TextMode="Number" 
+                            <asp:TextBox ID="TextBox_Quantity" runat="server" TextMode="Number"
                                 CssClass="form-control pricing-input" placeholder="0" min="1"></asp:TextBox>
                         </div>
 
@@ -47,13 +47,14 @@
                 <div class="pricing-grid-panel">
                     <div class="grid-card">
                         <div class="grid-header">
-                            <h2 class="grid-title"><i class="fa-solid fa-list"></i> Recent Stock In Logs</h2>
+                            <h2 class="grid-title"><i class="fa-solid fa-list"></i>Recent Stock In Logs</h2>
                         </div>
                         <div class="bnet-table-container pricing-grid-container">
-                            <asp:GridView ID="GridView_StockIn" runat="server" AutoGenerateColumns="False" GridLines="None"
-                                CssClass="bnet-table pricing-table">
+                            <asp:GridView ID="GridView_StockIn" runat="server" AutoGenerateColumns="False" GridLines="None" CssClass="bnet-table pricing-table">
                                 <Columns>
                                     <asp:BoundField DataField="DBItemId" HeaderText="Item ID" />
+                                    <asp:BoundField DataField="DBItemName" HeaderText="Item Name" />
+                                    <asp:BoundField DataField="DBUserName" HeaderText="Processed By" />
                                     <asp:BoundField DataField="DBQuantity" HeaderText="Quantity Added" />
                                     <asp:BoundField DataField="DBDateCreated" HeaderText="Date" />
                                     <asp:BoundField DataField="DBTimeCreated" HeaderText="Time" />

@@ -10,7 +10,7 @@ namespace BNet.Cafe.Server.Forms
     {
         private readonly InventoryItems itemsRepo = new InventoryItems();
         private readonly InventoryTransactions transactionsRepo = new InventoryTransactions();
-
+        Sessions.User userCookies = new Sessions.User();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -41,7 +41,7 @@ namespace BNet.Cafe.Server.Forms
         {
             string itemId = DropDownList_Item.SelectedValue;
             string quantity = TextBox_Quantity.Text.Trim();
-            string userId = "ADMIN"; // Replace with current Session User ID
+            string userId = userCookies.user_id;
 
             if (string.IsNullOrEmpty(itemId) || string.IsNullOrEmpty(quantity) || int.Parse(quantity) <= 0)
             {

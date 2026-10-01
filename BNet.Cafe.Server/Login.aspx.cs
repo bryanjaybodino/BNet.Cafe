@@ -92,8 +92,9 @@ namespace BNet.Cafe.Server
                 string Name = row["DBName"].ToString();
                 string Email = row["DBEmail"].ToString();
                 string Role = row["DBRole"].ToString();
+                string userId = row["DBId"].ToString();
 
-                userCookies.createCookies(Email, Name, Role);
+                userCookies.createCookies(Email, Name, Role, userId);
 
                 if (Role !=ConstantData.UserType.Admin)
                 {

@@ -150,11 +150,11 @@ namespace BNet.Cafe.Server.Repositories
                 for (int i = 0; i < dataTable.Rows.Count; i++)
                 {
                     string type = dataTable.Rows[i]["DBTransactionType"].ToString().ToUpper();
-                    if (type == "IN" || type == "STOCK_IN" || type == "RESTOCK")
+                    if (type == "STOCK_IN")
                     {
                         stockInCount++;
                     }
-                    else if (type == "OUT" || type == "STOCK_OUT" || type == "DISPENSE" || type == "SALE")
+                    else if (type == "SALE")
                     {
                         stockOutCount++;
                     }
@@ -175,7 +175,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBQuantity", dBScriptService.CleanUpToUpper(quantity));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeCreated", TimeService.Get().ToString("HH:mm:ss"));
-
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
             string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/InventoryTransactions/StockIn.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
@@ -190,7 +190,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBQuantity", dBScriptService.CleanUpToUpper(quantity));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeCreated", TimeService.Get().ToString("HH:mm:ss"));
-
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
             string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/InventoryTransactions/StockOut.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 

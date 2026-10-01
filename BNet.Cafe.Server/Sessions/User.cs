@@ -102,12 +102,24 @@ namespace BNet.Cafe.Server.Sessions
                 return value.ToLower();
             }
         }
-
-        public void createCookies(string user_email, string user_fullname, string user_role)
+        public string user_id
+        {
+            get
+            {
+                string value = "";
+                if (HttpContext.Current.Request.Cookies[cookiePrefix + "user_id"] != null)
+                {
+                    value = SecuredDataService.Decrypted(HttpContext.Current.Request.Cookies[cookiePrefix + "user_id"].Value);
+                }
+                return value.ToLower();
+            }
+        }
+        public void createCookies(string user_email, string user_fullname, string user_role,string user_id)
         {
             SetCookie("user_email", user_email);
             SetCookie("user_fullname", user_fullname);
             SetCookie("user_role", user_role);
+            SetCookie("user_id", user_id);
         }
         public void RemoveCookies()
         {
@@ -116,6 +128,7 @@ namespace BNet.Cafe.Server.Sessions
                 "user_email",
                 "user_fullname",
                 "user_role",
+                "user_id",
             };
 
             foreach (string name in cookies)

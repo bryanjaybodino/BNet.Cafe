@@ -37,7 +37,7 @@ namespace BNet.Cafe.Server
                             string _email = userData.Rows[i]["DBEmail"].ToString();
                             string _password = userData.Rows[i]["DBPassword"].ToString();
                             string _role = userData.Rows[i]["DBRole"].ToString();
-                            userSession.createCookies(_email, _password, _role);
+                            userSession.createCookies(_email, _password, _role, userId);
                         }
 
                         Response.Redirect("~/Portal.aspx");

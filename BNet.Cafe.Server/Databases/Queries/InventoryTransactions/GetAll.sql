@@ -1,6 +1,19 @@
-﻿SELECT * FROM inventory_transactions 
-WHERE 1 
-AND DBIsDeleted = '{DBIsDeleted}' 
-AND DBTransactionType LIKE '%{DBTransactionType}%'
-ORDER BY DBId DESC 
+﻿SELECT 
+    it.`DBId`,
+    it.`DBItemId`,
+    ii.`DBItemName`,
+    it.`DBUserId`,
+    u.`DBName` AS DBUserName,
+    it.`DBTransactionType`,
+    it.`DBQuantity`,
+    it.`DBDateCreated`,
+    it.`DBTimeCreated`,
+    it.`DBIsDeleted`
+FROM `inventory_transactions` it
+LEFT JOIN `inventory_items` ii ON it.`DBItemId` = ii.`DBId`
+LEFT JOIN `users` u ON it.`DBUserId` = u.`DBId`
+WHERE 1 = 1
+  AND it.`DBIsDeleted` = '{DBIsDeleted}'
+  AND it.`DBTransactionType` LIKE '%{DBTransactionType}%'
+ORDER BY it.`DBId` DESC
 {LIMIT}

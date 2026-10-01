@@ -70,7 +70,7 @@ namespace BNet.Cafe.Server
                 // Store user details
                 Session["GoogleUser"] = userInfo;
                 Sessions.User userCookies = new Sessions.User();
-                userCookies.createCookies(userInfo.email, userInfo.name, role);
+                userCookies.createCookies(userInfo.email, userInfo.name, role, userId);
 
                 if (role != ConstantData.UserType.Admin)
                 {
