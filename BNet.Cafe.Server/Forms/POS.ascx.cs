@@ -37,11 +37,16 @@ namespace BNet.Cafe.Server.Forms
             }
         }
 
-        private void LoadCatalog()
+        private void LoadCatalog(string search = "")
         {
-            DataTable dt = itemsRepo.GetAll();
+            DataTable dt = itemsRepo.GetAll(search);
             Repeater_Products.DataSource = dt;
             Repeater_Products.DataBind();
+        }
+
+        protected void TextBox_Search_TextChanged(object sender, EventArgs e)
+        {
+            LoadCatalog(TextBox_Search.Text.Trim());
         }
 
         public string GetProductImage(object itemIdObj)
@@ -199,7 +204,7 @@ namespace BNet.Cafe.Server.Forms
                 return;
             }
 
-            string userId = "ADMIN"; // Replace with current Session User ID
+            string userId = "ADMIN";
             bool allSuccess = true;
 
             foreach (DataRow row in cart.Rows)
@@ -214,7 +219,7 @@ namespace BNet.Cafe.Server.Forms
             if (allSuccess)
             {
                 ClearCart();
-                LoadCatalog();
+                LoadCatalog(TextBox_Search.Text.Trim());
                 AlertService.ShowAlert(UpdatePanel1, "Sale completed successfully!", "success");
             }
             else

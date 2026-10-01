@@ -1,115 +1,446 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="POS.ascx.cs" Inherits="BNet.Cafe.Server.Forms.POS" %>
 
+<style>
+    .pos-container {
+        display: flex;
+        gap: 16px;
+        height: calc(100vh - 110px);
+        min-height: 500px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .pos-catalog-panel {
+        flex: 1.6;
+        display: flex;
+        flex-direction: column;
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+        min-width: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .pos-checkout-panel {
+        flex: 1.1;
+        display: flex;
+        flex-direction: column;
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+        min-width: 0;
+        height: 100%;
+    }
+
+    .pos-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+        flex-shrink: 0;
+    }
+
+    .pos-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    .pos-search-box {
+        position: relative;
+        flex: 1;
+        max-width: 280px;
+    }
+
+    .pos-search-box .search-input {
+        width: 100%;
+        padding-left: 34px;
+        height: 38px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding-right: 10px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+
+    .pos-search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+    }
+
+    /* Product Cards Grid */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+        align-items: start;
+        align-content: start;
+        overflow-y: auto;
+        padding-right: 4px;
+        flex: 1;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .pos-card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .pos-product-card {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        height: auto;
+        cursor: pointer;
+        pointer-events: none;
+    }
+
+    .pos-card-link:hover .pos-product-card {
+        border-color: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .product-img-wrapper {
+        width: 100%;
+        height: 95px;
+        background-color: #f8fafc;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .product-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .stock-badge {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 6px;
+        color: #ffffff;
+        z-index: 2;
+    }
+
+    .stock-badge.in-stock { background-color: #22c55e; }
+    .stock-badge.out-of-stock { background-color: #ef4444; }
+
+    .product-info {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-name {
+        font-weight: 600;
+        font-size: 13px;
+        color: #1e293b;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .product-category {
+        font-size: 11px;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+
+    .product-price-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .product-price {
+        color: #2563eb;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .add-btn-icon {
+        background-color: #eff6ff;
+        color: #2563eb;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+    }
+
+    .cart-table-wrapper {
+        flex: 1;
+        overflow-y: auto;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .cart-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    .cart-table th {
+        background-color: #f8fafc;
+        color: #64748b;
+        padding: 10px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .cart-table td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #e2e8f0;
+        vertical-align: middle;
+    }
+
+    .qty-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .qty-btn {
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        color: #1e293b;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 4px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .cart-summary {
+        border-top: 1px solid #e2e8f0;
+        padding-top: 12px;
+        margin-top: auto;
+        flex-shrink: 0;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .total-label {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .total-amount {
+        font-size: 22px;
+        font-weight: 700;
+        color: #16a34a;
+    }
+
+    .cart-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    /* MOBILE RESPONSIBILITY BREAKPOINTS */
+    @media (max-width: 768px) {
+        .pos-container {
+            flex-direction: column;
+            height: auto;
+            min-height: auto;
+            gap: 12px;
+        }
+
+        .pos-catalog-panel, .pos-checkout-panel {
+            height: auto;
+            padding: 12px;
+        }
+
+        .pos-toolbar {
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pos-search-box {
+            max-width: 100%;
+            width: 100%;
+        }
+
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            max-height: 45vh;
+            min-height: 220px;
+        }
+
+        .cart-table-wrapper {
+            max-height: 300px;
+            min-height: 150px;
+        }
+
+        .cart-actions {
+            flex-direction: row;
+        }
+
+        .total-amount {
+            font-size: 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .product-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .product-img-wrapper {
+            height: 80px;
+        }
+
+        .product-name {
+            font-size: 12px;
+        }
+
+        .product-price {
+            font-size: 13px;
+        }
+    }
+</style>
+
 <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional" ChildrenAsTriggers="true">
     <ContentTemplate>
-        <div class="pos-wrapper" style="display: flex; gap: 20px; padding: 15px;">
-            <!-- Left: Catalog with Modern Image Cards -->
-            <div class="pos-catalog" style="flex: 1.8;">
-                <div class="grid-card">
-                    <div class="grid-header" style="margin-bottom: 15px;">
-                        <h2><i class="fa-solid fa-store"></i> Items Catalog</h2>
+        <div class="pos-container">
+            <!-- Left Panel: Catalog -->
+            <div class="pos-catalog-panel">
+                <div class="pos-toolbar">
+                    <div class="pos-title">
+                        <i class="fa-solid fa-store"></i> Catalog
                     </div>
-                    
-                    <!-- Product Cards Grid -->
-                    <div class="product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; max-height: 680px; overflow-y: auto; padding: 5px;">
-                        <asp:Repeater ID="Repeater_Products" runat="server" OnItemCommand="Repeater_Products_ItemCommand">
-                            <ItemTemplate>
-                                <asp:LinkButton ID="btnSelectProduct" runat="server" CommandName="AddToCart" CommandArgument='<%# Eval("DBId") %>' 
-                                    CssClass="pos-card-link" style="text-decoration: none; color: inherit; display: block;">
-                                    <div class="pos-product-card" style="position: relative; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.04); transition: all 0.2s ease-in-out; cursor: pointer; pointer-events: none;">
-                                        
-                                        <!-- Stock Badge -->
-                                        <div style='<%# Convert.ToInt32(Eval("DBQuantityInStock")) <= 0 ? "background: #ef4444;" : "background: #22c55e;" %>' 
-                                             style="position: absolute; top: 8px; right: 8px; color: #fff; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; z-index: 2;">
-                                            <%# Convert.ToInt32(Eval("DBQuantityInStock")) <= 0 ? "Out of Stock" : Eval("DBQuantityInStock") + " in stock" %>
-                                        </div>
+                    <div class="pos-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" 
+                            Placeholder="Search items..." AutoPostBack="true" 
+                            OnTextChanged="TextBox_Search_TextChanged" 
+                            onkeydown="if(event.keyCode===13){this.blur(); return false;}" />
+                    </div>
+                </div>
 
-                                        <!-- Product Image Container -->
-                                        <div style="width: 100%; height: 120px; background: #f8fafc; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                                            <img src='<%# GetProductImage(Eval("DBId")) %>' 
-                                                 alt='<%# Eval("DBItemName") %>' 
-                                                 style="width: 100%; height: 100%; object-fit: cover;" 
-                                                 onerror="this.src='Uploads/Inventory/default.png';" />
-                                        </div>
-
-                                        <!-- Card Details -->
-                                        <div style="padding: 12px; text-align: left;">
-                                            <div style="font-weight: 600; font-size: 14px; color: #1e293b; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                                <%# Eval("DBItemName") %>
-                                            </div>
-                                            <div style="font-size: 11px; color: #64748b; margin-bottom: 8px;">
-                                                <%# Eval("DBCategory") %>
-                                            </div>
-                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
-                                                <span style="color: #2563eb; font-weight: 700; font-size: 16px;">
-                                                    ₱<%# Convert.ToDouble(Eval("DBUnitPrice")).ToString("N2") %>
-                                                </span>
-                                                <span style="background: #eff6ff; color: #2563eb; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
-                                                    <i class="fa-solid fa-plus"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-
+                <div class="product-grid">
+                    <asp:Repeater ID="Repeater_Products" runat="server" OnItemCommand="Repeater_Products_ItemCommand">
+                        <ItemTemplate>
+                            <asp:LinkButton ID="btnSelectProduct" runat="server" CommandName="AddToCart" CommandArgument='<%# Eval("DBId") %>' CssClass="pos-card-link">
+                                <div class="pos-product-card">
+                                    <div class='<%# Convert.ToInt32(Eval("DBQuantityInStock")) <= 0 ? "stock-badge out-of-stock" : "stock-badge in-stock" %>'>
+                                        <%# Convert.ToInt32(Eval("DBQuantityInStock")) <= 0 ? "Out of Stock" : Eval("DBQuantityInStock") + " left" %>
                                     </div>
-                                </asp:LinkButton>
-                            </ItemTemplate>
-                        </asp:Repeater>
-                    </div>
+                                    <div class="product-img-wrapper">
+                                        <img src='<%# GetProductImage(Eval("DBId")) %>' alt='<%# Eval("DBItemName") %>' onerror="this.src='Uploads/Inventory/default.png';" />
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="product-name" title='<%# Eval("DBItemName") %>'><%# Eval("DBItemName") %></div>
+                                        <div class="product-category"><%# Eval("DBCategory") %></div>
+                                        <div class="product-price-row">
+                                            <span class="product-price">₱<%# Convert.ToDouble(Eval("DBUnitPrice")).ToString("N2") %></span>
+                                            <span class="add-btn-icon"><i class="fa-solid fa-plus"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </asp:LinkButton>
+                        </ItemTemplate>
+                    </asp:Repeater>
                 </div>
             </div>
 
-            <!-- Right: Dynamic Multi-Item Cart/Checkout -->
-            <div class="pos-checkout" style="flex: 1.2;">
-                <div class="form-card">
-                    <h2 class="form-section-title"><i class="fa-solid fa-cart-shopping"></i> Current Order</h2>
+            <!-- Right Panel: Order Cart -->
+            <div class="pos-checkout-panel">
+                <div class="pos-toolbar">
+                    <div class="pos-title">
+                        <i class="fa-solid fa-cart-shopping"></i> Current Order
+                    </div>
+                </div>
 
-                    <div class="cart-table-wrapper" style="max-height: 400px; overflow-y: auto; margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 8px;">
-                        <asp:GridView ID="GridView_Cart" runat="server" AutoGenerateColumns="False" 
-                            CssClass="bnet-table" OnRowCommand="GridView_Cart_RowCommand" GridLines="None">
-                            <Columns>
-                                <asp:BoundField DataField="ItemName" HeaderText="Item" />
-                                <asp:TemplateField HeaderText="Qty">
-                                    <ItemTemplate>
-                                        <div style="display: flex; align-items: center; gap: 6px;">
-                                            <asp:LinkButton ID="btnDecrease" runat="server" CommandName="DecreaseQty" CommandArgument='<%# Eval("ItemId") %>' CssClass="btn btn-sm btn-light" style="padding: 2px 8px; border: 1px solid #cbd5e1;">-</asp:LinkButton>
-                                            <span style="font-weight: 600; min-width: 18px; text-align: center;"><%# Eval("Quantity") %></span>
-                                            <asp:LinkButton ID="btnIncrease" runat="server" CommandName="IncreaseQty" CommandArgument='<%# Eval("ItemId") %>' CssClass="btn btn-sm btn-light" style="padding: 2px 8px; border: 1px solid #cbd5e1;">+</asp:LinkButton>
-                                        </div>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Subtotal">
-                                    <ItemTemplate>
-                                        ₱<%# Convert.ToDouble(Eval("Subtotal")).ToString("N2") %>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="btnRemove" runat="server" CommandName="RemoveItem" CommandArgument='<%# Eval("ItemId") %>' Style="color: #ef4444; padding: 4px;">
-                                            <i class="fa fa-trash"></i>
-                                        </asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                            <EmptyDataTemplate>
-                                <div style="text-align: center; color: #94a3b8; padding: 30px 10px;">
-                                    <i class="fa-solid fa-basket-shopping" style="font-size: 32px; margin-bottom: 8px; color: #cbd5e1;"></i>
-                                    <div>Cart is empty. Select products to add.</div>
-                                </div>
-                            </EmptyDataTemplate>
-                        </asp:GridView>
+                <div class="cart-table-wrapper">
+                    <asp:GridView ID="GridView_Cart" runat="server" AutoGenerateColumns="False" 
+                        CssClass="cart-table" OnRowCommand="GridView_Cart_RowCommand" GridLines="None">
+                        <Columns>
+                            <asp:BoundField DataField="ItemName" HeaderText="Item" />
+                            <asp:TemplateField HeaderText="Qty">
+                                <ItemTemplate>
+                                    <div class="qty-controls">
+                                        <asp:LinkButton ID="btnDecrease" runat="server" CommandName="DecreaseQty" CommandArgument='<%# Eval("ItemId") %>' CssClass="qty-btn">-</asp:LinkButton>
+                                        <span style="font-weight: 600; min-width: 18px; text-align: center;"><%# Eval("Quantity") %></span>
+                                        <asp:LinkButton ID="btnIncrease" runat="server" CommandName="IncreaseQty" CommandArgument='<%# Eval("ItemId") %>' CssClass="qty-btn">+</asp:LinkButton>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Subtotal">
+                                <ItemTemplate>
+                                    ₱<%# Convert.ToDouble(Eval("Subtotal")).ToString("N2") %>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="">
+                                <ItemTemplate>
+                                    <asp:LinkButton ID="btnRemove" runat="server" CommandName="RemoveItem" CommandArgument='<%# Eval("ItemId") %>' Style="color: #ef4444; padding: 6px;">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </asp:LinkButton>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                        <EmptyDataTemplate>
+                            <div style="text-align: center; color: #94a3b8; padding: 30px 10px;">
+                                <i class="fa-solid fa-basket-shopping" style="font-size: 32px; margin-bottom: 8px; color: #cbd5e1;"></i>
+                                <div>Cart is empty. Select products to add.</div>
+                            </div>
+                        </EmptyDataTemplate>
+                    </asp:GridView>
+                </div>
+
+                <div class="cart-summary">
+                    <div class="total-row">
+                        <span class="total-label">Total Payable</span>
+                        <span class="total-amount">₱<asp:Label ID="Label_Total" runat="server" Text="0.00"></asp:Label></span>
                     </div>
 
-                    <div style="border-top: 2px dashed #e2e8f0; padding-top: 15px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; margin-bottom: 20px;">
-                        <span>Total Payable:</span>
-                        <span style="color: #16a34a; font-size: 22px;">₱<asp:Label ID="Label_Total" runat="server" Text="0.00"></asp:Label></span>
-                    </div>
-
-                    <div class="form-actions" style="display: flex; gap: 10px;">
+                    <div class="cart-actions">
                         <asp:LinkButton ID="LinkButton_Clear" OnClick="LinkButton_Clear_Click" CssClass="btn btn-secondary" runat="server" style="padding: 10px 16px;">
                             Clear
                         </asp:LinkButton>
-                        <asp:LinkButton ID="LinkButton_Submit" OnClick="LinkButton_Submit_Click" CssClass="btn btn-primary btn-lg" style="width: 100%; justify-content: center;" OnClientClick="return ValidatePOSCart();" runat="server">
-                            <i class="fa fa-shopping-cart"></i> Complete Sale
+                        <asp:LinkButton ID="LinkButton_Submit" OnClick="LinkButton_Submit_Click" CssClass="btn btn-primary" style="flex: 1; justify-content: center;" OnClientClick="return ValidatePOSCart();" runat="server">
+                            <i class="fa-solid fa-cart-shopping"></i> Complete Sale
                         </asp:LinkButton>
                     </div>
                 </div>
@@ -117,11 +448,3 @@
         </div>
     </ContentTemplate>
 </asp:UpdatePanel>
-
-<style>
-    .pos-card-link:hover .pos-product-card {
-        border-color: #2563eb !important;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1) !important;
-    }
-</style>
