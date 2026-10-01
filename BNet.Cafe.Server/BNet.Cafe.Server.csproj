@@ -179,6 +179,7 @@
     <Content Include="Forms\Modals\SupplierDelete.ascx" />
     <Content Include="Forms\Modals\WallpaperDelete.ascx" />
     <Content Include="Forms\POS.ascx" />
+    <Content Include="Forms\SportTimer.ascx" />
     <Content Include="Forms\StockIn.ascx" />
     <Content Include="Forms\SupplierCreate.ascx" />
     <Content Include="Forms\SupplierEdit.ascx" />
@@ -521,6 +522,13 @@
     </Compile>
     <Compile Include="Forms\SeatMap.ascx.designer.cs">
       <DependentUpon>SeatMap.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SportTimer.ascx.cs">
+      <DependentUpon>SportTimer.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\SportTimer.ascx.designer.cs">
+      <DependentUpon>SportTimer.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\StockIn.ascx.cs">
       <DependentUpon>StockIn.ascx</DependentUpon>

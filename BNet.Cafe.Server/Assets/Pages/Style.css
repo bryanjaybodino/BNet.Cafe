@@ -24,6 +24,10 @@
     --scrollbar-track: #f1f5f9;
     --scrollbar-thumb: #cbd5e1;
     --scrollbar-thumb-hover: #94a3b8;
+    /* Distinct theme accents for each sport */
+    --accent-pickleball: #10b981;
+    --accent-billiard: #f59e0b;
+    --accent-pingpong: #ef4444;
 }
 
 [data-theme="dark"] {
@@ -41,6 +45,10 @@
     --scrollbar-track: #111111;
     --scrollbar-thumb: #2a2a2a;
     --scrollbar-thumb-hover: #3d3d3d;
+    /* Adjusted accents for dark theme readability */
+    --accent-pickleball: #34d399;
+    --accent-billiard: #fbbf24;
+    --accent-pingpong: #f87171;
 }
 
 
