@@ -24,6 +24,15 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
+        /// HiddenField_ImageData control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField HiddenField_ImageData;
+
+        /// <summary>
         /// TextBox_ItemName control.
         /// </summary>
         /// <remarks>

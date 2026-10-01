@@ -1,6 +1,7 @@
 ﻿using BNet.Cafe.Server.Repositories;
 using BNet.Cafe.Server.Services;
 using System;
+using System.IO;
 
 namespace BNet.Cafe.Server.Forms
 {
@@ -8,6 +9,8 @@ namespace BNet.Cafe.Server.Forms
     {
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
         {
+            string savedImagePath = SaveInventoryImage();
+
             InventoryItems inventoryItems = new InventoryItems();
             bool isSuccess = inventoryItems.Create(
                 TextBox_ItemName.Text.Trim(),
@@ -15,6 +18,7 @@ namespace BNet.Cafe.Server.Forms
                 TextBox_UnitPrice.Text.Trim(),
                 TextBox_QuantityInStock.Text.Trim(),
                 TextBox_ReorderLevel.Text.Trim()
+            // Pass savedImagePath or relative filename if updated in DB schema
             );
 
             if (isSuccess)
@@ -24,6 +28,38 @@ namespace BNet.Cafe.Server.Forms
             else
             {
                 AlertService.ShowAlert(UpdatePanel1, "Failed to add item. An item with this name might already exist.", "error");
+            }
+        }
+
+        private string SaveInventoryImage()
+        {
+            string base64Raw = HiddenField_ImageData.Value;
+            if (string.IsNullOrEmpty(base64Raw)) return string.Empty;
+
+            try
+            {
+                string base64Data = base64Raw.Substring(base64Raw.IndexOf(",") + 1);
+                byte[] imageBytes = Convert.FromBase64String(base64Data);
+
+                // Compression using helper
+                FileImageHelper helper = new FileImageHelper();
+                byte[] compressedBytes = helper.CompressImageByteQuality(imageBytes, quality: 85L);
+
+                string uploadFolder = Server.MapPath("~/Uploads/Inventory/");
+                if (!Directory.Exists(uploadFolder))
+                {
+                    Directory.CreateDirectory(uploadFolder);
+                }
+
+                string fileName = $"{Guid.NewGuid()}.png";
+                string targetPath = Path.Combine(uploadFolder, fileName);
+                File.WriteAllBytes(targetPath, compressedBytes);
+
+                return "~/Uploads/Inventory/" + fileName;
+            }
+            catch
+            {
+                return string.Empty;
             }
         }
     }
