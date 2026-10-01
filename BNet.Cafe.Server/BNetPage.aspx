@@ -27,7 +27,6 @@
         <!-- Include GitHub Update Modal -->
         <uc1:GitHubUpdateModal runat="server" ID="GitHubUpdateModal" />
         <!-- Sidebar -->
-        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="logo">
                 <i class="fas fa-cube"></i>
@@ -38,7 +37,7 @@
                 <!-- GENERAL / DASHBOARD -->
                 <div class="menu-item">
                     <asp:HyperLink ID="HyperLink_Dashboard" runat="server" ToolTip="Dashboard" onclick="navigateTo('?Form=Dashboard'); return false;">
-                <i class="fas fa-home"></i><span>Dashboard</span>
+                        <i class="fas fa-home"></i><span>Dashboard</span>
                     </asp:HyperLink>
                 </div>
 
@@ -51,16 +50,16 @@
                     </summary>
                     <div class="menu-sub-items">
                         <asp:HyperLink ID="HyperLink_Computers" runat="server" ToolTip="Computer" onclick="navigateTo('?Form=Computers'); return false;">
-                    <i class="fas fa-computer"></i><span>Computers</span>
+                            <i class="fas fa-computer"></i><span>Computers</span>
                         </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_SeatMap" runat="server" ToolTip="SeatMap" onclick="navigateTo('?Form=SeatMap'); return false;">
-                    <i class="fas fa-map-location-dot"></i><span>Seat Map</span>
+                            <i class="fas fa-map-location-dot"></i><span>Seat Map</span>
                         </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_Remote" runat="server" ToolTip="Remote" onclick="navigateTo('?Form=Remote'); return false;">
-                    <i class="fas fa-display"></i><span>Remote</span>
+                            <i class="fas fa-display"></i><span>Remote</span>
                         </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_PricingSettings" runat="server" ToolTip="PricingSettings" onclick="navigateTo('?Form=PricingSettings'); return false;">
-                    <i class="fas fa-cash-register"></i><span>Pricing Setting</span>
+                            <i class="fas fa-cash-register"></i><span>Pricing Setting</span>
                         </asp:HyperLink>
                     </div>
                 </details>
@@ -74,13 +73,16 @@
                     </summary>
                     <div class="menu-sub-items">
                         <asp:HyperLink ID="HyperLink_POS" runat="server" ToolTip="POS" onclick="navigateTo('?Form=POS'); return false;">
-                    <i class="fas fa-cart-shopping"></i><span>Point of Sale</span>
+                            <i class="fas fa-cart-shopping"></i><span>Point of Sale</span>
+                        </asp:HyperLink>
+                        <asp:HyperLink ID="HyperLink_StockIn" runat="server" ToolTip="StockIn" onclick="navigateTo('?Form=StockIn'); return false;">
+                            <i class="fas fa-boxes-packing"></i><span>Stock In</span>
                         </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_Inventory" runat="server" ToolTip="Inventory" onclick="navigateTo('?Form=Inventory'); return false;">
-                    <i class="fas fa-boxes-stacked"></i><span>Inventory</span>
+                            <i class="fas fa-boxes-stacked"></i><span>Inventory</span>
                         </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_Suppliers" runat="server" ToolTip="Suppliers" onclick="navigateTo('?Form=Suppliers'); return false;">
-                    <i class="fas fa-truck-field"></i><span>Suppliers</span>
+                            <i class="fas fa-truck-field"></i><span>Suppliers</span>
                         </asp:HyperLink>
                     </div>
                 </details>
@@ -94,7 +96,7 @@
                     </summary>
                     <div class="menu-sub-items">
                         <asp:HyperLink ID="HyperLink_SportTimer" runat="server" ToolTip="SportTimer" onclick="navigateTo('?Form=SportTimer'); return false;">
-                    <i class="fas fa-stopwatch-20"></i><span>Sport Timer</span>
+                            <i class="fas fa-stopwatch-20"></i><span>Sport Timer</span>
                         </asp:HyperLink>
                     </div>
                 </details>
@@ -108,19 +110,19 @@
                     </summary>
                     <div class="menu-sub-items">
                         <asp:HyperLink ID="HyperLink_Billings" runat="server" ToolTip="Billing" onclick="navigateTo('?Form=Billings'); return false;">
-                    <i class="fa-solid fa-file-invoice-dollar"></i><span>Billings</span>
+                            <i class="fa-solid fa-file-invoice-dollar"></i><span>Billings</span>
                         </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_Users" runat="server" ToolTip="User" onclick="navigateTo('?Form=Users'); return false;">
-                    <i class="fas fa-users"></i><span>Users</span>
+                            <i class="fas fa-users"></i><span>Users</span>
                         </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_TopUp" runat="server" ToolTip="TopUp" onclick="navigateTo('?Form=TopUp'); return false;">
-                    <i class="fas fa-trophy"></i><span>Top-Up</span>
+                            <i class="fas fa-trophy"></i><span>Top-Up</span>
                         </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_WallPaper" runat="server" ToolTip="Wallpaper" onclick="navigateTo('?Form=Wallpaper'); return false;">
-                    <i class="fas fa-image"></i><span>Wallpaper</span>
+                            <i class="fas fa-image"></i><span>Wallpaper</span>
                         </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_Commits" runat="server" ToolTip="GitHubCommitsFeed" onclick="navigateTo('?Form=GitHubCommitsFeed'); return false;">
-                    <i class="fab fa-github"></i><span>Commits</span>
+                            <i class="fab fa-github"></i><span>Commits</span>
                         </asp:HyperLink>
                     </div>
                 </details>
@@ -142,8 +144,6 @@
                         <i class="fas fa-moon"></i>
                     </button>
                     <div class="user-menu">
-
-
                         <div class="bnet-dropdown" tabindex="0">
                             <div class="user-menu" style="cursor: pointer;">
                                 <div class="user-avatar">

@@ -167,6 +167,36 @@ namespace BNet.Cafe.Server.Repositories
             return countValue;
         }
 
+        public bool StockIn(string itemId, string userId, string quantity)
+        {
+            var scripts = new Dictionary<string, string>();
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBItemId", dBScriptService.CleanUpToUpper(itemId));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", dBScriptService.CleanUpToUpper(userId));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBQuantity", dBScriptService.CleanUpToUpper(quantity));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeCreated", TimeService.Get().ToString("HH:mm:ss"));
+
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/InventoryTransactions/StockIn.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+
+            return DBContext.SqlExecuteAsync(sql);
+        }
+
+        public bool StockOut(string itemId, string userId, string quantity)
+        {
+            var scripts = new Dictionary<string, string>();
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBItemId", dBScriptService.CleanUpToUpper(itemId));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", dBScriptService.CleanUpToUpper(userId));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBQuantity", dBScriptService.CleanUpToUpper(quantity));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeCreated", TimeService.Get().ToString("HH:mm:ss"));
+
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/InventoryTransactions/StockOut.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+
+            return DBContext.SqlExecuteAsync(sql);
+        }
+
         public class CountTransactions
         {
             public string Total { get; set; }

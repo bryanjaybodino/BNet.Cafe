@@ -50,6 +50,16 @@ window.addEventListener('resize', () => {
     }
 });
 
+// Auto-expand parent <details> menu-group if an active sub-item is present
+document.addEventListener('DOMContentLoaded', () => {
+    const activeLink = document.querySelector('.sidebar-menu a.active');
+    if (activeLink) {
+        const parentDetails = activeLink.closest('details.menu-group');
+        if (parentDetails) {
+            parentDetails.setAttribute('open', '');
+        }
+    }
+});
 
 // Initialize theme icon on DOM load
 const currentTheme = html.getAttribute('data-theme') || 'light';

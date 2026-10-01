@@ -20,9 +20,9 @@ namespace BNet.Cafe.Server
 
         private const string SHA_FILE_NAME = "CurrentCommitSha";
         private string ShaFolderPath => Server.MapPath("~/App_Data/");
+
         protected void Page_Load(object sender, EventArgs e)
         {
-
             if (!IsPostBack)
             {
                 if (Request.QueryString["Logout"] != null)
@@ -44,14 +44,12 @@ namespace BNet.Cafe.Server
                     Response.Redirect($"~/Portal.aspx?Email={userCookies.user_email}", false);
                 }
 
-
                 Label_InitialName.Text = string.Join("",
                     userCookies.user_fullname
                         .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
                         .Where(name => !string.IsNullOrWhiteSpace(name))
                         .Select(name => name[0])
                 ).ToUpper();
-
 
                 // Run GitHub check asynchronously once per session
                 if (Session["GitHubUpdateChecked"] == null)
@@ -89,7 +87,6 @@ namespace BNet.Cafe.Server
             }
         }
 
-
         private void LoadMyHyperLink(string formName)
         {
             if (!IsPostBack)
@@ -102,6 +99,7 @@ namespace BNet.Cafe.Server
                 HyperLink_PricingSettings.CssClass = "";
 
                 HyperLink_POS.CssClass = "";
+                HyperLink_StockIn.CssClass = "";
                 HyperLink_Inventory.CssClass = "";
                 HyperLink_Suppliers.CssClass = "";
 
@@ -113,24 +111,87 @@ namespace BNet.Cafe.Server
                 HyperLink_WallPaper.CssClass = "";
                 HyperLink_Commits.CssClass = "";
 
-                // Check active route
-                if (formName.Contains(HyperLink_Dashboard.ToolTip)) HyperLink_Dashboard.CssClass = "active";
-                else if (formName.Contains(HyperLink_Computers.ToolTip)) HyperLink_Computers.CssClass = "active";
-                else if (formName.Contains(HyperLink_SeatMap.ToolTip)) HyperLink_SeatMap.CssClass = "active";
-                else if (formName.Contains(HyperLink_Remote.ToolTip)) HyperLink_Remote.CssClass = "active";
-                else if (formName.Contains(HyperLink_PricingSettings.ToolTip)) HyperLink_PricingSettings.CssClass = "active";
+                // Reset details group state
+                group_Computers.Attributes.Remove("open");
+                group_POS.Attributes.Remove("open");
+                group_SportTimer.Attributes.Remove("open");
+                group_Management.Attributes.Remove("open");
 
-                else if (formName.Contains(HyperLink_POS.ToolTip)) HyperLink_POS.CssClass = "active";
-                else if (formName.Contains(HyperLink_Inventory.ToolTip)) HyperLink_Inventory.CssClass = "active";
-                else if (formName.Contains(HyperLink_Suppliers.ToolTip)) HyperLink_Suppliers.CssClass = "active";
-
-                else if (formName.Contains(HyperLink_SportTimer.ToolTip)) HyperLink_SportTimer.CssClass = "active";
-
-                else if (formName.Contains(HyperLink_Billings.ToolTip)) HyperLink_Billings.CssClass = "active";
-                else if (formName.Contains(HyperLink_Users.ToolTip)) HyperLink_Users.CssClass = "active";
-                else if (formName.Contains(HyperLink_TopUp.ToolTip)) HyperLink_TopUp.CssClass = "active";
-                else if (formName.Contains(HyperLink_WallPaper.ToolTip)) HyperLink_WallPaper.CssClass = "active";
-                else if (formName.Contains(HyperLink_Commits.ToolTip)) HyperLink_Commits.CssClass = "active";
+                // Check active route and expand corresponding menu group
+                if (formName.Contains(HyperLink_Dashboard.ToolTip))
+                {
+                    HyperLink_Dashboard.CssClass = "active";
+                }
+                else if (formName.Contains(HyperLink_Computers.ToolTip))
+                {
+                    HyperLink_Computers.CssClass = "active";
+                    group_Computers.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_SeatMap.ToolTip))
+                {
+                    HyperLink_SeatMap.CssClass = "active";
+                    group_Computers.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_Remote.ToolTip))
+                {
+                    HyperLink_Remote.CssClass = "active";
+                    group_Computers.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_PricingSettings.ToolTip))
+                {
+                    HyperLink_PricingSettings.CssClass = "active";
+                    group_Computers.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_POS.ToolTip))
+                {
+                    HyperLink_POS.CssClass = "active";
+                    group_POS.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_StockIn.ToolTip))
+                {
+                    HyperLink_StockIn.CssClass = "active";
+                    group_POS.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_Inventory.ToolTip))
+                {
+                    HyperLink_Inventory.CssClass = "active";
+                    group_POS.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_Suppliers.ToolTip))
+                {
+                    HyperLink_Suppliers.CssClass = "active";
+                    group_POS.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_SportTimer.ToolTip))
+                {
+                    HyperLink_SportTimer.CssClass = "active";
+                    group_SportTimer.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_Billings.ToolTip))
+                {
+                    HyperLink_Billings.CssClass = "active";
+                    group_Management.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_Users.ToolTip))
+                {
+                    HyperLink_Users.CssClass = "active";
+                    group_Management.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_TopUp.ToolTip))
+                {
+                    HyperLink_TopUp.CssClass = "active";
+                    group_Management.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_WallPaper.ToolTip))
+                {
+                    HyperLink_WallPaper.CssClass = "active";
+                    group_Management.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_Commits.ToolTip))
+                {
+                    HyperLink_Commits.CssClass = "active";
+                    group_Management.Attributes["open"] = "open";
+                }
             }
         }
 
@@ -183,6 +244,12 @@ namespace BNet.Cafe.Server
                 case "INVENTORYEDIT":
                     scripts = new[] { "Pages/InventoryManage" };
                     break;
+                case "STOCKIN":
+                    scripts = new[] { "Pages/StockIn" };
+                    break;
+                case "POS":
+                    scripts = new[] { "Pages/POS" };
+                    break;
                 default:
                     scripts = Array.Empty<string>();
                     break;
@@ -193,6 +260,7 @@ namespace BNet.Cafe.Server
                 FileJsHelpler.BundleAddScripts(ScriptManager1, script);
             }
         }
+
         private async Task CheckGitHubUpdateAsync()
         {
             try

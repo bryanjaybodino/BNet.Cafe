@@ -118,6 +118,8 @@
     <Content Include="Assets\Login\Script.js" />
     <Content Include="Assets\Login\Style.css" />
     <Content Include="Assets\Pages\Computers.js" />
+    <Content Include="Assets\Pages\POS.js" />
+    <Content Include="Assets\Pages\StockIn.js" />
     <Content Include="Assets\Pages\SeatMap.css" />
     <Content Include="Assets\Pages\PricingSettings.css" />
     <Content Include="Assets\Pages\PricingSettings.js" />
@@ -150,6 +152,8 @@
     <Content Include="Databases\Queries\InventoryItems\UpdateStock.sql" />
     <Content Include="Databases\Queries\InventoryItems\Update.sql" />
     <Content Include="Databases\Queries\InventoryItems\UpdateCount.sql" />
+    <Content Include="Databases\Queries\InventoryTransactions\StockOut.sql" />
+    <Content Include="Databases\Queries\InventoryTransactions\StockIn.sql" />
     <Content Include="Databases\Queries\InventoryTransactions\Create.sql" />
     <Content Include="Databases\Queries\InventoryTransactions\DeleteById.sql" />
     <Content Include="Databases\Queries\InventoryTransactions\GetAll.sql" />
@@ -170,6 +174,8 @@
     <Content Include="Forms\Modals\InventoryDelete.ascx" />
     <Content Include="Forms\Modals\SupplierDelete.ascx" />
     <Content Include="Forms\Modals\WallpaperDelete.ascx" />
+    <Content Include="Forms\POS.ascx" />
+    <Content Include="Forms\StockIn.ascx" />
     <Content Include="Forms\SupplierCreate.ascx" />
     <Content Include="Forms\SupplierEdit.ascx" />
     <Content Include="Forms\Suppliers.ascx" />
@@ -462,6 +468,13 @@
     <Compile Include="Forms\Modals\WallpaperDelete.ascx.designer.cs">
       <DependentUpon>WallpaperDelete.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Forms\POS.ascx.cs">
+      <DependentUpon>POS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\POS.ascx.designer.cs">
+      <DependentUpon>POS.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Forms\PricingSettings.ascx.cs">
       <DependentUpon>PricingSettings.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -489,6 +502,13 @@
     </Compile>
     <Compile Include="Forms\SeatMap.ascx.designer.cs">
       <DependentUpon>SeatMap.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\StockIn.ascx.cs">
+      <DependentUpon>StockIn.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\StockIn.ascx.designer.cs">
+      <DependentUpon>StockIn.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\SupplierCreate.ascx.cs">
       <DependentUpon>SupplierCreate.ascx</DependentUpon>
