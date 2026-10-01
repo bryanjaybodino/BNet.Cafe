@@ -16,6 +16,18 @@
     disablePOSSubmit();
     return true;
 }
+function ValidatePOSCart() {
+    var cartRows = document.querySelectorAll('[id$="GridView_Cart"] tr');
+
+    // Account for header row
+    if (!cartRows || cartRows.length <= 1) {
+        alert('Please add at least one product to the cart before checking out.');
+        return false;
+    }
+
+    disablePOSSubmit();
+    return true;
+}
 
 function disablePOSSubmit() {
     var btn = document.querySelector('[id$="LinkButton_Submit"]');

@@ -24,49 +24,22 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
-        /// GridView_POSItems control.
+        /// Repeater_Products control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridView_POSItems;
+        protected global::System.Web.UI.WebControls.Repeater Repeater_Products;
 
         /// <summary>
-        /// HiddenField_SelectedItemId control.
+        /// GridView_Cart control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField HiddenField_SelectedItemId;
-
-        /// <summary>
-        /// TextBox_SelectedItemName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox_SelectedItemName;
-
-        /// <summary>
-        /// TextBox_UnitPrice control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox_UnitPrice;
-
-        /// <summary>
-        /// TextBox_Quantity control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox_Quantity;
+        protected global::System.Web.UI.WebControls.GridView GridView_Cart;
 
         /// <summary>
         /// Label_Total control.
@@ -76,6 +49,15 @@ namespace BNet.Cafe.Server.Forms
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label_Total;
+
+        /// <summary>
+        /// LinkButton_Clear control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton LinkButton_Clear;
 
         /// <summary>
         /// LinkButton_Submit control.

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Data;
+using System.IO;
+using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using BNet.Cafe.Server.Repositories;
 using BNet.Cafe.Server.Services;
@@ -15,88 +18,209 @@ namespace BNet.Cafe.Server.Forms
         {
             if (!IsPostBack)
             {
+                InitCart();
                 LoadCatalog();
+            }
+        }
+
+        private void InitCart()
+        {
+            if (ViewState["Cart"] == null)
+            {
+                DataTable cart = new DataTable();
+                cart.Columns.Add("ItemId", typeof(string));
+                cart.Columns.Add("ItemName", typeof(string));
+                cart.Columns.Add("UnitPrice", typeof(double));
+                cart.Columns.Add("Quantity", typeof(int));
+                cart.Columns.Add("Subtotal", typeof(double));
+                ViewState["Cart"] = cart;
             }
         }
 
         private void LoadCatalog()
         {
             DataTable dt = itemsRepo.GetAll();
-            GridView_POSItems.DataSource = dt;
-            GridView_POSItems.DataBind();
+            Repeater_Products.DataSource = dt;
+            Repeater_Products.DataBind();
         }
 
-        protected void GridView_POSItems_RowCommand(object sender, GridViewCommandEventArgs e)
+        public string GetProductImage(object itemIdObj)
+        {
+            if (itemIdObj == null) return "Uploads/Inventory/default.png";
+            string itemId = itemIdObj.ToString();
+            string relativePath = $"~/Uploads/Inventory/{itemId}.png";
+            string physicalPath = HttpContext.Current.Server.MapPath(relativePath);
+
+            return File.Exists(physicalPath) ? $"Uploads/Inventory/{itemId}.png" : "Uploads/Inventory/default.png";
+        }
+
+        protected void Repeater_Products_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "AddToCart")
             {
                 string itemId = e.CommandArgument.ToString();
-                DataTable dt = itemsRepo.GetById(itemId);
+                DataTable itemData = itemsRepo.GetById(itemId);
 
-                if (dt != null && dt.Rows.Count > 0)
+                if (itemData != null && itemData.Rows.Count > 0)
                 {
-                    DataRow row = dt.Rows[0];
-                    HiddenField_SelectedItemId.Value = row["DBId"].ToString();
-                    TextBox_SelectedItemName.Text = row["DBItemName"].ToString();
-                    TextBox_UnitPrice.Text = Convert.ToDouble(row["DBUnitPrice"]).ToString("F2");
-                    TextBox_Quantity.Text = "1";
-                    CalculateTotal(null, null);
+                    DataRow product = itemData.Rows[0];
+                    int stock = Convert.ToInt32(product["DBQuantityInStock"]);
+                    double price = Convert.ToDouble(product["DBUnitPrice"]);
+                    string name = product["DBItemName"].ToString();
+
+                    DataTable cart = (DataTable)ViewState["Cart"];
+                    DataRow existingRow = null;
+
+                    foreach (DataRow row in cart.Rows)
+                    {
+                        if (row["ItemId"].ToString() == itemId)
+                        {
+                            existingRow = row;
+                            break;
+                        }
+                    }
+
+                    if (existingRow != null)
+                    {
+                        int currentQty = Convert.ToInt32(existingRow["Quantity"]);
+                        if (currentQty + 1 > stock)
+                        {
+                            AlertService.ShowAlert(UpdatePanel1, $"Cannot add more. Stock limit reached ({stock}).", "warning");
+                            return;
+                        }
+                        existingRow["Quantity"] = currentQty + 1;
+                        existingRow["Subtotal"] = (currentQty + 1) * price;
+                    }
+                    else
+                    {
+                        if (stock < 1)
+                        {
+                            AlertService.ShowAlert(UpdatePanel1, "Item is out of stock.", "warning");
+                            return;
+                        }
+                        cart.Rows.Add(itemId, name, price, 1, price);
+                    }
+
+                    ViewState["Cart"] = cart;
+                    BindCart();
                 }
             }
         }
 
-        protected void CalculateTotal(object sender, EventArgs e)
+        protected void GridView_Cart_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            double price = double.TryParse(TextBox_UnitPrice.Text, out double p) ? p : 0;
-            int qty = int.TryParse(TextBox_Quantity.Text, out int q) ? q : 0;
-            Label_Total.Text = (price * qty).ToString("F2");
+            DataTable cart = (DataTable)ViewState["Cart"];
+            string itemId = e.CommandArgument.ToString();
+
+            DataRow targetRow = null;
+            foreach (DataRow row in cart.Rows)
+            {
+                if (row["ItemId"].ToString() == itemId)
+                {
+                    targetRow = row;
+                    break;
+                }
+            }
+
+            if (targetRow != null)
+            {
+                if (e.CommandName == "IncreaseQty")
+                {
+                    DataTable itemData = itemsRepo.GetById(itemId);
+                    int stock = Convert.ToInt32(itemData.Rows[0]["DBQuantityInStock"]);
+                    int currentQty = Convert.ToInt32(targetRow["Quantity"]);
+
+                    if (currentQty + 1 <= stock)
+                    {
+                        targetRow["Quantity"] = currentQty + 1;
+                        targetRow["Subtotal"] = (currentQty + 1) * Convert.ToDouble(targetRow["UnitPrice"]);
+                    }
+                    else
+                    {
+                        AlertService.ShowAlert(UpdatePanel1, $"Max stock available is {stock}.", "warning");
+                    }
+                }
+                else if (e.CommandName == "DecreaseQty")
+                {
+                    int currentQty = Convert.ToInt32(targetRow["Quantity"]);
+                    if (currentQty > 1)
+                    {
+                        targetRow["Quantity"] = currentQty - 1;
+                        targetRow["Subtotal"] = (currentQty - 1) * Convert.ToDouble(targetRow["UnitPrice"]);
+                    }
+                    else
+                    {
+                        cart.Rows.Remove(targetRow);
+                    }
+                }
+                else if (e.CommandName == "RemoveItem")
+                {
+                    cart.Rows.Remove(targetRow);
+                }
+
+                ViewState["Cart"] = cart;
+                BindCart();
+            }
+        }
+
+        private void BindCart()
+        {
+            DataTable cart = (DataTable)ViewState["Cart"];
+            GridView_Cart.DataSource = cart;
+            GridView_Cart.DataBind();
+
+            double total = 0;
+            foreach (DataRow row in cart.Rows)
+            {
+                total += Convert.ToDouble(row["Subtotal"]);
+            }
+            Label_Total.Text = total.ToString("N2");
+        }
+
+        protected void LinkButton_Clear_Click(object sender, EventArgs e)
+        {
+            ClearCart();
+        }
+
+        private void ClearCart()
+        {
+            DataTable cart = (DataTable)ViewState["Cart"];
+            cart.Clear();
+            ViewState["Cart"] = cart;
+            BindCart();
         }
 
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
         {
-            string itemId = HiddenField_SelectedItemId.Value;
-            string quantityStr = TextBox_Quantity.Text.Trim();
-            string userId = "ADMIN"; // Replace with current Session User ID
-
-            if (string.IsNullOrEmpty(itemId) || !int.TryParse(quantityStr, out int quantity) || quantity <= 0)
+            DataTable cart = (DataTable)ViewState["Cart"];
+            if (cart == null || cart.Rows.Count == 0)
             {
-                AlertService.ShowAlert(UpdatePanel1, "Please select an item and a valid quantity.", "warning");
+                AlertService.ShowAlert(UpdatePanel1, "Your cart is empty.", "warning");
                 return;
             }
 
-            // Verify Stock level
-            DataTable dt = itemsRepo.GetById(itemId);
-            if (dt != null && dt.Rows.Count > 0)
+            string userId = "ADMIN"; // Replace with current Session User ID
+            bool allSuccess = true;
+
+            foreach (DataRow row in cart.Rows)
             {
-                int currentStock = Convert.ToInt32(dt.Rows[0]["DBQuantityInStock"]);
-                if (quantity > currentStock)
-                {
-                    AlertService.ShowAlert(UpdatePanel1, $"Insufficient stock. Current stock: {currentStock}", "error");
-                    return;
-                }
+                string itemId = row["ItemId"].ToString();
+                string qty = row["Quantity"].ToString();
+
+                bool ok = transactionsRepo.StockOut(itemId, userId, qty);
+                if (!ok) allSuccess = false;
             }
 
-            bool success = transactionsRepo.StockOut(itemId, userId, quantity.ToString());
-
-            if (success)
+            if (allSuccess)
             {
-                ClearForm();
+                ClearCart();
                 LoadCatalog();
-                AlertService.ShowAlert(UpdatePanel1, "Sale completed successfully.", "success");
+                AlertService.ShowAlert(UpdatePanel1, "Sale completed successfully!", "success");
             }
             else
             {
-                AlertService.ShowAlert(UpdatePanel1, "Failed to complete transaction.", "error");
+                AlertService.ShowAlert(UpdatePanel1, "Failed to complete some items in the sale.", "error");
             }
-        }
-
-        private void ClearForm()
-        {
-            HiddenField_SelectedItemId.Value = string.Empty;
-            TextBox_SelectedItemName.Text = string.Empty;
-            TextBox_UnitPrice.Text = "0.00";
-            TextBox_Quantity.Text = "1";
-            Label_Total.Text = "0.00";
         }
     }
 }
