@@ -4,10 +4,10 @@
     <div class="bnet-modal-container" style="max-width: 420px;">
         <div class="bnet-modal-header">
             <h3 class="bnet-modal-title">
-                <i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> Transaction Successful
+                <i class="fa-solid fa-circle-check" style="color: #22c55e;"></i>Transaction Successful
             </h3>
         </div>
-        
+
         <div class="bnet-modal-body" style="display: flex; flex-direction: column; gap: 14px;">
             <!-- Amount Display -->
             <div style="background-color: var(--bg-light-tertiary); padding: 12px; border-radius: 8px; text-align: center;">
@@ -18,7 +18,7 @@
             <!-- Customer Cash Input -->
             <div>
                 <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">Customer Cash (₱)</label>
-                <input type="number" id="inputCustomerCash" class="search-input" placeholder="0.00" min="0" step="any" oninput="calculatePOSReceiptChange()" style="width: 100%; font-size: 16px; font-weight: 600; text-align: right;" />
+                <input type="number" oninput="NumberOnly(this);" id="inputCustomerCash" class="search-input" placeholder="0.00" min="0" step="any" oninput="calculatePOSReceiptChange()" style="width: 100%; font-size: 16px; font-weight: 600; text-align: right;" />
             </div>
 
             <!-- Calculated Change Display -->

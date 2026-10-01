@@ -28,7 +28,7 @@
                                 <label for="TextBox_Quantity">
                                     Restock Quantity <span class="required-badge">*</span>
                                 </label>
-                                <asp:TextBox ID="TextBox_Quantity" runat="server" TextMode="Number"
+                                <asp:TextBox ID="TextBox_Quantity" runat="server" oninput="NumberOnly(this);" TextMode="Number"
                                     CssClass="form-control pricing-input" placeholder="0" min="1"></asp:TextBox>
                             </div>
 

@@ -61,6 +61,7 @@ namespace BNet.Cafe.Server.Services
                 || file.Contains("Assets/Pages/Wallpaper.css")
                 || file.Contains("Assets/Pages/POS.css")
                 || file.Contains("Assets/Pages/StockIn.css")
+                || file.Contains("Assets/Pages/InventoryManage.css")
 
 
 
