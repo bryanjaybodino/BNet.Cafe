@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="StockIn.ascx.cs" Inherits="BNet.Cafe.Server.Forms.StockIn" %>
+<%@ Register Src="~/Forms/Modals/StockInDelete.ascx" TagPrefix="uc" TagName="StockInDelete" %>
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
     <ContentTemplate>
@@ -69,6 +70,14 @@
                                         <asp:BoundField DataField="DBQuantity" HeaderText="Quantity Added" />
                                         <asp:BoundField DataField="DBDateCreated" HeaderText="Date" />
                                         <asp:BoundField DataField="DBTimeCreated" HeaderText="Time" />
+                                        <asp:TemplateField HeaderText="Actions">
+                                            <ItemTemplate>
+                                                <button type="button" class="btn btn-sm btn-danger" 
+                                                    onclick='openStockInDeleteModal("<%# Eval("DBId") %>", "<%# Eval("DBItemName") %>")'>
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
                                     </Columns>
                                 </asp:GridView>
                             </div>
@@ -78,5 +87,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Stock In Delete Modal -->
+        <uc:StockInDelete ID="StockInDeleteModal" runat="server" />
     </ContentTemplate>
 </asp:UpdatePanel>

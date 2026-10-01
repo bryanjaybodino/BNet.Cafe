@@ -175,6 +175,7 @@
     <Content Include="Forms\Modals\GitHubUpdateModal.ascx" />
     <Content Include="Forms\Modals\InventoryDelete.ascx" />
     <Content Include="Forms\Modals\POSReceipt.ascx" />
+    <Content Include="Forms\Modals\StockInDelete.ascx" />
     <Content Include="Forms\Modals\SupplierDelete.ascx" />
     <Content Include="Forms\Modals\WallpaperDelete.ascx" />
     <Content Include="Forms\POS.ascx" />
@@ -463,6 +464,13 @@
     </Compile>
     <Compile Include="Forms\Modals\RemoteTimeTransfer.ascx.designer.cs">
       <DependentUpon>RemoteTimeTransfer.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\StockInDelete.ascx.cs">
+      <DependentUpon>StockInDelete.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\StockInDelete.ascx.designer.cs">
+      <DependentUpon>StockInDelete.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Modals\SupplierDelete.ascx.cs">
       <DependentUpon>SupplierDelete.ascx</DependentUpon>
