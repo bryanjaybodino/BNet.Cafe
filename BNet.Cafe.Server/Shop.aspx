@@ -12,7 +12,7 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Storefront - Browse Products</title>
+    <title>Little Store - Browse Products</title>
     <% Response.Write(BNet.Cafe.Server.Services.FileCssHelper.StyleSheetVersion("Assets/Shop/Style.css")); %>
     <% Response.Write(BNet.Cafe.Server.Services.FileCssHelper.StyleSheetVersion("Assets/Pages/Style.css")); %>
     <% Response.Write(BNet.Cafe.Server.Services.FileCssHelper.StyleSheetVersion("Assets/fontawesome/font-awesome.min.css")); %>
@@ -22,6 +22,17 @@
         <asp:ScriptManager ID="ScriptManager1" EnableCdn="false" EnablePageMethods="true" EnablePartialRendering="true" AsyncPostBackTimeout="99999999" ScriptMode="Release" ValidateRequestMode="Enabled" EnableScriptLocalization="true" EnableScriptGlobalization="true" LoadScriptsBeforeUI="false" CompositeScript-ScriptMode="Release" CompositeScript-ResourceUICultures="Release" runat="server"></asp:ScriptManager>
         
         <div class="ecom-store-container">
+            <!-- Header Bar with Store Branding & Theme Switcher -->
+            <header class="ecom-header">
+                <div class="brand-logo">
+                    <i class="fa fa-shopping-bag brand-icon"></i>
+                    <h2>Little Store</h2>
+                </div>
+                <button type="button" id="themeToggle" class="theme-toggle-btn" title="Toggle Light/Dark Theme">
+                    <i class="fa fa-sun"></i>
+                </button>
+            </header>
+
             <!-- Filter & Search Controls -->
             <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                 <ContentTemplate>
@@ -43,20 +54,16 @@
                         </div>
                     </div>
 
-                    <!-- E-Commerce Showcase Grid (View Only) -->
+                    <!-- E-Commerce Showcase Grid -->
                     <div class="ecom-product-grid">
                         <asp:Repeater ID="Repeater_Products" runat="server">
                             <ItemTemplate>
                                 <div class="ecom-product-card">
-                                    <!-- Image Container -->
                                     <div class="product-media">
                                         <img src='<%# GetProductImage(Eval("DBId")) %>' alt='<%# Eval("DBItemName") %>' onerror="this.src='Uploads/Inventory/default.png';" />
-                                        
-                                        <!-- Category Tag Badge -->
                                         <span class="category-badge"><%# Eval("DBCategory") %></span>
                                     </div>
 
-                                    <!-- Content Area -->
                                     <div class="product-details">
                                         <div class="product-rating">
                                             <i class="fa fa-star active"></i>

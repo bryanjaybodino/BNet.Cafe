@@ -2,7 +2,8 @@
 html:not(.no-transitions) body,
 html:not(.no-transitions) .ecom-product-card,
 html:not(.no-transitions) .ecom-input,
-html:not(.no-transitions) .ecom-select {
+html:not(.no-transitions) .ecom-select,
+html:not(.no-transitions) .theme-toggle-btn {
     transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -16,6 +17,8 @@ html:not(.no-transitions) .ecom-select {
     --accent-primary: #6366f1;
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
+    --badge-bg: rgba(15, 23, 42, 0.75);
+    --badge-text: #f8fafc;
     --card-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.4);
     --card-shadow-hover: 0 20px 40px -10px rgba(99, 102, 241, 0.25);
 }
@@ -29,6 +32,8 @@ html:not(.no-transitions) .ecom-select {
     --accent-primary: #4f46e5;
     --text-primary: #0f172a;
     --text-secondary: #64748b;
+    --badge-bg: rgba(241, 245, 249, 0.9);
+    --badge-text: #1e293b;
     --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
     --card-shadow-hover: 0 20px 35px -8px rgba(79, 70, 229, 0.15);
 }
@@ -51,6 +56,56 @@ body {
     margin: 0 auto;
     padding: 0 20px;
 }
+
+/* Header & Brand Styles */
+.ecom-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-card);
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+    .brand-logo .brand-icon {
+        font-size: 24px;
+        color: var(--accent-primary);
+    }
+
+    .brand-logo h2 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: var(--text-primary);
+    }
+
+.theme-toggle-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    color: var(--text-primary);
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    outline: none;
+    box-shadow: var(--card-shadow);
+}
+
+    .theme-toggle-btn:hover {
+        border-color: var(--border-focus);
+        color: var(--accent-primary);
+    }
 
 /* Toolbar Controls */
 .ecom-toolbar {
@@ -173,7 +228,7 @@ body {
     position: relative;
     width: 100%;
     height: 220px;
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.05);
     overflow: hidden;
 }
 
@@ -193,17 +248,17 @@ body {
     position: absolute;
     top: 12px;
     left: 12px;
-    background: rgba(15, 23, 42, 0.75);
+    background: var(--badge-bg);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    color: #f8fafc;
+    color: var(--badge-text);
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.6px;
     padding: 5px 10px;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--border-card);
     z-index: 2;
 }
 
@@ -221,7 +276,7 @@ body {
     align-items: center;
     gap: 3px;
     font-size: 11px;
-    color: #cbd5e1;
+    color: var(--text-secondary);
 }
 
     .product-rating i.active {
