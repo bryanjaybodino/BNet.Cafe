@@ -123,6 +123,7 @@
     <Content Include="Assets\Pages\PricingSettings.js" />
     <Content Include="Assets\Pages\SeatMap.js" />
     <Content Include="Assets\Pages\SupplierManage.js" />
+    <Content Include="Assets\Pages\InventoryManage.js" />
     <Content Include="Assets\Pages\UserManage.js" />
     <Content Include="Assets\Pages\UserTopUp.js" />
     <Content Include="Assets\Pages\RentalManage.css" />
@@ -156,7 +157,11 @@
     <Content Include="Databases\Queries\Suppliers\Update.sql" />
     <Content Include="Databases\Queries\Suppliers\UpdateCount.sql" />
     <Content Include="Forms\GitHubCommitsFeed.ascx" />
+    <Content Include="Forms\Inventory.ascx" />
+    <Content Include="Forms\InventoryCreate.ascx" />
+    <Content Include="Forms\InventoryEdit.ascx" />
     <Content Include="Forms\Modals\GitHubUpdateModal.ascx" />
+    <Content Include="Forms\Modals\InventoryDelete.ascx" />
     <Content Include="Forms\Modals\SupplierDelete.ascx" />
     <Content Include="Forms\Modals\WallpaperDelete.ascx" />
     <Content Include="Forms\SupplierCreate.ascx" />
@@ -353,6 +358,27 @@
     <Compile Include="Forms\GitHubCommitsFeed.ascx.designer.cs">
       <DependentUpon>GitHubCommitsFeed.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Inventory.ascx.cs">
+      <DependentUpon>Inventory.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Inventory.ascx.designer.cs">
+      <DependentUpon>Inventory.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\InventoryCreate.ascx.cs">
+      <DependentUpon>InventoryCreate.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\InventoryCreate.ascx.designer.cs">
+      <DependentUpon>InventoryCreate.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\InventoryEdit.ascx.cs">
+      <DependentUpon>InventoryEdit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\InventoryEdit.ascx.designer.cs">
+      <DependentUpon>InventoryEdit.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Modals\ComputerDelete.ascx.cs">
       <DependentUpon>ComputerDelete.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -366,6 +392,13 @@
     </Compile>
     <Compile Include="Forms\Modals\GitHubUpdateModal.ascx.designer.cs">
       <DependentUpon>GitHubUpdateModal.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\InventoryDelete.ascx.cs">
+      <DependentUpon>InventoryDelete.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\InventoryDelete.ascx.designer.cs">
+      <DependentUpon>InventoryDelete.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Modals\PricingSettingDelete.ascx.cs">
       <DependentUpon>PricingSettingDelete.ascx</DependentUpon>

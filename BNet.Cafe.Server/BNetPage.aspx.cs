@@ -179,6 +179,10 @@ namespace BNet.Cafe.Server
                 case "SUPPLIEREDIT":
                     scripts = new[] { "Pages/SupplierManage" };
                     break;
+                case "INVENTORYCREATE":
+                case "INVENTORYEDIT":
+                    scripts = new[] { "Pages/InventoryManage" };
+                    break;
                 default:
                     scripts = Array.Empty<string>();
                     break;
