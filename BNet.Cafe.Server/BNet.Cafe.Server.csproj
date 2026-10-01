@@ -142,6 +142,13 @@
     <Content Include="Assets\Portal\Style.css" />
     <Content Include="BNetPage.aspx" />
     <Content Include="Databases\Queries\Balances\GetCount.sql" />
+    <Content Include="Databases\Queries\InventoryItems\Create.sql" />
+    <Content Include="Databases\Queries\InventoryItems\DeleteById.sql" />
+    <Content Include="Databases\Queries\InventoryItems\GetAll.sql" />
+    <Content Include="Databases\Queries\InventoryItems\GetById.sql" />
+    <Content Include="Databases\Queries\InventoryItems\UpdateStock.sql" />
+    <Content Include="Databases\Queries\InventoryItems\Update.sql" />
+    <Content Include="Databases\Queries\InventoryItems\UpdateCount.sql" />
     <Content Include="Databases\Queries\Suppliers\DeleteById.sql" />
     <Content Include="Databases\Queries\Suppliers\GetAll.sql" />
     <Content Include="Databases\Queries\Suppliers\GetById.sql" />
@@ -537,6 +544,7 @@
     <Compile Include="Repositories\Computers.cs" />
     <Compile Include="Repositories\ClientData.cs" />
     <Compile Include="Repositories\Dashboard.cs" />
+    <Compile Include="Repositories\InventoryItems.cs" />
     <Compile Include="Repositories\PricingRates.cs" />
     <Compile Include="Repositories\Rentals.cs" />
     <Compile Include="Repositories\Suppliers.cs" />
