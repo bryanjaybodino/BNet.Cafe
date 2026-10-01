@@ -55,3 +55,12 @@ if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManage
 if (!isMobile()) {
     document.getElementById('toggleBtn').click();
 }
+function handleQuantityInput(input) {
+    // 1. Sanitize input to numbers only
+    NumberOnly(input);
+
+    // 2. Trigger calculation logic
+    if (typeof calculatePOSReceiptChange === 'function') {
+        calculatePOSReceiptChange();
+    }
+}
