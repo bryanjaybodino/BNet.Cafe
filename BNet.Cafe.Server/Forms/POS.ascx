@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="POS.ascx.cs" Inherits="BNet.Cafe.Server.Forms.POS" %>
 
 <style>
+    /* POS Components */
     .pos-container {
         display: flex;
         gap: 16px;
@@ -8,14 +9,16 @@
         min-height: 500px;
         width: 100%;
         box-sizing: border-box;
+        background-color: var(--bg-light);
+        color: var(--text-light);
     }
 
     .pos-catalog-panel {
         flex: 1.6;
         display: flex;
         flex-direction: column;
-        background-color: #ffffff;
-        border: 1px solid #e2e8f0;
+        background-color: var(--bg-light-secondary);
+        border: 1px solid var(--border-light);
         border-radius: 12px;
         padding: 16px;
         min-width: 0;
@@ -27,8 +30,8 @@
         flex: 1.1;
         display: flex;
         flex-direction: column;
-        background-color: #ffffff;
-        border: 1px solid #e2e8f0;
+        background-color: var(--bg-light-secondary);
+        border: 1px solid var(--border-light);
         border-radius: 12px;
         padding: 16px;
         min-width: 0;
@@ -47,7 +50,7 @@
     .pos-title {
         font-size: 18px;
         font-weight: 700;
-        color: #1e293b;
+        color: var(--text-light);
         display: flex;
         align-items: center;
         gap: 8px;
@@ -64,11 +67,17 @@
         width: 100%;
         padding-left: 34px;
         height: 38px;
-        border: 1px solid #cbd5e1;
+        border: 1px solid var(--border-light);
+        background-color: var(--bg-light-tertiary);
+        color: var(--text-light);
         border-radius: 6px;
         padding-right: 10px;
         box-sizing: border-box;
         font-size: 14px;
+    }
+
+    .pos-search-box .search-input::placeholder {
+        color: var(--text-light-secondary);
     }
 
     .pos-search-box i {
@@ -76,7 +85,7 @@
         left: 12px;
         top: 50%;
         transform: translateY(-50%);
-        color: #64748b;
+        color: var(--text-light-secondary);
     }
 
     /* Product Cards Grid */
@@ -99,8 +108,8 @@
     }
 
     .pos-product-card {
-        background-color: #ffffff;
-        border: 1px solid #e2e8f0;
+        background-color: var(--bg-light-secondary);
+        border: 1px solid var(--border-light);
         border-radius: 10px;
         overflow: hidden;
         transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
@@ -109,19 +118,19 @@
         position: relative;
         height: auto;
         cursor: pointer;
-        pointer-events: none;
+        pointer-events: none; /* Crucial: ensures ASP.NET LinkButton click event fires properly inside UpdatePanel */
     }
 
     .pos-card-link:hover .pos-product-card {
-        border-color: #2563eb;
+        border-color: var(--primary);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     .product-img-wrapper {
         width: 100%;
         height: 95px;
-        background-color: #f8fafc;
+        background-color: var(--bg-light-tertiary);
         position: relative;
         overflow: hidden;
     }
@@ -156,7 +165,7 @@
     .product-name {
         font-weight: 600;
         font-size: 13px;
-        color: #1e293b;
+        color: var(--text-light);
         margin-bottom: 2px;
         white-space: nowrap;
         overflow: hidden;
@@ -165,7 +174,7 @@
 
     .product-category {
         font-size: 11px;
-        color: #64748b;
+        color: var(--text-light-secondary);
         margin-bottom: 8px;
     }
 
@@ -176,14 +185,14 @@
     }
 
     .product-price {
-        color: #2563eb;
+        color: var(--primary);
         font-weight: 700;
         font-size: 14px;
     }
 
     .add-btn-icon {
-        background-color: #eff6ff;
-        color: #2563eb;
+        background-color: var(--bg-light-tertiary);
+        color: var(--primary);
         width: 24px;
         height: 24px;
         border-radius: 50%;
@@ -196,21 +205,23 @@
     .cart-table-wrapper {
         flex: 1;
         overflow-y: auto;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--border-light);
         border-radius: 8px;
         margin-bottom: 16px;
         -webkit-overflow-scrolling: touch;
+        background-color: var(--bg-light-secondary);
     }
 
     .cart-table {
         width: 100%;
         border-collapse: collapse;
         font-size: 13px;
+        color: var(--text-light);
     }
 
     .cart-table th {
-        background-color: #f8fafc;
-        color: #64748b;
+        background-color: var(--bg-light-tertiary);
+        color: var(--text-light-secondary);
         padding: 10px;
         text-align: left;
         font-weight: 600;
@@ -222,7 +233,7 @@
 
     .cart-table td {
         padding: 8px 10px;
-        border-bottom: 1px solid #e2e8f0;
+        border-bottom: 1px solid var(--border-light);
         vertical-align: middle;
     }
 
@@ -233,9 +244,9 @@
     }
 
     .qty-btn {
-        background: #f1f5f9;
-        border: 1px solid #cbd5e1;
-        color: #1e293b;
+        background: var(--bg-light-tertiary);
+        border: 1px solid var(--border-light);
+        color: var(--text-light);
         width: 28px;
         height: 28px;
         display: flex;
@@ -247,8 +258,12 @@
         text-decoration: none;
     }
 
+    .qty-btn:hover {
+        background: var(--border-light);
+    }
+
     .cart-summary {
-        border-top: 1px solid #e2e8f0;
+        border-top: 1px solid var(--border-light);
         padding-top: 12px;
         margin-top: auto;
         flex-shrink: 0;
@@ -264,6 +279,7 @@
     .total-label {
         font-size: 15px;
         font-weight: 600;
+        color: var(--text-light);
     }
 
     .total-amount {
@@ -421,8 +437,8 @@
                             </asp:TemplateField>
                         </Columns>
                         <EmptyDataTemplate>
-                            <div style="text-align: center; color: #94a3b8; padding: 30px 10px;">
-                                <i class="fa-solid fa-basket-shopping" style="font-size: 32px; margin-bottom: 8px; color: #cbd5e1;"></i>
+                            <div style="text-align: center; color: var(--text-light-secondary); padding: 30px 10px;">
+                                <i class="fa-solid fa-basket-shopping" style="font-size: 32px; margin-bottom: 8px; color: var(--border-light);"></i>
                                 <div>Cart is empty. Select products to add.</div>
                             </div>
                         </EmptyDataTemplate>

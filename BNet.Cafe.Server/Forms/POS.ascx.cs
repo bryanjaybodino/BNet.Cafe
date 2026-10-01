@@ -20,6 +20,7 @@ namespace BNet.Cafe.Server.Forms
             {
                 InitCart();
                 LoadCatalog();
+                BindCart();
             }
         }
 
