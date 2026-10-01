@@ -37,10 +37,52 @@
     <style>
         body{font-family:'Inter',sans-serif;transition:background-color 0.3s ease,color 0.3s ease}.dark body{background-color:#090d16;color:#f1f5f9}.light body{background-color:#f8fafc;color:#0f172a}.cyber-grid{background-size:36px 36px}.dark .cyber-grid{background-image:linear-gradient(to right,rgb(255 255 255 / .03) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255 / .03) 1px,transparent 1px)}.light .cyber-grid{background-image:linear-gradient(to right,rgb(15 23 42 / .03) 1px,transparent 1px),linear-gradient(to bottom,rgb(15 23 42 / .03) 1px,transparent 1px)}.custom-scrollbar::-webkit-scrollbar{width:8px}.dark .custom-scrollbar::-webkit-scrollbar-track{background:#090d16}.dark .custom-scrollbar::-webkit-scrollbar-thumb{background:#1e293b;border-radius:4px}.light .custom-scrollbar::-webkit-scrollbar-track{background:#f1f5f9}.light .custom-scrollbar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
         .messenger-button{position:fixed;bottom:25px;right:25px;width:auto;height:50px;padding:0 15px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border-radius:50px;display:flex;align-items:center;justify-content:center;gap:.6rem;text-decoration:none;box-shadow:0 4px 12px rgb(37 99 235 / .4);transition:all 0.3s ease;z-index:5000;line-height:1;color:#fff;cursor:pointer}.messenger-button i{font-size:1.5rem}.messenger-button span{font-size:.95rem;font-weight:600;white-space:nowrap}.messenger-button:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgb(37 99 235 / .6)}.messenger-button:active{transform:scale(.95)}[data-theme="dark"] .messenger-button{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 4px 12px rgb(37 99 235 / .6)}[data-theme="dark"] .messenger-button:hover{box-shadow:0 8px 20px rgb(59 130 246 / .7)}.messenger-button .icon-default,.messenger-button .text-default{display:inline}.messenger-button .icon-loading{display:none;animation:spin 1s linear infinite}.messenger-button.loading .icon-default,.messenger-button.loading .text-default{display:none}.messenger-button.loading .icon-loading{display:inline}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.messenger-button .text-loading{display:none;cursor:pointer;font-size:.8rem}.messenger-button.loading .text-loading{display:inline}.messenger-button.loading .text-loading:hover::after{content:' (click to close)';font-size:.7rem}
+
+        /* Floating Audio Player Button */
+        .music-player-btn {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            height: 50px;
+            padding: 0 16px;
+            background: linear-gradient(135deg, #06b6d4, #10b981);
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+            transition: all 0.3s ease;
+            z-index: 5000;
+            color: #0f172a;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+            .music-player-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(6, 182, 212, 0.6);
+            }
+
+            .music-player-btn:active {
+                transform: scale(0.95);
+            }
+    
     </style>
 </head>
 <body class="custom-scrollbar">
 
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop autoplay muted preload="auto">
+        <source src="./assets/music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Floating Audio Control Button -->
+    <button id="musicToggleBtn" class="music-player-btn" title="Toggle Background Music">
+        <i id="musicIcon" class="fa-solid fa-volume-xmark text-lg"></i>
+        <span id="musicStatusText">Muted</span>
+    </button>
     <!-- Navigation Header -->
     <header class="sticky top-0 z-50 backdrop-blur-md dark:bg-[#090d16]/80 bg-white/80 border-b dark:border-slate-800 border-slate-200 transition-colors">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -227,13 +269,12 @@
             <div class="max-w-4xl mx-auto rounded-2xl overflow-hidden border dark:border-slate-800 border-slate-200 shadow-2xl bg-black">
                 <div class="relative w-full" style="padding-top: 56.25%;">
                     <!-- Replace YOUR_YOUTUBE_VIDEO_ID with your actual YouTube Video ID (e.g., dQw4w9WgXcQ) -->
-                    <iframe 
-                        class="absolute top-0 left-0 w-full h-full" 
-                        src="https://www.youtube.com/embed/eDefVElr5DU?si=JBm8HSUPHU7Eqc9K" 
-                        title="BNet Cafe Software Installation & Setup Guide" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        allowfullscreen>
+                    <iframe class="absolute top-0 left-0 w-full h-full"
+                            src="https://www.youtube.com/embed/eDefVElr5DU?si=JBm8HSUPHU7Eqc9K"
+                            title="BNet Cafe Software Installation & Setup Guide"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
                     </iframe>
                 </div>
             </div>
@@ -595,7 +636,7 @@
                         <i class="fa-solid fa-download mr-1"></i> Download Server
                     </a>
                 </div>
-                
+
                 <!-- Client Release -->
                 <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
                     <div>
@@ -739,6 +780,65 @@
                 setTimeout(function () {
                     el.classList.remove('loading');
                 }, 15000);
+            }
+        }
+
+
+
+        /* Music Autoplay & Controls Setup */
+        const audio = document.getElementById('bgMusic');
+        const musicIcon = document.getElementById('musicIcon');
+        const musicStatusText = document.getElementById('musicStatusText');
+        const musicBtn = document.getElementById('musicToggleBtn');
+
+        // Attempt initial muted play (allowed by modern mobile browsers)
+        audio.muted = true;
+        audio.play().catch(err => {
+            console.log("Autoplay waiting for interaction...", err);
+        });
+
+        // Function to enable sound on first user touch/click anywhere
+        function enableSound() {
+            audio.muted = false;
+            audio.play().then(() => {
+                updatePlayerUI(true);
+            }).catch(() => { });
+
+            // Remove setup listeners once triggered
+            document.removeEventListener('click', enableSound);
+            document.removeEventListener('touchstart', enableSound);
+        }
+
+        // Register initial interaction handlers
+        document.addEventListener('click', enableSound, { once: true });
+        document.addEventListener('touchstart', enableSound, { once: true });
+
+        // Directly bind touch & click handlers to the toggle button for mobile
+        function handleToggle(e) {
+            if (e) e.preventDefault(); // Prevent double-triggering on mobile tap
+
+            if (audio.muted || audio.paused) {
+                audio.muted = false;
+                audio.play().then(() => {
+                    updatePlayerUI(true);
+                }).catch(err => console.log("Play failed:", err));
+            } else {
+                audio.pause();
+                updatePlayerUI(false);
+            }
+        }
+
+        // Attach both touchstart and click to ensure instant response on mobile
+        musicBtn.addEventListener('touchstart', handleToggle, { passive: false });
+        musicBtn.addEventListener('click', handleToggle);
+
+        function updatePlayerUI(isPlaying) {
+            if (isPlaying && !audio.muted && !audio.paused) {
+                musicIcon.className = "fa-solid fa-compact-disc text-lg animate-spin";
+                musicStatusText.textContent = "Playing";
+            } else {
+                musicIcon.className = "fa-solid fa-volume-xmark text-lg";
+                musicStatusText.textContent = "Muted";
             }
         }
     </script>

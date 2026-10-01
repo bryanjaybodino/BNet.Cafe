@@ -147,6 +147,7 @@
     <Content Include="Forms\TopUp.ascx" />
     <Content Include="Forms\UserBonus.ascx" />
     <Content Include="Forms\Wallpaper.ascx" />
+    <Content Include="Website\assets\music.mp3" />
     <Content Include="Website\assets\font-awesome.min.css" />
     <Content Include="Website\assets\fonts.googleapis.css" />
     <Content Include="Website\index.html" />
