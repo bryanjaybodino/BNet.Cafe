@@ -1,0 +1,289 @@
+﻿/* Smooth transitions during toggle (disabled initially to avoid load blink) */
+html:not(.no-transitions) body,
+html:not(.no-transitions) .portal-nav,
+html:not(.no-transitions) .shop-product-card,
+html:not(.no-transitions) .shop-input,
+html:not(.no-transitions) .shop-select {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* CSS Variables & Theme Setup */
+:root {
+    --portal-bg: #0d1117;
+    --portal-card-bg: rgba(22, 27, 34, 0.75);
+    --portal-card-border: rgba(255, 255, 255, 0.08);
+    --portal-accent: #6366f1;
+    --portal-accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    --portal-text-main: #f3f4f6;
+    --portal-text-muted: #9ca3af;
+}
+
+[data-theme="light"] {
+    --portal-bg: #f8fafc;
+    --portal-card-bg: #ffffff;
+    --portal-card-border: #e2e8f0;
+    --portal-accent: #4f46e5;
+    --portal-accent-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    --portal-text-main: #0f172a;
+    --portal-text-muted: #64748b;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--portal-bg);
+    color: var(--portal-text-main);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.portal-layout {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+/* Navbar Header */
+.portal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--portal-card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--portal-card-border);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    color: var(--portal-text-main);
+}
+
+    .brand-logo i {
+        color: var(--portal-accent);
+        font-size: 20px;
+    }
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-theme-toggle {
+    background: none;
+    border: 1px solid var(--portal-card-border);
+    color: var(--portal-text-main);
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+    .btn-theme-toggle:hover {
+        border-color: var(--portal-accent);
+        color: var(--portal-accent);
+    }
+
+.btn-logout-modern {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .btn-logout-modern:hover {
+        background: #ef4444;
+        color: #ffffff !important;
+    }
+
+/* 2-Column Search & Filter Toolbar Layout */
+.shop-toolbar-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.shop-search-box {
+    position: relative;
+    width: 100%;
+}
+
+    .shop-search-box i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--portal-text-muted);
+    }
+
+.shop-input, .shop-select {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    background: var(--portal-card-bg);
+    border: 1px solid var(--portal-card-border);
+    border-radius: 12px;
+    color: var(--portal-text-main);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.shop-select {
+    padding-left: 14px;
+    cursor: pointer;
+}
+
+    .shop-input:focus, .shop-select:focus {
+        border-color: var(--portal-accent);
+    }
+
+/* Product Cards Grid */
+.shop-product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+/* Full-Bleed Image Card Container */
+.shop-product-card {
+    background: var(--portal-card-bg);
+    border: 1px solid var(--portal-card-border);
+    border-radius: 16px;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    user-select: none;
+    pointer-events: none; /* Disables clicks / view-only */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Edge-to-Edge Image Wrapper */
+.product-img-wrapper {
+    width: 100%;
+    height: 160px;
+    background: rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+    .product-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+/* Card Content Inner Container */
+.product-card-body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.product-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--portal-text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-category {
+    font-size: 11px;
+    color: var(--portal-text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.product-price {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--portal-accent);
+    margin-top: 4px;
+}
+
+/* Stock Status Pill */
+.stock-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+    .stock-pill.in-stock {
+        background: rgba(16, 185, 129, 0.12);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .stock-pill.out-of-stock {
+        background: rgba(239, 68, 68, 0.12);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+.shop-empty {
+    text-align: center;
+    color: var(--portal-text-muted);
+    padding: 40px 10px;
+    grid-column: 1 / -1;
+    background: var(--portal-card-bg);
+    border: 1px solid var(--portal-card-border);
+    border-radius: 16px;
+}
+
+@media (max-width: 500px) {
+    .portal-layout {
+        padding: 12px;
+    }
+
+    .shop-toolbar-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -145,6 +145,8 @@
     <Content Include="Assets\Pages\Wallpaper.js" />
     <Content Include="Assets\Portal\Script.js" />
     <Content Include="Assets\Portal\Style.css" />
+    <Content Include="Assets\Shop\Script.js" />
+    <Content Include="Assets\Shop\Style.css" />
     <Content Include="BNetPage.aspx" />
     <Content Include="Databases\Queries\Balances\GetCount.sql" />
     <Content Include="Databases\Queries\InventoryItems\Create.sql" />
@@ -187,6 +189,7 @@
     <Content Include="Forms\TopUp.ascx" />
     <Content Include="Forms\UserBonus.ascx" />
     <Content Include="Forms\Wallpaper.ascx" />
+    <Content Include="Shop.aspx" />
     <Content Include="Website\assets\music.mp3" />
     <Content Include="Website\assets\font-awesome.min.css" />
     <Content Include="Website\assets\fonts.googleapis.css" />
@@ -658,6 +661,13 @@
     <Compile Include="Services\SecuredDataService.cs" />
     <Compile Include="Services\TimeService.cs" />
     <Compile Include="Sessions\User.cs" />
+    <Compile Include="Shop.aspx.cs">
+      <DependentUpon>Shop.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Shop.aspx.designer.cs">
+      <DependentUpon>Shop.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\fontawesome\webfonts\fa-brands-400.woff2" />
