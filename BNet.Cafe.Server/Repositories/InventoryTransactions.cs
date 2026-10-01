@@ -1,4 +1,5 @@
 ﻿using BNet.Cafe.Server.Ashx;
+using BNet.Cafe.Server.ConstantData;
 using BNet.Cafe.Server.Databases;
 using BNet.Cafe.Server.Services;
 using System;
@@ -170,6 +171,7 @@ namespace BNet.Cafe.Server.Repositories
         public bool StockIn(string itemId, string userId, string quantity)
         {
             var scripts = new Dictionary<string, string>();
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTransactionType", TransactionType.STOCK_IN);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBItemId", dBScriptService.CleanUpToUpper(itemId));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", dBScriptService.CleanUpToUpper(userId));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBQuantity", dBScriptService.CleanUpToUpper(quantity));
@@ -185,6 +187,7 @@ namespace BNet.Cafe.Server.Repositories
         public bool StockOut(string itemId, string userId, string quantity)
         {
             var scripts = new Dictionary<string, string>();
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTransactionType", TransactionType.SALE);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBItemId", dBScriptService.CleanUpToUpper(itemId));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", dBScriptService.CleanUpToUpper(userId));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBQuantity", dBScriptService.CleanUpToUpper(quantity));

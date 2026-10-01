@@ -5,4 +5,4 @@ WHERE DBId = '{DBItemId}' AND DBIsDeleted = FALSE;
 INSERT INTO inventory_transactions 
 (DBItemId, DBUserId, DBTransactionType, DBQuantity, DBDateCreated, DBTimeCreated, DBIsDeleted) 
 VALUES 
-('{DBItemId}', '{DBUserId}', 'STOCK_IN', '{DBQuantity}', '{DBDateCreated}', '{DBTimeCreated}', FALSE);
+('{DBItemId}', '{DBUserId}', '{DBTransactionType}', '{DBQuantity}', '{DBDateCreated}', '{DBTimeCreated}', '{DBIsDeleted}');

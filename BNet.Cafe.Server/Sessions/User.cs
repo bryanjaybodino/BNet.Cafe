@@ -51,7 +51,7 @@ namespace BNet.Cafe.Server.Sessions
         {
             get
             {
-                if (HttpContext.Current.Request.Cookies[cookiePrefix + "user_email"] != null)
+                if (HttpContext.Current.Request.Cookies[cookiePrefix + "user_id"] != null)
                 {
                     return 1;
                 }
