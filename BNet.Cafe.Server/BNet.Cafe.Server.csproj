@@ -104,7 +104,7 @@
     <Content Include="Assets\BNetBadge\Style.css" />
     <Content Include="Assets\BNetChart\BNetBarChart.js" />
     <Content Include="Assets\BNetChart\BNetBaseChart.js" />
-    <Content Include="Assets\BNetChart\BNetChart.css" />
+    <Content Include="Assets\BNetChart\Style.css" />
     <Content Include="Assets\BNetChart\BNetDonutChart.js" />
     <Content Include="Assets\BNetChart\BNetLineChart.js" />
     <Content Include="Assets\BNetDatePicker\Script.js" />
