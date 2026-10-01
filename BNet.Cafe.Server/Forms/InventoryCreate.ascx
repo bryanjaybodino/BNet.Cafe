@@ -51,18 +51,18 @@
 
                     <div class="form-group">
                         <label for="<%= TextBox_UnitPrice.ClientID %>">Unit Price <span class="required">*</span></label>
-                        <asp:TextBox ID="TextBox_UnitPrice" runat="server" Text="0" CssClass="form-control" placeholder="0.00" MaxLength="20"></asp:TextBox>
+                        <asp:TextBox ID="TextBox_UnitPrice" oninput="NumberOnly(this);" TextMode="Number" runat="server" Text="0" CssClass="form-control" placeholder="0.00" MaxLength="20"></asp:TextBox>
                     </div>
 
                     <div class="form-row-2col">
                         <div class="form-group">
                             <label for="<%= TextBox_QuantityInStock.ClientID %>">Quantity In Stock <span class="required">*</span></label>
-                            <asp:TextBox ID="TextBox_QuantityInStock" runat="server" Text="0" CssClass="form-control" placeholder="0" MaxLength="10"></asp:TextBox>
+                            <asp:TextBox ID="TextBox_QuantityInStock" oninput="NumberOnly(this);" TextMode="Number" runat="server" Text="0" CssClass="form-control" placeholder="0" MaxLength="10"></asp:TextBox>
                         </div>
 
                         <div class="form-group">
                             <label for="<%= TextBox_ReorderLevel.ClientID %>">Reorder Level <span class="required">*</span></label>
-                            <asp:TextBox ID="TextBox_ReorderLevel" runat="server" Text="0" CssClass="form-control" placeholder="0" MaxLength="10"></asp:TextBox>
+                            <asp:TextBox ID="TextBox_ReorderLevel" oninput="NumberOnly(this);" TextMode="Number" runat="server" Text="0" CssClass="form-control" placeholder="0" MaxLength="10"></asp:TextBox>
                         </div>
                     </div>
                 </div>

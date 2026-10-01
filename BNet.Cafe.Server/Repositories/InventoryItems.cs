@@ -74,7 +74,7 @@ namespace BNet.Cafe.Server.Repositories
             }
         }
 
-        public bool Create(string itemName, string category = "", string unitPrice = "0", string quantityInStock = "0", string reorderLevel = "0")
+        public (bool Success, string ItemId) Create(string itemName, string category = "", string unitPrice = "0", string quantityInStock = "0", string reorderLevel = "0")
         {
             var scripts = new Dictionary<string, string>();
             string DBItemName = dBScriptService.CleanUpToUpper(itemName);
@@ -96,10 +96,12 @@ namespace BNet.Cafe.Server.Repositories
             string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/InventoryItems/Create.sql");
             string sql = dBScriptService.Scripts(scripts, template);
             var result = DBContext.SqlExecuteReaderAsync(sql);
-            int itemNameExist = Convert.ToInt32(result["ItemNameExist"]);
 
-            bool name = itemNameExist != 1;
-            return name;
+            int itemNameExist = Convert.ToInt32(result["ItemNameExist"]);
+            string newItemId = result.ContainsKey("DBId") ? result["DBId"].ToString() : DBContext.LastInsertedId.ToString();
+
+            bool isSuccess = itemNameExist != 1;
+            return (isSuccess, newItemId);
         }
 
         public bool Update(string id, string itemName, string category = "", string unitPrice = "0", string quantityInStock = "0", string reorderLevel = "0")

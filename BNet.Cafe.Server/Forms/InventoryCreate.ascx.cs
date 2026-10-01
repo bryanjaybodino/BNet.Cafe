@@ -9,20 +9,20 @@ namespace BNet.Cafe.Server.Forms
     {
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
         {
-            string savedImagePath = SaveInventoryImage();
-
             InventoryItems inventoryItems = new InventoryItems();
-            bool isSuccess = inventoryItems.Create(
+            var (isSuccess, newItemId) = inventoryItems.Create(
                 TextBox_ItemName.Text.Trim(),
                 TextBox_Category.Text.Trim(),
                 TextBox_UnitPrice.Text.Trim(),
                 TextBox_QuantityInStock.Text.Trim(),
                 TextBox_ReorderLevel.Text.Trim()
-            // Pass savedImagePath or relative filename if updated in DB schema
             );
 
             if (isSuccess)
             {
+                // Save the image using the newly created ID
+                SaveInventoryImage(newItemId);
+
                 AlertService.ShowAlert(UpdatePanel1, "Inventory item successfully added.", "success", "BNetPage.aspx?Form=Inventory");
             }
             else
@@ -31,17 +31,16 @@ namespace BNet.Cafe.Server.Forms
             }
         }
 
-        private string SaveInventoryImage()
+        private string SaveInventoryImage(string itemId)
         {
             string base64Raw = HiddenField_ImageData.Value;
-            if (string.IsNullOrEmpty(base64Raw)) return string.Empty;
+            if (string.IsNullOrEmpty(base64Raw) || string.IsNullOrEmpty(itemId)) return string.Empty;
 
             try
             {
                 string base64Data = base64Raw.Substring(base64Raw.IndexOf(",") + 1);
                 byte[] imageBytes = Convert.FromBase64String(base64Data);
 
-                // Compression using helper
                 FileImageHelper helper = new FileImageHelper();
                 byte[] compressedBytes = helper.CompressImageByteQuality(imageBytes, quality: 85L);
 
@@ -51,7 +50,8 @@ namespace BNet.Cafe.Server.Forms
                     Directory.CreateDirectory(uploadFolder);
                 }
 
-                string fileName = $"{Guid.NewGuid()}.png";
+                // Save using itemId.png to match InventoryEdit loading logic
+                string fileName = $"{itemId}.png";
                 string targetPath = Path.Combine(uploadFolder, fileName);
                 File.WriteAllBytes(targetPath, compressedBytes);
 
