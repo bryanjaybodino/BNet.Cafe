@@ -51,4 +51,7 @@ if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManage
     });
 }
 //FULL SCREEN MODE
-document.getElementById('toggleBtn').click();
+
+if (!isMobile()) {
+    document.getElementById('toggleBtn').click();
+}

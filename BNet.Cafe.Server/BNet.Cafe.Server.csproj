@@ -118,6 +118,7 @@
     <Content Include="Assets\Login\Script.js" />
     <Content Include="Assets\Login\Style.css" />
     <Content Include="Assets\Pages\Computers.js" />
+    <Content Include="Assets\Pages\POS.css" />
     <Content Include="Assets\Pages\POS.js" />
     <Content Include="Assets\Pages\StockIn.js" />
     <Content Include="Assets\Pages\SeatMap.css" />

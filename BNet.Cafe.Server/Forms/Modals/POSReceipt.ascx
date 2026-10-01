@@ -63,25 +63,31 @@
         document.getElementById('cashWarning').style.display = 'none';
         document.getElementById('btnDoneReceipt').disabled = true;
 
-        // Open Modal
+        // Open Modal using BNetModal instance
         getPOSReceiptModal().open();
 
-        // Override backdrop click behavior after BNetModal.open() to prevent closing on outside click
+        // Prevent closing when user clicks outside the modal on the backdrop overlay
+        const overlay = document.getElementById('posReceiptModal');
+        if (overlay) {
+            // Remove previous event listener to prevent duplication
+            overlay.removeEventListener('click', preventBackdropClose, true);
+            // Add event listener on CAPTURE phase to intercept click before BNetModal handles it
+            overlay.addEventListener('click', preventBackdropClose, true);
+        }
+
         setTimeout(function () {
-            const overlay = document.getElementById('posReceiptModal');
-            if (overlay) {
-                overlay.onclick = function (e) {
-                    if (e.target === overlay) {
-                        e.stopPropagation();
-                        e.stopImmediatePropagation();
-                        return false;
-                    }
-                };
-            }
-            if (cashInput) {
-                cashInput.focus();
-            }
-        }, 50);
+            if (cashInput) cashInput.focus();
+        }, 100);
+    }
+
+    function preventBackdropClose(e) {
+        const overlay = document.getElementById('posReceiptModal');
+        // If the user clicked directly on the outer backdrop/overlay (outside container)
+        if (e.target === overlay) {
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            e.preventDefault();
+        }
     }
 
     function calculatePOSReceiptChange() {
