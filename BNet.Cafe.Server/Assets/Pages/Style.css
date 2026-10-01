@@ -160,3 +160,120 @@ i{
 .d-none {
     display: none !important;
 }
+
+
+/* Sidebar Menu Section Headers */
+.sidebar-menu .menu-header {
+    padding: 16px 16px 6px 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-light-secondary);
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* Hide text and show subtle horizontal line when sidebar is collapsed */
+.sidebar.collapsed .sidebar-menu .menu-header {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-light);
+    margin-top: 8px;
+}
+
+    .sidebar.collapsed .sidebar-menu .menu-header span {
+        display: none;
+    }
+
+/* ==========================================
+   SIDEBAR COLLAPSIBLE DROPDOWN STYLES
+   ========================================== */
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 12px;
+}
+
+    .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        text-decoration: none;
+        color: var(--text-light-secondary);
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+        .sidebar-menu a:hover {
+            background-color: var(--bg-light-tertiary);
+            color: var(--primary);
+        }
+
+        .sidebar-menu a.active {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+/* Accordion Summary Header */
+.menu-group {
+    margin-bottom: 4px;
+}
+
+.menu-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-light-secondary);
+    cursor: pointer;
+    user-select: none;
+    border-radius: 8px;
+    list-style: none; /* Remove default details arrow */
+}
+
+    .menu-header::-webkit-details-marker {
+        display: none; /* Remove Safari details arrow */
+    }
+
+    .menu-header:hover {
+        background-color: var(--bg-light-tertiary);
+        color: var(--text-light);
+    }
+
+    .menu-header .arrow {
+        margin-left: auto;
+        font-size: 11px;
+        transition: transform 0.2s ease;
+    }
+
+/* Rotate Chevron Icon when Opened */
+details[open] > .menu-header .arrow {
+    transform: rotate(180deg);
+}
+
+/* Sub-items Container */
+.menu-sub-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-left: 12px;
+    margin-top: 4px;
+}
+
+/* Collapsed Sidebar Adjustments */
+.sidebar.collapsed .menu-header span,
+.sidebar.collapsed .menu-header .arrow,
+.sidebar.collapsed .menu-item span,
+.sidebar.collapsed .menu-sub-items a span {
+    display: none;
+}
+
+.sidebar.collapsed .menu-sub-items {
+    padding-left: 0;
+}

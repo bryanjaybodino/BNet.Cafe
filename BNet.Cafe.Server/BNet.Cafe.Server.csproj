@@ -122,6 +122,7 @@
     <Content Include="Assets\Pages\PricingSettings.css" />
     <Content Include="Assets\Pages\PricingSettings.js" />
     <Content Include="Assets\Pages\SeatMap.js" />
+    <Content Include="Assets\Pages\SupplierManage.js" />
     <Content Include="Assets\Pages\UserManage.js" />
     <Content Include="Assets\Pages\UserTopUp.js" />
     <Content Include="Assets\Pages\RentalManage.css" />
@@ -141,9 +142,19 @@
     <Content Include="Assets\Portal\Style.css" />
     <Content Include="BNetPage.aspx" />
     <Content Include="Databases\Queries\Balances\GetCount.sql" />
+    <Content Include="Databases\Queries\Suppliers\DeleteById.sql" />
+    <Content Include="Databases\Queries\Suppliers\GetAll.sql" />
+    <Content Include="Databases\Queries\Suppliers\GetById.sql" />
+    <Content Include="Databases\Queries\Suppliers\Create.sql" />
+    <Content Include="Databases\Queries\Suppliers\Update.sql" />
+    <Content Include="Databases\Queries\Suppliers\UpdateCount.sql" />
     <Content Include="Forms\GitHubCommitsFeed.ascx" />
     <Content Include="Forms\Modals\GitHubUpdateModal.ascx" />
+    <Content Include="Forms\Modals\SupplierDelete.ascx" />
     <Content Include="Forms\Modals\WallpaperDelete.ascx" />
+    <Content Include="Forms\SupplierCreate.ascx" />
+    <Content Include="Forms\SupplierEdit.ascx" />
+    <Content Include="Forms\Suppliers.ascx" />
     <Content Include="Forms\TopUp.ascx" />
     <Content Include="Forms\UserBonus.ascx" />
     <Content Include="Forms\Wallpaper.ascx" />
@@ -273,8 +284,11 @@
     <Compile Include="Databases\DBScriptService.cs" />
     <Compile Include="Databases\Tables\balances.cs" />
     <Compile Include="Databases\Tables\computers.cs" />
+    <Compile Include="Databases\Tables\inventory_items.cs" />
+    <Compile Include="Databases\Tables\inventory_transactions.cs" />
     <Compile Include="Databases\Tables\pricing_rates.cs" />
     <Compile Include="Databases\Tables\rentals.cs" />
+    <Compile Include="Databases\Tables\suppliers.cs" />
     <Compile Include="Databases\Tables\users.cs" />
     <Compile Include="ExpiredOrInvalid.aspx.cs">
       <DependentUpon>ExpiredOrInvalid.aspx</DependentUpon>
@@ -388,6 +402,13 @@
     <Compile Include="Forms\Modals\RemoteTimeTransfer.ascx.designer.cs">
       <DependentUpon>RemoteTimeTransfer.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Modals\SupplierDelete.ascx.cs">
+      <DependentUpon>SupplierDelete.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\SupplierDelete.ascx.designer.cs">
+      <DependentUpon>SupplierDelete.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Modals\WallpaperDelete.ascx.cs">
       <DependentUpon>WallpaperDelete.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -422,6 +443,27 @@
     </Compile>
     <Compile Include="Forms\SeatMap.ascx.designer.cs">
       <DependentUpon>SeatMap.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SupplierCreate.ascx.cs">
+      <DependentUpon>SupplierCreate.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\SupplierCreate.ascx.designer.cs">
+      <DependentUpon>SupplierCreate.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SupplierEdit.ascx.cs">
+      <DependentUpon>SupplierEdit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\SupplierEdit.ascx.designer.cs">
+      <DependentUpon>SupplierEdit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Suppliers.ascx.cs">
+      <DependentUpon>Suppliers.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Suppliers.ascx.designer.cs">
+      <DependentUpon>Suppliers.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\TopUp.ascx.cs">
       <DependentUpon>TopUp.ascx</DependentUpon>
@@ -497,6 +539,7 @@
     <Compile Include="Repositories\Dashboard.cs" />
     <Compile Include="Repositories\PricingRates.cs" />
     <Compile Include="Repositories\Rentals.cs" />
+    <Compile Include="Repositories\Suppliers.cs" />
     <Compile Include="Repositories\Users.cs" />
     <Compile Include="ResetPassword.aspx.cs">
       <DependentUpon>ResetPassword.aspx</DependentUpon>

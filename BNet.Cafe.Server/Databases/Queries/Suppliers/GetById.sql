@@ -1,0 +1,4 @@
+﻿SELECT * FROM suppliers 
+WHERE DBId = '{DBId}'
+ORDER BY DBId DESC 
+{LIMIT}

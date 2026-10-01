@@ -33,6 +33,15 @@ namespace BNet.Cafe.Server
         protected global::System.Web.UI.WebControls.HyperLink HyperLink_Dashboard;
 
         /// <summary>
+        /// group_Computers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl group_Computers;
+
+        /// <summary>
         /// HyperLink_Computers control.
         /// </summary>
         /// <remarks>
@@ -60,6 +69,78 @@ namespace BNet.Cafe.Server
         protected global::System.Web.UI.WebControls.HyperLink HyperLink_Remote;
 
         /// <summary>
+        /// HyperLink_PricingSettings control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_PricingSettings;
+
+        /// <summary>
+        /// group_POS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl group_POS;
+
+        /// <summary>
+        /// HyperLink_POS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_POS;
+
+        /// <summary>
+        /// HyperLink_Inventory control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Inventory;
+
+        /// <summary>
+        /// HyperLink_Suppliers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Suppliers;
+
+        /// <summary>
+        /// group_SportTimer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl group_SportTimer;
+
+        /// <summary>
+        /// HyperLink_SportTimer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_SportTimer;
+
+        /// <summary>
+        /// group_Management control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl group_Management;
+
+        /// <summary>
         /// HyperLink_Billings control.
         /// </summary>
         /// <remarks>
@@ -85,15 +166,6 @@ namespace BNet.Cafe.Server
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink HyperLink_TopUp;
-
-        /// <summary>
-        /// HyperLink_PricingSettings control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_PricingSettings;
 
         /// <summary>
         /// HyperLink_WallPaper control.

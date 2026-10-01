@@ -94,56 +94,43 @@ namespace BNet.Cafe.Server
         {
             if (!IsPostBack)
             {
-                // Reset classes
+                // Reset active state for all links
                 HyperLink_Dashboard.CssClass = "";
                 HyperLink_Computers.CssClass = "";
-                HyperLink_Users.CssClass = "";
+                HyperLink_SeatMap.CssClass = "";
                 HyperLink_Remote.CssClass = "";
+                HyperLink_PricingSettings.CssClass = "";
+
+                HyperLink_POS.CssClass = "";
+                HyperLink_Inventory.CssClass = "";
+                HyperLink_Suppliers.CssClass = "";
+
+                HyperLink_SportTimer.CssClass = "";
+
                 HyperLink_Billings.CssClass = "";
+                HyperLink_Users.CssClass = "";
+                HyperLink_TopUp.CssClass = "";
+                HyperLink_WallPaper.CssClass = "";
+                HyperLink_Commits.CssClass = "";
 
+                // Check active route
+                if (formName.Contains(HyperLink_Dashboard.ToolTip)) HyperLink_Dashboard.CssClass = "active";
+                else if (formName.Contains(HyperLink_Computers.ToolTip)) HyperLink_Computers.CssClass = "active";
+                else if (formName.Contains(HyperLink_SeatMap.ToolTip)) HyperLink_SeatMap.CssClass = "active";
+                else if (formName.Contains(HyperLink_Remote.ToolTip)) HyperLink_Remote.CssClass = "active";
+                else if (formName.Contains(HyperLink_PricingSettings.ToolTip)) HyperLink_PricingSettings.CssClass = "active";
 
-                if (formName.Contains(HyperLink_Dashboard.ToolTip))
-                {
-                    HyperLink_Dashboard.CssClass = "active";
-                }
-                else if (formName.Contains(HyperLink_Computers.ToolTip))
-                {
-                    HyperLink_Computers.CssClass = "active";
-                }
-                else if (formName.Contains(HyperLink_Users.ToolTip))
-                {
-                    HyperLink_Users.CssClass = "active";
-                }
-                else if (formName.Contains(HyperLink_Remote.ToolTip))
-                {
-                    HyperLink_Remote.CssClass = "active";
-                }
-                else if (formName.Contains(HyperLink_Billings.ToolTip))
-                {
-                    HyperLink_Billings.CssClass = "active";
-                }
-                else if (formName.Contains(HyperLink_SeatMap.ToolTip))
-                {
-                    HyperLink_SeatMap.CssClass = "active";
-                }
-                else if (formName.Contains(HyperLink_PricingSettings.ToolTip))
-                {
-                    HyperLink_PricingSettings.CssClass = "active";
-                }
-                else if (formName.Contains(HyperLink_TopUp.ToolTip))
-                {
-                    HyperLink_TopUp.CssClass = "active";
-                }
-                else if (formName.Contains(HyperLink_Commits.ToolTip))
-                {
-                    HyperLink_Commits.CssClass = "active";
-                }
-                else if (formName.Contains(HyperLink_WallPaper.ToolTip))
-                {
-                    HyperLink_WallPaper.CssClass = "active";
-                }
+                else if (formName.Contains(HyperLink_POS.ToolTip)) HyperLink_POS.CssClass = "active";
+                else if (formName.Contains(HyperLink_Inventory.ToolTip)) HyperLink_Inventory.CssClass = "active";
+                else if (formName.Contains(HyperLink_Suppliers.ToolTip)) HyperLink_Suppliers.CssClass = "active";
 
-                
+                else if (formName.Contains(HyperLink_SportTimer.ToolTip)) HyperLink_SportTimer.CssClass = "active";
+
+                else if (formName.Contains(HyperLink_Billings.ToolTip)) HyperLink_Billings.CssClass = "active";
+                else if (formName.Contains(HyperLink_Users.ToolTip)) HyperLink_Users.CssClass = "active";
+                else if (formName.Contains(HyperLink_TopUp.ToolTip)) HyperLink_TopUp.CssClass = "active";
+                else if (formName.Contains(HyperLink_WallPaper.ToolTip)) HyperLink_WallPaper.CssClass = "active";
+                else if (formName.Contains(HyperLink_Commits.ToolTip)) HyperLink_Commits.CssClass = "active";
             }
         }
 
@@ -187,6 +174,10 @@ namespace BNet.Cafe.Server
                     break;
                 case "WALLPAPER":
                     scripts = new[] { "Pages/Wallpaper" };
+                    break;
+                case "SUPPLIERCREATE":
+                case "SUPPLIEREDIT":
+                    scripts = new[] { "Pages/SupplierManage" };
                     break;
                 default:
                     scripts = Array.Empty<string>();

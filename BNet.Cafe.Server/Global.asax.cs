@@ -18,6 +18,9 @@ namespace BNet.Cafe.Server
             new Databases.Tables.users().create();
             new Databases.Tables.balances().create();
             new Databases.Tables.pricing_rates().create();
+            new Databases.Tables.inventory_items().create();
+            new Databases.Tables.inventory_transactions().create();
+            new Databases.Tables.suppliers().create();
 
             DBContext DBContext = new DBContext();
             //DB UPDATE 
