@@ -1,7 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Remote.ascx.cs" Inherits="BNet.Cafe.Server.Forms.Remote" %>
 <%@ Register Src="~/Forms/Modals/RemoteMessage.ascx" TagPrefix="uc" TagName="RemoteMessage" %>
 
-<link href="Assets/Pages/Remote.css" rel="stylesheet" />
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <!-- Remote Message Modal -->

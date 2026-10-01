@@ -1,7 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PricingSettings.ascx.cs" Inherits="BNet.Cafe.Server.Forms.PricingSettings" %>
 <%@ Register Src="~/Forms/Modals/PricingSettingDelete.ascx" TagPrefix="uc1" TagName="PricingSettingDelete" %>
 
-<link href="Assets/Pages/PricingSettings.css" rel="stylesheet" />
 <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
     <ContentTemplate>
         <asp:HiddenField ID="HiddenField_PriceId" runat="server" Value="0" />

@@ -1,6 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SeatMap.ascx.cs" Inherits="BNet.Cafe.Server.Forms.SeatMap" %>
 
-<link href="Assets/Pages/SeatMap.css" rel="stylesheet" />
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <asp:LinkButton ID="LinkButton_Refresh" runat="server"></asp:LinkButton>

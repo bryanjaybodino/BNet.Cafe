@@ -54,6 +54,14 @@ namespace BNet.Cafe.Server.Services
 
             return
                    file.Contains("Assets/Pages/Style.css")
+                || file.Contains("Assets/Pages/SeatMap.css")
+                || file.Contains("Assets/Pages/Remote.css")
+                || file.Contains("Assets/Pages/PricingSettings.css")
+                || file.Contains("Assets/Pages/RentalManage.css")
+                || file.Contains("Assets/Pages/Wallpaper.css")
+
+
+
                 || file.Contains("Assets/BNetChart/Style.css")
                 || file.Contains("Assets/BNetSelect/Style.css")
                 || file.Contains("Assets/BNetModal/Style.css")

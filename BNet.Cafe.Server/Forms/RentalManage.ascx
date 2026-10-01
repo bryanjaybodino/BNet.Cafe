@@ -1,7 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="RentalManage.ascx.cs" Inherits="BNet.Cafe.Server.Forms.RentalManage" %>
 <%@ Register Src="~/Forms/Modals/RemoteOpenTime.ascx" TagPrefix="uc1" TagName="RemoteOpenTime" %>
 
-<link href="Assets/Pages/RentalManage.css" rel="stylesheet" />
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <!-- Hidden fields to store loaded DB state -->

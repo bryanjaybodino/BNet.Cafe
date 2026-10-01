@@ -1,6 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Wallpaper.ascx.cs" Inherits="BNet.Cafe.Server.Forms.Wallpaper" %>
 <%@ Register Src="~/Forms/Modals/WallpaperDelete.ascx" TagPrefix="uc1" TagName="WallpaperDelete" %>
-<link href="Assets/Pages/Wallpaper.css" rel="stylesheet" />
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
