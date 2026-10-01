@@ -575,7 +575,17 @@ namespace BNet.Cafe.Client
 
         private void Button_Shop_Click(object sender, EventArgs e)
         {
-            // TODO: Open Cafe Shop / Snack Ordering Form
+            string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
+            string handlerUrl = $"{baseUrl}/Shop.aspx";
+
+            if (!string.IsNullOrEmpty(handlerUrl))
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = handlerUrl,
+                    UseShellExecute = true
+                });
+            }
         }
 
         private void Button_History_Click(object sender, EventArgs e)

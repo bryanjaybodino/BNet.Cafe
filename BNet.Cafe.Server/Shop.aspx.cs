@@ -19,14 +19,6 @@ namespace BNet.Cafe.Server
             if (!IsPostBack)
             {
                 FileJsHelpler.BundleAddScripts(ScriptManager1, "Shop/Script");
-
-                // Authenticate Session
-                if (userSession.count == 0)
-                {
-                    Response.Redirect("~/Login.aspx");
-                    return;
-                }
-
                 LoadCategories();
                 LoadProducts();
             }
@@ -97,12 +89,6 @@ namespace BNet.Cafe.Server
             string physicalPath = HttpContext.Current.Server.MapPath(relativePath);
 
             return File.Exists(physicalPath) ? $"Uploads/Inventory/{itemId}.png" : "Uploads/Inventory/default.png";
-        }
-
-        protected void btnLogout_Click(object sender, EventArgs e)
-        {
-            userSession.RemoveCookies();
-            Response.Redirect("~/Login.aspx?logout=true");
         }
     }
 }
