@@ -178,6 +178,7 @@
     <Content Include="Forms\Modals\GitHubUpdateModal.ascx" />
     <Content Include="Forms\Modals\InventoryDelete.ascx" />
     <Content Include="Forms\Modals\POSReceipt.ascx" />
+    <Content Include="Forms\Modals\RemoteShutdown.ascx" />
     <Content Include="Forms\Modals\StockInDelete.ascx" />
     <Content Include="Forms\Modals\SupplierDelete.ascx" />
     <Content Include="Forms\Modals\WallpaperDelete.ascx" />
@@ -456,6 +457,13 @@
     </Compile>
     <Compile Include="Forms\Modals\RemoteOpenTime.ascx.designer.cs">
       <DependentUpon>RemoteOpenTime.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\RemoteShutdown.ascx.cs">
+      <DependentUpon>RemoteShutdown.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\RemoteShutdown.ascx.designer.cs">
+      <DependentUpon>RemoteShutdown.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Modals\RemoteTimePause.ascx.cs">
       <DependentUpon>RemoteTimePause.ascx</DependentUpon>

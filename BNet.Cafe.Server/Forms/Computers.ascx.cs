@@ -105,6 +105,7 @@ namespace BNet.Cafe.Server.Forms
                         newRow["IsManageRentalVisible"] = true;
                         newRow["IsTransferVisible"] = true;
                         newRow["IsPauseResumeVisible"] = true;
+                        newRow["IsShutdownVisible"] = false;
 
                         if (isAdministrator)
                         {
@@ -118,6 +119,7 @@ namespace BNet.Cafe.Server.Forms
                             newRow["IsManageRentalVisible"] = false;
                             newRow["IsTransferVisible"] = false;
                             newRow["IsPauseResumeVisible"] = false;
+                            newRow["IsShutdownVisible"] = false;
                         }
                     }
                     else
@@ -128,6 +130,7 @@ namespace BNet.Cafe.Server.Forms
                         newRow["IsManageRentalVisible"] = true;
                         newRow["IsTransferVisible"] = false;
                         newRow["IsPauseResumeVisible"] = false;
+                        newRow["IsShutdownVisible"] = true;
                     }
                 }
                 else
@@ -138,6 +141,7 @@ namespace BNet.Cafe.Server.Forms
                     newRow["IsManageRentalVisible"] = false;
                     newRow["IsTransferVisible"] = false;
                     newRow["IsPauseResumeVisible"] = false;
+                    newRow["IsShutdownVisible"] = false;
                 }
 
                 dtCombined.Rows.Add(newRow);
@@ -182,6 +186,7 @@ namespace BNet.Cafe.Server.Forms
             dt.Columns.Add("Billing", typeof(string));
             dt.Columns.Add("IsLogoutVisible", typeof(bool));
             dt.Columns.Add("IsManageRentalVisible", typeof(bool));
+            dt.Columns.Add("IsShutdownVisible", typeof(bool));
             dt.Columns.Add("IsTransferVisible", typeof(bool));
             dt.Columns.Add("IsPauseResumeVisible", typeof(bool));
             return dt;

@@ -11,6 +11,7 @@ namespace BNet.Cafe.Server.ConstantData
         public static string UPDATE = "UPDATE";
         public static string MESSAGE = "MESSAGE";
         public static string LOGOUT = "LOGOUT";
+        public static string SHUTDOWN = "SHUTDOWN";
         public static string PAUSE = "PAUSE";
         public static string RESUME = "RESUME";
     }

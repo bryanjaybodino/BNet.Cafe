@@ -59,22 +59,29 @@ namespace BNet.Cafe.Server.Forms.Modals
             ClientData clientData = new ClientData();
             var liveData = clientData.FetchData();
 
-            string command = (actionType == "PAUSE") ? ConstantData.RentalCommand.PAUSE : ConstantData.RentalCommand.RESUME;
+            // Determine target list (either all active PCs or just the selected one)
+            var targetList = (targetPc == "ALL_PCS")
+                ? liveData.Where(x => !string.IsNullOrEmpty(x.TimeStart)).Select(x => x.ClientName).ToList()
+                : new System.Collections.Generic.List<string> { targetPc };
 
-            if (targetPc == "ALL_PCS")
+            // Execute the actual helper methods directly
+            foreach (var pcName in targetList)
             {
-                var activePcs = liveData.Where(x => !string.IsNullOrEmpty(x.TimeStart)).ToList();
-                foreach (var pc in activePcs)
+                if (actionType == "PAUSE")
                 {
-                    RemoteMessagingService.SendTextMessage(this, pc.ClientName, command);
+                    RemoteMessagingService.PausePC(this, pcName);
                 }
-                AlertService.ShowAlert(this, $"Sent {actionType} signal to all active PCs.", "success");
+                else if (actionType == "RESUME")
+                {
+                    RemoteMessagingService.ResumePC(this, pcName);
+                }
             }
-            else
-            {
-                RemoteMessagingService.SendTextMessage(this, targetPc, command);
-                AlertService.ShowAlert(this, $"Sent {actionType} signal to {targetPc}.", "success");
-            }
+
+            string alertMessage = (targetPc == "ALL_PCS")
+                ? $"Sent {actionType} signal to all active PCs."
+                : $"Sent {actionType} signal to {targetPc}.";
+
+            AlertService.ShowAlert(this, alertMessage, "success");
         }
     }
 }

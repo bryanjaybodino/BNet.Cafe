@@ -99,7 +99,7 @@ namespace BNet.Cafe.Client
             if (_remainingIdleSeconds <= 0)
             {
                 _countdownTimer.Stop();
-                ShutdownSystem();
+                CommandPromptService.ShutdownSystem();
                 return;
             }
 
@@ -114,16 +114,6 @@ namespace BNet.Cafe.Client
                 badgeCountdown.BackColor = Color.FromArgb(200, 239, 68, 68);
                 badgeCountdown.ForeColor = Color.White;
             }
-        }
-
-        private void ShutdownSystem()
-        {
-            try
-            {
-                Process.Start("shutdown", "/s /t 10 /f /c \"No physical activity detected. PC shutting down.\"");
-                Application.Exit();
-            }
-            catch { }
         }
 
         private void PictureBox_MouseMove(object sender, MouseEventArgs e)

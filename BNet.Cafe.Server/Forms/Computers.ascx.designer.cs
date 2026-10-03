@@ -148,5 +148,14 @@ namespace BNet.Cafe.Server.Forms
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::BNet.Cafe.Server.Forms.Modals.RemoteTimePause RemoteTimePause;
+
+        /// <summary>
+        /// RemoteShutdown control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::BNet.Cafe.Server.Forms.Modals.RemoteShutdown RemoteShutdown;
     }
 }

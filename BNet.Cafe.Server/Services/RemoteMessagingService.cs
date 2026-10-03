@@ -79,24 +79,22 @@ namespace BNet.Cafe.Server.Services
         }
         public static void LogoutPC(Control control, string targetClient)
         {
-            if (control == null)
-            {
-                throw new ArgumentNullException(nameof(control), "Control parameter cannot be null.");
-            }
-
-            // 1. Serialize both parameters so they format properly for JS execution
-            string safeTargetClient = JsonConvert.SerializeObject(targetClient ?? string.Empty);
-
-            // 2. Construct JS call matching sendTextMessageToPC(targetClient, messageContent)
-            string script = $"sendTextMessageToPC({safeTargetClient}, '{ConstantData.RentalCommand.LOGOUT}');";
-
-            // 3. Register startup script context for ASP.NET WebForms / UpdatePanel
-            ScriptManager.RegisterStartupScript(control, control.GetType(), "SendToPCScript" + Guid.NewGuid().ToString(), script, true);
+            SendTextMessage(control, targetClient, ConstantData.RentalCommand.LOGOUT);
         }
-        
-        /// <summary>
-         /// Sends a raw text message or command string (e.g., 'PAUSE', 'RESUME') to a target client PC.
-         /// </summary>
+
+        public static void ShutdownPC(Control control, string targetClient)
+        {
+            SendTextMessage(control, targetClient, ConstantData.RentalCommand.SHUTDOWN);
+        }
+        public static void PausePC(Control control, string targetClient)
+        {
+            SendTextMessage(control, targetClient, ConstantData.RentalCommand.PAUSE);
+        }
+        public static void ResumePC(Control control, string targetClient)
+        {
+            SendTextMessage(control, targetClient, ConstantData.RentalCommand.RESUME);
+        }
+
         public static void SendTextMessage(Control control, string targetClient, string message)
         {
             if (control == null)

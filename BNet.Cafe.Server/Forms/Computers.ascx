@@ -3,6 +3,8 @@
 <%@ Register Src="~/Forms/Modals/RemoteLogout.ascx" TagPrefix="uc1" TagName="RemoteLogout" %>
 <%@ Register Src="~/Forms/Modals/RemoteTimeTransfer.ascx" TagPrefix="uc1" TagName="RemoteTimeTransfer" %>
 <%@ Register Src="~/Forms/Modals/RemoteTimePause.ascx" TagPrefix="uc1" TagName="RemoteTimePause" %>
+<%@ Register Src="~/Forms/Modals/RemoteShutdown.ascx" TagPrefix="uc1" TagName="RemoteShutdown" %>
+
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
@@ -147,6 +149,12 @@
                                         <a onclick="navigateTo('BNetPage.aspx?Form=ComputerEdit&id=<%# Eval("DBId") %>')" class="bnet-dropdown-item">
                                             <i class="fa-solid fa-pen-to-square"></i>Edit Computer
                                         </a>
+                                        <asp:Panel ID="Panel_Shutdown" Visible='<%# Eval("IsShutdownVisible") %>' runat="server">
+                                            <a class="bnet-dropdown-item text-danger"
+                                                onclick="openShutdownModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
+                                                <i class="fa-solid fa-power-off"></i>Shutdown
+                                            </a>
+                                        </asp:Panel>
                                         <div class="bnet-dropdown-divider"></div>
                                         <span class="bnet-dropdown-item text-danger" onclick="openDeleteModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
                                             <i class="fa-solid fa-trash-can"></i>Delete Computer
@@ -214,5 +222,6 @@
         <uc1:RemoteLogout runat="server" ID="RemoteLogout" />
         <uc1:RemoteTimeTransfer runat="server" ID="RemoteTimeTransfer" />
         <uc1:RemoteTimePause runat="server" ID="RemoteTimePause" />
+        <uc1:RemoteShutdown runat="server" id="RemoteShutdown" />
     </ContentTemplate>
 </asp:UpdatePanel>

@@ -559,6 +559,10 @@ namespace BNet.Cafe.Client
                 LockScreen();
                 TriggerImmediateActivityReport();
             }
+            else if (textMessage == "SHUTDOWN")
+            {
+                CommandPromptService.ShutdownSystem();
+            }
             else
             {
                 MessageBox.Show(
