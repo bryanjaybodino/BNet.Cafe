@@ -124,6 +124,10 @@ namespace BNet.Cafe.Server
                 {
                     HyperLink_Dashboard.CssClass = "active";
                 }
+                if (formName.Contains(HyperLink_DownloadApp.ToolTip))
+                {
+                    HyperLink_DownloadApp.CssClass = "active";
+                }
 
                 //COMPUTER GROUP
                 else if (formName.Contains(HyperLink_Computers.ToolTip))

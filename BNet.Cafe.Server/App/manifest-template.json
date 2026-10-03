@@ -1,0 +1,20 @@
+{
+  "name": "@name",
+  "short_name": "@short_name",
+  "start_url": "@start_url",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#353535",
+  "icons": [
+    {
+      "src": "@icon",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "@icon",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

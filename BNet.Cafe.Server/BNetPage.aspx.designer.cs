@@ -204,6 +204,15 @@ namespace BNet.Cafe.Server
         protected global::System.Web.UI.WebControls.HyperLink HyperLink_Commits;
 
         /// <summary>
+        /// HyperLink_DownloadApp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_DownloadApp;
+
+        /// <summary>
         /// Label_InitialName control.
         /// </summary>
         /// <remarks>

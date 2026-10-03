@@ -129,6 +129,12 @@
                         </asp:HyperLink>
                     </div>
                 </details>
+                <!-- DOWNLOAD APP -->
+                <div class="menu-item">
+                    <asp:HyperLink ID="HyperLink_DownloadApp" runat="server" ToolTip="DownloadApp" onclick="navigateTo('?Form=DownloadApp'); return false;">
+                    <i class="fas fa-download"></i><span>Download App</span>
+                    </asp:HyperLink>
+                </div>
             </div>
         </div>
 

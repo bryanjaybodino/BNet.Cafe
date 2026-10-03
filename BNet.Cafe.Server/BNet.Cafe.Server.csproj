@@ -97,8 +97,16 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="zxing, Version=0.16.8.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Offline Packages\zxing\zxing.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\icon.png" />
+    <Content Include="App\Installation.aspx" />
+    <Content Include="App\script.js" />
+    <Content Include="App\service-worker.js" />
     <Content Include="Assets\BNetAlert\Script.js" />
     <Content Include="Assets\BNetAlert\Style.css" />
     <Content Include="Assets\BNetBadge\Style.css" />
@@ -175,6 +183,7 @@
     <Content Include="Databases\Queries\Suppliers\Update.sql" />
     <Content Include="Databases\Queries\Suppliers\UpdateCount.sql" />
     <Content Include="Databases\Queries\Users\GetCount.sql" />
+    <Content Include="Forms\DownloadApp.ascx" />
     <Content Include="Forms\GitHubCommitsFeed.ascx" />
     <Content Include="Forms\Inventory.ascx" />
     <Content Include="Forms\InventoryCreate.ascx" />
@@ -197,7 +206,10 @@
     <Content Include="Forms\TopUp.ascx" />
     <Content Include="Forms\UserBonus.ascx" />
     <Content Include="Forms\Wallpaper.ascx" />
+    <Content Include="Offline Packages\zxing\zxing.dll" />
     <Content Include="Shop.aspx" />
+    <Content Include="temp_files\Barcodes\placeholder.txt" />
+    <Content Include="temp_files\QRCodes\placeholder.txt" />
     <Content Include="Uploads\Inventory\1.png" />
     <Content Include="Uploads\Inventory\2.png" />
     <Content Include="Uploads\Inventory\3.png" />
@@ -274,6 +286,13 @@
     <Content Include="Website\assets\tailwindcss.js" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App\Installation.aspx.cs">
+      <DependentUpon>Installation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App\Installation.aspx.designer.cs">
+      <DependentUpon>Installation.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Ashx\CalculateAmountFromDurationHandler.ashx.cs">
       <DependentUpon>CalculateAmountFromDurationHandler.ashx</DependentUpon>
     </Compile>
@@ -383,6 +402,13 @@
     </Compile>
     <Compile Include="Forms\Dashboard.ascx.designer.cs">
       <DependentUpon>Dashboard.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DownloadApp.ascx.cs">
+      <DependentUpon>DownloadApp.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\DownloadApp.ascx.designer.cs">
+      <DependentUpon>DownloadApp.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\GitHubCommitsFeed.ascx.cs">
       <DependentUpon>GitHubCommitsFeed.ascx</DependentUpon>
@@ -679,6 +705,7 @@
     <Compile Include="ResetPassword.aspx.designer.cs">
       <DependentUpon>ResetPassword.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Services\CodeGenerator.cs" />
     <Compile Include="Services\ErrorLogService.cs" />
     <Compile Include="Services\FileCssHelper.cs" />
     <Compile Include="Services\FileImageHelper.cs" />
@@ -718,6 +745,8 @@
     <Content Include="Ashx\CreateUserHandler.ashx" />
     <Content Include="Ashx\GetWallpaperCountHandler.ashx" />
     <Content Include="Ashx\DownloadWallpaperHandler.ashx" />
+    <Content Include="App\manifest-template.json" />
+    <Content Include="App\manifest.json" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
