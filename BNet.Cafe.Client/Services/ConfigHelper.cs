@@ -97,6 +97,15 @@ namespace BNet.Cafe.Client.Services
                 return !string.Equals(value?.Trim(), "false", StringComparison.OrdinalIgnoreCase);
             }
         }
+        
+        public static bool IsOverlayFreeze
+        {
+            get
+            {
+                string value = GetOrCreateSetting("OverlayFreeze", "false");
+                return !string.Equals(value?.Trim(), "false", StringComparison.OrdinalIgnoreCase);
+            }
+        }
 
         public static string WebSocketUrl
         {

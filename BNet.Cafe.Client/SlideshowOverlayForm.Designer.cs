@@ -23,6 +23,20 @@
             this.lblSubtitle = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
+            // lblDismissHint
+            // 
+            this.lblDismissHint.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.lblDismissHint.AutoSize = true;
+            this.lblDismissHint.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.lblDismissHint.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            this.lblDismissHint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(231)))), ((int)(((byte)(255)))));
+            this.lblDismissHint.Location = new System.Drawing.Point(445, 630);
+            this.lblDismissHint.Name = "lblDismissHint";
+            this.lblDismissHint.Padding = new System.Windows.Forms.Padding(16, 8, 16, 8);
+            this.lblDismissHint.Size = new System.Drawing.Size(312, 39);
+            this.lblDismissHint.TabIndex = 2;
+            this.lblDismissHint.Text = "Move mouse or press key to return";
+            // 
             // lblBigPcName
             // 
             this.lblBigPcName.AutoSize = true;
@@ -34,19 +48,6 @@
             this.lblBigPcName.Size = new System.Drawing.Size(276, 106);
             this.lblBigPcName.TabIndex = 4;
             this.lblBigPcName.Text = "PC-00";
-            // 
-            // lblSubtitle
-            // 
-            this.lblSubtitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSubtitle.AutoSize = true;
-            this.lblSubtitle.BackColor = System.Drawing.Color.Transparent;
-            this.lblSubtitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblSubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(210)))), ((int)(((byte)(254)))));
-            this.lblSubtitle.Location = new System.Drawing.Point(780, 20);
-            this.lblSubtitle.Name = "lblSubtitle";
-            this.lblSubtitle.Size = new System.Drawing.Size(158, 20);
-            this.lblSubtitle.TabIndex = 5;
-            this.lblSubtitle.Text = "IDLE SYSTEM NOTICE";
             // 
             // badgeCountdown
             // 
@@ -62,19 +63,18 @@
             this.badgeCountdown.Text = "⚠️ Auto-Shutdown in: 05:00";
             this.badgeCountdown.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblDismissHint
+            // lblSubtitle
             // 
-            this.lblDismissHint.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.lblDismissHint.AutoSize = true;
-            this.lblDismissHint.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblDismissHint.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
-            this.lblDismissHint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(231)))), ((int)(((byte)(255)))));
-            this.lblDismissHint.Location = new System.Drawing.Point(445, 630);
-            this.lblDismissHint.Name = "lblDismissHint";
-            this.lblDismissHint.Padding = new System.Windows.Forms.Padding(16, 8, 16, 8);
-            this.lblDismissHint.Size = new System.Drawing.Size(312, 39);
-            this.lblDismissHint.TabIndex = 2;
-            this.lblDismissHint.Text = "Move mouse or press key to return";
+            this.lblSubtitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSubtitle.AutoSize = true;
+            this.lblSubtitle.BackColor = System.Drawing.Color.Transparent;
+            this.lblSubtitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblSubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(210)))), ((int)(((byte)(254)))));
+            this.lblSubtitle.Location = new System.Drawing.Point(780, 20);
+            this.lblSubtitle.Name = "lblSubtitle";
+            this.lblSubtitle.Size = new System.Drawing.Size(158, 20);
+            this.lblSubtitle.TabIndex = 5;
+            this.lblSubtitle.Text = "IDLE SYSTEM NOTICE";
             // 
             // SlideshowOverlayForm
             // 
@@ -91,7 +91,6 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "SlideshowOverlayForm";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.SlideshowOverlayForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -48,7 +48,7 @@ namespace BNet.Cafe.Client
 
         private void InitializeCustomOverlayControls()
         {
-            this.TopMost = true;
+            this.TopMost = !ConfigHelper.IsOverlayFreeze;
 
             _pictureBox = new PictureBox
             {
@@ -184,6 +184,8 @@ namespace BNet.Cafe.Client
 
         public void CloseOverlay()
         {
+            if (ConfigHelper.IsOverlayFreeze) return; // Do not dismiss on mouse movement
+
             _slideTimer.Stop();
             _countdownTimer.Stop();
             this.DialogResult = DialogResult.OK;

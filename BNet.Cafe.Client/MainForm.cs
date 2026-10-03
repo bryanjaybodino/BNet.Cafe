@@ -140,6 +140,8 @@ namespace BNet.Cafe.Client
 
         private void CloseSlideshowOverlay()
         {
+            if (ConfigHelper.IsOverlayFreeze) return;
+
             if (_slideshowForm != null && !_slideshowForm.IsDisposed)
             {
                 _slideshowForm.CloseOverlay();
