@@ -22,7 +22,7 @@ namespace BNet.Cafe.Server.Forms
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
-            DataTable dt = transactionsRepo.GetAll("STOCK_IN", GridViewTemplateService.GetPaginationIndex(GridView_StockIn));
+            DataTable dt = transactionsRepo.GetAll("", "STOCK_IN", "", GridViewTemplateService.GetPaginationIndex(GridView_StockIn));
             GridViewTemplateService.SetGridView(GridView_StockIn, dt, Panel_Pagination);
         }
 

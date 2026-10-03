@@ -132,6 +132,15 @@ namespace BNet.Cafe.Server
         protected global::System.Web.UI.WebControls.HyperLink HyperLink_Inventory;
 
         /// <summary>
+        /// HyperLink_Sales control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Sales;
+
+        /// <summary>
         /// HyperLink_Suppliers control.
         /// </summary>
         /// <remarks>

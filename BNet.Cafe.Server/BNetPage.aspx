@@ -87,6 +87,9 @@
                         <asp:HyperLink ID="HyperLink_Inventory" runat="server" ToolTip="Inventory" onclick="navigateTo('?Form=Inventory'); return false;">
                             <i class="fas fa-boxes-stacked"></i><span>Inventory</span>
                         </asp:HyperLink>
+                        <asp:HyperLink ID="HyperLink_Sales" runat="server" ToolTip="Sales" NavigateUrl="?Form=Sales" onclick="navigateTo('?Form=Sales'); return false;">
+                            <i class="fas fa-chart-line"></i><span>Sales</span>
+                        </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_Suppliers" runat="server" ToolTip="Suppliers" onclick="navigateTo('?Form=Suppliers'); return false;">
                             <i class="fas fa-truck-field"></i><span>Suppliers</span>
                         </asp:HyperLink>

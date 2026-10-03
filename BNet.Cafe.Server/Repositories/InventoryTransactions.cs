@@ -17,15 +17,30 @@ namespace BNet.Cafe.Server.Repositories
         private readonly DBScriptService dBScriptService = new DBScriptService();
         private readonly GridviewPaginationService paginationService = new GridviewPaginationService();
 
-        public DataTable GetAll(string search = "", int pageIndex = -1, bool isDeleted = false)
+        public DataTable GetAll(string search = "", string transactionType = "", string dateRange = "", int pageIndex = -1, bool isDeleted = false)
         {
             var scripts = new Dictionary<string, string>();
-            string DBTransactionType = dBScriptService.CleanUpToUpper(search);
+            string DBTransactionType = dBScriptService.CleanUpToUpper(transactionType);
             string DBIsDeleted = isDeleted ? "TRUE" : "FALSE";
+            string DBSearch = dBScriptService.CleanUpToUpper(search);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBSearch", DBSearch);
             string LIMIT = paginationService.SetPagination(pageIndex);
 
+            string DBDateStart = "";
+            string DBDateEnd = "";
+            if (dateRange.Contains(","))
+            {
+                var date = dateRange.Split(',');
+                DBDateStart = date[0];
+                DBDateEnd = date[1];
+            }
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBSearch", DBSearch);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTransactionType", DBTransactionType);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateStart", DBDateStart);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateEnd", DBDateEnd);
             if (pageIndex >= 0)
             {
                 dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
@@ -190,7 +205,7 @@ namespace BNet.Cafe.Server.Repositories
             return DBContext.SqlExecuteAsync(sql);
         }
 
-        public bool StockOut(string itemId, string userId, string quantity,string cost)
+        public bool StockOut(string itemId, string userId, string quantity, string cost)
         {
             // Parse cost and format to 2 decimal places without commas (e.g., 1234.50)
             decimal.TryParse(cost, out decimal parsedCost);
@@ -216,6 +231,53 @@ namespace BNet.Cafe.Server.Repositories
             public string Total { get; set; }
             public string StockIn { get; set; }
             public string StockOut { get; set; }
+        }
+
+        public SalesCountResult GetSalesCount(string search = "", string dateRange = "", bool isDeleted = false)
+        {
+            var scripts = new Dictionary<string, string>();
+            string DBIsDeleted = isDeleted ? "TRUE" : "FALSE";
+            string DBSearch = dBScriptService.CleanUpToUpper(search);
+
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBSearch", DBSearch);
+
+            // Handle date range splitting (YYYY-MM-DD,YYYY-MM-DD)
+            string dateStart = "";
+            string dateEnd = "";
+            if (!string.IsNullOrEmpty(dateRange) && dateRange.Contains(","))
+            {
+                string[] dates = dateRange.Split(',');
+                dateStart = dates[0].Trim();
+                dateEnd = dates[1].Trim();
+            }
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTransactionType", "SALE");
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateStart", dateStart);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateEnd", dateEnd);
+
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/InventoryTransactions/GetSalesCount.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+            DataTable dt = DBContext.SqlDataAdapterAsync(sql);
+
+            SalesCountResult result = new SalesCountResult();
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                DataRow row = dt.Rows[0];
+                result.TotalOrders = row["DBTotalOrders"].ToString();
+                result.ItemsSold = row["DBTotalItemsSold"].ToString();
+                result.Revenue = "₱" + row["DBTotalRevenue"].ToString();
+                result.AvgOrderValue = "₱" + row["DBAvgOrderValue"].ToString();
+            }
+
+            return result;
+        }
+
+        public class SalesCountResult
+        {
+            public string TotalOrders { get; set; } = "0";
+            public string ItemsSold { get; set; } = "0";
+            public string Revenue { get; set; } = "₱0.00";
+            public string AvgOrderValue { get; set; } = "₱0.00";
         }
     }
 }

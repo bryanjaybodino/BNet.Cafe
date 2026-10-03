@@ -16,6 +16,8 @@ LEFT JOIN `inventory_items` ii ON it.`DBItemId` = ii.`DBId`
 LEFT JOIN `users` u ON it.`DBUserId` = u.`DBId`
 WHERE 1 = 1
   AND it.`DBIsDeleted` = '{DBIsDeleted}'
-  AND it.`DBTransactionType` LIKE '%{DBTransactionType}%'
+  AND it.`DBTransactionType` ='{DBTransactionType}'
+  AND it.DBDateCreated BETWEEN '{DBDateStart}' AND '{DBDateEnd}'
+  AND ( ii.`DBItemName` LIKE '%{DBSearch}%' OR u.`DBName` LIKE '%{DBSearch}%' OR it.`DBId` LIKE '%{DBSearch}%');
 ORDER BY it.`DBId` DESC
 {LIMIT}

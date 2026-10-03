@@ -97,17 +97,19 @@ namespace BNet.Cafe.Server
                 HyperLink_SeatMap.CssClass = "";
                 HyperLink_Remote.CssClass = "";
                 HyperLink_PricingSettings.CssClass = "";
+                HyperLink_TopUp.CssClass = "";
+                HyperLink_Billings.CssClass = "";
 
                 HyperLink_POS.CssClass = "";
                 HyperLink_StockIn.CssClass = "";
                 HyperLink_Inventory.CssClass = "";
+                HyperLink_Sales.CssClass = "";
                 HyperLink_Suppliers.CssClass = "";
 
                 HyperLink_SportTimer.CssClass = "";
 
-                HyperLink_Billings.CssClass = "";
+
                 HyperLink_Users.CssClass = "";
-                HyperLink_TopUp.CssClass = "";
                 HyperLink_WallPaper.CssClass = "";
                 HyperLink_Commits.CssClass = "";
 
@@ -174,6 +176,11 @@ namespace BNet.Cafe.Server
                 else if (formName.Contains(HyperLink_Suppliers.ToolTip))
                 {
                     HyperLink_Suppliers.CssClass = "active";
+                    group_POS.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_Sales.ToolTip))
+                {
+                    HyperLink_Sales.CssClass = "active";
                     group_POS.Attributes["open"] = "open";
                 }
 

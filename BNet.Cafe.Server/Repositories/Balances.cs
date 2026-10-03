@@ -57,7 +57,10 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBSearch", DBSearch);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateStart", DBDateStart);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateEnd", DBDateEnd);
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
+            if (pageIndex >= 0)
+            {
+                dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
+            }
 
             Page page = HttpContext.Current.Handler as Page;
             string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Balances/GetAll.sql");

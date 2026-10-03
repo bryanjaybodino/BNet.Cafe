@@ -157,6 +157,7 @@
     <Content Include="Databases\Queries\InventoryItems\UpdateStock.sql" />
     <Content Include="Databases\Queries\InventoryItems\Update.sql" />
     <Content Include="Databases\Queries\InventoryItems\UpdateCount.sql" />
+    <Content Include="Databases\Queries\InventoryTransactions\GetSalesCount.sql" />
     <Content Include="Databases\Queries\InventoryTransactions\StockOut.sql" />
     <Content Include="Databases\Queries\InventoryTransactions\StockIn.sql" />
     <Content Include="Databases\Queries\InventoryTransactions\Create.sql" />
@@ -184,6 +185,7 @@
     <Content Include="Forms\Modals\SupplierDelete.ascx" />
     <Content Include="Forms\Modals\WallpaperDelete.ascx" />
     <Content Include="Forms\POS.ascx" />
+    <Content Include="Forms\Sales.ascx" />
     <Content Include="Forms\SportTimer.ascx" />
     <Content Include="Forms\StockIn.ascx" />
     <Content Include="Forms\SupplierCreate.ascx" />
@@ -535,6 +537,13 @@
     </Compile>
     <Compile Include="Forms\RentalManage.ascx.designer.cs">
       <DependentUpon>RentalManage.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Sales.ascx.cs">
+      <DependentUpon>Sales.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Sales.ascx.designer.cs">
+      <DependentUpon>Sales.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\SeatMap.ascx.cs">
       <DependentUpon>SeatMap.ascx</DependentUpon>
