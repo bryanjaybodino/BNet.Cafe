@@ -35,8 +35,146 @@
         }
     </script>
     <style>
-        body{font-family:'Inter',sans-serif;transition:background-color 0.3s ease,color 0.3s ease}.dark body{background-color:#090d16;color:#f1f5f9}.light body{background-color:#f8fafc;color:#0f172a}.cyber-grid{background-size:36px 36px}.dark .cyber-grid{background-image:linear-gradient(to right,rgb(255 255 255 / .03) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255 / .03) 1px,transparent 1px)}.light .cyber-grid{background-image:linear-gradient(to right,rgb(15 23 42 / .03) 1px,transparent 1px),linear-gradient(to bottom,rgb(15 23 42 / .03) 1px,transparent 1px)}.custom-scrollbar::-webkit-scrollbar{width:8px}.dark .custom-scrollbar::-webkit-scrollbar-track{background:#090d16}.dark .custom-scrollbar::-webkit-scrollbar-thumb{background:#1e293b;border-radius:4px}.light .custom-scrollbar::-webkit-scrollbar-track{background:#f1f5f9}.light .custom-scrollbar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
-        .messenger-button{position:fixed;bottom:25px;right:25px;width:auto;height:50px;padding:0 15px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border-radius:50px;display:flex;align-items:center;justify-content:center;gap:.6rem;text-decoration:none;box-shadow:0 4px 12px rgb(37 99 235 / .4);transition:all 0.3s ease;z-index:5000;line-height:1;color:#fff;cursor:pointer}.messenger-button i{font-size:1.5rem}.messenger-button span{font-size:.95rem;font-weight:600;white-space:nowrap}.messenger-button:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgb(37 99 235 / .6)}.messenger-button:active{transform:scale(.95)}[data-theme="dark"] .messenger-button{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 4px 12px rgb(37 99 235 / .6)}[data-theme="dark"] .messenger-button:hover{box-shadow:0 8px 20px rgb(59 130 246 / .7)}.messenger-button .icon-default,.messenger-button .text-default{display:inline}.messenger-button .icon-loading{display:none;animation:spin 1s linear infinite}.messenger-button.loading .icon-default,.messenger-button.loading .text-default{display:none}.messenger-button.loading .icon-loading{display:inline}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.messenger-button .text-loading{display:none;cursor:pointer;font-size:.8rem}.messenger-button.loading .text-loading{display:inline}.messenger-button.loading .text-loading:hover::after{content:' (click to close)';font-size:.7rem}
+        body {
+            font-family: 'Inter',sans-serif;
+            transition: background-color 0.3s ease,color 0.3s ease
+        }
+
+        .dark body {
+            background-color: #090d16;
+            color: #f1f5f9
+        }
+
+        .light body {
+            background-color: #f8fafc;
+            color: #0f172a
+        }
+
+        .cyber-grid {
+            background-size: 36px 36px
+        }
+
+        .dark .cyber-grid {
+            background-image: linear-gradient(to right,rgb(255 255 255 / .03) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255 / .03) 1px,transparent 1px)
+        }
+
+        .light .cyber-grid {
+            background-image: linear-gradient(to right,rgb(15 23 42 / .03) 1px,transparent 1px),linear-gradient(to bottom,rgb(15 23 42 / .03) 1px,transparent 1px)
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px
+        }
+
+        .dark .custom-scrollbar::-webkit-scrollbar-track {
+            background: #090d16
+        }
+
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px
+        }
+
+        .light .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9
+        }
+
+        .light .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px
+        }
+
+        .messenger-button {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: auto;
+            height: 50px;
+            padding: 0 15px;
+            background: linear-gradient(135deg,#2563eb,#1d4ed8);
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .6rem;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgb(37 99 235 / .4);
+            transition: all 0.3s ease;
+            z-index: 5000;
+            line-height: 1;
+            color: #fff;
+            cursor: pointer
+        }
+
+            .messenger-button i {
+                font-size: 1.5rem
+            }
+
+            .messenger-button span {
+                font-size: .95rem;
+                font-weight: 600;
+                white-space: nowrap
+            }
+
+            .messenger-button:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgb(37 99 235 / .6)
+            }
+
+            .messenger-button:active {
+                transform: scale(.95)
+            }
+
+        [data-theme="dark"] .messenger-button {
+            background: linear-gradient(135deg,#3b82f6,#2563eb);
+            box-shadow: 0 4px 12px rgb(37 99 235 / .6)
+        }
+
+            [data-theme="dark"] .messenger-button:hover {
+                box-shadow: 0 8px 20px rgb(59 130 246 / .7)
+            }
+
+        .messenger-button .icon-default, .messenger-button .text-default {
+            display: inline
+        }
+
+        .messenger-button .icon-loading {
+            display: none;
+            animation: spin 1s linear infinite
+        }
+
+        .messenger-button.loading .icon-default, .messenger-button.loading .text-default {
+            display: none
+        }
+
+        .messenger-button.loading .icon-loading {
+            display: inline
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg)
+            }
+
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .messenger-button .text-loading {
+            display: none;
+            cursor: pointer;
+            font-size: .8rem
+        }
+
+        .messenger-button.loading .text-loading {
+            display: inline
+        }
+
+            .messenger-button.loading .text-loading:hover::after {
+                content: ' (click to close)';
+                font-size: .7rem
+            }
 
         /* Floating Audio Player Button */
         .music-player-btn {
@@ -68,7 +206,6 @@
             .music-player-btn:active {
                 transform: scale(0.95);
             }
-    
     </style>
 </head>
 <body class="custom-scrollbar">
@@ -604,6 +741,110 @@
             </div>
         </div>
     </section>
+
+
+    <!-- POS & Inventory Showcase Section -->
+    <section id="pos-inventory" class="py-16 dark:bg-[#0c111d] bg-slate-100/70 border-y dark:border-slate-800/80 border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-mono font-bold text-cyan-500 uppercase tracking-widest">Point Of Sale & Stock Management</span>
+                <h2 class="text-3xl font-extrabold dark:text-white text-slate-900 mt-1">Built-in Counter POS & Inventory System</h2>
+                <p class="dark:text-slate-400 text-slate-600 text-sm mt-2">Sell snacks, drinks, time top-ups, and computer accessories directly from the cashier terminal with real-time stock deductions.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- POS Feature 1 -->
+                <div class="dark:bg-slate-900/80 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-cash-register"></i>
+                    </div>
+                    <h3 class="text-lg font-bold dark:text-white text-slate-900">Fast Cashier Counter Checkout</h3>
+                    <p class="dark:text-slate-400 text-slate-600 text-xs mt-2 leading-relaxed">
+                        Process food, beverages, and gaming hourly passes instantly. Support both cash sales and direct member balance deductions.
+                    </p>
+                </div>
+
+                <!-- POS Feature 2 -->
+                <div class="dark:bg-slate-900/80 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <h3 class="text-lg font-bold dark:text-white text-slate-900">Real-Time Inventory Tracking</h3>
+                    <p class="dark:text-slate-400 text-slate-600 text-xs mt-2 leading-relaxed">
+                        Automated stock level updates upon every completed sale. Receive low-stock warnings and easily restock items with batch logging.
+                    </p>
+                </div>
+
+                <!-- POS Feature 3 -->
+                <div class="dark:bg-slate-900/80 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <h3 class="text-lg font-bold dark:text-white text-slate-900">Sales Reports & Shift Audit</h3>
+                    <p class="dark:text-slate-400 text-slate-600 text-xs mt-2 leading-relaxed">
+                        Track shift revenue per cashier, itemized inventory sales, and time-rental earnings with printable end-of-shift receipts.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Tiers Section -->
+    <section id="pricing-tiers" class="py-16 border-b dark:border-slate-800/80 border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-mono font-bold text-cyan-500 uppercase tracking-widest">Flexible Rate Structures</span>
+                <h2 class="text-3xl font-extrabold dark:text-white text-slate-900 mt-1">3-Tier Dynamic Rental Pricing</h2>
+                <p class="dark:text-slate-400 text-slate-600 text-sm mt-2">Automatically apply specialized hourly billing rates based on customer membership levels.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Walk In Pricing -->
+                <div class="dark:bg-slate-900/80 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
+                    <div class="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider mb-2">Standard Guest</div>
+                    <h3 class="text-2xl font-extrabold dark:text-white text-slate-900">Walk-In Pricing</h3>
+                    <p class="dark:text-slate-400 text-slate-600 text-xs mt-2 leading-relaxed">
+                        Default hourly rate applied to non-registered players and guest sessions. Simple pay-as-you-go or prepaid vouchers.
+                    </p>
+                    <ul class="mt-6 space-y-2 text-xs font-mono dark:text-slate-300 text-slate-600">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-slate-400"></i> Base hourly rates</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-slate-400"></i> Standard POS items pricing</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-slate-400"></i> Quick guest checkout</li>
+                    </ul>
+                </div>
+
+                <!-- Member Pricing -->
+                <div class="dark:bg-slate-900/80 bg-white border-2 border-cyan-500/50 rounded-2xl p-6 shadow-lg relative overflow-hidden">
+                    <span class="absolute top-3 right-3 px-2 py-0.5 text-[10px] font-mono font-bold rounded bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">POPULAR</span>
+                    <div class="text-xs font-mono font-bold text-cyan-500 uppercase tracking-wider mb-2">Registered Account</div>
+                    <h3 class="text-2xl font-extrabold dark:text-white text-slate-900">Membership Pricing</h3>
+                    <p class="dark:text-slate-400 text-slate-600 text-xs mt-2 leading-relaxed">
+                        Discounted hourly rates for standard registered account holders. Encourages player registration and loyalty.
+                    </p>
+                    <ul class="mt-6 space-y-2 text-xs font-mono dark:text-slate-300 text-slate-600">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-500"></i> Discounted computer rate</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-500"></i> Account balance top-ups</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-500"></i> Google SSO login access</li>
+                    </ul>
+                </div>
+
+                <!-- VIP Pricing -->
+                <div class="dark:bg-slate-900/80 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
+                    <div class="text-xs font-mono font-bold text-amber-500 uppercase tracking-wider mb-2">High Tier Perks</div>
+                    <h3 class="text-2xl font-extrabold dark:text-white text-slate-900">VIP Pricing</h3>
+                    <p class="dark:text-slate-400 text-slate-600 text-xs mt-2 leading-relaxed">
+                        Exclusive lowest hourly rates reserved for high-spending members, VIP zones, or tournament-spec rigs.
+                    </p>
+                    <ul class="mt-6 space-y-2 text-xs font-mono dark:text-slate-300 text-slate-600">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-500"></i> Lowest hourly computer rate</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-500"></i> VIP zone access permissions</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-500"></i> Exclusive store discounts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
 
     <!-- Downloads Section -->
     <section id="download" class="py-20 border-t dark:border-slate-800/80 border-slate-200">
