@@ -78,13 +78,7 @@ namespace BNet.Cafe.Client
         private readonly ActivityReporter _activityReporter = new ActivityReporter();
         private WallpaperService _wallpaperService = new WallpaperService();
 
-        // Slideshow & Countdown Controls
-        private PictureBox _pictureBox;
-        private System.Windows.Forms.Timer _slideTimer;
-        private System.Windows.Forms.Timer _countdownTimer;
-        private string[] _imageFiles = new string[0];
-        private int _currentIndex = -1;
-        private readonly string _wallpaperFolder;
+        private SlideshowManager _slideshowManager;
 
         private int IdleTimeoutSeconds
         {
@@ -98,35 +92,34 @@ namespace BNet.Cafe.Client
             }
         }
 
-        private int _remainingIdleSeconds = 300;
-
         public MainForm()
         {
-            // Set double buffering styles to avoid flicker during panel redraws over PictureBox
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
-                          ControlStyles.UserPaint |
-                          ControlStyles.OptimizedDoubleBuffer, true);
-            this.UpdateStyles();
+            SetStyle(ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.UserPaint |
+                     ControlStyles.OptimizedDoubleBuffer, true);
+            UpdateStyles();
 
             InitializeComponent();
-            InitializeSlideshowControls();
 
-            _wallpaperFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Wallpaper");
-            LoadImages();
+            _slideshowManager = new SlideshowManager(
+                parentForm: this,
+                onUserInteraction: RegisterUserInteraction,
+                onAutoShutdownTriggered: () => CommandPromptService.ShutdownSystem()
+            );
 
-            _slideTimer = new System.Windows.Forms.Timer { Interval = 10000 };
-            _slideTimer.Tick += SlideTimer_Tick;
-
-            InitializeCountdownTimer();
+            // Re-parent labels AND Panel_LoginCard to PictureBox for true transparency
+            _slideshowManager.AttachOverlayControl(lblBigPcName);
+            _slideshowManager.AttachOverlayControl(lblSubtitle);
+            _slideshowManager.AttachOverlayControl(badgeCountdown);
+            _slideshowManager.AttachOverlayControl(lblDismissHint);
+            _slideshowManager.AttachOverlayControl(Panel_LoginCard);
 
             this.AcceptButton = Button_Login;
             TextBox_Username.KeyDown += TextBox_Username_KeyDown;
             TextBox_Password.KeyDown += TextBox_Password_KeyDown;
 
-            // Attach mouse events using coordinate threshold comparison
             this.MouseMove += MainForm_MouseMove;
             this.MouseDown += (s, e) => RegisterUserInteraction();
-            Panel_LoginCard.MouseDown += (s, e) => RegisterUserInteraction();
 
             if (!EnvironmentHelper.IsDevelopment)
             {
@@ -141,129 +134,6 @@ namespace BNet.Cafe.Client
             InitializeIdleCheckTimer();
         }
 
-        #region Slideshow Implementation
-
-        private void InitializeSlideshowControls()
-        {
-            _pictureBox = new PictureBox
-            {
-                Dock = DockStyle.Fill,
-                SizeMode = PictureBoxSizeMode.StretchImage,
-                BackColor = Color.FromArgb(15, 23, 42)
-            };
-
-            _pictureBox.Click += (s, e) => RegisterUserInteraction();
-            _pictureBox.MouseMove += PictureBox_MouseMove;
-
-            this.Controls.Add(_pictureBox);
-            _pictureBox.SendToBack();
-
-            // Re-parent labels to PictureBox for transparent overlay on images
-            AttachControlToPicture(lblBigPcName);
-            AttachControlToPicture(lblSubtitle);
-            AttachControlToPicture(badgeCountdown);
-            AttachControlToPicture(lblDismissHint);
-            AttachControlToPicture(Panel_LoginCard);
-        }
-
-        private void AttachControlToPicture(Control control)
-        {
-            Point originalPos = control.Location;
-            control.Parent = _pictureBox;
-            control.Location = originalPos;
-
-            if (control.BackColor == Color.Transparent)
-            {
-                control.BackColor = Color.FromArgb(160, 15, 23, 42);
-            }
-        }
-
-        private void LoadImages()
-        {
-            var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".bmp" };
-            if (Directory.Exists(_wallpaperFolder))
-            {
-                _imageFiles = Directory.GetFiles(_wallpaperFolder)
-                    .Where(f => validExtensions.Contains(Path.GetExtension(f).ToLower()))
-                    .ToArray();
-            }
-        }
-
-        private void InitializeCountdownTimer()
-        {
-            _remainingIdleSeconds = IdleTimeoutSeconds;
-            _countdownTimer = new System.Windows.Forms.Timer { Interval = 1000 };
-            _countdownTimer.Tick += CountdownTimer_Tick;
-        }
-
-        private void CountdownTimer_Tick(object sender, EventArgs e)
-        {
-            if (_remainingIdleSeconds <= 0)
-            {
-                _countdownTimer.Stop();
-                CommandPromptService.ShutdownSystem();
-                return;
-            }
-
-            _remainingIdleSeconds--;
-
-            TimeSpan ts = TimeSpan.FromSeconds(_remainingIdleSeconds);
-            badgeCountdown.Text = $"⚠️ Auto-Shutdown in: {ts.Minutes:D2}:{ts.Seconds:D2}";
-
-            if (_remainingIdleSeconds <= 60)
-            {
-                badgeCountdown.BackColor = Color.FromArgb(200, 239, 68, 68);
-                badgeCountdown.ForeColor = Color.White;
-            }
-        }
-
-        private void SlideTimer_Tick(object sender, EventArgs e)
-        {
-            LoadNextImage();
-        }
-
-        private void LoadNextImage()
-        {
-            if (_imageFiles.Length == 0) return;
-
-            try
-            {
-                _currentIndex = (_currentIndex + 1) % _imageFiles.Length;
-                string imagePath = _imageFiles[_currentIndex];
-
-                using (var stream = new MemoryStream(File.ReadAllBytes(imagePath)))
-                {
-                    var oldImage = _pictureBox.Image;
-                    _pictureBox.Image = Image.FromStream(stream);
-                    oldImage?.Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error displaying image: {ex.Message}");
-            }
-        }
-
-        private void StartSlideshow()
-        {
-            LoadNextImage();
-            if (_imageFiles.Length > 1)
-            {
-                _slideTimer.Start();
-            }
-
-            _remainingIdleSeconds = IdleTimeoutSeconds;
-            _countdownTimer.Start();
-        }
-
-        private void StopSlideshow()
-        {
-            _slideTimer.Stop();
-            _countdownTimer.Stop();
-        }
-
-        #endregion
-
         private void InitializeIdleCheckTimer()
         {
             _idleCheckTimer = new System.Windows.Forms.Timer();
@@ -274,36 +144,40 @@ namespace BNet.Cafe.Client
         private void StartIdleMonitor()
         {
             _userInteracted = false;
+            _lastUserInteractionTime = DateTime.Now;
             _monitoringStartTime = DateTime.Now;
-            _lastMousePosition = Point.Empty;
+            _lastMousePosition = Cursor.Position;
 
             ShowLoginForm();
             _idleCheckTimer.Start();
-            StartSlideshow();
+
+            _slideshowManager.Start(IdleTimeoutSeconds, badgeCountdown);
         }
 
         private void StopIdleMonitor()
         {
             _idleCheckTimer.Stop();
-            StopSlideshow();
+            _slideshowManager.Stop();
             HideLoginForm();
         }
 
         private void ShowLoginForm()
         {
             if (!Panel_LoginCard.Visible)
+            {
                 Panel_LoginCard.Visible = true;
+                Panel_LoginCard.BringToFront();
+                _slideshowManager.PictureBox.Invalidate();
+            }
         }
 
         private void HideLoginForm()
         {
             if (Panel_LoginCard.Visible)
+            {
                 Panel_LoginCard.Visible = false;
-        }
-
-        private void PictureBox_MouseMove(object sender, MouseEventArgs e)
-        {
-            CheckMouseMovement(e.Location);
+                _slideshowManager.PictureBox.Invalidate(); // Refresh picturebox background
+            }
         }
 
         private void MainForm_MouseMove(object sender, MouseEventArgs e)
@@ -319,21 +193,23 @@ namespace BNet.Cafe.Client
                 return;
             }
 
-            // Require > 5 pixels displacement (matching SlideshowOverlayForm) before registering movement
-            if (Math.Abs(currentPos.X - _lastMousePosition.X) > 5 || Math.Abs(currentPos.Y - _lastMousePosition.Y) > 5)
+            if (Math.Abs(currentPos.X - _lastMousePosition.X) > 10 || Math.Abs(currentPos.Y - _lastMousePosition.Y) > 10)
             {
                 _lastMousePosition = currentPos;
                 RegisterUserInteraction();
             }
         }
 
+        private DateTime _lastUserInteractionTime = DateTime.Now;
         private void RegisterUserInteraction()
         {
-            if ((DateTime.Now - _monitoringStartTime).TotalSeconds < 1)
-                return;
-
+            _lastUserInteractionTime = DateTime.Now;
             _userInteracted = true;
-            ShowLoginForm();
+
+            if (!Panel_LoginCard.Visible)
+            {
+                ShowLoginForm();
+            }
         }
 
         private void TextBox_Username_KeyDown(object sender, KeyEventArgs e)
@@ -364,18 +240,15 @@ namespace BNet.Cafe.Client
                 return;
             }
 
-            uint idleMs = GetSystemIdleTimeMs();
-            double idleSeconds = idleMs / 1000.0;
-            double elapsedSecondsSinceStart = (DateTime.Now - _monitoringStartTime).TotalSeconds;
+            // Consistently calculate idle duration based on last interaction timestamp
+            double secondsSinceLastInteraction = (DateTime.Now - _lastUserInteractionTime).TotalSeconds;
 
-            // Hide if OS idle time reached threshold OR initial monitoring timeout reached without interaction
-            if (idleSeconds >= InputIdleThresholdSeconds || (!_userInteracted && elapsedSecondsSinceStart >= InputIdleThresholdSeconds))
+            if (secondsSinceLastInteraction >= InputIdleThresholdSeconds)
             {
-                HideLoginForm();
-            }
-            else
-            {
-                ShowLoginForm();
+                if (Panel_LoginCard.Visible)
+                {
+                    HideLoginForm();
+                }
             }
         }
 
@@ -410,8 +283,7 @@ namespace BNet.Cafe.Client
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            StopSlideshow();
-            _pictureBox.Image?.Dispose();
+            _slideshowManager?.Dispose();
             HideLoginForm();
             _wallpaperService?.Stop();
         }
@@ -419,7 +291,7 @@ namespace BNet.Cafe.Client
         private async void MainForm_Load(object sender, EventArgs e)
         {
             await _wallpaperService?.SyncWallpapersFromServerAsync();
-            StartSlideshow();
+
             string clientName = ConfigHelper.GetClientNameFromIP();
             lblBigPcName.Text = string.IsNullOrEmpty(clientName) ? "PC-01" : clientName;
             await Task.Delay(1000);
@@ -507,7 +379,6 @@ namespace BNet.Cafe.Client
             const int WM_RBUTTONDOWN = 0x0204;
             const int WM_KEYDOWN = 0x0100;
 
-            // Only register interaction on mouse clicks or keydown events to avoid mouse-move event flooding
             if (m.Msg == WM_LBUTTONDOWN || m.Msg == WM_RBUTTONDOWN || m.Msg == WM_KEYDOWN)
             {
                 RegisterUserInteraction();

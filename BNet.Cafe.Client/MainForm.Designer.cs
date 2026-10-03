@@ -189,9 +189,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.ClientSize = new System.Drawing.Size(1190, 694);
+            this.Controls.Add(this.badgeCountdown);
             this.Controls.Add(this.lblDismissHint);
             this.Controls.Add(this.Panel_LoginCard);
-            this.Controls.Add(this.badgeCountdown);
             this.Controls.Add(this.lblSubtitle);
             this.Controls.Add(this.lblBigPcName);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
