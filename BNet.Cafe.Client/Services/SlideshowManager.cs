@@ -203,6 +203,15 @@ namespace BNet.Cafe.Client.Services
                 _badgeCountdownLabel.ForeColor = Color.White;
             }
         }
+        public void ResetCountdown(int idleTimeoutSeconds)
+        {
+            _remainingIdleSeconds = idleTimeoutSeconds;
+            UpdateCountdownDisplay();
+
+            // Restart the countdown timer
+            _countdownTimer.Stop();
+            _countdownTimer.Start();
+        }
 
         public void Dispose()
         {

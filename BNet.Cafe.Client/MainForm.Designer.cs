@@ -52,9 +52,9 @@
             this.lblSubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(210)))), ((int)(((byte)(254)))));
             this.lblSubtitle.Location = new System.Drawing.Point(780, 20);
             this.lblSubtitle.Name = "lblSubtitle";
-            this.lblSubtitle.Size = new System.Drawing.Size(158, 20);
+            this.lblSubtitle.Size = new System.Drawing.Size(138, 20);
             this.lblSubtitle.TabIndex = 2;
-            this.lblSubtitle.Text = "IDLE SYSTEM NOTICE";
+            this.lblSubtitle.Text = "BNET CAFE TIMER";
             // 
             // Panel_LoginCard
             // 

@@ -222,8 +222,13 @@ namespace BNet.Cafe.Client
             _lastUserInteractionTime = DateTime.Now;
             _userInteracted = true;
             ShowLoginForm();
-        }
 
+            // Reset auto-shutdown countdown if configuration flag is active
+            if (ConfigHelper.ResetShutdownCountdown)
+            {
+                _slideshowManager.ResetCountdown(IdleTimeoutSeconds);
+            }
+        }
         private void TextBox_Username_KeyDown(object sender, KeyEventArgs e)
         {
             RegisterUserInteraction();
@@ -307,6 +312,7 @@ namespace BNet.Cafe.Client
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
+
             await _wallpaperService?.SyncWallpapersFromServerAsync();
 
             string clientName = ConfigHelper.GetClientNameFromIP();

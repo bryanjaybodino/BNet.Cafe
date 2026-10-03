@@ -98,11 +98,11 @@ namespace BNet.Cafe.Client.Services
             }
         }
         
-        public static bool IsOverlayFreeze
+        public static bool ResetShutdownCountdown
         {
             get
             {
-                string value = GetOrCreateSetting("OverlayFreeze", "false");
+                string value = GetOrCreateSetting("ResetShutdownCountdown", "false");
                 return !string.Equals(value?.Trim(), "false", StringComparison.OrdinalIgnoreCase);
             }
         }
