@@ -168,29 +168,40 @@ namespace BNet.Cafe.Server.Repositories
             return countValue;
         }
 
-        public bool StockIn(string itemId, string userId, string quantity)
+        public bool StockIn(string itemId, string userId, string quantity, string cost)
         {
+            // Parse cost and format to 2 decimal places without commas (e.g., 1234.50)
+            decimal.TryParse(cost, out decimal parsedCost);
+            string formattedCost = parsedCost.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+
             var scripts = new Dictionary<string, string>();
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTransactionType", TransactionType.STOCK_IN);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBItemId", dBScriptService.CleanUpToUpper(itemId));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", dBScriptService.CleanUpToUpper(userId));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBQuantity", dBScriptService.CleanUpToUpper(quantity));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBCost", formattedCost);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeCreated", TimeService.Get().ToString("HH:mm:ss"));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
+
             string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/InventoryTransactions/StockIn.sql");
             string sql = dBScriptService.Scripts(scripts, template);
 
             return DBContext.SqlExecuteAsync(sql);
         }
 
-        public bool StockOut(string itemId, string userId, string quantity)
+        public bool StockOut(string itemId, string userId, string quantity,string cost)
         {
+            // Parse cost and format to 2 decimal places without commas (e.g., 1234.50)
+            decimal.TryParse(cost, out decimal parsedCost);
+            string formattedCost = parsedCost.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+
             var scripts = new Dictionary<string, string>();
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTransactionType", TransactionType.SALE);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBItemId", dBScriptService.CleanUpToUpper(itemId));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", dBScriptService.CleanUpToUpper(userId));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBQuantity", dBScriptService.CleanUpToUpper(quantity));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBCost", formattedCost);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeCreated", TimeService.Get().ToString("HH:mm:ss"));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");

@@ -32,7 +32,16 @@
                                     CssClass="form-control pricing-input" placeholder="0" min="1"></asp:TextBox>
                             </div>
 
-                            <!-- Row 2 (Spans 2 Columns): Action Buttons -->
+                            <!-- Row 1, Column 3 / Row 2: Unit Cost -->
+                            <div class="form-group">
+                                <label for="TextBox_Cost">
+                                    Unit Cost <span class="required-badge">*</span>
+                                </label>
+                                <asp:TextBox ID="TextBox_Cost" runat="server" oninput="DecimalOnly(this);" step="0.01"
+                                    CssClass="form-control pricing-input" placeholder="0.00" min="0"></asp:TextBox>
+                            </div>
+
+                            <!-- Action Buttons -->
                             <div class="form-actions">
                                 <asp:LinkButton ID="LinkButton_Cancel" OnClick="LinkButton_Cancel_Click"
                                     CssClass="btn btn-secondary btn-responsive" runat="server">
@@ -68,6 +77,8 @@
                                         <asp:BoundField DataField="DBItemName" HeaderText="Item Name" />
                                         <asp:BoundField DataField="DBUserName" HeaderText="Processed By" />
                                         <asp:BoundField DataField="DBQuantity" HeaderText="Quantity Added" />
+                                        <asp:BoundField DataField="DBCost" HeaderText="Cost" DataFormatString="{0:N2}" />
+                                        <asp:BoundField DataField="DBTotalCost" HeaderText="Total Cost" DataFormatString="{0:N2}" />
                                         <asp:BoundField DataField="DBDateCreated" HeaderText="Date" />
                                         <asp:BoundField DataField="DBTimeCreated" HeaderText="Time" />
                                         <asp:TemplateField HeaderText="Actions">

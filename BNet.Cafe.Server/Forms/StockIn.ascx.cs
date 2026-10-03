@@ -45,15 +45,22 @@ namespace BNet.Cafe.Server.Forms
         {
             string itemId = DropDownList_Item.SelectedValue;
             string quantity = TextBox_Quantity.Text.Trim();
+            string cost = TextBox_Cost.Text.Trim();
             string userId = userCookies.user_id;
 
-            if (string.IsNullOrEmpty(itemId) || string.IsNullOrEmpty(quantity) || int.Parse(quantity) <= 0)
+            if (string.IsNullOrEmpty(itemId) || string.IsNullOrEmpty(quantity) || !int.TryParse(quantity, out int qty) || qty <= 0)
             {
                 AlertService.ShowAlert(UpdatePanel1, "Please select a valid item and quantity.", "warning");
                 return;
             }
 
-            bool success = transactionsRepo.StockIn(itemId, userId, quantity);
+            if (string.IsNullOrEmpty(cost) || !decimal.TryParse(cost, out decimal parsedCost) || parsedCost < 0)
+            {
+                AlertService.ShowAlert(UpdatePanel1, "Please enter a valid cost amount.", "warning");
+                return;
+            }
+
+            bool success = transactionsRepo.StockIn(itemId, userId, quantity, cost);
 
             if (success)
             {
@@ -75,6 +82,7 @@ namespace BNet.Cafe.Server.Forms
         {
             DropDownList_Item.SelectedIndex = 0;
             TextBox_Quantity.Text = string.Empty;
+            TextBox_Cost.Text = string.Empty;
         }
     }
 }

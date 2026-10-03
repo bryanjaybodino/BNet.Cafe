@@ -3,6 +3,7 @@
     DBUserId,
     DBTransactionType,
     DBQuantity,
+    DBCost,
     DBDateCreated,
     DBTimeCreated,
     DBIsDeleted
@@ -12,6 +13,7 @@ VALUES (
     '{DBUserId}',
     '{DBTransactionType}',
     '{DBQuantity}',
+    '{DBCost}',
     '{DBDateCreated}',
     '{DBTimeCreated}',
     '{DBIsDeleted}'

@@ -6,6 +6,8 @@
     u.`DBName` AS DBUserName,
     it.`DBTransactionType`,
     it.`DBQuantity`,
+    it.`DBCost`,
+    (it.`DBQuantity` * it.`DBCost`) AS DBTotalCost,
     it.`DBDateCreated`,
     it.`DBTimeCreated`,
     it.`DBIsDeleted`

@@ -40,7 +40,13 @@ namespace BNet.Cafe.Server.Databases.Tables
                 Length = 10,
                 Type = DBMigration.DBColumns.type.VARCHAR
             });
-
+            list.Add(new DBMigration.DBColumns
+            {
+                ColumnName = "DBCost",
+                Length = 10,
+                Default ="0.00",
+                Type = DBMigration.DBColumns.type.VARCHAR
+            });
             DBMigration tableCreation = new DBMigration();
             tableCreation.Create_Table(GetType().Name, list);
         }

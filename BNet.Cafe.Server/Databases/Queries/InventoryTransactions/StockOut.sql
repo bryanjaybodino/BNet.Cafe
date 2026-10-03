@@ -3,6 +3,24 @@ SET DBQuantityInStock = DBQuantityInStock - {DBQuantity}
 WHERE DBId = '{DBItemId}' AND DBIsDeleted = FALSE;
 
 INSERT INTO inventory_transactions 
-(DBItemId, DBUserId, DBTransactionType, DBQuantity, DBDateCreated, DBTimeCreated, DBIsDeleted) 
+(
+	DBItemId,
+	DBUserId,
+	DBTransactionType,
+	DBQuantity,
+	DBCost,
+	DBDateCreated,
+	DBTimeCreated,
+	DBIsDeleted
+) 
 VALUES 
-('{DBItemId}', '{DBUserId}', '{DBTransactionType}', '{DBQuantity}', '{DBDateCreated}', '{DBTimeCreated}', FALSE);
+(
+	'{DBItemId}',
+	'{DBUserId}',
+	'{DBTransactionType}', 
+	'{DBQuantity}',
+	'{DBCost}',
+	'{DBDateCreated}',
+	'{DBTimeCreated}', 
+	'{DBIsDeleted}'
+);

@@ -13,7 +13,7 @@ namespace BNet.Cafe.Server.Forms
     {
         private readonly InventoryItems itemsRepo = new InventoryItems();
         private readonly InventoryTransactions transactionsRepo = new InventoryTransactions();
-
+        Sessions.User user = new Sessions.User();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -212,15 +212,16 @@ namespace BNet.Cafe.Server.Forms
                 totalAmount += Convert.ToDouble(row["Subtotal"]);
             }
 
-            string userId = "ADMIN";
+            string userId = user.user_id;
             bool allSuccess = true;
 
             foreach (DataRow row in cart.Rows)
             {
                 string itemId = row["ItemId"].ToString();
                 string qty = row["Quantity"].ToString();
+                string cost = row["UnitPrice"].ToString();
 
-                bool ok = transactionsRepo.StockOut(itemId, userId, qty);
+                bool ok = transactionsRepo.StockOut(itemId, userId, qty, cost);
                 if (!ok) allSuccess = false;
             }
 
