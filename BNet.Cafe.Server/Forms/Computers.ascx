@@ -203,6 +203,14 @@
                             </ItemTemplate>
                         </asp:TemplateField>
 
+                        <asp:TemplateField HeaderText="Time" ItemStyle-Width="200px">
+                            <ItemTemplate>
+                                <span class="running-timer" data-start-time='<%# Eval("RawTimeStart") %>'>
+                                    <%# Eval("RunningTime") %>
+                                </span>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+
                         <asp:TemplateField HeaderText="Status" ItemStyle-Width="200px">
                             <ItemTemplate>
                                 <asp:Label ID="Label_Status" runat="server" Text='<%# Eval("Status") %>' CssClass='<%# Eval("StatusCssClass") %>'></asp:Label>
@@ -231,6 +239,6 @@
         <uc1:RemoteTimeTransfer runat="server" ID="RemoteTimeTransfer" />
         <uc1:RemoteTimePause runat="server" ID="RemoteTimePause" />
         <uc1:RemoteShutdown runat="server" ID="RemoteShutdown" />
-        <uc1:RemoteRestart runat="server" id="RemoteRestart" />
+        <uc1:RemoteRestart runat="server" ID="RemoteRestart" />
     </ContentTemplate>
 </asp:UpdatePanel>

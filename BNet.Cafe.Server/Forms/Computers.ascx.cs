@@ -122,6 +122,20 @@ namespace BNet.Cafe.Server.Forms
                             newRow["IsPauseResumeVisible"] = false;
                             newRow["IsShutdownVisible"] = false;
                             newRow["IsRestartVisible"] = false;
+                            newRow["RunningTime"] = "--";
+                            newRow["RawTimeStart"] = "--";
+                        }
+                        else
+                        {
+                            TimeSpan elapsedTime = DateTime.Now - start;
+                            if (elapsedTime.TotalSeconds < 0) elapsedTime = TimeSpan.Zero;
+
+                            int runHours = (int)elapsedTime.TotalHours;
+                            int runMins = elapsedTime.Minutes;
+                            int runSecs = elapsedTime.Seconds;
+
+                            newRow["RunningTime"] = $"{runHours:D2}:{runMins:D2}:{runSecs:D2}";
+                            newRow["RawTimeStart"] = start.ToString("o"); // ISO 8601 format for JS parsing
                         }
                     }
                     else
@@ -194,6 +208,8 @@ namespace BNet.Cafe.Server.Forms
             dt.Columns.Add("IsTransferVisible", typeof(bool));
             dt.Columns.Add("IsPauseResumeVisible", typeof(bool));
             dt.Columns.Add("IsRestartVisible", typeof(bool));
+            dt.Columns.Add("RunningTime", typeof(string));
+            dt.Columns.Add("RawTimeStart", typeof(string));
             return dt;
         }
 
@@ -205,6 +221,8 @@ namespace BNet.Cafe.Server.Forms
             row["Billing"] = textValue;
             row["Status"] = statusText;
             row["StatusCssClass"] = cssClass;
+            row["RawTimeStart"] = "-";
+            row["RunningTime"] = "-";
         }
 
         protected void GridViewTable_PageIndexChanging(object sender, GridViewPageEventArgs e)

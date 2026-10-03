@@ -1,4 +1,32 @@
 ﻿(function () {
+
+
+    // Live Running Time Counter
+    function updateRunningTimers() {
+        const timerElements = document.querySelectorAll('.running-timer[data-start-time]');
+
+        timerElements.forEach(el => {
+            const rawStart = el.getAttribute('data-start-time');
+            if (!rawStart) return;
+
+            const startTime = new Date(rawStart);
+            if (isNaN(startTime.getTime())) return;
+
+            const now = new Date();
+            let diffMs = now - startTime;
+            if (diffMs < 0) diffMs = 0;
+
+            const totalSeconds = Math.floor(diffMs / 1000);
+            const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+            const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+            const secs = String(totalSeconds % 60).padStart(2, '0');
+
+            el.textContent = `${hrs}:${mins}:${secs}`;
+        });
+    }
+
+    setInterval(updateRunningTimers, 1000);
+
     // 1. Wait until the window load completes completely
     window.addEventListener('load', function () {
         const endpoint = window.location.protocol + '//' + window.location.hostname + ':2050/sse';
