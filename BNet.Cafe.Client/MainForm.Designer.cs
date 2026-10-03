@@ -52,7 +52,6 @@
             // Panel_LoginCard
             // 
             this.Panel_LoginCard.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Panel_LoginCard.AutoSize = false;
             this.Panel_LoginCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.Panel_LoginCard.Location = new System.Drawing.Point(395, 172);
             this.Panel_LoginCard.Name = "Panel_LoginCard";
@@ -103,6 +102,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MainForm";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -31,7 +31,7 @@
             this.lblLoginLink.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblLoginLink.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Underline);
             this.lblLoginLink.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(197)))), ((int)(((byte)(253)))));
-            this.lblLoginLink.Location = new System.Drawing.Point(68, 475);
+            this.lblLoginLink.Location = new System.Drawing.Point(75, 475);
             this.lblLoginLink.Name = "lblLoginLink";
             this.lblLoginLink.Size = new System.Drawing.Size(243, 21);
             this.lblLoginLink.TabIndex = 10;

@@ -102,7 +102,7 @@
             this.lblRegisterLink.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblRegisterLink.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Underline);
             this.lblRegisterLink.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(197)))), ((int)(((byte)(253)))));
-            this.lblRegisterLink.Location = new System.Drawing.Point(71, 315);
+            this.lblRegisterLink.Location = new System.Drawing.Point(80, 315);
             this.lblRegisterLink.Name = "lblRegisterLink";
             this.lblRegisterLink.Size = new System.Drawing.Size(241, 21);
             this.lblRegisterLink.TabIndex = 6;

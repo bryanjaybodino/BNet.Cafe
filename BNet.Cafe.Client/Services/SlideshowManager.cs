@@ -40,14 +40,12 @@ namespace BNet.Cafe.Client.Services
             InitializeTimers();
             LoadImages();
         }
-
         private void InitializePictureBox()
         {
             _pictureBox = new BufferedPictureBox
             {
                 Dock = DockStyle.Fill,
-                // Change PictureBoxSizeMode.Normal to Zoom or StretchImage
-                SizeMode = PictureBoxSizeMode.Zoom,
+                SizeMode = PictureBoxSizeMode.StretchImage,
                 BackColor = Color.FromArgb(15, 23, 42)
             };
 

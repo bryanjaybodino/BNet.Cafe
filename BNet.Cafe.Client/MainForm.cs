@@ -131,8 +131,14 @@ namespace BNet.Cafe.Client
                 this.MaximizeBox = false;
                 this.MinimizeBox = false;
             }
+            else
+            {
+                this.FormBorderStyle = FormBorderStyle.None;
+                this.WindowState = FormWindowState.Normal;
+                this.TopMost = false;
+            }
 
-            InitializeIdleCheckTimer();
+                InitializeIdleCheckTimer();
         }
 
         private void InitializeAuthControls()
