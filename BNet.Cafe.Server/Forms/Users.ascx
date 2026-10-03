@@ -2,6 +2,55 @@
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <asp:LinkButton ID="LinkButton_Refresh" runat="server"></asp:LinkButton>
+        <div class="cards-grid cards-grid-compact">
+            <!-- Total Users -->
+            <div class="card card-compact">
+                <div class="card-inline-content">
+                    <div class="card-icon-sm">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="card-details">
+                        <span class="card-title-sm">Total Users</span>
+                        <span class="card-value-sm">
+                            <asp:Label ID="Label_TotalUsers" runat="server" Text="0"></asp:Label>
+                        </span>
+                    </div>
+                </div>
+                <span class="positive-sm">Overall</span>
+            </div>
+
+            <!-- VIP Members -->
+            <div class="card card-compact">
+                <div class="card-inline-content">
+                    <div class="card-icon-sm">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <div class="card-details">
+                        <span class="card-title-sm">VIP Members</span>
+                        <span class="card-value-sm">
+                            <asp:Label ID="Label_TotalVIP" runat="server" Text="0"></asp:Label>
+                        </span>
+                    </div>
+                </div>
+                <span class="bnet-badge-status green">VIP</span>
+            </div>
+
+            <!-- Regular Members -->
+            <div class="card card-compact">
+                <div class="card-inline-content">
+                    <div class="card-icon-sm">
+                        <i class="fa-solid fa-user-tag"></i>
+                    </div>
+                    <div class="card-details">
+                        <span class="card-title-sm">Members</span>
+                        <span class="card-value-sm">
+                            <asp:Label ID="Label_TotalMember" runat="server" Text="0"></asp:Label>
+                        </span>
+                    </div>
+                </div>
+                <span class="bnet-badge-status blue">Member</span>
+            </div>
+        </div>
 
         <div class="bnet-table-wrapper">
             <div class="bnet-table-toolbar">

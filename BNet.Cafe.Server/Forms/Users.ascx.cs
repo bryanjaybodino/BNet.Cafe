@@ -13,6 +13,8 @@ namespace BNet.Cafe.Server.Forms
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
+            LoadUserCounts();
+
             string search = TextBox_Search.Text.Trim();
             DataTable data = users.GetAll(search, GridViewTemplateService.GetPaginationIndex(GridViewTable));
             GridViewTemplateService.SetGridView(GridViewTable, data, Panel_Pagination);
@@ -37,7 +39,16 @@ namespace BNet.Cafe.Server.Forms
 
             }
         }
-
+        private void LoadUserCounts()
+        {
+            var counts = users.GetCount();
+            if (counts != null)
+            {
+                Label_TotalUsers.Text = counts.Total;
+                Label_TotalVIP.Text = counts.TotalVip;
+                Label_TotalMember.Text = counts.TotalMember;
+            }
+        }
         protected void GridViewTable_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             GridViewTable.PageIndex = e.NewPageIndex;

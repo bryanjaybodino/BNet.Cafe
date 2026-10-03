@@ -8,7 +8,7 @@
         <div class="bnet-table-toolbar dashboard-toolbar">
             <h2 class="dashboard-heading">Dashboard</h2>
             <asp:TextBox ID="TextBox_DateRage" AutoPostBack="true" CssClass="bnet-datepicker" data-mode="range"
-                runat="server" OnTextChanged="TextBox_DateRage_TextChanged"></asp:TextBox>
+                runat="server"></asp:TextBox>
         </div>
 
         <!-- KPI Cards Grid -->

@@ -180,9 +180,5 @@ namespace BNet.Cafe.Server.Forms
                 ? ""
                 : input.Replace("\\", "\\\\").Replace("\"", "\\\"");
         }
-
-        protected void TextBox_DateRage_TextChanged(object sender, EventArgs e)
-        {
-        }
     }
 }

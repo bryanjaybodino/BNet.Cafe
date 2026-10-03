@@ -33,6 +33,33 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.LinkButton LinkButton_Refresh;
 
         /// <summary>
+        /// Label_TotalUsers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label_TotalUsers;
+
+        /// <summary>
+        /// Label_TotalVIP control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label_TotalVIP;
+
+        /// <summary>
+        /// Label_TotalMember control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label_TotalMember;
+
+        /// <summary>
         /// TextBox_Search control.
         /// </summary>
         /// <remarks>

@@ -141,5 +141,40 @@ namespace BNet.Cafe.Server.Repositories
 
             return DBContext.SqlExecuteAsync(sql);
         }
+
+        public class CountUsers
+        {
+            public string Total { get; set; }
+            public string TotalVip { get; set; }
+            public string TotalMember { get; set; }
+        }
+
+        public CountUsers GetCount()
+        {
+            CountUsers countValue = new CountUsers();
+            var scripts = new Dictionary<string, string>();
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
+
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Users/GetCount.sql");
+            string sql = dBScriptService.Scripts(scripts, template);
+            DataTable dataTable = DBContext.SqlDataAdapterAsync(sql);
+
+            if (dataTable != null && dataTable.Rows.Count > 0)
+            {
+                DataRow row = dataTable.Rows[0];
+
+                countValue.Total = row["DBTotal"] != DBNull.Value ? row["DBTotal"].ToString() : "0";
+                countValue.TotalVip = row["DBTotalVip"] != DBNull.Value ? row["DBTotalVip"].ToString() : "0";
+                countValue.TotalMember = row["DBTotalMember"] != DBNull.Value ? row["DBTotalMember"].ToString() : "0";
+            }
+            else
+            {
+                countValue.Total = "0";
+                countValue.TotalVip = "0";
+                countValue.TotalMember = "0";
+            }
+
+            return countValue;
+        }
     }
 }
