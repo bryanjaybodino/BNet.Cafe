@@ -28,7 +28,7 @@
                                         <%# Convert.ToInt32(Eval("DBQuantityInStock")) <= 0 ? "Out of Stock" : Eval("DBQuantityInStock") + " left" %>
                                     </div>
                                     <div class="product-img-wrapper">
-                                        <img src='<%# GetProductImage(Eval("DBId")) %>' alt='<%# Eval("DBItemName") %>' onerror="this.src='Uploads/Inventory/default.png';" />
+                                        <img src='<%# GetProductImage(Eval("DBId")) %>' alt='<%# Eval("DBItemName") %>' />
                                     </div>
                                     <div class="product-info">
                                         <div class="product-name" title='<%# Eval("DBItemName") %>'><%# Eval("DBItemName") %></div>

@@ -83,12 +83,12 @@ namespace BNet.Cafe.Server
 
         public string GetProductImage(object itemIdObj)
         {
-            if (itemIdObj == null) return "Uploads/Inventory/default.png";
+            if (itemIdObj == null) return "Uploads/default.png";
             string itemId = itemIdObj.ToString();
             string relativePath = $"~/Uploads/Inventory/{itemId}.png";
             string physicalPath = HttpContext.Current.Server.MapPath(relativePath);
 
-            return File.Exists(physicalPath) ? $"Uploads/Inventory/{itemId}.png" : "Uploads/Inventory/default.png";
+            return File.Exists(physicalPath) ? $"Uploads/Inventory/{itemId}.png" : "Uploads/default.png";
         }
     }
 }

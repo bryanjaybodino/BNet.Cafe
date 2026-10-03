@@ -60,7 +60,7 @@
                             <ItemTemplate>
                                 <div class="ecom-product-card">
                                     <div class="product-media">
-                                        <img src='<%# GetProductImage(Eval("DBId")) %>' alt='<%# Eval("DBItemName") %>' onerror="this.src='Uploads/Inventory/default.png';" />
+                                        <img src='<%# GetProductImage(Eval("DBId")) %>' alt='<%# Eval("DBItemName") %>' />
                                         <span class="category-badge"><%# Eval("DBCategory") %></span>
                                     </div>
 
