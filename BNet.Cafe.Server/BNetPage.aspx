@@ -61,6 +61,12 @@
                         <asp:HyperLink ID="HyperLink_PricingSettings" runat="server" ToolTip="PricingSettings" onclick="navigateTo('?Form=PricingSettings'); return false;">
                             <i class="fas fa-cash-register"></i><span>Pricing Setting</span>
                         </asp:HyperLink>
+                        <asp:HyperLink ID="HyperLink_Billings" runat="server" ToolTip="Billing" onclick="navigateTo('?Form=Billings'); return false;">
+                            <i class="fa-solid fa-file-invoice-dollar"></i><span>Billings</span>
+                        </asp:HyperLink>
+                        <asp:HyperLink ID="HyperLink_TopUp" runat="server" ToolTip="TopUp" onclick="navigateTo('?Form=TopUp'); return false;">
+                            <i class="fas fa-trophy"></i><span>Top-Up</span>
+                        </asp:HyperLink>
                     </div>
                 </details>
 
@@ -109,14 +115,8 @@
                         <i class="fas fa-chevron-down arrow"></i>
                     </summary>
                     <div class="menu-sub-items">
-                        <asp:HyperLink ID="HyperLink_Billings" runat="server" ToolTip="Billing" onclick="navigateTo('?Form=Billings'); return false;">
-                            <i class="fa-solid fa-file-invoice-dollar"></i><span>Billings</span>
-                        </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_Users" runat="server" ToolTip="User" onclick="navigateTo('?Form=Users'); return false;">
                             <i class="fas fa-users"></i><span>Users</span>
-                        </asp:HyperLink>
-                        <asp:HyperLink ID="HyperLink_TopUp" runat="server" ToolTip="TopUp" onclick="navigateTo('?Form=TopUp'); return false;">
-                            <i class="fas fa-trophy"></i><span>Top-Up</span>
                         </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_WallPaper" runat="server" ToolTip="Wallpaper" onclick="navigateTo('?Form=Wallpaper'); return false;">
                             <i class="fas fa-image"></i><span>Wallpaper</span>

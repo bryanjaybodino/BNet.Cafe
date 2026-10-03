@@ -78,6 +78,24 @@ namespace BNet.Cafe.Server
         protected global::System.Web.UI.WebControls.HyperLink HyperLink_PricingSettings;
 
         /// <summary>
+        /// HyperLink_Billings control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Billings;
+
+        /// <summary>
+        /// HyperLink_TopUp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_TopUp;
+
+        /// <summary>
         /// group_POS control.
         /// </summary>
         /// <remarks>
@@ -150,15 +168,6 @@ namespace BNet.Cafe.Server
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl group_Management;
 
         /// <summary>
-        /// HyperLink_Billings control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_Billings;
-
-        /// <summary>
         /// HyperLink_Users control.
         /// </summary>
         /// <remarks>
@@ -166,15 +175,6 @@ namespace BNet.Cafe.Server
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink HyperLink_Users;
-
-        /// <summary>
-        /// HyperLink_TopUp control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_TopUp;
 
         /// <summary>
         /// HyperLink_WallPaper control.

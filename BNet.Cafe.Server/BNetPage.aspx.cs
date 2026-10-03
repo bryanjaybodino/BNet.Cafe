@@ -122,6 +122,8 @@ namespace BNet.Cafe.Server
                 {
                     HyperLink_Dashboard.CssClass = "active";
                 }
+
+                //COMPUTER GROUP
                 else if (formName.Contains(HyperLink_Computers.ToolTip))
                 {
                     HyperLink_Computers.CssClass = "active";
@@ -142,6 +144,18 @@ namespace BNet.Cafe.Server
                     HyperLink_PricingSettings.CssClass = "active";
                     group_Computers.Attributes["open"] = "open";
                 }
+                else if (formName.Contains(HyperLink_Billings.ToolTip))
+                {
+                    HyperLink_Billings.CssClass = "active";
+                    group_Computers.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_TopUp.ToolTip))
+                {
+                    HyperLink_TopUp.CssClass = "active";
+                    group_Computers.Attributes["open"] = "open";
+                }
+
+                ///POS GROUP
                 else if (formName.Contains(HyperLink_POS.ToolTip))
                 {
                     HyperLink_POS.CssClass = "active";
@@ -162,24 +176,18 @@ namespace BNet.Cafe.Server
                     HyperLink_Suppliers.CssClass = "active";
                     group_POS.Attributes["open"] = "open";
                 }
+
+                //SPORT TIMER GROUP
                 else if (formName.Contains(HyperLink_SportTimer.ToolTip))
                 {
                     HyperLink_SportTimer.CssClass = "active";
                     group_SportTimer.Attributes["open"] = "open";
                 }
-                else if (formName.Contains(HyperLink_Billings.ToolTip))
-                {
-                    HyperLink_Billings.CssClass = "active";
-                    group_Management.Attributes["open"] = "open";
-                }
+
+                //MANAGEMENT GROUP
                 else if (formName.Contains(HyperLink_Users.ToolTip))
                 {
                     HyperLink_Users.CssClass = "active";
-                    group_Management.Attributes["open"] = "open";
-                }
-                else if (formName.Contains(HyperLink_TopUp.ToolTip))
-                {
-                    HyperLink_TopUp.CssClass = "active";
                     group_Management.Attributes["open"] = "open";
                 }
                 else if (formName.Contains(HyperLink_WallPaper.ToolTip))
