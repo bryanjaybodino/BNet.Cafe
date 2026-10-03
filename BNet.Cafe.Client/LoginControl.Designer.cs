@@ -12,13 +12,13 @@
 
         private void InitializeComponent()
         {
-            this.lblTitle = new System.Windows.Forms.Label();
-            this.lblUsername = new System.Windows.Forms.Label();
-            this.lblPassword = new System.Windows.Forms.Label();
-            this.txtUsername = new BNet.Cafe.Client.Design.ModernTextBox();
-            this.txtPassword = new BNet.Cafe.Client.Design.ModernTextBox();
-            this.btnLogin = new BNet.Cafe.Client.Design.ModernButton();
-            this.lblRegisterLink = new System.Windows.Forms.Label();
+            this.lblTitle = new BNet.Cafe.Client.Design.BufferedLabel();
+            this.lblUsername = new BNet.Cafe.Client.Design.BufferedLabel();
+            this.lblPassword = new BNet.Cafe.Client.Design.BufferedLabel();
+            this.txtUsername = new BNet.Cafe.Client.Design.BufferedTextBox();
+            this.txtPassword = new BNet.Cafe.Client.Design.BufferedTextBox();
+            this.btnLogin = new BNet.Cafe.Client.Design.BufferedButton();
+            this.lblRegisterLink = new BNet.Cafe.Client.Design.BufferedLabel();
             this.SuspendLayout();
             // 
             // lblTitle
@@ -128,12 +128,12 @@
 
         }
 
-        private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label lblUsername;
-        private System.Windows.Forms.Label lblPassword;
-        private Design.ModernTextBox txtUsername;
-        private Design.ModernTextBox txtPassword;
-        private Design.ModernButton btnLogin;
-        private System.Windows.Forms.Label lblRegisterLink;
+        private Design.BufferedLabel lblTitle;
+        private Design.BufferedLabel lblUsername;
+        private Design.BufferedLabel lblPassword;
+        private Design.BufferedTextBox txtUsername;
+        private Design.BufferedTextBox txtPassword;
+        private Design.BufferedButton btnLogin;
+        private Design.BufferedLabel lblRegisterLink;
     }
 }

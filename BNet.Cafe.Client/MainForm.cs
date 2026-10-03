@@ -189,6 +189,9 @@ namespace BNet.Cafe.Client
 
         private void ShowView(Control targetView)
         {
+            this.SuspendLayout();
+            Panel_LoginCard.SuspendLayout();
+
             _loginControl.Visible = (targetView == _loginControl);
             _registerControl.Visible = (targetView == _registerControl);
 
@@ -207,6 +210,10 @@ namespace BNet.Cafe.Client
                 (this.ClientSize.Width - Panel_LoginCard.Width) / 2,
                 (this.ClientSize.Height - Panel_LoginCard.Height) / 2
             );
+
+            Panel_LoginCard.ResumeLayout(true);
+            this.ResumeLayout(true);
+
             _slideshowManager?.PictureBox?.Invalidate();
         }
 

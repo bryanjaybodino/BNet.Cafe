@@ -12,17 +12,17 @@
 
         private void InitializeComponent()
         {
-            this.lblTitle = new System.Windows.Forms.Label();
-            this.lblFullName = new System.Windows.Forms.Label();
-            this.txtFullName = new BNet.Cafe.Client.Design.ModernTextBox();
-            this.lblEmail = new System.Windows.Forms.Label();
-            this.txtEmail = new BNet.Cafe.Client.Design.ModernTextBox();
-            this.lblPassword = new System.Windows.Forms.Label();
-            this.txtPassword = new BNet.Cafe.Client.Design.ModernTextBox();
-            this.lblConfirmPassword = new System.Windows.Forms.Label();
-            this.txtConfirmPassword = new BNet.Cafe.Client.Design.ModernTextBox();
-            this.btnSubmit = new BNet.Cafe.Client.Design.ModernButton();
-            this.lblLoginLink = new System.Windows.Forms.Label();
+            this.lblTitle = new BNet.Cafe.Client.Design.BufferedLabel();
+            this.lblFullName = new BNet.Cafe.Client.Design.BufferedLabel();
+            this.txtFullName = new BNet.Cafe.Client.Design.BufferedTextBox();
+            this.lblEmail = new BNet.Cafe.Client.Design.BufferedLabel();
+            this.txtEmail = new BNet.Cafe.Client.Design.BufferedTextBox();
+            this.lblPassword = new BNet.Cafe.Client.Design.BufferedLabel();
+            this.txtPassword = new BNet.Cafe.Client.Design.BufferedTextBox();
+            this.lblConfirmPassword = new BNet.Cafe.Client.Design.BufferedLabel();
+            this.txtConfirmPassword = new BNet.Cafe.Client.Design.BufferedTextBox();
+            this.btnSubmit = new BNet.Cafe.Client.Design.BufferedButton();
+            this.lblLoginLink = new BNet.Cafe.Client.Design.BufferedLabel();
             this.SuspendLayout();
             // 
             // lblTitle
@@ -49,7 +49,7 @@
             // 
             // txtFullName
             // 
-            this.txtFullName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtFullName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFullName.BackColor = System.Drawing.Color.White;
             this.txtFullName.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
@@ -75,7 +75,7 @@
             // 
             // txtEmail
             // 
-            this.txtEmail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtEmail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtEmail.BackColor = System.Drawing.Color.White;
             this.txtEmail.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
@@ -101,7 +101,7 @@
             // 
             // txtPassword
             // 
-            this.txtPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPassword.BackColor = System.Drawing.Color.White;
             this.txtPassword.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
@@ -127,7 +127,7 @@
             // 
             // txtConfirmPassword
             // 
-            this.txtConfirmPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtConfirmPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtConfirmPassword.BackColor = System.Drawing.Color.White;
             this.txtConfirmPassword.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
@@ -142,7 +142,7 @@
             // 
             // btnSubmit
             // 
-            this.btnSubmit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.btnSubmit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSubmit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
             this.btnSubmit.BorderRadius = 10;
@@ -194,16 +194,16 @@
 
         }
 
-        private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label lblFullName;
-        private System.Windows.Forms.Label lblEmail;
-        private System.Windows.Forms.Label lblPassword;
-        private System.Windows.Forms.Label lblConfirmPassword;
-        private Design.ModernTextBox txtFullName;
-        private Design.ModernTextBox txtEmail;
-        private Design.ModernTextBox txtPassword;
-        private Design.ModernTextBox txtConfirmPassword;
-        private Design.ModernButton btnSubmit;
-        private System.Windows.Forms.Label lblLoginLink;
+        private Design.BufferedLabel lblTitle;
+        private Design.BufferedLabel lblFullName;
+        private Design.BufferedLabel lblEmail;
+        private Design.BufferedLabel lblPassword;
+        private Design.BufferedLabel lblConfirmPassword;
+        private Design.BufferedTextBox txtFullName;
+        private Design.BufferedTextBox txtEmail;
+        private Design.BufferedTextBox txtPassword;
+        private Design.BufferedTextBox txtConfirmPassword;
+        private Design.BufferedButton btnSubmit;
+        private Design.BufferedLabel lblLoginLink;
     }
 }

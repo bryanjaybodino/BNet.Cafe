@@ -79,10 +79,19 @@
     <Compile Include="Ashx\_GetLoginHandlerData.cs" />
     <Compile Include="Ashx\GetLoginHandler.cs" />
     <Compile Include="Ashx\GetUserHandler.cs" />
+    <Compile Include="Design\BufferedButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Design\BufferedLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Design\BufferedPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Design\BufferedPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Design\BufferedTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Design\ModernBadge.cs">

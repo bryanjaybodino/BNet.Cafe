@@ -17,10 +17,10 @@
 
         private void InitializeComponent()
         {
-            this.lblBigPcName = new System.Windows.Forms.Label();
-            this.lblSubtitle = new System.Windows.Forms.Label();
-            this.Panel_LoginCard = new System.Windows.Forms.Panel();
-            this.lblDismissHint = new System.Windows.Forms.Label();
+            this.lblBigPcName = new BNet.Cafe.Client.Design.BufferedLabel();
+            this.lblSubtitle = new BNet.Cafe.Client.Design.BufferedLabel();
+            this.Panel_LoginCard = new BNet.Cafe.Client.Design.BufferedPanel();
+            this.lblDismissHint = new BNet.Cafe.Client.Design.BufferedLabel();
             this.badgeCountdown = new BNet.Cafe.Client.Design.ModernBadge();
             this.SuspendLayout();
             // 
@@ -52,7 +52,7 @@
             // Panel_LoginCard
             // 
             this.Panel_LoginCard.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Panel_LoginCard.AutoSize = false; // Changed from true to false to allow custom height/width sizing
+            this.Panel_LoginCard.AutoSize = false;
             this.Panel_LoginCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.Panel_LoginCard.Location = new System.Drawing.Point(395, 172);
             this.Panel_LoginCard.Name = "Panel_LoginCard";
@@ -111,10 +111,10 @@
 
         #endregion
 
-        private System.Windows.Forms.Label lblBigPcName;
+        private Design.BufferedLabel lblBigPcName;
         private Design.ModernBadge badgeCountdown;
-        private System.Windows.Forms.Label lblSubtitle;
-        private System.Windows.Forms.Panel Panel_LoginCard;
-        private System.Windows.Forms.Label lblDismissHint;
+        private Design.BufferedLabel lblSubtitle;
+        private Design.BufferedPanel Panel_LoginCard;
+        private Design.BufferedLabel lblDismissHint;
     }
 }
