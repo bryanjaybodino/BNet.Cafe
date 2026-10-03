@@ -166,11 +166,11 @@ namespace BNet.Cafe.Server.Repositories
                 for (int i = 0; i < dataTable.Rows.Count; i++)
                 {
                     string type = dataTable.Rows[i]["DBTransactionType"].ToString().ToUpper();
-                    if (type == "STOCK_IN")
+                    if (type == ConstantData.TransactionType.STOCK_IN)
                     {
                         stockInCount++;
                     }
-                    else if (type == "SALE")
+                    else if (type == ConstantData.TransactionType.SALE)
                     {
                         stockOutCount++;
                     }
@@ -251,7 +251,7 @@ namespace BNet.Cafe.Server.Repositories
                 dateStart = dates[0].Trim();
                 dateEnd = dates[1].Trim();
             }
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTransactionType", "SALE");
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTransactionType", ConstantData.TransactionType.SALE);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateStart", dateStart);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateEnd", dateEnd);
 

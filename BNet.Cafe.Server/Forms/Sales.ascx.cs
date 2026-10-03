@@ -31,7 +31,7 @@ namespace BNet.Cafe.Server.Forms
             Label_Revenue.Text = count.Revenue;
 
             // Load transactions grid
-            DataTable data = transactionsRepo.GetAll(search,"SALE",dateRange, GridViewTemplateService.GetPaginationIndex(GridViewTable));
+            DataTable data = transactionsRepo.GetAll(search,ConstantData.TransactionType.SALE,dateRange, GridViewTemplateService.GetPaginationIndex(GridViewTable));
             GridViewTemplateService.SetGridView(GridViewTable, data, Panel_Pagination);
         }
 
