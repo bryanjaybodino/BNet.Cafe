@@ -147,11 +147,21 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Suppliers/GetAll.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/Suppliers/GetCount.sql");
             string sql = dBScriptService.Scripts(scripts, template);
             DataTable dataTable = DBContext.SqlDataAdapterAsync(sql);
 
-            countValue.Total = dataTable.Rows.Count.ToString();
+            if (dataTable != null && dataTable.Rows.Count > 0)
+            {
+                countValue.Total = dataTable.Rows[0]["DBTotal"] != DBNull.Value
+                    ? dataTable.Rows[0]["DBTotal"].ToString()
+                    : "0";
+            }
+            else
+            {
+                countValue.Total = "0";
+            }
+
             return countValue;
         }
 

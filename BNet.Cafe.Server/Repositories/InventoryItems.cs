@@ -165,40 +165,26 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
 
             Page page = HttpContext.Current.Handler as Page;
-            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/InventoryItems/GetAll.sql");
+            string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/InventoryItems/GetCount.sql");
             string sql = dBScriptService.Scripts(scripts, template);
             DataTable dataTable = DBContext.SqlDataAdapterAsync(sql);
 
-            int lowStock = 0;
-            int outOfStock = 0;
-
-            if (dataTable != null)
+            if (dataTable != null && dataTable.Rows.Count > 0)
             {
-                for (int i = 0; i < dataTable.Rows.Count; i++)
-                {
-                    int stock = 0;
-                    int reorder = 0;
+                DataRow row = dataTable.Rows[0];
 
-                    int.TryParse(dataTable.Rows[i]["DBQuantityInStock"].ToString(), out stock);
-                    int.TryParse(dataTable.Rows[i]["DBReorderLevel"].ToString(), out reorder);
-
-                    if (stock == 0)
-                    {
-                        outOfStock++;
-                    }
-                    else if (stock <= reorder)
-                    {
-                        lowStock++;
-                    }
-                }
+                countValue.Total = row["DBTotal"] != DBNull.Value ? row["DBTotal"].ToString() : "0";
+                countValue.OutOfStock = row["DBOutOfStock"] != DBNull.Value ? row["DBOutOfStock"].ToString() : "0";
+                countValue.LowStock = row["DBLowStock"] != DBNull.Value ? row["DBLowStock"].ToString() : "0";
             }
-
-            countValue.Total = dataTable != null ? dataTable.Rows.Count.ToString() : "0";
-            countValue.LowStock = lowStock.ToString();
-            countValue.OutOfStock = outOfStock.ToString();
+            else
+            {
+                countValue.Total = "0";
+                countValue.LowStock = "0";
+                countValue.OutOfStock = "0";
+            }
             return countValue;
         }
-
         public class CountInventoryItems
         {
             public string Total { get; set; }

@@ -152,6 +152,7 @@
     <Content Include="Databases\Queries\Balances\GetCount.sql" />
     <Content Include="Databases\Queries\InventoryItems\Create.sql" />
     <Content Include="Databases\Queries\InventoryItems\DeleteById.sql" />
+    <Content Include="Databases\Queries\InventoryItems\GetCount.sql" />
     <Content Include="Databases\Queries\InventoryItems\GetAll.sql" />
     <Content Include="Databases\Queries\InventoryItems\GetById.sql" />
     <Content Include="Databases\Queries\InventoryItems\UpdateStock.sql" />
@@ -170,6 +171,7 @@
     <Content Include="Databases\Queries\Suppliers\GetAll.sql" />
     <Content Include="Databases\Queries\Suppliers\GetById.sql" />
     <Content Include="Databases\Queries\Suppliers\Create.sql" />
+    <Content Include="Databases\Queries\Suppliers\GetCount.sql" />
     <Content Include="Databases\Queries\Suppliers\Update.sql" />
     <Content Include="Databases\Queries\Suppliers\UpdateCount.sql" />
     <Content Include="Forms\GitHubCommitsFeed.ascx" />
