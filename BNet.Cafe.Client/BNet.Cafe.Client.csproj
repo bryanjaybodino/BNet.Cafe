@@ -79,6 +79,12 @@
     <Compile Include="Ashx\_GetLoginHandlerData.cs" />
     <Compile Include="Ashx\GetLoginHandler.cs" />
     <Compile Include="Ashx\GetUserHandler.cs" />
+    <Compile Include="Design\BufferedPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Design\BufferedPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Design\ModernBadge.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -88,11 +94,23 @@
     <Compile Include="Design\ModernTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="LoginControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LoginControl.Designer.cs">
+      <DependentUpon>LoginControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="NotificationForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="NotificationForm.Designer.cs">
       <DependentUpon>NotificationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RegisterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RegisterControl.Designer.cs">
+      <DependentUpon>RegisterControl.cs</DependentUpon>
     </Compile>
     <Compile Include="RegisterForm.cs">
       <SubType>Form</SubType>
@@ -151,6 +169,9 @@
     <EmbeddedResource Include="BNetCafeTimer.resx">
       <DependentUpon>BNetCafeTimer.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="LoginControl.resx">
+      <DependentUpon>LoginControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -163,6 +184,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="RegisterControl.resx">
+      <DependentUpon>RegisterControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="RegisterForm.resx">
       <DependentUpon>RegisterForm.cs</DependentUpon>
     </EmbeddedResource>

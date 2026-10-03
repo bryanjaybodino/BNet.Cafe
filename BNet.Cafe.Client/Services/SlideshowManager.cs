@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BNet.Cafe.Client.Design;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -10,14 +11,7 @@ namespace BNet.Cafe.Client.Services
 {
     public class SlideshowManager : IDisposable
     {
-        private class BufferedPictureBox : PictureBox
-        {
-            public BufferedPictureBox()
-            {
-                DoubleBuffered = true;
-                SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
-            }
-        }
+
         private readonly Form _parentForm;
         private readonly Action _onUserInteraction;
         private readonly Action _onAutoShutdownTriggered;

@@ -259,7 +259,12 @@ namespace BNet.Cafe.Client
             TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
             Label_TimerDisplay.Text = isAdmin ? "Unlimited" : time.ToString(@"hh\:mm\:ss");
 
-            if (isOpenTime)
+            if (isAdmin)
+            {
+                label_TotalAmount.Text = "Total Amount: --";
+                Button_Logout.Enabled = true;
+            }
+            else if (isOpenTime)
             {
                 double amount = CalculateRentalPrice.CalculatePrice((int)time.TotalMinutes);
                 label_TotalAmount.Text = $"Total Amount: ₱ {amount:N2}";

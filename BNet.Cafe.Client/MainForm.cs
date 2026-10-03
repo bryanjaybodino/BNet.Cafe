@@ -1,4 +1,5 @@
 ﻿using BNet.Cafe.Client.Ashx;
+using BNet.Cafe.Client.Controls;
 using BNet.Cafe.Client.Design;
 using BNet.Cafe.Client.Models;
 using BNet.Cafe.Client.Repositories;
@@ -29,7 +30,6 @@ namespace BNet.Cafe.Client
         private const int SendTimeoutMs = 600;
         private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
 
-        // Win32 API to monitor system-wide Mouse & Keyboard inactivity
         [StructLayout(LayoutKind.Sequential)]
         private struct LASTINPUTINFO
         {
@@ -56,7 +56,7 @@ namespace BNet.Cafe.Client
         }
 
         private System.Windows.Forms.Timer _idleCheckTimer;
-        private const int InputIdleThresholdSeconds = 10; // 10s timeout to hide login card
+        private const int InputIdleThresholdSeconds = 10;
 
         private bool _userInteracted = false;
         private DateTime _monitoringStartTime;
@@ -79,6 +79,9 @@ namespace BNet.Cafe.Client
         private WallpaperService _wallpaperService = new WallpaperService();
 
         private SlideshowManager _slideshowManager;
+
+        private LoginControl _loginControl;
+        private RegisterControl _registerControl;
 
         private int IdleTimeoutSeconds
         {
@@ -107,16 +110,13 @@ namespace BNet.Cafe.Client
                 onAutoShutdownTriggered: () => CommandPromptService.ShutdownSystem()
             );
 
-            // Re-parent labels AND Panel_LoginCard to PictureBox for true transparency
             _slideshowManager.AttachOverlayControl(lblBigPcName);
             _slideshowManager.AttachOverlayControl(lblSubtitle);
             _slideshowManager.AttachOverlayControl(badgeCountdown);
             _slideshowManager.AttachOverlayControl(lblDismissHint);
             _slideshowManager.AttachOverlayControl(Panel_LoginCard);
 
-            this.AcceptButton = Button_Login;
-            TextBox_Username.KeyDown += TextBox_Username_KeyDown;
-            TextBox_Password.KeyDown += TextBox_Password_KeyDown;
+            InitializeAuthControls();
 
             this.MouseMove += MainForm_MouseMove;
             this.MouseDown += (s, e) => RegisterUserInteraction();
@@ -134,6 +134,82 @@ namespace BNet.Cafe.Client
 
             InitializeIdleCheckTimer();
         }
+
+        private void InitializeAuthControls()
+        {
+            _loginControl = new LoginControl();
+            _registerControl = new RegisterControl();
+
+            _loginControl.Dock = DockStyle.Fill;
+            _registerControl.Dock = DockStyle.Fill;
+
+            _loginControl.UserActivityDetected += (s, e) => RegisterUserInteraction();
+            _registerControl.UserActivityDetected += (s, e) => RegisterUserInteraction();
+
+            _loginControl.SwitchToRegisterRequested += (s, e) =>
+            {
+                if (!ConfigHelper.IsAccountCreationAllowed)
+                {
+                    MessageBox.Show("Account creation is disabled.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                ShowView(_registerControl);
+            };
+
+            _registerControl.SwitchToLoginRequested += (s, e) => ShowView(_loginControl);
+            _registerControl.RegistrationCompleted += (s, e) => ShowView(_loginControl);
+
+            _loginControl.LoginSuccessful += async (s, args) =>
+            {
+                _BNetCafeTimer.isAdmin = args.IsAdmin;
+                _BNetCafeTimer.userId = args.UserId;
+
+                string clientName = ConfigHelper.GetClientNameFromIP();
+                if (!args.IsAdmin)
+                {
+                    CreateRentalHandler rentalHandler = new CreateRentalHandler();
+                    await rentalHandler.CreateRentalAsync(clientName, args.UserId, args.DurationMinutes, "0");
+
+                    CreateBalanceHandler balanceHandler = new CreateBalanceHandler();
+                    await balanceHandler.CreateBalanceAsync(args.UserId, "-" + args.DurationMinutes, "0", "LOGGING-IN");
+                }
+
+                await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), args.DurationMinutes, "0");
+
+                _loginControl.ClearFields();
+                StopIdleMonitor();
+                TriggerImmediateActivityReport();
+            };
+
+            Panel_LoginCard.Controls.Add(_loginControl);
+            Panel_LoginCard.Controls.Add(_registerControl);
+
+            ShowView(_loginControl);
+        }
+
+        private void ShowView(Control targetView)
+        {
+            _loginControl.Visible = (targetView == _loginControl);
+            _registerControl.Visible = (targetView == _registerControl);
+
+            if (targetView == _registerControl)
+            {
+                Panel_LoginCard.Size = new Size(400, 520);
+                _registerControl.ClearFields();
+            }
+            else
+            {
+                Panel_LoginCard.Size = new Size(400, 360);
+                _loginControl.ClearFields();
+            }
+
+            Panel_LoginCard.Location = new Point(
+                (this.ClientSize.Width - Panel_LoginCard.Width) / 2,
+                (this.ClientSize.Height - Panel_LoginCard.Height) / 2
+            );
+            _slideshowManager?.PictureBox?.Invalidate();
+        }
+
         private void RegisterMouseEventsRecursively(Control control)
         {
             if (control == null) return;
@@ -146,6 +222,7 @@ namespace BNet.Cafe.Client
                 RegisterMouseEventsRecursively(child);
             }
         }
+
         private void InitializeIdleCheckTimer()
         {
             _idleCheckTimer = new System.Windows.Forms.Timer();
@@ -188,7 +265,7 @@ namespace BNet.Cafe.Client
             if (Panel_LoginCard.Visible)
             {
                 Panel_LoginCard.Visible = false;
-                _slideshowManager.PictureBox.Invalidate(); // Refresh picturebox background
+                _slideshowManager.PictureBox.Invalidate();
             }
         }
 
@@ -214,38 +291,19 @@ namespace BNet.Cafe.Client
         }
 
         private DateTime _lastUserInteractionTime = DateTime.Now;
+
         private void RegisterUserInteraction()
         {
-            if (!_idleCheckTimer.Enabled) return;          // monitor not running (logged in / unlocked)
-            if (GetSystemIdleTimeMs() > 1000) return;      // no real input in the last second → ignore synthetic events
+            if (!_idleCheckTimer.Enabled) return;
+            if (GetSystemIdleTimeMs() > 1000) return;
 
             _lastUserInteractionTime = DateTime.Now;
             _userInteracted = true;
             ShowLoginForm();
 
-            // Reset auto-shutdown countdown if configuration flag is active
             if (ConfigHelper.ResetShutdownCountdown)
             {
                 _slideshowManager.ResetCountdown(IdleTimeoutSeconds);
-            }
-        }
-        private void TextBox_Username_KeyDown(object sender, KeyEventArgs e)
-        {
-            RegisterUserInteraction();
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
-                Button_Login_Click(sender, e);
-            }
-        }
-
-        private void TextBox_Password_KeyDown(object sender, KeyEventArgs e)
-        {
-            RegisterUserInteraction();
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
-                Button_Login_Click(sender, e);
             }
         }
 
@@ -257,14 +315,10 @@ namespace BNet.Cafe.Client
                 return;
             }
 
-            // Measure hardware-level inactivity via Win32 API
             uint systemIdleMs = GetSystemIdleTimeMs();
             double systemIdleSeconds = systemIdleMs / 1000.0;
-
-            // Also check time elapsed since last soft event
             double appIdleSeconds = (DateTime.Now - _lastUserInteractionTime).TotalSeconds;
 
-            // If both hardware AND app indicate inactivity past the threshold, hide the card
             if (systemIdleSeconds >= InputIdleThresholdSeconds && appIdleSeconds >= InputIdleThresholdSeconds)
             {
                 if (Panel_LoginCard.Visible)
@@ -312,7 +366,6 @@ namespace BNet.Cafe.Client
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
-
             await _wallpaperService?.SyncWallpapersFromServerAsync();
 
             string clientName = ConfigHelper.GetClientNameFromIP();
@@ -384,16 +437,6 @@ namespace BNet.Cafe.Client
             UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
             _ = Task.Run(ContinuousPendingLogoutSyncLoopAsync);
             _ = Task.Run(RunAgentLoop);
-        }
-
-        private void TextBox_Username_TextChanged(object sender, EventArgs e)
-        {
-            RegisterUserInteraction();
-        }
-
-        private void TextBox_Password_TextChanged(object sender, EventArgs e)
-        {
-            RegisterUserInteraction();
         }
 
         protected override void WndProc(ref Message m)
@@ -710,122 +753,5 @@ namespace BNet.Cafe.Client
                 return ms.ToArray();
             }
         }
-
-        private async void Button_Login_Click(object sender, EventArgs e)
-        {
-            string username = TextBox_Username.Text.Trim();
-            string password = TextBox_Password.Text;
-
-            bool isLocalAdmin = (username == "BNetAdmin" && password == "@12345");
-
-            if (isLocalAdmin)
-            {
-                AdminLogin();
-                return;
-            }
-            try
-            {
-                GetLoginHandler loginHandler = new GetLoginHandler();
-                var loginResponse = await loginHandler.LoginAsync(username, password);
-
-                if (loginResponse == null || (!loginResponse.Success && !isLocalAdmin))
-                {
-                    MessageBox.Show(
-                        "Invalid username or password. Please try again.",
-                        "Login Failed",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                    TextBox_Password.Text = string.Empty;
-                    TextBox_Password.Focus();
-                    return;
-                }
-
-                bool isAdmin = isLocalAdmin || string.Equals(loginResponse?.Data?.Role, "ADMIN", StringComparison.OrdinalIgnoreCase);
-
-                if (isAdmin)
-                {
-                    AdminLogin();
-                    return;
-                }
-
-                if (loginResponse.Data == null || loginResponse.Data.TotalDuration <= 0)
-                {
-                    MessageBox.Show(
-                        "Your account balance is 0. Please top up at the counter to continue.",
-                        "Insufficient Balance",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
-                    return;
-                }
-
-                string userId = loginResponse.Data.Id.ToString();
-                string durationMinutes = loginResponse.Data.TotalDuration.ToString();
-                string clientName = ConfigHelper.GetClientNameFromIP();
-
-                CreateRentalHandler createRentalHandler = new CreateRentalHandler();
-                await createRentalHandler.CreateRentalAsync(clientName, userId, durationMinutes, "0");
-
-                CreateBalanceHandler createBalanceHandler = new CreateBalanceHandler();
-                await createBalanceHandler.CreateBalanceAsync(userId, "-" + durationMinutes, "0", "LOGGING-IN");
-
-                _BNetCafeTimer.isAdmin = false;
-                _BNetCafeTimer.userId = userId;
-                await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), durationMinutes, "0");
-
-                TextBox_Username.Text = string.Empty;
-                TextBox_Password.Text = string.Empty;
-
-                StopIdleMonitor();
-                TriggerImmediateActivityReport();
-            }
-            catch (Exception)
-            {
-                MessageBox.Show(
-                    "Unable to connect to the server. Please check your network connection or try again later.",
-                    "Server Unavailable",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-            }
-
-            async void AdminLogin()
-            {
-                _BNetCafeTimer.isAdmin = true;
-                await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), "6000", "0");
-                TextBox_Username.Text = string.Empty;
-                TextBox_Password.Text = string.Empty;
-
-                StopIdleMonitor();
-                TriggerImmediateActivityReport();
-            }
-        }
-
-        private void Button_Register_Click(object sender, EventArgs e)
-        {
-            if (!ConfigHelper.IsAccountCreationAllowed)
-            {
-                MessageBox.Show("Account creation is disabled.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            UserActivity.ActiveWindowMonitor.StopPolling();
-
-            using (RegisterForm registerForm = new RegisterForm())
-            {
-                registerForm.TopMost = true;
-                registerForm.StartPosition = FormStartPosition.CenterScreen;
-                UnlockScreen();
-                registerForm.ShowDialog(this);
-            }
-
-            if (!SessionLogin.Exists())
-            {
-                LockScreen();
-            }
-            UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
-        }
     }
 }
-
