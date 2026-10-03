@@ -20,7 +20,7 @@
             this.lblBigPcName = new System.Windows.Forms.Label();
             this.badgeCountdown = new BNet.Cafe.Client.Design.ModernBadge();
             this.lblSubtitle = new System.Windows.Forms.Label();
-            this.pnlLoginCard = new System.Windows.Forms.Panel();
+            this.Panel_LoginCard = new System.Windows.Forms.Panel();
             this.lblErrorMessage = new System.Windows.Forms.Label();
             this.Button_Login = new System.Windows.Forms.Button();
             this.TextBox_Password = new System.Windows.Forms.TextBox();
@@ -28,7 +28,8 @@
             this.TextBox_Username = new System.Windows.Forms.TextBox();
             this.lblUsername = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.pnlLoginCard.SuspendLayout();
+            this.lblDismissHint = new System.Windows.Forms.Label();
+            this.Panel_LoginCard.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblBigPcName
@@ -70,20 +71,20 @@
             this.lblSubtitle.TabIndex = 2;
             this.lblSubtitle.Text = "IDLE SYSTEM NOTICE";
             // 
-            // pnlLoginCard
+            // Panel_LoginCard
             // 
-            this.pnlLoginCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.pnlLoginCard.Controls.Add(this.lblErrorMessage);
-            this.pnlLoginCard.Controls.Add(this.Button_Login);
-            this.pnlLoginCard.Controls.Add(this.TextBox_Password);
-            this.pnlLoginCard.Controls.Add(this.lblPassword);
-            this.pnlLoginCard.Controls.Add(this.TextBox_Username);
-            this.pnlLoginCard.Controls.Add(this.lblUsername);
-            this.pnlLoginCard.Controls.Add(this.lblTitle);
-            this.pnlLoginCard.Location = new System.Drawing.Point(395, 172);
-            this.pnlLoginCard.Name = "pnlLoginCard";
-            this.pnlLoginCard.Size = new System.Drawing.Size(400, 350);
-            this.pnlLoginCard.TabIndex = 3;
+            this.Panel_LoginCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.Panel_LoginCard.Controls.Add(this.lblErrorMessage);
+            this.Panel_LoginCard.Controls.Add(this.Button_Login);
+            this.Panel_LoginCard.Controls.Add(this.TextBox_Password);
+            this.Panel_LoginCard.Controls.Add(this.lblPassword);
+            this.Panel_LoginCard.Controls.Add(this.TextBox_Username);
+            this.Panel_LoginCard.Controls.Add(this.lblUsername);
+            this.Panel_LoginCard.Controls.Add(this.lblTitle);
+            this.Panel_LoginCard.Location = new System.Drawing.Point(395, 172);
+            this.Panel_LoginCard.Name = "Panel_LoginCard";
+            this.Panel_LoginCard.Size = new System.Drawing.Size(400, 350);
+            this.Panel_LoginCard.TabIndex = 3;
             // 
             // lblErrorMessage
             // 
@@ -167,13 +168,28 @@
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Member Login";
             // 
+            // lblDismissHint
+            // 
+            this.lblDismissHint.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.lblDismissHint.AutoSize = true;
+            this.lblDismissHint.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.lblDismissHint.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            this.lblDismissHint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(231)))), ((int)(((byte)(255)))));
+            this.lblDismissHint.Location = new System.Drawing.Point(435, 619);
+            this.lblDismissHint.Name = "lblDismissHint";
+            this.lblDismissHint.Padding = new System.Windows.Forms.Padding(16, 8, 16, 8);
+            this.lblDismissHint.Size = new System.Drawing.Size(312, 39);
+            this.lblDismissHint.TabIndex = 4;
+            this.lblDismissHint.Text = "Move mouse or press key to return";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.ClientSize = new System.Drawing.Size(1190, 694);
-            this.Controls.Add(this.pnlLoginCard);
+            this.Controls.Add(this.lblDismissHint);
+            this.Controls.Add(this.Panel_LoginCard);
             this.Controls.Add(this.badgeCountdown);
             this.Controls.Add(this.lblSubtitle);
             this.Controls.Add(this.lblBigPcName);
@@ -183,8 +199,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
-            this.pnlLoginCard.ResumeLayout(false);
-            this.pnlLoginCard.PerformLayout();
+            this.Panel_LoginCard.ResumeLayout(false);
+            this.Panel_LoginCard.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -195,7 +211,7 @@
         private System.Windows.Forms.Label lblBigPcName;
         private Design.ModernBadge badgeCountdown;
         private System.Windows.Forms.Label lblSubtitle;
-        private System.Windows.Forms.Panel pnlLoginCard;
+        private System.Windows.Forms.Panel Panel_LoginCard;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Label lblUsername;
         private System.Windows.Forms.TextBox TextBox_Username;
@@ -203,5 +219,6 @@
         private System.Windows.Forms.TextBox TextBox_Password;
         private System.Windows.Forms.Button Button_Login;
         private System.Windows.Forms.Label lblErrorMessage;
+        private System.Windows.Forms.Label lblDismissHint;
     }
 }

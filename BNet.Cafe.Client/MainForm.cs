@@ -62,7 +62,6 @@ namespace BNet.Cafe.Client
         }
 
         private System.Windows.Forms.Timer _idleCheckTimer;
-        private SlideshowOverlayForm _slideshowForm;
         private const int InputIdleThresholdSeconds = 10; // Trigger slideshow if idle for 10s
 
         private volatile bool _paused = true;
@@ -121,23 +120,12 @@ namespace BNet.Cafe.Client
 
         private void ShowSlideshowOverlay()
         {
-            if (_slideshowForm == null || _slideshowForm.IsDisposed)
-            {
-                _slideshowForm = new SlideshowOverlayForm();
-                _slideshowForm.FormClosed += (s, args) => _slideshowForm = null;
-                _slideshowForm.Show(this);
-            }
+            Panel_LoginCard.Visible = true;
         }
 
         private void CloseSlideshowOverlay()
         {
-            if (ConfigHelper.IsOverlayFreeze) return;
-
-            if (_slideshowForm != null && !_slideshowForm.IsDisposed)
-            {
-                _slideshowForm.CloseOverlay();
-                _slideshowForm = null;
-            }
+            Panel_LoginCard.Visible = false;
         }
 
         private void TextBox_Username_KeyDown(object sender, KeyEventArgs e)
