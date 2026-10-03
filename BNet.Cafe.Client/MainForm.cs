@@ -117,15 +117,6 @@ namespace BNet.Cafe.Client
         {
             _idleCheckTimer.Stop();
             CloseSlideshowOverlay();
-            ResetStatusBadge();
-        }
-
-        private void ResetStatusBadge()
-        {
-            string clientName = ConfigHelper.GetClientNameFromIP();
-            lblStatusBadge.Text = $"● Station {clientName} Online";
-            lblStatusBadge.BackColor = System.Drawing.Color.FromArgb(220, 252, 231);
-            lblStatusBadge.ForeColor = System.Drawing.Color.FromArgb(22, 101, 52);
         }
 
         private void ShowSlideshowOverlay()
@@ -181,7 +172,6 @@ namespace BNet.Cafe.Client
             if (idleSeconds < InputIdleThresholdSeconds)
             {
                 CloseSlideshowOverlay();
-                ResetStatusBadge();
                 return;
             }
 
@@ -227,7 +217,6 @@ namespace BNet.Cafe.Client
         {
             string clientName = ConfigHelper.GetClientNameFromIP();
             lblBigPcName.Text = clientName;
-            lblStatusBadge.Text = $"● Station {clientName} Online";
             await Task.Delay(1000);
 
             _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
@@ -302,14 +291,12 @@ namespace BNet.Cafe.Client
         {
             _lastManualInputTick = (uint)Environment.TickCount;
             CloseSlideshowOverlay();
-            ResetStatusBadge();
         }
 
         private void TextBox_Password_TextChanged(object sender, EventArgs e)
         {
             _lastManualInputTick = (uint)Environment.TickCount;
             CloseSlideshowOverlay();
-            ResetStatusBadge();
         }
 
         protected override void WndProc(ref Message m)

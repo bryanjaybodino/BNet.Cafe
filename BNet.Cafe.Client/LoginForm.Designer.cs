@@ -1,6 +1,6 @@
 ﻿namespace BNet.Cafe.Client
 {
-    partial class MainForm
+    partial class LoginForm
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -22,10 +22,10 @@
             this.lblSubtitle = new System.Windows.Forms.Label();
             this.pnlLoginCard = new System.Windows.Forms.Panel();
             this.lblErrorMessage = new System.Windows.Forms.Label();
-            this.Button_Login = new System.Windows.Forms.Button();
-            this.TextBox_Password = new System.Windows.Forms.TextBox();
+            this.btnLogin = new System.Windows.Forms.Button();
+            this.txtPassword = new System.Windows.Forms.TextBox();
             this.lblPassword = new System.Windows.Forms.Label();
-            this.TextBox_Username = new System.Windows.Forms.TextBox();
+            this.txtUsername = new System.Windows.Forms.TextBox();
             this.lblUsername = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnlLoginCard.SuspendLayout();
@@ -74,10 +74,10 @@
             // 
             this.pnlLoginCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.pnlLoginCard.Controls.Add(this.lblErrorMessage);
-            this.pnlLoginCard.Controls.Add(this.Button_Login);
-            this.pnlLoginCard.Controls.Add(this.TextBox_Password);
+            this.pnlLoginCard.Controls.Add(this.btnLogin);
+            this.pnlLoginCard.Controls.Add(this.txtPassword);
             this.pnlLoginCard.Controls.Add(this.lblPassword);
-            this.pnlLoginCard.Controls.Add(this.TextBox_Username);
+            this.pnlLoginCard.Controls.Add(this.txtUsername);
             this.pnlLoginCard.Controls.Add(this.lblUsername);
             this.pnlLoginCard.Controls.Add(this.lblTitle);
             this.pnlLoginCard.Location = new System.Drawing.Point(395, 172);
@@ -97,31 +97,33 @@
             this.lblErrorMessage.Text = "Error message";
             this.lblErrorMessage.Visible = false;
             // 
-            // Button_Login
+            // btnLogin
             // 
-            this.Button_Login.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
-            this.Button_Login.FlatAppearance.BorderSize = 0;
-            this.Button_Login.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Button_Login.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.Button_Login.ForeColor = System.Drawing.Color.White;
-            this.Button_Login.Location = new System.Drawing.Point(40, 250);
-            this.Button_Login.Name = "Button_Login";
-            this.Button_Login.Size = new System.Drawing.Size(320, 42);
-            this.Button_Login.TabIndex = 5;
-            this.Button_Login.Text = "Log In";
-            this.Button_Login.UseVisualStyleBackColor = false;
+            this.btnLogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
+            this.btnLogin.FlatAppearance.BorderSize = 0;
+            this.btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLogin.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnLogin.ForeColor = System.Drawing.Color.White;
+            this.btnLogin.Location = new System.Drawing.Point(40, 250);
+            this.btnLogin.Name = "btnLogin";
+            this.btnLogin.Size = new System.Drawing.Size(320, 42);
+            this.btnLogin.TabIndex = 5;
+            this.btnLogin.Text = "Log In";
+            this.btnLogin.UseVisualStyleBackColor = false;
+            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
-            // TextBox_Password
+            // txtPassword
             // 
-            this.TextBox_Password.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
-            this.TextBox_Password.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.TextBox_Password.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.TextBox_Password.ForeColor = System.Drawing.Color.White;
-            this.TextBox_Password.Location = new System.Drawing.Point(40, 176);
-            this.TextBox_Password.Name = "TextBox_Password";
-            this.TextBox_Password.PasswordChar = '●';
-            this.TextBox_Password.Size = new System.Drawing.Size(320, 32);
-            this.TextBox_Password.TabIndex = 4;
+            this.txtPassword.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
+            this.txtPassword.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.txtPassword.ForeColor = System.Drawing.Color.White;
+            this.txtPassword.Location = new System.Drawing.Point(40, 176);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.PasswordChar = '●';
+            this.txtPassword.Size = new System.Drawing.Size(320, 32);
+            this.txtPassword.TabIndex = 4;
+            this.txtPassword.TextChanged += new System.EventHandler(this.Control_Interaction);
             // 
             // lblPassword
             // 
@@ -134,16 +136,17 @@
             this.lblPassword.TabIndex = 3;
             this.lblPassword.Text = "Password";
             // 
-            // TextBox_Username
+            // txtUsername
             // 
-            this.TextBox_Username.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
-            this.TextBox_Username.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.TextBox_Username.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.TextBox_Username.ForeColor = System.Drawing.Color.White;
-            this.TextBox_Username.Location = new System.Drawing.Point(40, 106);
-            this.TextBox_Username.Name = "TextBox_Username";
-            this.TextBox_Username.Size = new System.Drawing.Size(320, 32);
-            this.TextBox_Username.TabIndex = 2;
+            this.txtUsername.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
+            this.txtUsername.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtUsername.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.txtUsername.ForeColor = System.Drawing.Color.White;
+            this.txtUsername.Location = new System.Drawing.Point(40, 106);
+            this.txtUsername.Name = "txtUsername";
+            this.txtUsername.Size = new System.Drawing.Size(320, 32);
+            this.txtUsername.TabIndex = 2;
+            this.txtUsername.TextChanged += new System.EventHandler(this.Control_Interaction);
             // 
             // lblUsername
             // 
@@ -167,7 +170,7 @@
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Member Login";
             // 
-            // MainForm
+            // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -178,11 +181,12 @@
             this.Controls.Add(this.lblSubtitle);
             this.Controls.Add(this.lblBigPcName);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "MainForm";
+            this.Name = "LoginForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "MainForm";
-            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Text = "LoginForm";
+            this.Load += new System.EventHandler(this.LoginForm_Load);
+            this.Resize += new System.EventHandler(this.LoginForm_Resize);
             this.pnlLoginCard.ResumeLayout(false);
             this.pnlLoginCard.PerformLayout();
             this.ResumeLayout(false);
@@ -198,10 +202,10 @@
         private System.Windows.Forms.Panel pnlLoginCard;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Label lblUsername;
-        private System.Windows.Forms.TextBox TextBox_Username;
+        private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.Label lblPassword;
-        private System.Windows.Forms.TextBox TextBox_Password;
-        private System.Windows.Forms.Button Button_Login;
+        private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.Label lblErrorMessage;
     }
 }
