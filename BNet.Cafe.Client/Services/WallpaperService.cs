@@ -65,7 +65,7 @@ namespace BNet.Cafe.Client.Services
         /// <summary>
         /// Synchronizes wallpaper images from remote server to local folder (downloads new/updated ones, removes deleted ones).
         /// </summary>
-        private async Task SyncWallpapersFromServerAsync()
+        public async Task SyncWallpapersFromServerAsync()
         {
             try
             {

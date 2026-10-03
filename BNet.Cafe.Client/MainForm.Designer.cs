@@ -18,7 +18,6 @@
         private void InitializeComponent()
         {
             this.lblBigPcName = new System.Windows.Forms.Label();
-            this.badgeCountdown = new BNet.Cafe.Client.Design.ModernBadge();
             this.lblSubtitle = new System.Windows.Forms.Label();
             this.Panel_LoginCard = new System.Windows.Forms.Panel();
             this.lblErrorMessage = new System.Windows.Forms.Label();
@@ -29,6 +28,7 @@
             this.lblUsername = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
             this.lblDismissHint = new System.Windows.Forms.Label();
+            this.badgeCountdown = new BNet.Cafe.Client.Design.ModernBadge();
             this.Panel_LoginCard.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -43,20 +43,6 @@
             this.lblBigPcName.Size = new System.Drawing.Size(276, 106);
             this.lblBigPcName.TabIndex = 0;
             this.lblBigPcName.Text = "PC-00";
-            // 
-            // badgeCountdown
-            // 
-            this.badgeCountdown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.badgeCountdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.badgeCountdown.BorderRadius = 14;
-            this.badgeCountdown.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.badgeCountdown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.badgeCountdown.Location = new System.Drawing.Point(776, 47);
-            this.badgeCountdown.Name = "badgeCountdown";
-            this.badgeCountdown.Size = new System.Drawing.Size(380, 42);
-            this.badgeCountdown.TabIndex = 1;
-            this.badgeCountdown.Text = "⚠️ Auto-Shutdown in: 05:00";
-            this.badgeCountdown.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblSubtitle
             // 
@@ -111,6 +97,7 @@
             this.Button_Login.TabIndex = 5;
             this.Button_Login.Text = "Log In";
             this.Button_Login.UseVisualStyleBackColor = false;
+            this.Button_Login.Click += new System.EventHandler(this.Button_Login_Click);
             // 
             // TextBox_Password
             // 
@@ -182,6 +169,20 @@
             this.lblDismissHint.TabIndex = 4;
             this.lblDismissHint.Text = "Move mouse or press key to return";
             // 
+            // badgeCountdown
+            // 
+            this.badgeCountdown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.badgeCountdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.badgeCountdown.BorderRadius = 14;
+            this.badgeCountdown.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.badgeCountdown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.badgeCountdown.Location = new System.Drawing.Point(776, 47);
+            this.badgeCountdown.Name = "badgeCountdown";
+            this.badgeCountdown.Size = new System.Drawing.Size(380, 42);
+            this.badgeCountdown.TabIndex = 1;
+            this.badgeCountdown.Text = "⚠️ Auto-Shutdown in: 05:00";
+            this.badgeCountdown.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -196,7 +197,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MainForm";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Panel_LoginCard.ResumeLayout(false);

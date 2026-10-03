@@ -10,6 +10,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
@@ -39,30 +40,27 @@ namespace BNet.Cafe.Client
         [DllImport("user32.dll")]
         private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
 
-        private static uint _lastManualInputTick = 0;
-
-        private static uint GetIdleTimeMs()
+        private static uint GetSystemIdleTimeMs()
         {
             LASTINPUTINFO lastInputInfo = new LASTINPUTINFO();
             lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo);
-            uint apiTick = 0;
 
             if (GetLastInputInfo(ref lastInputInfo))
             {
-                apiTick = lastInputInfo.dwTime;
+                uint currentTick = (uint)Environment.TickCount;
+                if (currentTick >= lastInputInfo.dwTime)
+                    return currentTick - lastInputInfo.dwTime;
             }
-
-            uint mostRecentTick = Math.Max(apiTick, _lastManualInputTick);
-            uint currentTick = (uint)Environment.TickCount;
-
-            if (currentTick >= mostRecentTick)
-                return currentTick - mostRecentTick;
 
             return 0;
         }
 
         private System.Windows.Forms.Timer _idleCheckTimer;
-        private const int InputIdleThresholdSeconds = 10; // Trigger slideshow if idle for 10s
+        private const int InputIdleThresholdSeconds = 10; // 10s timeout to hide login card
+
+        private bool _userInteracted = false;
+        private DateTime _monitoringStartTime;
+        private Point _lastMousePosition = Point.Empty;
 
         private volatile bool _paused = true;
         private readonly SemaphoreSlim _resumeSignal = new SemaphoreSlim(0, 1);
@@ -80,12 +78,56 @@ namespace BNet.Cafe.Client
         private readonly ActivityReporter _activityReporter = new ActivityReporter();
         private WallpaperService _wallpaperService = new WallpaperService();
 
+        // Slideshow & Countdown Controls
+        private PictureBox _pictureBox;
+        private System.Windows.Forms.Timer _slideTimer;
+        private System.Windows.Forms.Timer _countdownTimer;
+        private string[] _imageFiles = new string[0];
+        private int _currentIndex = -1;
+        private readonly string _wallpaperFolder;
+
+        private int IdleTimeoutSeconds
+        {
+            get
+            {
+                if (int.TryParse(ConfigHelper.AutoShutDownInterval?.Trim(), out int timeout))
+                {
+                    return timeout;
+                }
+                return 300;
+            }
+        }
+
+        private int _remainingIdleSeconds = 300;
+
         public MainForm()
         {
+            // Set double buffering styles to avoid flicker during panel redraws over PictureBox
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
+                          ControlStyles.UserPaint |
+                          ControlStyles.OptimizedDoubleBuffer, true);
+            this.UpdateStyles();
+
             InitializeComponent();
+            InitializeSlideshowControls();
+
+            _wallpaperFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Wallpaper");
+            LoadImages();
+
+            _slideTimer = new System.Windows.Forms.Timer { Interval = 10000 };
+            _slideTimer.Tick += SlideTimer_Tick;
+
+            InitializeCountdownTimer();
+
             this.AcceptButton = Button_Login;
             TextBox_Username.KeyDown += TextBox_Username_KeyDown;
             TextBox_Password.KeyDown += TextBox_Password_KeyDown;
+
+            // Attach mouse events using coordinate threshold comparison
+            this.MouseMove += MainForm_MouseMove;
+            this.MouseDown += (s, e) => RegisterUserInteraction();
+            Panel_LoginCard.MouseDown += (s, e) => RegisterUserInteraction();
+
             if (!EnvironmentHelper.IsDevelopment)
             {
                 this.FormBorderStyle = FormBorderStyle.None;
@@ -99,37 +141,204 @@ namespace BNet.Cafe.Client
             InitializeIdleCheckTimer();
         }
 
+        #region Slideshow Implementation
+
+        private void InitializeSlideshowControls()
+        {
+            _pictureBox = new PictureBox
+            {
+                Dock = DockStyle.Fill,
+                SizeMode = PictureBoxSizeMode.StretchImage,
+                BackColor = Color.FromArgb(15, 23, 42)
+            };
+
+            _pictureBox.Click += (s, e) => RegisterUserInteraction();
+            _pictureBox.MouseMove += PictureBox_MouseMove;
+
+            this.Controls.Add(_pictureBox);
+            _pictureBox.SendToBack();
+
+            // Re-parent labels to PictureBox for transparent overlay on images
+            AttachControlToPicture(lblBigPcName);
+            AttachControlToPicture(lblSubtitle);
+            AttachControlToPicture(badgeCountdown);
+            AttachControlToPicture(lblDismissHint);
+            AttachControlToPicture(Panel_LoginCard);
+        }
+
+        private void AttachControlToPicture(Control control)
+        {
+            Point originalPos = control.Location;
+            control.Parent = _pictureBox;
+            control.Location = originalPos;
+
+            if (control.BackColor == Color.Transparent)
+            {
+                control.BackColor = Color.FromArgb(160, 15, 23, 42);
+            }
+        }
+
+        private void LoadImages()
+        {
+            var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".bmp" };
+            if (Directory.Exists(_wallpaperFolder))
+            {
+                _imageFiles = Directory.GetFiles(_wallpaperFolder)
+                    .Where(f => validExtensions.Contains(Path.GetExtension(f).ToLower()))
+                    .ToArray();
+            }
+        }
+
+        private void InitializeCountdownTimer()
+        {
+            _remainingIdleSeconds = IdleTimeoutSeconds;
+            _countdownTimer = new System.Windows.Forms.Timer { Interval = 1000 };
+            _countdownTimer.Tick += CountdownTimer_Tick;
+        }
+
+        private void CountdownTimer_Tick(object sender, EventArgs e)
+        {
+            if (_remainingIdleSeconds <= 0)
+            {
+                _countdownTimer.Stop();
+                CommandPromptService.ShutdownSystem();
+                return;
+            }
+
+            _remainingIdleSeconds--;
+
+            TimeSpan ts = TimeSpan.FromSeconds(_remainingIdleSeconds);
+            badgeCountdown.Text = $"⚠️ Auto-Shutdown in: {ts.Minutes:D2}:{ts.Seconds:D2}";
+
+            if (_remainingIdleSeconds <= 60)
+            {
+                badgeCountdown.BackColor = Color.FromArgb(200, 239, 68, 68);
+                badgeCountdown.ForeColor = Color.White;
+            }
+        }
+
+        private void SlideTimer_Tick(object sender, EventArgs e)
+        {
+            LoadNextImage();
+        }
+
+        private void LoadNextImage()
+        {
+            if (_imageFiles.Length == 0) return;
+
+            try
+            {
+                _currentIndex = (_currentIndex + 1) % _imageFiles.Length;
+                string imagePath = _imageFiles[_currentIndex];
+
+                using (var stream = new MemoryStream(File.ReadAllBytes(imagePath)))
+                {
+                    var oldImage = _pictureBox.Image;
+                    _pictureBox.Image = Image.FromStream(stream);
+                    oldImage?.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error displaying image: {ex.Message}");
+            }
+        }
+
+        private void StartSlideshow()
+        {
+            LoadNextImage();
+            if (_imageFiles.Length > 1)
+            {
+                _slideTimer.Start();
+            }
+
+            _remainingIdleSeconds = IdleTimeoutSeconds;
+            _countdownTimer.Start();
+        }
+
+        private void StopSlideshow()
+        {
+            _slideTimer.Stop();
+            _countdownTimer.Stop();
+        }
+
+        #endregion
+
         private void InitializeIdleCheckTimer()
         {
             _idleCheckTimer = new System.Windows.Forms.Timer();
-            _idleCheckTimer.Interval = 1000;
+            _idleCheckTimer.Interval = 500;
             _idleCheckTimer.Tick += IdleCheckTimer_Tick;
         }
 
         private void StartIdleMonitor()
         {
-            _lastManualInputTick = (uint)Environment.TickCount;
+            _userInteracted = false;
+            _monitoringStartTime = DateTime.Now;
+            _lastMousePosition = Point.Empty;
+
+            ShowLoginForm();
             _idleCheckTimer.Start();
+            StartSlideshow();
         }
 
         private void StopIdleMonitor()
         {
             _idleCheckTimer.Stop();
-            CloseSlideshowOverlay();
+            StopSlideshow();
+            HideLoginForm();
         }
 
-        private void ShowSlideshowOverlay()
+        private void ShowLoginForm()
         {
-            Panel_LoginCard.Visible = true;
+            if (!Panel_LoginCard.Visible)
+                Panel_LoginCard.Visible = true;
         }
 
-        private void CloseSlideshowOverlay()
+        private void HideLoginForm()
         {
-            Panel_LoginCard.Visible = false;
+            if (Panel_LoginCard.Visible)
+                Panel_LoginCard.Visible = false;
+        }
+
+        private void PictureBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            CheckMouseMovement(e.Location);
+        }
+
+        private void MainForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            CheckMouseMovement(e.Location);
+        }
+
+        private void CheckMouseMovement(Point currentPos)
+        {
+            if (_lastMousePosition.IsEmpty)
+            {
+                _lastMousePosition = currentPos;
+                return;
+            }
+
+            // Require > 5 pixels displacement (matching SlideshowOverlayForm) before registering movement
+            if (Math.Abs(currentPos.X - _lastMousePosition.X) > 5 || Math.Abs(currentPos.Y - _lastMousePosition.Y) > 5)
+            {
+                _lastMousePosition = currentPos;
+                RegisterUserInteraction();
+            }
+        }
+
+        private void RegisterUserInteraction()
+        {
+            if ((DateTime.Now - _monitoringStartTime).TotalSeconds < 1)
+                return;
+
+            _userInteracted = true;
+            ShowLoginForm();
         }
 
         private void TextBox_Username_KeyDown(object sender, KeyEventArgs e)
         {
+            RegisterUserInteraction();
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
@@ -139,6 +348,7 @@ namespace BNet.Cafe.Client
 
         private void TextBox_Password_KeyDown(object sender, KeyEventArgs e)
         {
+            RegisterUserInteraction();
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
@@ -154,16 +364,19 @@ namespace BNet.Cafe.Client
                 return;
             }
 
-            uint idleMs = GetIdleTimeMs();
-            uint idleSeconds = idleMs / 1000;
+            uint idleMs = GetSystemIdleTimeMs();
+            double idleSeconds = idleMs / 1000.0;
+            double elapsedSecondsSinceStart = (DateTime.Now - _monitoringStartTime).TotalSeconds;
 
-            if (idleSeconds < InputIdleThresholdSeconds)
+            // Hide if OS idle time reached threshold OR initial monitoring timeout reached without interaction
+            if (idleSeconds >= InputIdleThresholdSeconds || (!_userInteracted && elapsedSecondsSinceStart >= InputIdleThresholdSeconds))
             {
-                CloseSlideshowOverlay();
-                return;
+                HideLoginForm();
             }
-
-            ShowSlideshowOverlay();
+            else
+            {
+                ShowLoginForm();
+            }
         }
 
         public void LockScreen()
@@ -188,7 +401,7 @@ namespace BNet.Cafe.Client
 
         public void UnlockScreen()
         {
-            CloseSlideshowOverlay();
+            HideLoginForm();
             _wallpaperService?.StartAsync();
 
             KeyboardHook.Stop();
@@ -197,16 +410,19 @@ namespace BNet.Cafe.Client
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CloseSlideshowOverlay();
+            StopSlideshow();
+            _pictureBox.Image?.Dispose();
+            HideLoginForm();
             _wallpaperService?.Stop();
         }
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
+            await _wallpaperService?.SyncWallpapersFromServerAsync();
+            StartSlideshow();
             string clientName = ConfigHelper.GetClientNameFromIP();
-            lblBigPcName.Text = clientName;
+            lblBigPcName.Text = string.IsNullOrEmpty(clientName) ? "PC-01" : clientName;
             await Task.Delay(1000);
-
             _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
             await SessionPricingRate.InitializeRatesAsync();
             var session = SessionLogin.ReadSession();
@@ -277,26 +493,24 @@ namespace BNet.Cafe.Client
 
         private void TextBox_Username_TextChanged(object sender, EventArgs e)
         {
-            _lastManualInputTick = (uint)Environment.TickCount;
-            CloseSlideshowOverlay();
+            RegisterUserInteraction();
         }
 
         private void TextBox_Password_TextChanged(object sender, EventArgs e)
         {
-            _lastManualInputTick = (uint)Environment.TickCount;
-            CloseSlideshowOverlay();
+            RegisterUserInteraction();
         }
 
         protected override void WndProc(ref Message m)
         {
-            const int WM_MOUSEMOVE = 0x0200;
             const int WM_LBUTTONDOWN = 0x0201;
             const int WM_RBUTTONDOWN = 0x0204;
             const int WM_KEYDOWN = 0x0100;
 
-            if (m.Msg == WM_MOUSEMOVE || m.Msg == WM_LBUTTONDOWN || m.Msg == WM_RBUTTONDOWN || m.Msg == WM_KEYDOWN)
+            // Only register interaction on mouse clicks or keydown events to avoid mouse-move event flooding
+            if (m.Msg == WM_LBUTTONDOWN || m.Msg == WM_RBUTTONDOWN || m.Msg == WM_KEYDOWN)
             {
-                _lastManualInputTick = (uint)Environment.TickCount;
+                RegisterUserInteraction();
             }
 
             base.WndProc(ref m);
