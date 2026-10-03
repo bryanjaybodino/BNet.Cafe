@@ -216,13 +216,12 @@ namespace BNet.Cafe.Client
         private DateTime _lastUserInteractionTime = DateTime.Now;
         private void RegisterUserInteraction()
         {
+            if (!_idleCheckTimer.Enabled) return;          // monitor not running (logged in / unlocked)
+            if (GetSystemIdleTimeMs() > 1000) return;      // no real input in the last second → ignore synthetic events
+
             _lastUserInteractionTime = DateTime.Now;
             _userInteracted = true;
-
-            if (!Panel_LoginCard.Visible)
-            {
-                ShowLoginForm();
-            }
+            ShowLoginForm();
         }
 
         private void TextBox_Username_KeyDown(object sender, KeyEventArgs e)
@@ -823,3 +822,4 @@ namespace BNet.Cafe.Client
         }
     }
 }
+

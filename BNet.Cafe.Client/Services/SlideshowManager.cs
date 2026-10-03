@@ -1,13 +1,23 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BNet.Cafe.Client.Services
 {
     public class SlideshowManager : IDisposable
     {
+        private class BufferedPictureBox : PictureBox
+        {
+            public BufferedPictureBox()
+            {
+                DoubleBuffered = true;
+                SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
+            }
+        }
         private readonly Form _parentForm;
         private readonly Action _onUserInteraction;
         private readonly Action _onAutoShutdownTriggered;
@@ -39,14 +49,14 @@ namespace BNet.Cafe.Client.Services
 
         private void InitializePictureBox()
         {
-            _pictureBox = new PictureBox
+            _pictureBox = new BufferedPictureBox
             {
                 Dock = DockStyle.Fill,
-                SizeMode = PictureBoxSizeMode.StretchImage,
+                // Change PictureBoxSizeMode.Normal to Zoom or StretchImage
+                SizeMode = PictureBoxSizeMode.Zoom,
                 BackColor = Color.FromArgb(15, 23, 42)
             };
 
-            // User interaction on the wallpaper backdrop resets idle timer
             _pictureBox.MouseDown += (s, e) => _onUserInteraction?.Invoke();
 
             _parentForm.Controls.Add(_pictureBox);
@@ -93,28 +103,47 @@ namespace BNet.Cafe.Client.Services
             }
         }
 
-        private void LoadNextImage()
-        {
-            if (_imageFiles.Length == 0) return;
+        private bool _loading;
 
+        private async void LoadNextImage()
+        {
+            if (_imageFiles.Length == 0 || _loading) return;
+            _loading = true;
             try
             {
                 _currentIndex = (_currentIndex + 1) % _imageFiles.Length;
-                string imagePath = _imageFiles[_currentIndex];
+                string path = _imageFiles[_currentIndex];
 
-                using (var stream = new MemoryStream(File.ReadAllBytes(imagePath)))
-                {
-                    var oldImage = _pictureBox.Image;
-                    _pictureBox.Image = Image.FromStream(stream);
-                    oldImage?.Dispose();
-                }
+                // Use PictureBox size or parent form size instead of screen bounds
+                Size target = _pictureBox.ClientSize.Width > 0 && _pictureBox.ClientSize.Height > 0
+                    ? _pictureBox.ClientSize
+                    : _parentForm.ClientSize;
+
+                Bitmap scaled = await Task.Run(() => LoadScaled(path, target));
+
+                if (_pictureBox.IsDisposed) { scaled?.Dispose(); return; }
+                var old = _pictureBox.Image;
+                _pictureBox.Image = scaled;
+                old?.Dispose();
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error displaying image: {ex.Message}");
-            }
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+            finally { _loading = false; }
         }
 
+        private static Bitmap LoadScaled(string path, Size target)
+        {
+            using (var ms = new MemoryStream(File.ReadAllBytes(path)))
+            using (var src = Image.FromStream(ms))
+            {
+                var bmp = new Bitmap(target.Width, target.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(src, 0, 0, target.Width, target.Height);
+                }
+                return bmp;
+            }
+        }
         public void Start(int idleTimeoutSeconds, Label badgeCountdown)
         {
             _badgeCountdownLabel = badgeCountdown;

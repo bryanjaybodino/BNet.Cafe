@@ -158,15 +158,15 @@
             // badgeCountdown
             // 
             this.badgeCountdown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.badgeCountdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.badgeCountdown.BackColor = System.Drawing.Color.Transparent;
             this.badgeCountdown.BorderRadius = 14;
             this.badgeCountdown.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.badgeCountdown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.badgeCountdown.ForeColor = System.Drawing.Color.White;
             this.badgeCountdown.Location = new System.Drawing.Point(776, 47);
             this.badgeCountdown.Name = "badgeCountdown";
             this.badgeCountdown.Size = new System.Drawing.Size(380, 42);
             this.badgeCountdown.TabIndex = 1;
-            this.badgeCountdown.Text = "⚠️ Auto-Shutdown in: 05:00";
+            this.badgeCountdown.Text = "--:--:--";
             this.badgeCountdown.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // MainForm
