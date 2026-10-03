@@ -14,8 +14,8 @@ namespace BNet.Cafe.Client.Services
         {
             try
             {
-               // Process.Start("shutdown", "/s /t 10 /f /c \"No physical activity detected. PC shutting down.\"");
-               // Application.Exit();
+                Process.Start("shutdown", "/s /t 10 /f /c \"No physical activity detected. PC shutting down.\"");
+                Application.Exit();
             }
             catch { }
         }
