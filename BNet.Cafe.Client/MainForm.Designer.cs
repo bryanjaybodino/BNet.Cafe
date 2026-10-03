@@ -20,7 +20,6 @@
             this.lblBigPcName = new System.Windows.Forms.Label();
             this.lblSubtitle = new System.Windows.Forms.Label();
             this.Panel_LoginCard = new System.Windows.Forms.Panel();
-            this.lblErrorMessage = new System.Windows.Forms.Label();
             this.Button_Login = new System.Windows.Forms.Button();
             this.TextBox_Password = new System.Windows.Forms.TextBox();
             this.lblPassword = new System.Windows.Forms.Label();
@@ -60,7 +59,6 @@
             // Panel_LoginCard
             // 
             this.Panel_LoginCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.Panel_LoginCard.Controls.Add(this.lblErrorMessage);
             this.Panel_LoginCard.Controls.Add(this.Button_Login);
             this.Panel_LoginCard.Controls.Add(this.TextBox_Password);
             this.Panel_LoginCard.Controls.Add(this.lblPassword);
@@ -72,18 +70,6 @@
             this.Panel_LoginCard.Size = new System.Drawing.Size(400, 350);
             this.Panel_LoginCard.TabIndex = 3;
             // 
-            // lblErrorMessage
-            // 
-            this.lblErrorMessage.AutoSize = true;
-            this.lblErrorMessage.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblErrorMessage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(113)))), ((int)(((byte)(113)))));
-            this.lblErrorMessage.Location = new System.Drawing.Point(40, 218);
-            this.lblErrorMessage.Name = "lblErrorMessage";
-            this.lblErrorMessage.Size = new System.Drawing.Size(103, 20);
-            this.lblErrorMessage.TabIndex = 6;
-            this.lblErrorMessage.Text = "Error message";
-            this.lblErrorMessage.Visible = false;
-            // 
             // Button_Login
             // 
             this.Button_Login.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
@@ -91,7 +77,7 @@
             this.Button_Login.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button_Login.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.Button_Login.ForeColor = System.Drawing.Color.White;
-            this.Button_Login.Location = new System.Drawing.Point(40, 250);
+            this.Button_Login.Location = new System.Drawing.Point(40, 240);
             this.Button_Login.Name = "Button_Login";
             this.Button_Login.Size = new System.Drawing.Size(320, 42);
             this.Button_Login.TabIndex = 5;
@@ -219,7 +205,6 @@
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.TextBox TextBox_Password;
         private System.Windows.Forms.Button Button_Login;
-        private System.Windows.Forms.Label lblErrorMessage;
         private System.Windows.Forms.Label lblDismissHint;
     }
 }

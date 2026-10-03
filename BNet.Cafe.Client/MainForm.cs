@@ -120,6 +120,7 @@ namespace BNet.Cafe.Client
 
             this.MouseMove += MainForm_MouseMove;
             this.MouseDown += (s, e) => RegisterUserInteraction();
+            RegisterMouseEventsRecursively(this);
 
             if (!EnvironmentHelper.IsDevelopment)
             {
@@ -133,7 +134,18 @@ namespace BNet.Cafe.Client
 
             InitializeIdleCheckTimer();
         }
+        private void RegisterMouseEventsRecursively(Control control)
+        {
+            if (control == null) return;
 
+            control.MouseMove += (s, e) => CheckMouseMovement(Cursor.Position);
+            control.MouseDown += (s, e) => RegisterUserInteraction();
+
+            foreach (Control child in control.Controls)
+            {
+                RegisterMouseEventsRecursively(child);
+            }
+        }
         private void InitializeIdleCheckTimer()
         {
             _idleCheckTimer = new System.Windows.Forms.Timer();
@@ -182,20 +194,21 @@ namespace BNet.Cafe.Client
 
         private void MainForm_MouseMove(object sender, MouseEventArgs e)
         {
-            CheckMouseMovement(e.Location);
+            CheckMouseMovement(Cursor.Position);
         }
 
-        private void CheckMouseMovement(Point currentPos)
+        private void CheckMouseMovement(Point currentScreenPos)
         {
             if (_lastMousePosition.IsEmpty)
             {
-                _lastMousePosition = currentPos;
+                _lastMousePosition = currentScreenPos;
                 return;
             }
 
-            if (Math.Abs(currentPos.X - _lastMousePosition.X) > 10 || Math.Abs(currentPos.Y - _lastMousePosition.Y) > 10)
+            if (Math.Abs(currentScreenPos.X - _lastMousePosition.X) > 5 ||
+                Math.Abs(currentScreenPos.Y - _lastMousePosition.Y) > 5)
             {
-                _lastMousePosition = currentPos;
+                _lastMousePosition = currentScreenPos;
                 RegisterUserInteraction();
             }
         }
@@ -240,10 +253,15 @@ namespace BNet.Cafe.Client
                 return;
             }
 
-            // Consistently calculate idle duration based on last interaction timestamp
-            double secondsSinceLastInteraction = (DateTime.Now - _lastUserInteractionTime).TotalSeconds;
+            // Measure hardware-level inactivity via Win32 API
+            uint systemIdleMs = GetSystemIdleTimeMs();
+            double systemIdleSeconds = systemIdleMs / 1000.0;
 
-            if (secondsSinceLastInteraction >= InputIdleThresholdSeconds)
+            // Also check time elapsed since last soft event
+            double appIdleSeconds = (DateTime.Now - _lastUserInteractionTime).TotalSeconds;
+
+            // If both hardware AND app indicate inactivity past the threshold, hide the card
+            if (systemIdleSeconds >= InputIdleThresholdSeconds && appIdleSeconds >= InputIdleThresholdSeconds)
             {
                 if (Panel_LoginCard.Visible)
                 {

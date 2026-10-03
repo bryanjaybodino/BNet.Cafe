@@ -125,7 +125,9 @@ namespace BNet.Cafe.Client.Services
 
                 if (int.TryParse(rawValue?.Trim(), out int timeout))
                 {
-                    return timeout.ToString();
+                    // Enforce minimum threshold of 60 seconds (1 minute)
+                    int validTimeout = Math.Max(60, timeout);
+                    return validTimeout.ToString();
                 }
 
                 return "300";
