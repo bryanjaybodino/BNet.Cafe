@@ -700,6 +700,11 @@ namespace BNet.Cafe.Client
                 LockScreen();
                 TriggerImmediateActivityReport();
             }
+            else if (textMessage == "REFRESH")
+            {
+                await _wallpaperService?.SyncWallpapersFromServerAsync();
+                _slideshowManager.LoadImages();
+            }
             else if (textMessage == "SHUTDOWN")
             {
                 CommandPromptService.ShutdownSystem();

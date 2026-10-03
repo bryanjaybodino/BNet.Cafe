@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using BNet.Cafe.Server.Repositories;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Web.UI;
 
 namespace BNet.Cafe.Server.Services
@@ -98,6 +100,10 @@ namespace BNet.Cafe.Server.Services
         {
             SendTextMessage(control, targetClient, ConstantData.RentalCommand.RESTART);
         }
+        public static void RefreshPC(Control control, string targetClient)
+        {
+            SendTextMessage(control, targetClient, ConstantData.RentalCommand.REFRESH);
+        }
         public static void SendTextMessage(Control control, string targetClient, string message)
         {
             if (control == null)
@@ -115,6 +121,5 @@ namespace BNet.Cafe.Server.Services
             // 3. Register script context for ASP.NET WebForms UpdatePanel compatibility
             ScriptManager.RegisterStartupScript(control, control.GetType(), "SendTextMessageScript" + Guid.NewGuid().ToString(), script, true); 
         }
-
     }
 }

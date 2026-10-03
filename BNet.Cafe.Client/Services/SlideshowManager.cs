@@ -88,10 +88,31 @@ namespace BNet.Cafe.Client.Services
                     .Where(f => validExtensions.Contains(Path.GetExtension(f).ToLower()))
                     .ToArray();
             }
+            else
+            {
+                _imageFiles = new string[0];
+            }
 
             if (_imageFiles.Length > 0)
             {
+                // Reset index to ensure clean cycling when new files arrive
+                _currentIndex = -1;
                 LoadNextImage();
+
+                // Start slideshow timer if more than 1 image is present
+                if (_imageFiles.Length > 1)
+                {
+                    _slideTimer.Stop();
+                    _slideTimer.Start();
+                }
+                else
+                {
+                    _slideTimer.Stop();
+                }
+            }
+            else
+            {
+                _slideTimer.Stop();
             }
         }
 

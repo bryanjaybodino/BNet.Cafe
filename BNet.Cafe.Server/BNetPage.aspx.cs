@@ -253,7 +253,7 @@ namespace BNet.Cafe.Server
                     scripts = new[] { "Pages/PricingSettings" };
                     break;
                 case "WALLPAPER":
-                    scripts = new[] { "Pages/Wallpaper" };
+                    scripts = new[] { "Pages/RemoteMessaging", "Pages/Wallpaper" };
                     break;
                 case "SUPPLIERCREATE":
                 case "SUPPLIEREDIT":

@@ -15,5 +15,6 @@ namespace BNet.Cafe.Server.ConstantData
         public static string PAUSE = "PAUSE";
         public static string RESUME = "RESUME";
         public static string RESTART = "RESTART";
+        public static string REFRESH = "REFRESH";
     }
 }

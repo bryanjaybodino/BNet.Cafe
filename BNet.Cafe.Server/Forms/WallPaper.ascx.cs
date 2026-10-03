@@ -1,12 +1,13 @@
-﻿using System;
+﻿using BNet.Cafe.Server.Repositories;
+using BNet.Cafe.Server.Services;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Web.Script.Serialization;
 using System.Web.UI;
-using BNet.Cafe.Server.Services;
 
 namespace BNet.Cafe.Server.Forms
 {
@@ -126,6 +127,12 @@ namespace BNet.Cafe.Server.Forms
                     savedCount++;
                 }
 
+                ClientData clientData = new ClientData();
+                var targetList = clientData.FetchData();
+                foreach (var target in targetList)
+                { 
+                    RemoteMessagingService.RefreshPC(UpdatePanel1, target.ClientName);
+                }
                 AlertService.ShowAlert(UpdatePanel1, $"{savedCount} new wallpaper(s) successfully saved.", "success");
             }
             catch (Exception ex)

@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BNet.Cafe.Server.Repositories;
+using BNet.Cafe.Server.Services;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.UI;
-using BNet.Cafe.Server.Services;
 
 namespace BNet.Cafe.Server.Forms.Modals
 {
@@ -54,6 +55,13 @@ namespace BNet.Cafe.Server.Forms.Modals
                 // 3. Refresh parent control's data so HiddenField_WallpaperData gets updated
                 RefreshParentGallery();
 
+
+                ClientData clientData = new ClientData();
+                var targetList = clientData.FetchData();
+                foreach (var target in targetList)
+                {
+                    RemoteMessagingService.RefreshPC(this, target.ClientName);
+                }
                 AlertService.ShowAlert(this, $"{fileName} deleted and wallpapers re-indexed successfully.", "success");
             }
             catch (Exception ex)

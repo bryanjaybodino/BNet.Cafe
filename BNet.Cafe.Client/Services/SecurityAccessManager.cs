@@ -2,7 +2,6 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Security.Policy;
 using System.Text;
 using System.Windows.Forms;
 
@@ -28,7 +27,7 @@ namespace BNet.Cafe.Client.Services
 
         /// <summary>
         /// Scans active processes and titles against security rules. 
-        /// Kills TaskManager processes and safely closes restricted File Explorer windows.
+        /// Kills TaskManager, CMD, and PowerShell processes and safely closes restricted windows.
         /// </summary>
         /// <returns>True if restricted access was detected and handled; otherwise, false.</returns>
         public static bool EnforceRestrictions(Repositories.UserActivity.ActiveWindowInfo info)
@@ -39,34 +38,43 @@ namespace BNet.Cafe.Client.Services
             string userStartup = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
             string commonStartup = Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup);
 
+            // Process & Window Checks
             bool isTaskManager = processName.Equals("Taskmgr", StringComparison.OrdinalIgnoreCase);
+
+            bool isCmdPrompt = processName.Equals("cmd", StringComparison.OrdinalIgnoreCase) ||
+                               processName.Equals("cmd.exe", StringComparison.OrdinalIgnoreCase) ||
+                               windowTitle.IndexOf("Command Prompt", StringComparison.OrdinalIgnoreCase) >= 0;
+
+            bool isPowerShell = processName.Equals("powershell", StringComparison.OrdinalIgnoreCase) ||
+                                processName.Equals("powershell_ise", StringComparison.OrdinalIgnoreCase) ||
+                                processName.Equals("pwsh", StringComparison.OrdinalIgnoreCase) || // PowerShell Core (v6+)
+                                windowTitle.IndexOf("Windows PowerShell", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                windowTitle.IndexOf("PowerShell", StringComparison.OrdinalIgnoreCase) >= 0;
+
             bool isControlPanel = windowTitle.IndexOf("Programs and Features", StringComparison.OrdinalIgnoreCase) >= 0;
             bool isStartupFolder = windowTitle.IndexOf("Startup", StringComparison.OrdinalIgnoreCase) >= 0 ||
                                    windowTitle.IndexOf(userStartup, StringComparison.OrdinalIgnoreCase) >= 0 ||
                                    windowTitle.IndexOf(commonStartup, StringComparison.OrdinalIgnoreCase) >= 0;
 
-            // Checks root C:\ drive and critical Windows directories while leaving user folders (e.g., C:\Anyfolders) open
+            // Checks root C:\ drive and critical Windows/Network directories
             bool isRestrictedPath = IsRestrictedPathWindow(windowTitle);
 
-            if (isTaskManager || isControlPanel || isStartupFolder || isRestrictedPath)
+            if (isTaskManager || isCmdPrompt || isPowerShell || isControlPanel || isStartupFolder || isRestrictedPath)
             {
                 try
                 {
                     // Kill Task Manager instances
-                    foreach (var proc in Process.GetProcessesByName("Taskmgr"))
-                    {
-                        proc.Kill();
-                        MessageBox.Show(
-                            "You have no access to open the task manager",
-                            "User Restriction",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
-                    }
+                    KillProcessByName("Taskmgr", "Task Manager");
 
-                    // Safely close target Explorer windows
+                    // Kill Command Prompt instances
+                    KillProcessByName("cmd", "Command Prompt");
+
+                    // Kill PowerShell instances (Windows PowerShell, ISE, and PowerShell Core)
+                    KillProcessByName("powershell", "PowerShell");
+                    KillProcessByName("powershell_ise", "PowerShell ISE");
+                    KillProcessByName("pwsh", "PowerShell");
+
+                    // Safely close target windows across all top-level classes
                     CloseTargetExplorerWindows();
                 }
                 catch
@@ -81,7 +89,30 @@ namespace BNet.Cafe.Client.Services
         }
 
         /// <summary>
-        /// Enumerates open windows to close specific target Explorer windows safely without killing explorer.exe.
+        /// Kills all active processes with the target name and displays a standard restriction message.
+        /// </summary>
+        private static void KillProcessByName(string processName, string displayName)
+        {
+            var processes = Process.GetProcessesByName(processName);
+            if (processes.Length > 0)
+            {
+                foreach (var proc in processes)
+                {
+                    try
+                    {
+                        proc.Kill();
+                    }
+                    catch
+                    {
+                        // Process may have already exited
+                    }
+                }
+                ShowRestrictionMessage($"You have no access to open {displayName}.");
+            }
+        }
+
+        /// <summary>
+        /// Enumerates open windows to close specific target Explorer, Dialog, or Settings windows safely.
         /// </summary>
         public static void CloseTargetExplorerWindows()
         {
@@ -90,36 +121,22 @@ namespace BNet.Cafe.Client.Services
 
             EnumWindows((hWnd, lParam) =>
             {
-                // Verify window class is standard CabinetWClass (File Explorer window)
-                StringBuilder classBuilder = new StringBuilder(256);
-                GetClassName(hWnd, classBuilder, classBuilder.Capacity);
+                StringBuilder titleBuilder = new StringBuilder(256);
+                GetWindowText(hWnd, titleBuilder, titleBuilder.Capacity);
+                string title = titleBuilder.ToString();
 
-                if (classBuilder.ToString().Equals("CabinetWClass", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(title))
                 {
-                    StringBuilder titleBuilder = new StringBuilder(256);
-                    GetWindowText(hWnd, titleBuilder, titleBuilder.Capacity);
-                    string title = titleBuilder.ToString();
+                    bool isTargetWindow = title.IndexOf("Programs and Features", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                         title.IndexOf("Startup", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                         title.IndexOf(userStartup, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                         title.IndexOf(commonStartup, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                         IsRestrictedPathWindow(title);
 
-                    if (!string.IsNullOrEmpty(title))
+                    if (isTargetWindow)
                     {
-                        bool isTargetWindow = title.IndexOf("Programs and Features", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                             title.IndexOf("Startup", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                             title.IndexOf(userStartup, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                             title.IndexOf(commonStartup, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                             IsRestrictedPathWindow(title);
-
-                        if (isTargetWindow)
-                        {
-                            SendMessage(hWnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
-                            MessageBox.Show(
-                                "You have no access to open " + title,
-                                "User Restriction",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error,
-                                MessageBoxDefaultButton.Button1,
-                                MessageBoxOptions.ServiceNotification
-                            );
-                        }
+                        SendMessage(hWnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+                        ShowRestrictionMessage("You have no access to open " + title);
                     }
                 }
                 return true; // Continue enumeration
@@ -127,7 +144,7 @@ namespace BNet.Cafe.Client.Services
         }
 
         /// <summary>
-        /// Helper method to identify if the Explorer window represents the root C:\ drive or critical Windows folders.
+        /// Helper method to identify if the window title represents restricted drive paths, system folders, or network applets.
         /// </summary>
         private static bool IsRestrictedPathWindow(string title)
         {
@@ -145,12 +162,21 @@ namespace BNet.Cafe.Client.Services
 
             if (isRootCDrive) return true;
 
-            // 2. Critical Windows System Folders
+            // 2. Critical Windows System Folders & Network Control Applets
             string[] criticalFolders = new string[]
             {
+                "Network and Sharing Center",
+                "Network and Internet",
+                "Control Panel",
+                "System and Security",
+                "Wi-Fi Status",
+                "Wi-Fi Properties",
+                "Ethernet Status",
+                "Ethernet Properties",
+                "Network Connections",
                 "Program Files",
                 "Program Files (x86)",
-                "Windows",
+                "C:\\Windows",
                 "System32",
                 "SysWOW64",
                 "ProgramData",
@@ -161,15 +187,29 @@ namespace BNet.Cafe.Client.Services
 
             foreach (string folder in criticalFolders)
             {
-                if (trimmedTitle.Equals(folder, StringComparison.OrdinalIgnoreCase) ||
-                    trimmedTitle.IndexOf(@"C:\" + folder, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                    trimmedTitle.IndexOf(@"\" + folder, StringComparison.OrdinalIgnoreCase) >= 0)
+                // Simple substring match handles titles like "Control Panel\Network and Internet\Network and Sharing Center"
+                if (trimmedTitle.IndexOf(folder, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     return true;
                 }
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Helper to standardise service notification message boxes.
+        /// </summary>
+        private static void ShowRestrictionMessage(string message)
+        {
+            MessageBox.Show(
+                message,
+                "User Restriction",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error,
+                MessageBoxDefaultButton.Button1,
+                MessageBoxOptions.ServiceNotification
+            );
         }
     }
 }
