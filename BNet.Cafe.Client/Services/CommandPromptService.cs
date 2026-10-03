@@ -19,5 +19,14 @@ namespace BNet.Cafe.Client.Services
             }
             catch { }
         }
+        public static void RestartSystem()
+        {
+            try
+            {
+                Process.Start("shutdown", "/r /t 10 /f /c \"Restart requested by server.\"");
+                Application.Exit();
+            }
+            catch { }
+        }
     }
 }

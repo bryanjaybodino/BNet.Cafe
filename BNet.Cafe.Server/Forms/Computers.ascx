@@ -4,6 +4,8 @@
 <%@ Register Src="~/Forms/Modals/RemoteTimeTransfer.ascx" TagPrefix="uc1" TagName="RemoteTimeTransfer" %>
 <%@ Register Src="~/Forms/Modals/RemoteTimePause.ascx" TagPrefix="uc1" TagName="RemoteTimePause" %>
 <%@ Register Src="~/Forms/Modals/RemoteShutdown.ascx" TagPrefix="uc1" TagName="RemoteShutdown" %>
+<%@ Register Src="~/Forms/Modals/RemoteRestart.ascx" TagPrefix="uc1" TagName="RemoteRestart" %>
+
 
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -155,6 +157,12 @@
                                                 <i class="fa-solid fa-power-off"></i>Shutdown
                                             </a>
                                         </asp:Panel>
+                                        <asp:Panel ID="Panel_Restart" Visible='<%# Eval("IsRestartVisible") %>' runat="server">
+                                            <a class="bnet-dropdown-item text-danger"
+                                                onclick="openRestartModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
+                                                <i class="fa-solid fa-rotate-right"></i>Restart
+                                            </a>
+                                        </asp:Panel>
                                         <div class="bnet-dropdown-divider"></div>
                                         <span class="bnet-dropdown-item text-danger" onclick="openDeleteModal('<%# Eval("DBId") %>', '<%# Eval("DBComputerName") %>')">
                                             <i class="fa-solid fa-trash-can"></i>Delete Computer
@@ -222,6 +230,7 @@
         <uc1:RemoteLogout runat="server" ID="RemoteLogout" />
         <uc1:RemoteTimeTransfer runat="server" ID="RemoteTimeTransfer" />
         <uc1:RemoteTimePause runat="server" ID="RemoteTimePause" />
-        <uc1:RemoteShutdown runat="server" id="RemoteShutdown" />
+        <uc1:RemoteShutdown runat="server" ID="RemoteShutdown" />
+        <uc1:RemoteRestart runat="server" id="RemoteRestart" />
     </ContentTemplate>
 </asp:UpdatePanel>

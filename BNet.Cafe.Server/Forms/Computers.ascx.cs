@@ -106,6 +106,7 @@ namespace BNet.Cafe.Server.Forms
                         newRow["IsTransferVisible"] = true;
                         newRow["IsPauseResumeVisible"] = true;
                         newRow["IsShutdownVisible"] = false;
+                        newRow["IsRestartVisible"] = false;
 
                         if (isAdministrator)
                         {
@@ -120,6 +121,7 @@ namespace BNet.Cafe.Server.Forms
                             newRow["IsTransferVisible"] = false;
                             newRow["IsPauseResumeVisible"] = false;
                             newRow["IsShutdownVisible"] = false;
+                            newRow["IsRestartVisible"] = false;
                         }
                     }
                     else
@@ -131,6 +133,7 @@ namespace BNet.Cafe.Server.Forms
                         newRow["IsTransferVisible"] = false;
                         newRow["IsPauseResumeVisible"] = false;
                         newRow["IsShutdownVisible"] = true;
+                        newRow["IsRestartVisible"] = true;
                     }
                 }
                 else
@@ -142,6 +145,7 @@ namespace BNet.Cafe.Server.Forms
                     newRow["IsTransferVisible"] = false;
                     newRow["IsPauseResumeVisible"] = false;
                     newRow["IsShutdownVisible"] = false;
+                    newRow["IsRestartVisible"] = false;
                 }
 
                 dtCombined.Rows.Add(newRow);
@@ -189,6 +193,7 @@ namespace BNet.Cafe.Server.Forms
             dt.Columns.Add("IsShutdownVisible", typeof(bool));
             dt.Columns.Add("IsTransferVisible", typeof(bool));
             dt.Columns.Add("IsPauseResumeVisible", typeof(bool));
+            dt.Columns.Add("IsRestartVisible", typeof(bool));
             return dt;
         }
 

@@ -563,6 +563,10 @@ namespace BNet.Cafe.Client
             {
                 CommandPromptService.ShutdownSystem();
             }
+            else if (textMessage == "RESTART")
+            {
+                CommandPromptService.RestartSystem();
+            }
             else
             {
                 MessageBox.Show(

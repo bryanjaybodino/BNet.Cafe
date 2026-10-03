@@ -94,7 +94,10 @@ namespace BNet.Cafe.Server.Services
         {
             SendTextMessage(control, targetClient, ConstantData.RentalCommand.RESUME);
         }
-
+        public static void RestartPC(Control control, string targetClient)
+        {
+            SendTextMessage(control, targetClient, ConstantData.RentalCommand.RESTART);
+        }
         public static void SendTextMessage(Control control, string targetClient, string message)
         {
             if (control == null)
