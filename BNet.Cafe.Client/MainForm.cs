@@ -351,13 +351,12 @@ namespace BNet.Cafe.Client
                 return;
             }
 
-            KeyboardHook.Start();
-
             this.Show();
             this.BringToFront();
             this.Activate();
             this.Focus();
 
+            KeyboardHook.Start();
             StartIdleMonitor();
         }
 
@@ -450,6 +449,8 @@ namespace BNet.Cafe.Client
             UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
             _ = Task.Run(ContinuousPendingLogoutSyncLoopAsync);
             _ = Task.Run(RunAgentLoop);
+
+            KeyboardHook.Start();
         }
 
         protected override void WndProc(ref Message m)
@@ -770,6 +771,21 @@ namespace BNet.Cafe.Client
                 } while (!result.EndOfMessage);
                 return ms.ToArray();
             }
+        }
+        private void CenterLoginCard()
+        {
+            if (Panel_LoginCard != null && this.ClientSize.Width > 0)
+            {
+                Panel_LoginCard.Location = new Point(
+                    (this.ClientSize.Width - Panel_LoginCard.Width) / 2,
+                    (this.ClientSize.Height - Panel_LoginCard.Height) / 2
+                );
+            }
+        }
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            CenterLoginCard();
         }
     }
 }

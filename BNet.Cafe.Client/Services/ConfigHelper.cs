@@ -125,7 +125,7 @@ namespace BNet.Cafe.Client.Services
                 }
 
                 // Fallback default
-                return GetOrCreateSetting("WebSocketUrl", "ws://localhost:8080");
+                return GetOrCreateSetting("WebSocketUrl", "ws://localhost:2050");
             }
         }
 
