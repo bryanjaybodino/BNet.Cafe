@@ -13,6 +13,7 @@ namespace BNet.Cafe.Server.Forms
         {
             if (!IsPostBack)
             {
+                HiddenField_Role.Value = UserType.Guest;
                 LoadDropdowns();
                 string id = Request.QueryString["id"];
                 Repositories.Computers computers = new Repositories.Computers();
