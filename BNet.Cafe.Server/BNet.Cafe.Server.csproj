@@ -210,9 +210,6 @@
     <Content Include="Shop.aspx" />
     <Content Include="temp_files\Barcodes\placeholder.txt" />
     <Content Include="temp_files\QRCodes\placeholder.txt" />
-    <Content Include="Uploads\Inventory\1.png" />
-    <Content Include="Uploads\Inventory\2.png" />
-    <Content Include="Uploads\Inventory\3.png" />
     <Content Include="Uploads\default.png" />
     <Content Include="Website\assets\music.mp3" />
     <Content Include="Website\assets\font-awesome.min.css" />
@@ -760,6 +757,7 @@
     <Content Include="Website\assets\webfonts\fa-v4compatibility.woff2" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Uploads\Inventory\" />
     <Folder Include="Uploads\Wallpapers\" />
   </ItemGroup>
   <PropertyGroup>
