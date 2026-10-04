@@ -297,6 +297,5 @@ if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManage
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    disableSubmitButton();
     calculateAmount();;
 });
