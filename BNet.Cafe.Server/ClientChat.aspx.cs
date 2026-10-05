@@ -12,10 +12,6 @@ namespace BNet.Cafe.Server
         {
             if (!IsPostBack)
             {
-                if (userSession.count == 0)
-                {
-                    Response.Redirect("~/Login.aspx");
-                }
                 FileCssHelper.BundleCss();
                 FileJsHelpler.BundleAddScripts(ScriptManager1, "Pages/RemoteMessaging");
                 FileJsHelpler.BundleAddScripts(ScriptManager1, "ClientChat/Script");
@@ -26,7 +22,9 @@ namespace BNet.Cafe.Server
         {
             string message = TextBox_ChatMessage.Text;
             string computerName = TextBox_ComputerName.Text;
-            string userId = userSession.user_id;
+            string userId = userSession.count > 0
+                ? userSession.user_id
+                : ConstantData.UserType.Guest;
 
             if (!string.IsNullOrEmpty(message))
             {
