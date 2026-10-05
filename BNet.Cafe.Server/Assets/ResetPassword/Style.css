@@ -1,0 +1,283 @@
+﻿/* ==========================================================================
+           1. RESET & BASE STYLES
+           ========================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f8fafc;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+/* ==========================================================================
+           2. FORM CONTAINER & CARD (EXPANDED SIZE)
+           ========================================================================== */
+.reset-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 480px; /* Increased from 420px */
+    padding: 40px; /* Increased padding from 32px */
+    border-radius: 20px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    border: 1px solid #e2e8f0;
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.icon-badge {
+    width: 56px;
+    height: 56px;
+    background: #eff6ff;
+    color: #2563eb;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 18px;
+}
+
+.card-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.card-header p {
+    font-size: 15px;
+    color: #64748b;
+}
+
+/* ==========================================================================
+           3. FORM INPUTS & LABELS
+           ========================================================================== */
+.form-group {
+    margin-bottom: 22px;
+}
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 8px;
+    }
+
+.required-star {
+    color: #ef4444;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #0f172a;
+    background-color: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .form-control:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-control.is-invalid {
+        border-color: #ef4444 !important;
+        background-color: #fef2f2;
+    }
+
+    .form-control.is-valid {
+        border-color: #10b981 !important;
+        background-color: #ecfdf5;
+    }
+
+/* ==========================================================================
+           4. BUTTON STYLES
+           ========================================================================== */
+.btn-submit {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #2563eb;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin-top: 10px;
+}
+
+    .btn-submit:hover {
+        background-color: #1d4ed8;
+    }
+
+    .btn-submit:active {
+        transform: scale(0.99);
+    }
+
+    .btn-submit.disabled {
+        opacity: 0.7;
+        pointer-events: none;
+        cursor: not-allowed;
+    }
+
+/* ==========================================================================
+           5. MODERN TOAST NOTIFICATION STYLES
+           ========================================================================== */
+.toast-wrapper {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+.toast-card {
+    pointer-events: auto;
+    min-width: 320px;
+    max-width: 400px;
+    padding: 16px 18px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1px solid #f1f5f9;
+    animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition: all 0.25s ease;
+}
+
+    .toast-card.toast-success {
+        border-left: 4px solid #10b981;
+    }
+
+        .toast-card.toast-success .toast-icon {
+            color: #10b981;
+            background: #ecfdf5;
+        }
+
+    .toast-card.toast-error {
+        border-left: 4px solid #ef4444;
+    }
+
+        .toast-card.toast-error .toast-icon {
+            color: #ef4444;
+            background: #fef2f2;
+        }
+
+.toast-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.toast-body {
+    flex: 1;
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.5;
+    padding-top: 3px;
+}
+
+.toast-close-btn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 2px;
+    line-height: 1;
+}
+
+    .toast-close-btn:hover {
+        color: #475569;
+    }
+
+.toast-fade-out {
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+
+/* Body reset */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f8fafc;
+    color: #0f172a;
+    min-height: 100vh;
+    margin: 0;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ASP.NET Form spans full width */
+form#form1 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Force ASP.NET UpdatePanel wrapper to center its inner content */
+#UpdatePanel1 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Now you can freely adjust max-width to whatever size you want (e.g., 600px, 700px, 800px) */
+.reset-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 500px; /* Adjust this value to set your desired card width */
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    border: 1px solid #e2e8f0;
+}

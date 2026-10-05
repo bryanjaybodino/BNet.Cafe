@@ -15,6 +15,9 @@ namespace BNet.Cafe.Server
         {
             if (!IsPostBack)
             {
+                FileJsHelpler.BundleAddScripts(ScriptManager1, "ResetPassword/Script");
+
+
                 string userIdParam = SecuredDataService.Decrypted(Request.QueryString["userId"]);
                 string token = Request.QueryString["token"];
 

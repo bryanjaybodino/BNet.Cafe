@@ -156,6 +156,8 @@
     <Content Include="Assets\Pages\Wallpaper.js" />
     <Content Include="Assets\Portal\Script.js" />
     <Content Include="Assets\Portal\Style.css" />
+    <Content Include="Assets\ResetPassword\Script.js" />
+    <Content Include="Assets\ResetPassword\Style.css" />
     <Content Include="Assets\Shop\Script.js" />
     <Content Include="Assets\Shop\Style.css" />
     <Content Include="BNetPage.aspx" />
