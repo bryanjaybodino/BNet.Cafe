@@ -12,6 +12,10 @@ namespace BNet.Cafe.Server
         {
             if (!IsPostBack)
             {
+                if (userSession.count == 0)
+                {
+                    Response.Redirect("~/Login.aspx");
+                }
                 FileCssHelper.BundleCss();
                 FileJsHelpler.BundleAddScripts(ScriptManager1, "Pages/RemoteMessaging");
                 FileJsHelpler.BundleAddScripts(ScriptManager1, "ClientChat/Script");
