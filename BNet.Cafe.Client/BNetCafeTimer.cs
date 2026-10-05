@@ -4,7 +4,9 @@ using BNet.Cafe.Client.Repositories;
 using BNet.Cafe.Client.Services;
 using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -577,20 +579,40 @@ namespace BNet.Cafe.Client
                 MessageBox.Show($"Failed to open printing folder: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        private void OpenFullscreenBrowser(string url)
+        {
+            if (string.IsNullOrEmpty(url)) return;
 
+            string browserPath = GetBrowserPath();
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = browserPath,
+                Arguments = $"--app=\"{url}\" --start-fullscreen",
+                UseShellExecute = true
+            });
+        }
+
+        private string GetBrowserPath()
+        {
+            // Common Edge/Chrome paths to ensure reliability on all Windows devices
+            string edgePath64 = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe";
+            string edgePath32 = @"C:\Program Files\Microsoft\Edge\Application\msedge.exe";
+            string chromePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
+
+            if (File.Exists(edgePath64)) return edgePath64;
+            if (File.Exists(edgePath32)) return edgePath32;
+            if (File.Exists(chromePath)) return chromePath;
+
+            // Fallback to default system PATH lookup
+            return "msedge.exe";
+        }
         private void Button_Shop_Click(object sender, EventArgs e)
         {
             string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
             string handlerUrl = $"{baseUrl}/Shop.aspx";
 
-            if (!string.IsNullOrEmpty(handlerUrl))
-            {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = handlerUrl,
-                    UseShellExecute = true
-                });
-            }
+            OpenFullscreenBrowser(handlerUrl);
         }
 
         private void Button_History_Click(object sender, EventArgs e)
@@ -598,14 +620,15 @@ namespace BNet.Cafe.Client
             string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
             string handlerUrl = $"{baseUrl}/Portal.aspx?UserId={SecuredDataService.Encrypted(userId)}";
 
-            if (!string.IsNullOrEmpty(handlerUrl))
-            {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = handlerUrl,
-                    UseShellExecute = true
-                });
-            }
+            OpenFullscreenBrowser(handlerUrl);
+        }
+
+        private void Button_Message_Click(object sender, EventArgs e)
+        {
+            string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
+            string handlerUrl = $"{baseUrl}/ClientChat.aspx?ClientName={ConfigHelper.GetClientNameFromIP()}";
+
+            OpenFullscreenBrowser(handlerUrl);
         }
     }
 }

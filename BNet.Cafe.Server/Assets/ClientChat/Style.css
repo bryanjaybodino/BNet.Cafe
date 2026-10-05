@@ -1,0 +1,166 @@
+﻿body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: var(--bg-light);
+    color: var(--text-light);
+}
+
+.full-chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--bg-light);
+}
+
+/* Header Layout */
+.full-chat-header {
+    padding: 14px 20px;
+    background-color: var(--bg-light-secondary);
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    z-index: 10;
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: var(--bg-light-tertiary);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border: 1px solid var(--border-light);
+}
+
+.header-title-area {
+    display: flex;
+    flex-direction: column;
+}
+
+    .header-title-area h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-light);
+    }
+
+.header-subtitle {
+    font-size: 12px;
+    color: var(--text-light-secondary);
+}
+
+/* Status Pill */
+.status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background-color: var(--bg-light-tertiary);
+    border: 1px solid var(--border-light);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-light-secondary);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--accent-pickleball);
+    box-shadow: 0 0 6px var(--accent-pickleball);
+    transition: background-color 0.3s ease;
+}
+
+/* Chat Body & Messages */
+.full-chat-logs {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: var(--bg-light);
+}
+
+.chat-bubble {
+    max-width: 65%;
+    padding: 10px 16px;
+    font-size: 14px;
+    line-height: 1.45;
+    word-wrap: break-word;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-bubble.incoming {
+    background-color: var(--bg-light-secondary);
+    color: var(--text-light);
+    align-self: flex-start;
+    border: 1px solid var(--border-light);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+.chat-bubble.outgoing {
+    background-color: var(--primary);
+    color: var(--btn-primary-text);
+    align-self: flex-end;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+/* Footer & Input Controls */
+.full-chat-footer {
+    padding: 14px 20px;
+    background-color: var(--bg-light-secondary);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.input-wrapper {
+    flex: 1;
+}
+
+    .input-wrapper .form-control {
+        width: 100%;
+    }
+
+/* Overrides for send button icon alignment */
+.btn-send {
+    height: 42px;
+    padding: 0 20px;
+    flex-shrink: 0;
+}

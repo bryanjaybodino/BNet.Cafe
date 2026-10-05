@@ -13,9 +13,8 @@ namespace BNet.Cafe.Server
             if (!IsPostBack)
             {
                 FileCssHelper.BundleCss();
-                FileJsHelpler.BundleBNetPageScripts(ScriptManager1);
-
                 FileJsHelpler.BundleAddScripts(ScriptManager1, "Pages/RemoteMessaging");
+                FileJsHelpler.BundleAddScripts(ScriptManager1, "ClientChat/Script");
             }
         }
 

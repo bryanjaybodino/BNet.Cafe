@@ -20,6 +20,19 @@
 
         <hr style="border: 0; border-top: 1px solid var(--border-light); margin: 2px 0;" />
 
+        <!-- Printing Location -->
+        <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                <i class="fas fa-folder-open" style="color: #10b981; font-size: 14px;"></i>
+                <span style="font-weight: 600; font-size: 13px; color: var(--text-light);">Folder Printing Location</span>
+            </div>
+            <div style="font-size: 12px; color: var(--text-light-secondary);">
+                Files sent for printing are saved on the <strong>Server side</strong> (accessed via FTP connection from the client) in: <code style="background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 4px; color: var(--text-light); font-family: monospace;">Documents/For Printing/</code>
+            </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-light); margin: 2px 0;" />
+
         <!-- Update / Deployment Notes -->
         <div>
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
@@ -37,7 +50,6 @@
         </div>
 
     </div>
-
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
         <div style="display: flex; align-items: center; gap: 10px;">
             <i class="fab fa-github" style="font-size: 20px; color: var(--text-light);"></i>

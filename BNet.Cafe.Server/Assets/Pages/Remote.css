@@ -154,7 +154,7 @@
     top: 0;
     left: 0;
     bottom: 0;
-    width: var(--sidebar-w, 260px);
+    width: var(--sidebar-w, 360px);
     background: var(--bg-light-secondary);
     border-right: 1px solid var(--border-light);
     display: flex;

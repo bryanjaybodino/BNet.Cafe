@@ -123,6 +123,8 @@
     <Content Include="Assets\BNetSelect\Script.js" />
     <Content Include="Assets\BNetSelect\Style.css" />
     <Content Include="Assets\BNetTable\Style.css" />
+    <Content Include="Assets\ClientChat\Script.js" />
+    <Content Include="Assets\ClientChat\Style.css" />
     <Content Include="Assets\Login\Script.js" />
     <Content Include="Assets\Login\Style.css" />
     <Content Include="Assets\Pages\Computers.js" />

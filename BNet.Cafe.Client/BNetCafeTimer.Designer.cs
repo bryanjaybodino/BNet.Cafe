@@ -36,6 +36,7 @@
             this.Button_History = new BNet.Cafe.Client.Design.ModernButton();
             this.Button_AccountAction = new BNet.Cafe.Client.Design.ModernButton();
             this.Button_Logout = new BNet.Cafe.Client.Design.ModernButton();
+            this.Button_Message = new BNet.Cafe.Client.Design.ModernButton();
             this.Panel_Header.SuspendLayout();
             this.Panel_Details.SuspendLayout();
             this.SuspendLayout();
@@ -191,7 +192,7 @@
             this.Button_Print.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(56)))), ((int)(((byte)(202)))));
             this.Button_Print.Location = new System.Drawing.Point(15, 292);
             this.Button_Print.Name = "Button_Print";
-            this.Button_Print.Size = new System.Drawing.Size(98, 40);
+            this.Button_Print.Size = new System.Drawing.Size(158, 40);
             this.Button_Print.TabIndex = 6;
             this.Button_Print.Text = "🖨️ Print";
             this.Button_Print.UseVisualStyleBackColor = false;
@@ -206,9 +207,9 @@
             this.Button_Shop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button_Shop.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
             this.Button_Shop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(56)))), ((int)(((byte)(202)))));
-            this.Button_Shop.Location = new System.Drawing.Point(121, 292);
+            this.Button_Shop.Location = new System.Drawing.Point(15, 338);
             this.Button_Shop.Name = "Button_Shop";
-            this.Button_Shop.Size = new System.Drawing.Size(98, 40);
+            this.Button_Shop.Size = new System.Drawing.Size(158, 40);
             this.Button_Shop.TabIndex = 7;
             this.Button_Shop.Text = "🛒 Shop";
             this.Button_Shop.UseVisualStyleBackColor = false;
@@ -223,9 +224,9 @@
             this.Button_History.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button_History.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
             this.Button_History.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(56)))), ((int)(((byte)(202)))));
-            this.Button_History.Location = new System.Drawing.Point(227, 292);
+            this.Button_History.Location = new System.Drawing.Point(179, 292);
             this.Button_History.Name = "Button_History";
-            this.Button_History.Size = new System.Drawing.Size(98, 40);
+            this.Button_History.Size = new System.Drawing.Size(146, 40);
             this.Button_History.TabIndex = 8;
             this.Button_History.Text = "📜 History";
             this.Button_History.UseVisualStyleBackColor = false;
@@ -240,7 +241,7 @@
             this.Button_AccountAction.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button_AccountAction.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.Button_AccountAction.ForeColor = System.Drawing.Color.White;
-            this.Button_AccountAction.Location = new System.Drawing.Point(15, 342);
+            this.Button_AccountAction.Location = new System.Drawing.Point(15, 389);
             this.Button_AccountAction.Name = "Button_AccountAction";
             this.Button_AccountAction.Size = new System.Drawing.Size(310, 38);
             this.Button_AccountAction.TabIndex = 5;
@@ -258,7 +259,7 @@
             this.Button_Logout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button_Logout.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.Button_Logout.ForeColor = System.Drawing.Color.Crimson;
-            this.Button_Logout.Location = new System.Drawing.Point(15, 387);
+            this.Button_Logout.Location = new System.Drawing.Point(15, 434);
             this.Button_Logout.Name = "Button_Logout";
             this.Button_Logout.Size = new System.Drawing.Size(310, 42);
             this.Button_Logout.TabIndex = 4;
@@ -266,13 +267,31 @@
             this.Button_Logout.UseVisualStyleBackColor = false;
             this.Button_Logout.Click += new System.EventHandler(this.Button_Logout_Click);
             // 
+            // Button_Message
+            // 
+            this.Button_Message.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
+            this.Button_Message.BorderRadius = 8;
+            this.Button_Message.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Button_Message.FlatAppearance.BorderSize = 0;
+            this.Button_Message.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Button_Message.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.Button_Message.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(56)))), ((int)(((byte)(202)))));
+            this.Button_Message.Location = new System.Drawing.Point(179, 338);
+            this.Button_Message.Name = "Button_Message";
+            this.Button_Message.Size = new System.Drawing.Size(146, 40);
+            this.Button_Message.TabIndex = 9;
+            this.Button_Message.Text = "💬 Message";
+            this.Button_Message.UseVisualStyleBackColor = false;
+            this.Button_Message.Click += new System.EventHandler(this.Button_Message_Click);
+            // 
             // BNetCafeTimer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.ClientSize = new System.Drawing.Size(340, 445);
+            this.ClientSize = new System.Drawing.Size(340, 510);
             this.ControlBox = false;
+            this.Controls.Add(this.Button_Message);
             this.Controls.Add(this.Button_Print);
             this.Controls.Add(this.Button_Shop);
             this.Controls.Add(this.Button_History);
@@ -317,5 +336,6 @@
         private BNet.Cafe.Client.Design.ModernButton Button_AccountAction;
         private BNet.Cafe.Client.Design.ModernButton Button_Logout;
         private System.Windows.Forms.Timer Timer_Countdown;
+        private Design.ModernButton Button_Message;
     }
 }
