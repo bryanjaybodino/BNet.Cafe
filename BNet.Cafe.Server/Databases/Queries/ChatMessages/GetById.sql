@@ -1,0 +1,4 @@
+﻿SELECT * FROM chat_messages 
+WHERE DBId = '{DBId}'
+ORDER BY DBId DESC 
+{LIMIT}

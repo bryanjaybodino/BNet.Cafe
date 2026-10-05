@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Chat Console</title>
+    <link href="Assets/Pages/Style.css" rel="stylesheet" />
+    <style>
+        .chat-container {
+            display: flex;
+            height: calc(100vh - 100px);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            background: var(--bg-light-secondary);
+            overflow: hidden;
+        }
+
+        .chat-sidebar {
+            width: 260px;
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light-tertiary);
+        }
+
+        .chat-sidebar-header {
+            padding: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-light);
+        }
+
+        .client-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .client-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .client-item:hover, .client-item.active {
+                background-color: var(--bg-light);
+            }
+
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-light);
+            font-weight: bold;
+            color: var(--text-light);
+        }
+
+        .chat-logs {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-bubble {
+            max-width: 65%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+
+            .chat-bubble.incoming {
+                background: var(--bg-light-tertiary);
+                color: var(--text-light);
+                align-self: flex-start;
+            }
+
+            .chat-bubble.outgoing {
+                background: var(--primary);
+                color: #fff;
+                align-self: flex-end;
+            }
+
+        .chat-input-area {
+            padding: 16px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <h2>Live Client Chat Manager</h2>
+        <div class="chat-container">
+            <div class="chat-sidebar">
+                <div class="chat-sidebar-header">Clients</div>
+                <div id="clientList" class="client-list"></div>
+            </div>
+            <div class="chat-main">
+                <div id="chatHeader" class="chat-header">Select a client to start chatting</div>
+                <div id="chatLogs" class="chat-logs"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="btnInput" class="form-control" placeholder="Type a message..." disabled>
+                    <button id="btnSend" class="btn btn-primary" disabled>Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="Assets/Pages/RemoteMessaging.js"></script>
+    <script>
+        const chats = {}; // ClientName -> Array of message objects
+        let activeClient = null;
+
+        const browserWs = new WebSocket(`ws://${window.location.hostname}:2050/ws/browser`);
+        browserWs.binaryType = 'arraybuffer';
+        const decoder = new TextDecoder('utf-8');
+
+        browserWs.onmessage = (event) => {
+            if (!(event.data instanceof ArrayBuffer)) return;
+            const bytes = new Uint8Array(event.data);
+            const type = bytes[0];
+
+            if (type === 0x11) {
+                const clients = JSON.parse(decoder.decode(bytes.subarray(1)));
+                clients.forEach(c => registerClient(c.ClientName));
+            } else if (type === 0x12) {
+                const data = JSON.parse(decoder.decode(bytes.subarray(1)));
+                if (data.ClientName) {
+                    registerClient(data.ClientName);
+                    if (data.ChatMessage) {
+                        appendMessage(data.ClientName.toUpperCase(), data.ChatMessage, 'incoming');
+                    }
+                }
+            }
+        };
+
+        function registerClient(name) {
+            if (!name) return;
+            const key = name.toUpperCase();
+            if (!chats[key]) {
+                chats[key] = [];
+                renderClientList();
+            }
+        }
+
+        function renderClientList() {
+            const listEl = document.getElementById('clientList');
+            listEl.innerHTML = '';
+            Object.keys(chats).forEach(client => {
+                const item = document.createElement('div');
+                item.className = `client-item ${client === activeClient ? 'active' : ''}`;
+                item.textContent = client;
+                item.onclick = () => selectClient(client);
+                listEl.appendChild(item);
+            });
+        }
+
+        function selectClient(client) {
+            activeClient = client;
+            document.getElementById('chatHeader').textContent = `Chatting with: ${client}`;
+            document.getElementById('btnInput').disabled = false;
+            document.getElementById('btnSend').disabled = false;
+            renderClientList();
+            renderMessages();
+        }
+
+        function renderMessages() {
+            const logs = document.getElementById('chatLogs');
+            logs.innerHTML = '';
+            if (!activeClient || !chats[activeClient]) return;
+
+            chats[activeClient].forEach(msg => {
+                const bubble = document.createElement('div');
+                bubble.className = `chat-bubble ${msg.type}`;
+                bubble.textContent = msg.text;
+                logs.appendChild(bubble);
+            });
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        function appendMessage(client, text, type) {
+            registerClient(client);
+            chats[client].push({ text, type });
+            if (client === activeClient) {
+                renderMessages();
+            }
+        }
+
+        document.getElementById('btnSend').onclick = sendMessage;
+        document.getElementById('btnInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        function sendMessage() {
+            const input = document.getElementById('btnInput');
+            const message = input.value.trim();
+            if (!message || !activeClient) return;
+
+            // Send to PC via /ws/server (RemoteMessaging.js)
+            if (sendTextMessageToPC(activeClient, message)) {
+                appendMessage(activeClient, message, 'outgoing');
+                input.value = '';
+            }
+        }
+    </script>
+</body>
+</html>

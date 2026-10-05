@@ -1,69 +1,283 @@
 ﻿'use strict';
 
-/**
- * Server Messaging Client
- * Handles dedicated text messaging outbound to target PCs via /ws/server
- */
-const textEncoder = new TextEncoder();
-let serverWs = null;
+const textEncoderRemoteMessaging = new TextEncoder();
+const textDecoderRemoteMessaging = new TextDecoder('utf-8');
+let serverWsRemoteMessaging = null;
+let browserWsRemoteMessaging = null;
+let isFetchingNotifications = false;
 
-/**
- * Initialize and manage the connection to /ws/server
- */
+// Determine handler endpoint path dynamically
+function getHandlerEndpoint(handlerName) {
+    return /\.aspx$/i.test(window.location.pathname)
+        ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/' + handlerName)
+        : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/' + handlerName);
+}
+
+// Convert date/time string to 'hh:mm tt' format (e.g., "03:45 PM")
+function format12HourTime(timeStr, dateStr) {
+    let dateObj = null;
+
+    if (dateStr && timeStr) {
+        dateObj = new Date(`${dateStr} ${timeStr}`);
+    } else if (timeStr) {
+        dateObj = new Date(`1970-01-01 ${timeStr}`);
+    }
+
+    if (!dateObj || isNaN(dateObj.getTime())) {
+        // Fallback manual parsing if Date parsing fails (e.g., "14:30:00")
+        if (timeStr && timeStr.includes(':')) {
+            const parts = timeStr.split(':');
+            let hours = parseInt(parts[0], 10);
+            const minutes = parts[1] || '00';
+            if (!isNaN(hours)) {
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12 || 12;
+                const formattedHours = hours < 10 ? '0' + hours : hours;
+                return `${formattedHours}:${minutes} ${ampm}`;
+            }
+        }
+        return timeStr || '';
+    }
+
+    let hours = dateObj.getHours();
+    const minutes = dateObj.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    const formattedHours = hours < 10 ? '0' + hours : hours;
+    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+}
+
+// Fetch active (non-deleted) chat messages from GetChatMessagesHandler.ashx
+function fetchAndRenderNotifications() {
+    if (isFetchingNotifications) return;
+    isFetchingNotifications = true;
+
+    const endpoint = getHandlerEndpoint('GetChatMessagesHandler.ashx') + '?isDeleted=false';
+
+    fetch(endpoint)
+        .then(response => response.json())
+        .then(res => {
+            if (res && res.success && Array.isArray(res.data)) {
+                renderNotificationUI(res.data);
+            } else {
+                renderNotificationUI([]);
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching chat notifications:', err);
+            renderNotificationUI([]);
+        })
+        .finally(() => {
+            isFetchingNotifications = false;
+        });
+}
+
+// Render UI using database records
+function renderNotificationUI(messages) {
+    const badge = document.getElementById('notifBadge');
+    const notifList = document.getElementById('notifList');
+
+    // 1. Update Badge Count
+    const count = messages.length;
+    if (badge) {
+        if (count > 0) {
+            badge.textContent = count > 99 ? '99+' : count;
+            badge.classList.remove('d-none');
+            badge.classList.add('pulse');
+        } else {
+            badge.classList.add('d-none');
+            badge.classList.remove('pulse');
+        }
+    }
+
+    // 2. Render List
+    if (!notifList) return;
+
+    if (count === 0) {
+        notifList.innerHTML = '<div class="notif-empty" id="emptyNotifMsg">No new messages</div>';
+        return;
+    }
+
+    notifList.innerHTML = '';
+    messages.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'notif-item';
+
+        // Support both camelCase and PascalCase property names from backend response
+        const computerName = item.computerName || item.ComputerName || 'Terminal';
+        const messageText = item.message || item.Message || '';
+        const timeCreated = item.timeCreated || item.TimeCreated || '';
+        const dateCreated = item.dateCreated || item.DateCreated || '';
+
+        // Format time display to 'hh:mm tt' format (e.g. 02:30 PM)
+        const formattedTime = format12HourTime(timeCreated, dateCreated);
+
+        div.innerHTML = `
+            <div class="notif-item-title" style="display: flex; justify-content: space-between; align-items: center;">
+                <span><i class="fas fa-comment-dots"></i> ${escapeHtml(computerName)}</span>
+                <span class="notif-item-time" style="font-weight: normal; font-size: 11px; opacity: 0.8;">${escapeHtml(formattedTime)}</span>
+            </div>
+            <div class="notif-item-msg" style="margin-top: 4px;">${escapeHtml(messageText)}</div>
+        `;
+
+        div.onclick = () => {
+            if (typeof selectClient === 'function') {
+                selectClient(computerName);
+            } else {
+                window.location.href = `BNetPage.aspx?Form=Remote&client=${encodeURIComponent(computerName)}`;
+            }
+            toggleNotifDropdown(false);
+        };
+
+        notifList.appendChild(div);
+    });
+}
+
+// WebSocket Connection - Outbound to PC
 function connectServerWebSocket() {
+    if (serverWsRemoteMessaging && (serverWsRemoteMessaging.readyState === WebSocket.OPEN || serverWsRemoteMessaging.readyState === WebSocket.CONNECTING)) {
+        return;
+    }
+    const endpoint = 'ws://' + window.location.hostname + ':2050/ws/server';
+    serverWsRemoteMessaging = new WebSocket(endpoint);
+    serverWsRemoteMessaging.binaryType = 'arraybuffer';
 
-    var endpoint = 'ws://' + window.location.hostname + ':2050/ws/server';
-    serverWs = new WebSocket(endpoint);
-    serverWs.binaryType = 'arraybuffer';
-
-    serverWs.onopen = function () {
-        console.log('Connected to /ws/server WebSocket');
-    };
-
-    serverWs.onclose = function () {
-        console.warn('Disconnected from /ws/server. Retrying in 3 seconds...');
+    serverWsRemoteMessaging.onclose = function () {
         setTimeout(connectServerWebSocket, 3000);
-    };
-
-    serverWs.onerror = function (err) {
-        console.error('Server WebSocket error:', err);
     };
 }
 
-/**
- * Send a text message to a specific client PC
- * @param {string} targetClient - The ClientName/Machine identifier (e.g. "pc1")
- * @param {string} messageContent - The message string to send
- */
 function sendTextMessageToPC(targetClient, messageContent) {
-    if (!serverWs || serverWs.readyState !== WebSocket.OPEN) {
-        console.error('Cannot send message: /ws/server WebSocket is not connected.');
-        return false;
-    }
+    if (!serverWsRemoteMessaging || serverWsRemoteMessaging.readyState !== WebSocket.OPEN) return false;
+    if (!targetClient || !messageContent) return false;
 
-    if (!targetClient || !messageContent) {
-        console.error('Target client and message content are required.');
-        return false;
-    }
-
-    // Build payload matching C# ServerTextMessage class
-    const payloadObject = {
-        TargetClient: targetClient,
-        Message: messageContent
-    };
-
-    const jsonString = JSON.stringify(payloadObject);
-    const jsonBytes = textEncoder.encode(jsonString);
-
-    // Frame layout: [0x02][UTF-8 JSON Payload]
+    const payloadObject = { TargetClient: targetClient, Message: messageContent };
+    const jsonBytes = textEncoderRemoteMessaging.encode(JSON.stringify(payloadObject));
     const fullPayload = new Uint8Array(1 + jsonBytes.length);
-    fullPayload[0] = 0x02; // Message Type 0x02 for text
+    fullPayload[0] = 0x02;
     fullPayload.set(jsonBytes, 1);
 
-    serverWs.send(fullPayload.buffer);
-    console.log(`Message successfully dispatched to target: ${targetClient}`);
+    serverWsRemoteMessaging.send(fullPayload.buffer);
     return true;
 }
 
-// Auto-connect on script load
-connectServerWebSocket();
+// WebSocket Connection - Global Browser Inbound
+function connectGlobalBrowserWebSocket() {
+    if (browserWsRemoteMessaging && (browserWsRemoteMessaging.readyState === WebSocket.OPEN || browserWsRemoteMessaging.readyState === WebSocket.CONNECTING)) {
+        return;
+    }
+
+    const endpoint = 'ws://' + window.location.hostname + ':2050/ws/browser';
+    browserWsRemoteMessaging = new WebSocket(endpoint);
+    browserWsRemoteMessaging.binaryType = 'arraybuffer';
+
+    browserWsRemoteMessaging.onmessage = function (event) {
+        if (!(event.data instanceof ArrayBuffer)) return;
+        const bytes = new Uint8Array(event.data);
+        const type = bytes[0];
+
+        // 0x12: Message or Activity Frame
+        if (type === 0x12) {
+            try {
+                const data = JSON.parse(textDecoderRemoteMessaging.decode(bytes.subarray(1)));
+
+                // Support both PascalCase and camelCase properties
+                const clientName = data.ClientName || data.clientName || data.TargetClient || data.targetClient;
+                const chatMessage = data.ChatMessage || data.chatMessage || data.Message || data.message;
+
+                if (clientName && typeof chatMessage === 'string' && chatMessage.trim() !== '') {
+                    // Play sound immediately
+                    playNotificationSound();
+
+                    // Delay DB fetch slightly to allow server-side async DB persistence to complete
+                    setTimeout(() => {
+                        fetchAndRenderNotifications();
+                    }, 300);
+                }
+            } catch (e) {
+                console.error("Error parsing real-time message notification", e);
+            }
+        }
+    };
+
+    browserWsRemoteMessaging.onclose = function () {
+        setTimeout(connectGlobalBrowserWebSocket, 3000);
+    };
+}
+
+function playNotificationSound() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.value = 800;
+        gain.gain.value = 0.1;
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+    } catch (e) { }
+}
+
+function toggleNotifDropdown(show) {
+    const dropdown = document.getElementById('notifDropdown');
+    if (!dropdown) return;
+
+    if (show === undefined) {
+        dropdown.classList.toggle('show');
+    } else if (show) {
+        dropdown.classList.add('show');
+    } else {
+        dropdown.classList.remove('show');
+    }
+}
+
+function escapeHtml(str) {
+    return str ? String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s])) : '';
+}
+
+// Bind Bell Button Events
+function bindNotificationEvents() {
+    const bellBtn = document.getElementById('notifBellBtn');
+    if (bellBtn && !bellBtn.dataset.bound) {
+        bellBtn.dataset.bound = 'true';
+        bellBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleNotifDropdown();
+        });
+    }
+
+    const clearBtn = document.getElementById('clearNotifsBtn');
+    if (clearBtn && !clearBtn.dataset.bound) {
+        clearBtn.dataset.bound = 'true';
+        clearBtn.addEventListener('click', () => {
+            toggleNotifDropdown(false);
+        });
+    }
+}
+
+// Global Document Listeners
+document.addEventListener('click', (e) => {
+    const wrapper = document.getElementById('notificationWrapper');
+    if (wrapper && !wrapper.contains(e.target)) {
+        toggleNotifDropdown(false);
+    }
+});
+
+// Initialization Logic
+function initRemoteMessaging() {
+    connectServerWebSocket();
+    connectGlobalBrowserWebSocket();
+    bindNotificationEvents();
+
+    // Fetch and render active notifications immediately on page load
+    fetchAndRenderNotifications();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRemoteMessaging);
+} else {
+    initRemoteMessaging();
+}

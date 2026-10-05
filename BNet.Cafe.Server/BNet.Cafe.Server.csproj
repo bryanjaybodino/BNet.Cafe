@@ -157,7 +157,12 @@
     <Content Include="Assets\Shop\Script.js" />
     <Content Include="Assets\Shop\Style.css" />
     <Content Include="BNetPage.aspx" />
+    <Content Include="ClientChat.aspx" />
     <Content Include="Databases\Queries\Balances\GetCount.sql" />
+    <Content Include="Databases\Queries\ChatMessages\Create.sql" />
+    <Content Include="Databases\Queries\ChatMessages\DeleteById.sql" />
+    <Content Include="Databases\Queries\ChatMessages\GetAll.sql" />
+    <Content Include="Databases\Queries\ChatMessages\GetById.sql" />
     <Content Include="Databases\Queries\InventoryItems\Create.sql" />
     <Content Include="Databases\Queries\InventoryItems\DeleteById.sql" />
     <Content Include="Databases\Queries\InventoryItems\GetCount.sql" />
@@ -207,6 +212,7 @@
     <Content Include="Forms\UserBonus.ascx" />
     <Content Include="Forms\Wallpaper.ascx" />
     <Content Include="Offline Packages\zxing\zxing.dll" />
+    <Content Include="ServerChat.html" />
     <Content Include="Shop.aspx" />
     <Content Include="temp_files\Barcodes\placeholder.txt" />
     <Content Include="temp_files\QRCodes\placeholder.txt" />
@@ -311,6 +317,9 @@
     <Compile Include="Ashx\GetBalanceHandler.ashx.cs">
       <DependentUpon>GetBalanceHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Ashx\GetChatMessagesHandler.ashx.cs">
+      <DependentUpon>GetChatMessagesHandler.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Ashx\GetPricingRatesHandler.ashx.cs">
       <DependentUpon>GetPricingRatesHandler.ashx</DependentUpon>
     </Compile>
@@ -337,6 +346,13 @@
     <Compile Include="Callback.aspx.designer.cs">
       <DependentUpon>Callback.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ClientChat.aspx.cs">
+      <DependentUpon>ClientChat.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClientChat.aspx.designer.cs">
+      <DependentUpon>ClientChat.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ConstantData\TransactionType.cs" />
     <Compile Include="ConstantData\UserType.cs" />
     <Compile Include="ConstantData\RentalCommand.cs" />
@@ -344,6 +360,7 @@
     <Compile Include="Databases\DBMigration.cs" />
     <Compile Include="Databases\DBScriptService.cs" />
     <Compile Include="Databases\Tables\balances.cs" />
+    <Compile Include="Databases\Tables\chat_messages.cs" />
     <Compile Include="Databases\Tables\computers.cs" />
     <Compile Include="Databases\Tables\inventory_items.cs" />
     <Compile Include="Databases\Tables\inventory_transactions.cs" />
@@ -686,6 +703,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Balances.cs" />
+    <Compile Include="Repositories\ChatMessages.cs" />
     <Compile Include="Repositories\Computers.cs" />
     <Compile Include="Repositories\ClientData.cs" />
     <Compile Include="Repositories\Dashboard.cs" />
@@ -744,6 +762,7 @@
     <Content Include="Ashx\DownloadWallpaperHandler.ashx" />
     <Content Include="App\manifest-template.json" />
     <Content Include="App\manifest.json" />
+    <Content Include="Ashx\GetChatMessagesHandler.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

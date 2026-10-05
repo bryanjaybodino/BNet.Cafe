@@ -149,6 +149,22 @@
                 </div>
 
                 <div class="topbar-right">
+                    <!-- NOTIFICATION BELL CONTAINER -->
+                    <div class="notification-wrapper" id="notificationWrapper">
+                        <button class="notification-btn" id="notifBellBtn" title="Notifications">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge d-none" id="notifBadge">0</span>
+                        </button>
+                        <div class="notification-dropdown" id="notifDropdown">
+                            <div class="notif-header">
+                                <span>Notifications</span>
+                                <button type="button" class="notif-clear-btn" id="clearNotifsBtn">Clear All</button>
+                            </div>
+                            <div class="notif-list" id="notifList">
+                                <div class="notif-empty" id="emptyNotifMsg">No new messages</div>
+                            </div>
+                        </div>
+                    </div>
                     <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
                         <i class="fas fa-moon"></i>
                     </button>
