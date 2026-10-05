@@ -256,5 +256,14 @@ namespace BNet.Cafe.Server
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.PlaceHolder PlaceHolder_Container;
+
+        /// <summary>
+        /// ChatMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::BNet.Cafe.Server.Forms.Modals.ChatMessage ChatMessage;
     }
 }

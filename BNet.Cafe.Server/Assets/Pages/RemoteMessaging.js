@@ -24,7 +24,6 @@ function format12HourTime(timeStr, dateStr) {
     }
 
     if (!dateObj || isNaN(dateObj.getTime())) {
-        // Fallback manual parsing if Date parsing fails (e.g., "14:30:00")
         if (timeStr && timeStr.includes(':')) {
             const parts = timeStr.split(':');
             let hours = parseInt(parts[0], 10);
@@ -50,7 +49,7 @@ function format12HourTime(timeStr, dateStr) {
 }
 
 // Fetch active (non-deleted) chat messages from GetChatMessagesHandler.ashx
-function fetchAndRenderNotifications() {
+function fetchAndRenderNotifications(playSoundIfNew = false) {
     if (isFetchingNotifications) return;
     isFetchingNotifications = true;
 
@@ -60,7 +59,14 @@ function fetchAndRenderNotifications() {
         .then(response => response.json())
         .then(res => {
             if (res && res.success && Array.isArray(res.data)) {
-                renderNotificationUI(res.data);
+                const messages = res.data;
+
+                // Only play sound if requested and active message count is greater than zero
+                if (playSoundIfNew && messages.length > 0) {
+                    playNotificationSound();
+                }
+
+                renderNotificationUI(messages);
             } else {
                 renderNotificationUI([]);
             }
@@ -71,6 +77,57 @@ function fetchAndRenderNotifications() {
         })
         .finally(() => {
             isFetchingNotifications = false;
+        });
+}
+
+// Pure JS execution to delete single message called from ChatMessage.ascx modal
+function deleteSingleMessageJS(msgId) {
+    if (!msgId) return;
+
+    const deleteEndpoint = getHandlerEndpoint('DeleteChatMessagesHandler.ashx') + '?id=' + encodeURIComponent(msgId);
+
+    fetch(deleteEndpoint)
+        .then(res => res.json())
+        .then(res => {
+            if (res && res.success) {
+                // Close modal and refresh UI list
+                if (typeof closeChatMessageModal === 'function') {
+                    closeChatMessageModal();
+                }
+                fetchAndRenderNotifications();
+            } else {
+                alert(res.message || "Failed to delete message.");
+            }
+        })
+        .catch(err => {
+            console.error("Error deleting message:", err);
+            alert("An error occurred while deleting the message.");
+        });
+}
+
+// Delete all non-deleted messages via DeleteChatMessagesHandler.ashx
+function clearAllChatNotifications() {
+    const endpoint = getHandlerEndpoint('GetChatMessagesHandler.ashx') + '?isDeleted=false';
+
+    fetch(endpoint)
+        .then(res => res.json())
+        .then(res => {
+            if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+                const deletePromises = res.data.map(item => {
+                    const msgId = item.id || item.Id || item.DBId;
+                    const deleteEndpoint = getHandlerEndpoint('DeleteChatMessagesHandler.ashx') + '?id=' + encodeURIComponent(msgId);
+                    return fetch(deleteEndpoint);
+                });
+
+                return Promise.all(deletePromises);
+            }
+        })
+        .then(() => {
+            fetchAndRenderNotifications();
+            toggleNotifDropdown(false);
+        })
+        .catch(err => {
+            console.error('Error clearing chat notifications:', err);
         });
 }
 
@@ -105,13 +162,12 @@ function renderNotificationUI(messages) {
         const div = document.createElement('div');
         div.className = 'notif-item';
 
-        // Support both camelCase and PascalCase property names from backend response
+        const msgId = item.id || item.Id || item.DBId;
         const computerName = item.computerName || item.ComputerName || 'Terminal';
         const messageText = item.message || item.Message || '';
         const timeCreated = item.timeCreated || item.TimeCreated || '';
         const dateCreated = item.dateCreated || item.DateCreated || '';
 
-        // Format time display to 'hh:mm tt' format (e.g. 02:30 PM)
         const formattedTime = format12HourTime(timeCreated, dateCreated);
 
         div.innerHTML = `
@@ -122,13 +178,17 @@ function renderNotificationUI(messages) {
             <div class="notif-item-msg" style="margin-top: 4px;">${escapeHtml(messageText)}</div>
         `;
 
-        div.onclick = () => {
-            if (typeof selectClient === 'function') {
-                selectClient(computerName);
-            } else {
-                window.location.href = `BNetPage.aspx?Form=Remote&client=${encodeURIComponent(computerName)}`;
-            }
+        // Open modal on click without postback
+        div.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             toggleNotifDropdown(false);
+
+            if (typeof openChatMessageModal === 'function') {
+                openChatMessageModal(msgId, computerName, messageText, formattedTime);
+            } else {
+                console.error("openChatMessageModal function is not defined. Ensure ChatMessage.ascx is included on the page.");
+            }
         };
 
         notifList.appendChild(div);
@@ -178,22 +238,17 @@ function connectGlobalBrowserWebSocket() {
         const bytes = new Uint8Array(event.data);
         const type = bytes[0];
 
-        // 0x12: Message or Activity Frame
         if (type === 0x12) {
             try {
                 const data = JSON.parse(textDecoderRemoteMessaging.decode(bytes.subarray(1)));
 
-                // Support both PascalCase and camelCase properties
                 const clientName = data.ClientName || data.clientName || data.TargetClient || data.targetClient;
                 const chatMessage = data.ChatMessage || data.chatMessage || data.Message || data.message;
 
                 if (clientName && typeof chatMessage === 'string' && chatMessage.trim() !== '') {
-                    // Play sound immediately
-                    playNotificationSound();
-
-                    // Delay DB fetch slightly to allow server-side async DB persistence to complete
+                    // Fetch notifications and request sound playback if count > 0
                     setTimeout(() => {
-                        fetchAndRenderNotifications();
+                        fetchAndRenderNotifications(true);
                     }, 300);
                 }
             } catch (e) {
@@ -252,8 +307,9 @@ function bindNotificationEvents() {
     const clearBtn = document.getElementById('clearNotifsBtn');
     if (clearBtn && !clearBtn.dataset.bound) {
         clearBtn.dataset.bound = 'true';
-        clearBtn.addEventListener('click', () => {
-            toggleNotifDropdown(false);
+        clearBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            clearAllChatNotifications();
         });
     }
 }
@@ -272,7 +328,6 @@ function initRemoteMessaging() {
     connectGlobalBrowserWebSocket();
     bindNotificationEvents();
 
-    // Fetch and render active notifications immediately on page load
     fetchAndRenderNotifications();
 }
 
@@ -280,4 +335,11 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initRemoteMessaging);
 } else {
     initRemoteMessaging();
+}
+
+// Handle ASP.NET AJAX UpdatePanel postbacks across forms
+if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+    Sys.WebForms.PageRequestManager.getInstance().add_endRequest(() => {
+        bindNotificationEvents();
+    });
 }

@@ -1,6 +1,8 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" Async="true" EnableEventValidation="false" AsyncTimeout="1000000000" CodeBehind="BNetPage.aspx.cs" Inherits="BNet.Cafe.Server.BNetPage" %>
 
 <%@ Register Src="~/Forms/Modals/GitHubUpdateModal.ascx" TagPrefix="uc1" TagName="GitHubUpdateModal" %>
+<%@ Register Src="~/Forms/Modals/ChatMessage.ascx" TagPrefix="uc1" TagName="ChatMessage" %>
+
 
 
 <!DOCTYPE html>
@@ -199,6 +201,7 @@
                 <form runat="server" id="MainForm">
                     <asp:ScriptManager ID="ScriptManager1" EnableCdn="false" EnablePageMethods="true" EnablePartialRendering="true" AsyncPostBackTimeout="99999999" ScriptMode="Release" ValidateRequestMode="Enabled" EnableScriptLocalization="true" EnableScriptGlobalization="true" LoadScriptsBeforeUI="false" CompositeScript-ScriptMode="Release" CompositeScript-ResourceUICultures="Release" runat="server"></asp:ScriptManager>
                     <asp:PlaceHolder ID="PlaceHolder_Container" runat="server"></asp:PlaceHolder>
+                    <uc1:ChatMessage runat="server" ID="ChatMessage" />
                 </form>
             </div>
         </div>

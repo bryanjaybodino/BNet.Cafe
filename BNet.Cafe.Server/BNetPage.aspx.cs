@@ -226,7 +226,7 @@ namespace BNet.Cafe.Server
                     scripts = new[] { "BNetChart/BNetBaseChart", "BNetChart/BNetBarChart", "BNetChart/BNetDonutChart", "BNetChart/BNetLineChart" };
                     break;
                 case "COMPUTERS":
-                    scripts = new[] { "Pages/RemoteMessaging", "Pages/Computers" };
+                    scripts = new[] { "Pages/Computers" };
                     break;
                 case "COMPUTERCREATE":
                 case "COMPUTEREDIT":
@@ -241,10 +241,10 @@ namespace BNet.Cafe.Server
                     scripts = new[] { "Pages/UserTopUp" };
                     break;
                 case "REMOTE":
-                    scripts = new[] { "Pages/RemoteMessaging", "Pages/Remote" };
+                    scripts = new[] { "Pages/Remote" };
                     break;
                 case "RENTALMANAGE":
-                    scripts = new[] { "Pages/RentalManage", "Pages/RemoteMessaging" };
+                    scripts = new[] { "Pages/RentalManage" };
                     break;
                 case "SEATMAP":
                     scripts = new[] { "Pages/SeatMap", "Pages/Computers" };
@@ -253,7 +253,7 @@ namespace BNet.Cafe.Server
                     scripts = new[] { "Pages/PricingSettings" };
                     break;
                 case "WALLPAPER":
-                    scripts = new[] { "Pages/RemoteMessaging", "Pages/Wallpaper" };
+                    scripts = new[] { "Pages/Wallpaper" };
                     break;
                 case "SUPPLIERCREATE":
                 case "SUPPLIEREDIT":
@@ -278,6 +278,8 @@ namespace BNet.Cafe.Server
             {
                 FileJsHelpler.BundleAddScripts(ScriptManager1, script);
             }
+
+            FileJsHelpler.BundleAddScripts(ScriptManager1, "Pages/RemoteMessaging");
         }
 
         private async Task CheckGitHubUpdateAsync()

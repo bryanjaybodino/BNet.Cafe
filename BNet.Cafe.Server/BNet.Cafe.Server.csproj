@@ -193,6 +193,7 @@
     <Content Include="Forms\Inventory.ascx" />
     <Content Include="Forms\InventoryCreate.ascx" />
     <Content Include="Forms\InventoryEdit.ascx" />
+    <Content Include="Forms\Modals\ChatMessage.ascx" />
     <Content Include="Forms\Modals\GitHubUpdateModal.ascx" />
     <Content Include="Forms\Modals\InventoryDelete.ascx" />
     <Content Include="Forms\Modals\POSReceipt.ascx" />
@@ -310,6 +311,9 @@
     </Compile>
     <Compile Include="Ashx\CreateUserHandler.ashx.cs">
       <DependentUpon>CreateUserHandler.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Ashx\DeleteChatMessagesHandler.ashx.cs">
+      <DependentUpon>DeleteChatMessagesHandler.ashx</DependentUpon>
     </Compile>
     <Compile Include="Ashx\DownloadWallpaperHandler.ashx.cs">
       <DependentUpon>DownloadWallpaperHandler.ashx</DependentUpon>
@@ -451,6 +455,13 @@
     </Compile>
     <Compile Include="Forms\InventoryEdit.ascx.designer.cs">
       <DependentUpon>InventoryEdit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\ChatMessage.ascx.cs">
+      <DependentUpon>ChatMessage.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\ChatMessage.ascx.designer.cs">
+      <DependentUpon>ChatMessage.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Modals\ComputerDelete.ascx.cs">
       <DependentUpon>ComputerDelete.ascx</DependentUpon>
@@ -763,6 +774,7 @@
     <Content Include="App\manifest-template.json" />
     <Content Include="App\manifest.json" />
     <Content Include="Ashx\GetChatMessagesHandler.ashx" />
+    <Content Include="Ashx\DeleteChatMessagesHandler.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
