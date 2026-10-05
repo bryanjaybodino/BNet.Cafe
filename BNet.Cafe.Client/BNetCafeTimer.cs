@@ -491,11 +491,7 @@ namespace BNet.Cafe.Client
 
                 if (!string.IsNullOrEmpty(handlerUrl))
                 {
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = handlerUrl,
-                        UseShellExecute = true
-                    });
+                    OpenFullscreenBrowser(handlerUrl);
                 }
             }
             else if (IsWalkInUser())

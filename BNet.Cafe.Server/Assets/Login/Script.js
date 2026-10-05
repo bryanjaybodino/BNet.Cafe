@@ -145,3 +145,26 @@ function handleSubmit() {
         if (btn) btn.classList.remove('loading');
     });
 })();
+
+
+
+// Disable right-click context menu
+document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+});
+
+// Disable keyboard shortcuts for Inspect Element / DevTools
+document.addEventListener('keydown', function (e) {
+    // Prevent F12
+    if (e.key === 'F12') {
+        e.preventDefault();
+    }
+    // Prevent Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+        e.preventDefault();
+    }
+    // Prevent Ctrl+U (View Source)
+    if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+        e.preventDefault();
+    }
+});
