@@ -128,7 +128,22 @@ namespace BNet.Cafe.Server
                 {
                     HyperLink_DownloadApp.CssClass = "active";
                 }
-
+                //MANAGEMENT GROUP
+                else if (formName.Contains(HyperLink_Users.ToolTip))
+                {
+                    HyperLink_Users.CssClass = "active";
+                    group_Management.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_WallPaper.ToolTip))
+                {
+                    HyperLink_WallPaper.CssClass = "active";
+                    group_Management.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_Commits.ToolTip))
+                {
+                    HyperLink_Commits.CssClass = "active";
+                    group_Management.Attributes["open"] = "open";
+                }
                 //COMPUTER GROUP
                 else if (formName.Contains(HyperLink_Computers.ToolTip))
                 {
@@ -193,23 +208,6 @@ namespace BNet.Cafe.Server
                 {
                     HyperLink_SportTimer.CssClass = "active";
                     group_SportTimer.Attributes["open"] = "open";
-                }
-
-                //MANAGEMENT GROUP
-                else if (formName.Contains(HyperLink_Users.ToolTip))
-                {
-                    HyperLink_Users.CssClass = "active";
-                    group_Management.Attributes["open"] = "open";
-                }
-                else if (formName.Contains(HyperLink_WallPaper.ToolTip))
-                {
-                    HyperLink_WallPaper.CssClass = "active";
-                    group_Management.Attributes["open"] = "open";
-                }
-                else if (formName.Contains(HyperLink_Commits.ToolTip))
-                {
-                    HyperLink_Commits.CssClass = "active";
-                    group_Management.Attributes["open"] = "open";
                 }
             }
         }

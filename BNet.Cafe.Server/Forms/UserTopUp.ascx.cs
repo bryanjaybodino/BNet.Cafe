@@ -39,12 +39,13 @@ namespace BNet.Cafe.Server.Forms
                 Label_UserEmail.Text = userData.Rows[0]["DBEmail"].ToString();
                 string role = userData.Rows[0]["DBRole"].ToString();
                 HiddenField_Role.Value = role;
+
                 double totalMinutes = balances.GetBalanceByUserId(userId);
                 Label_CurrentBalance.Text = $"{totalMinutes} Mins";
 
                 if (role == ConstantData.UserType.Admin)
                 {
-                    AlertService.ShowAlert(this, "This account is admin no need to top-up", "warning");
+                    AlertService.ShowAlert(this, "This account is admin no need to manage top-up or deduction.", "warning");
                     Panel_Form.Enabled = false;
                     LinkButton_Submit.Visible = false;
                     return;
@@ -66,27 +67,71 @@ namespace BNet.Cafe.Server.Forms
             }
         }
 
+        protected void DropDownList_Type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bool isDeduction = DropDownList_Type.SelectedValue == "Deduction";
+
+            if (isDeduction)
+            {
+                TextBox_Description.Text = "Balance Deduction";
+                LinkButton_Submit.CssClass = "btn btn-danger";
+            }
+            else
+            {
+                TextBox_Description.Text = "Top-Up Load Credit";
+                LinkButton_Submit.CssClass = "btn btn-primary";
+            }
+        }
+
         protected void LinkButton_Submit_Click(object sender, EventArgs e)
         {
             string userId = Request.QueryString["id"];
-            string amount = TextBox_Amount.Text.Trim();
-            string duration = CalculateDurationFromAmountHandler.CalculateDuration(Convert.ToDecimal(amount), HiddenField_Role.Value).ToString();
+            bool isDeduction = DropDownList_Type.SelectedValue == "Deduction";
+
+            if (!decimal.TryParse(TextBox_Amount.Text.Trim(), out decimal parsedAmount) || parsedAmount < 0)
+            {
+                AlertService.ShowAlert(UpdatePanel1, "Please enter a valid amount.", "warning");
+                return;
+            }
+
+            double durationVal = CalculateDurationFromAmountHandler.CalculateDuration(parsedAmount, HiddenField_Role.Value);
+            double currentBalance = balances.GetBalanceByUserId(userId);
+
+            if (isDeduction)
+            {
+                if (durationVal > currentBalance)
+                {
+                    AlertService.ShowAlert(UpdatePanel1, $"Cannot deduct more than user's current balance ({currentBalance} Mins).", "warning");
+                    return;
+                }
+
+                // Invert values to negative for deduction
+                durationVal = -Math.Abs(durationVal);
+                parsedAmount = -Math.Abs(parsedAmount);
+            }
+
+            string duration = durationVal.ToString();
+            string amount = parsedAmount.ToString();
             string description = TextBox_Description.Text.Trim();
 
             if (string.IsNullOrEmpty(description))
             {
-                description = "Top-Up Load Credit";
+                description = isDeduction ? "Balance Deduction" : "Top-Up Load Credit";
             }
 
             bool isSuccess = balances.Create(userId, duration, amount, description);
 
             if (isSuccess)
             {
-                AlertService.ShowAlert(UpdatePanel1, "Top-Up successful! Balance added to user account.", "success", "BNetPage.aspx?Form=Users");
+                string successMessage = isDeduction
+                    ? "Deduction successful! Balance updated."
+                    : "Top-Up successful! Balance added to user account.";
+
+                AlertService.ShowAlert(UpdatePanel1, successMessage, "success", "BNetPage.aspx?Form=Users");
             }
             else
             {
-                AlertService.ShowAlert(UpdatePanel1, "Failed to process Top-Up transaction.", "error");
+                AlertService.ShowAlert(UpdatePanel1, "Failed to process transaction.", "error");
             }
         }
     }
