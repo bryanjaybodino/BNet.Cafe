@@ -16,7 +16,7 @@
             </div>
             <div style="margin-bottom: 12px;">
                 <label style="font-size: 12px; opacity: 0.7; display: block; margin-bottom: 4px;">Message:</label>
-                <div id="chatModalMessageText" style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; word-break: break-word; white-space: pre-wrap; max-height: 200px; overflow-y: auto;"></div>
+                <textarea id="chatModalMessageText" readonly rows="8" style="width: 100%; background: rgba(0,0,0,0.2); color: inherit; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); word-break: break-word; resize: vertical; box-sizing: border-box; font-family: monospace; line-height: 1.4;"></textarea>
             </div>
             <p style="color: var(--text-light-secondary); font-size: 13px; margin-top: 10px;">Are you sure you want to delete this message?</p>
         </div>
@@ -37,10 +37,32 @@
         return chatMessageModalInstance;
     }
 
+    function formatTextForTextArea(str) {
+        if (!str) return '';
+
+        // Sanitize or clean the input string before regex matching
+        let cleaned = str.trim();
+
+        let items = [];
+        let matches = cleaned.matchAll(/([0-9A-Z\s\-\(\)]+?\s+X\s+\d+)/gi);
+
+        for (const match of matches) {
+            let itemStr = match[0].trim();
+            if (itemStr) items.push(itemStr);
+        }
+
+        // Construct content list
+        const content = items.length > 0 ? items.join("\n") : cleaned;
+
+        return content;
+    }
+
     function openChatMessageModal(id, computerName, message, formattedTime) {
         document.getElementById('chatMessageModal_DeleteId').value = id || '';
         document.getElementById('chatModalComputerName').innerText = computerName || 'Terminal';
-        document.getElementById('chatModalMessageText').innerText = message || '';
+
+        // Populate textarea using .value property
+        document.getElementById('chatModalMessageText').value = formatTextForTextArea(message || '');
         document.getElementById('chatModalTime').innerText = formattedTime || '';
 
         // Reset delete button state

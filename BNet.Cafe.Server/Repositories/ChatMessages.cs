@@ -16,15 +16,17 @@ namespace BNet.Cafe.Server.Repositories
         private readonly DBScriptService dBScriptService = new DBScriptService();
         private readonly GridviewPaginationService paginationService = new GridviewPaginationService();
 
-        public DataTable GetAll(string search = "", int pageIndex = -1, bool isDeleted = false)
+        public DataTable GetAll(string userId, string computerName, int pageIndex = -1, bool isDeleted = false)
         {
             var scripts = new Dictionary<string, string>();
-            string DBMessage = dBScriptService.CleanUpToUpper(search);
+            string DBUserId = dBScriptService.CleanUpToUpper(userId);
+            string DBComputerName = dBScriptService.CleanUpToUpper(computerName);
             string DBIsDeleted = isDeleted ? "TRUE" : "FALSE";
             string LIMIT = paginationService.SetPagination(pageIndex);
 
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", DBIsDeleted);
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBMessage", DBMessage);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerName", DBUserId);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBUserId", DBUserId);
             if (pageIndex >= 0)
             {
                 dBScriptService.AddIfNotNullOrEmpty(scripts, "LIMIT", LIMIT);
@@ -70,7 +72,7 @@ namespace BNet.Cafe.Server.Repositories
             string sql = dBScriptService.Scripts(scripts, template);
             var result = DBContext.SqlExecuteReaderAsync(sql);
 
-            string newMessageId = result.ContainsKey("DBId") ? result["DBId"].ToString() : DBContext.LastInsertedId.ToString();
+            string newMessageId = DBContext.LastInsertedId.ToString();
 
             return (true, newMessageId);
         }

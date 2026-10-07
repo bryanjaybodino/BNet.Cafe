@@ -33,6 +33,7 @@ function setStatus(text, isConnected) {
 }
 
 // Load non-deleted chat history for this computer
+// Load non-deleted chat history for this computer
 function loadChatHistory() {
     const endpoint = getHandlerEndpoint('GetChatMessagesHandler.ashx') + '?isDeleted=false';
 
@@ -42,6 +43,9 @@ function loadChatHistory() {
             if (res && res.success && Array.isArray(res.data)) {
                 const logs = document.getElementById('chatLogs');
                 logs.innerHTML = ''; // clear current logs
+
+                // Sort items by numeric ID ascending
+                res.data.sort((a, b) => Number(a.id) - Number(b.id));
 
                 // Filter messages meant for this specific client or show all active messages
                 const filtered = res.data.filter(item =>
@@ -57,7 +61,6 @@ function loadChatHistory() {
         })
         .catch(err => console.error('Error fetching chat history:', err));
 }
-
 function connectAgent() {
     agentWs = new WebSocket(`ws://${window.location.hostname}:2050/ws/agent`);
     agentWs.binaryType = 'arraybuffer';
@@ -121,39 +124,50 @@ function checkAntiSpamLock() {
 
 function startCooldown(seconds) {
     const input = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendBtn');
+    const sendBtn = document.querySelector('[id$="LinkButton_SaveMessage"]');
 
-    input.disabled = true;
-    sendBtn.disabled = true;
+    if (!input) return;
+
+    // Set readOnly instead of disabled so the input value remains clearly visible
+    input.readOnly = true;
+    if (sendBtn) sendBtn.classList.add('disabled');
 
     if (cooldownTimer) clearInterval(cooldownTimer);
 
     let currentRemaining = seconds;
-    input.placeholder = `Please wait ${currentRemaining}s before sending again...`;
+
+    // Set value and placeholder so the countdown is visible in all browsers
+    input.value = `Please wait ${currentRemaining}s before sending again...`;
 
     cooldownTimer = setInterval(() => {
         currentRemaining--;
+
         if (currentRemaining <= 0) {
             clearInterval(cooldownTimer);
-            input.disabled = false;
-            sendBtn.disabled = false;
+            input.readOnly = false;
+            input.value = ''; // Clear countdown text
             input.placeholder = "Type a message...";
+            if (sendBtn) sendBtn.classList.remove('disabled');
             input.focus();
         } else {
-            input.placeholder = `Please wait ${currentRemaining}s before sending again...`;
+            input.value = `Please wait ${currentRemaining}s before sending again...`;
         }
     }, 1000);
 }
 
-function handleSend() {
+function handleSend(e) {
+    if (e) e.preventDefault();
+
     const input = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendBtn');
-    if (input.disabled || sendBtn.disabled) return;
+    const sendBtn = document.querySelector('[id$="LinkButton_SaveMessage"]');
+
+    if (!input || input.readOnly || input.disabled || (sendBtn && sendBtn.classList.contains('disabled'))) {
+        return;
+    }
 
     const message = input.value.trim();
     if (!message) return;
 
-    // Save timestamp in localStorage to keep lock persistent across refresh
     localStorage.setItem('chat_last_sent_timestamp', Date.now().toString());
 
     // 1. Send via WebSocket
@@ -163,32 +177,43 @@ function handleSend() {
         windowTitle: "Chat Client"
     });
 
-    // 2. Set hidden ASP.NET field values and trigger LinkButton PostBack
-    const txtMsg = document.querySelector('[id$="TextBox_ChatMessage"]');
-    const txtComputer = document.querySelector('[id$="TextBox_ComputerName"]');
-    const txtUser = document.querySelector('[id$="TextBox_UserId"]');
-    const saveBtn = document.querySelector('[id$="LinkButton_SaveMessage"]');
-    if (txtMsg && txtComputer && txtUser && saveBtn) {
-        txtMsg.value = message;
-        txtComputer.value = clientName;
-        txtUser.value = userId;
-
-        // Trigger the ASP.NET LinkButton click event
-        saveBtn.click();
-    }
+    // 2. Save to Database asynchronously via ASHX Handler
+    const saveEndpoint = getHandlerEndpoint('SaveChatMessageHandler.ashx');
+    fetch(saveEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            message: message,
+            computerName: clientName,
+            userId: userId
+        })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                console.error("Failed to persist message:", data.error);
+            }
+        })
+        .catch(err => console.error("Error saving message:", err));
 
     appendBubble(message, 'outgoing');
-    input.value = '';
 
-    // Apply lock duration
+    // 3. Start Cooldown
     startCooldown(LOCK_DURATION);
 }
 
-document.getElementById('sendBtn').onclick = handleSend;
-document.getElementById('messageInput').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') handleSend();
-});
+// Attach listener cleanly
+const saveBtnEl = document.querySelector('[id$="LinkButton_SaveMessage"]');
+if (saveBtnEl) {
+    saveBtnEl.onclick = handleSend;
+}
 
+document.getElementById('messageInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSend(e);
+    }
+});
 // Initialize WebSocket, fetch existing history, and verify active lock state
 connectAgent();
 loadChatHistory();

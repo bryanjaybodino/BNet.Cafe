@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq; // Added System.Linq for sorting
 using System.Web;
 
 namespace BNet.Cafe.Server.Ashx
@@ -13,14 +14,15 @@ namespace BNet.Cafe.Server.Ashx
     public class GetChatMessagesHandler : IHttpHandler
     {
         private readonly ChatMessages _chatMessagesRepository = new ChatMessages();
-
+        Sessions.User userSession = new Sessions.User();
         public void ProcessRequest(HttpContext context)
         {
             context.Response.ContentType = "application/json";
 
             try
             {
-                string search = context.Request["search"] ?? "";
+                string userId = userSession.user_id;
+                string computerName = context.Request["computerName"] ?? "";
                 string pageIndexStr = context.Request["pageIndex"];
                 string isDeletedStr = context.Request["isDeleted"];
 
@@ -36,7 +38,7 @@ namespace BNet.Cafe.Server.Ashx
                     bool.TryParse(isDeletedStr, out isDeleted);
                 }
 
-                DataTable dt = _chatMessagesRepository.GetAll(search, pageIndex, isDeleted);
+                DataTable dt = _chatMessagesRepository.GetAll(userId, computerName, pageIndex, isDeleted);
                 List<ChatMessageItem> list = new List<ChatMessageItem>();
 
                 if (dt != null && dt.Rows.Count > 0)
@@ -54,6 +56,9 @@ namespace BNet.Cafe.Server.Ashx
                             IsDeleted = row["DBIsDeleted"] != DBNull.Value && Convert.ToBoolean(row["DBIsDeleted"])
                         });
                     }
+
+                    // Sort list by DBID in ascending numeric order
+                    list = list.OrderBy(x => long.TryParse(x.Id, out long id) ? id : 0).ToList();
                 }
 
                 SendJsonResponse(context, true, "Chat messages retrieved successfully.", list);

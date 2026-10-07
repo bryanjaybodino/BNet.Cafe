@@ -18,6 +18,7 @@ namespace BNet.Cafe.Server
         {
             if (!IsPostBack)
             {
+                FileCssHelper.BundleCss();
                 FileJsHelpler.BundleAddScripts(ScriptManager1, "Shop/Script");
                 LoadCategories();
                 LoadProducts();
@@ -79,6 +80,23 @@ namespace BNet.Cafe.Server
         protected void Filter_Changed(object sender, EventArgs e)
         {
             LoadProducts();
+        }
+
+        protected void LinkButton_SaveMessage_Click(object sender, EventArgs e)
+        {
+            string message = TextBox_ChatMessage.Text;
+            string computerName = TextBox_ComputerName.Text;
+            string userId = userSession.count > 0
+                ? userSession.user_id
+                : ConstantData.UserType.Guest;
+
+            if (!string.IsNullOrEmpty(message))
+            {
+                ChatMessages repo = new ChatMessages();
+                repo.Create(message, computerName, userId);
+            }
+
+            TextBox_ChatMessage.Text = string.Empty;
         }
 
         public string GetProductImage(object itemIdObj)

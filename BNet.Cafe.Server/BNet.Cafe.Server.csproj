@@ -341,6 +341,9 @@
     <Compile Include="Ashx\GetWallpaperCountHandler.ashx.cs">
       <DependentUpon>GetWallpaperCountHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Ashx\SaveChatMessageHandler.ashx.cs">
+      <DependentUpon>SaveChatMessageHandler.ashx</DependentUpon>
+    </Compile>
     <Compile Include="BNetPage.aspx.cs">
       <DependentUpon>BNetPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -787,6 +790,7 @@
     <Content Include="App\manifest.json" />
     <Content Include="Ashx\GetChatMessagesHandler.ashx" />
     <Content Include="Ashx\DeleteChatMessagesHandler.ashx" />
+    <Content Include="Ashx\SaveChatMessageHandler.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

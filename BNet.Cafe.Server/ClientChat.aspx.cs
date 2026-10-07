@@ -2,12 +2,13 @@
 using BNet.Cafe.Server.Services;
 using BNet.Cafe.Server.Sessions;
 using System;
+using System.Web.Services;
 
 namespace BNet.Cafe.Server
 {
     public partial class ClientChat : System.Web.UI.Page
     {
-        private readonly User userSession = new User();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -16,24 +17,6 @@ namespace BNet.Cafe.Server
                 FileJsHelpler.BundleAddScripts(ScriptManager1, "Pages/RemoteMessaging");
                 FileJsHelpler.BundleAddScripts(ScriptManager1, "ClientChat/Script");
             }
-        }
-
-        protected void LinkButton_SaveMessage_Click(object sender, EventArgs e)
-        {
-            string message = TextBox_ChatMessage.Text;
-            string computerName = TextBox_ComputerName.Text;
-            string userId = userSession.count > 0
-                ? userSession.user_id
-                : ConstantData.UserType.Guest;
-
-            if (!string.IsNullOrEmpty(message))
-            {
-                ChatMessages repo = new ChatMessages();
-                repo.Create(message, computerName, userId);
-            }
-
-            // Reset text field
-            TextBox_ChatMessage.Text = string.Empty;
         }
     }
 }

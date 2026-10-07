@@ -15,13 +15,7 @@
         <asp:ScriptManager ID="ScriptManager1" EnableCdn="false" EnablePageMethods="true" EnablePartialRendering="true" AsyncPostBackTimeout="99999999" ScriptMode="Release" ValidateRequestMode="Enabled" EnableScriptLocalization="true" EnableScriptGlobalization="true" LoadScriptsBeforeUI="false" CompositeScript-ScriptMode="Release" CompositeScript-ResourceUICultures="Release" runat="server"></asp:ScriptManager>
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
             <ContentTemplate>
-                <!-- Hidden inputs to pass data to C# postback -->
-                <asp:TextBox ID="TextBox_ChatMessage" runat="server" Style="display: none;"></asp:TextBox>
-                <asp:TextBox ID="TextBox_ComputerName" runat="server" Style="display: none;"></asp:TextBox>
-                <asp:TextBox ID="TextBox_UserId" runat="server" Style="display: none;"></asp:TextBox>
-
-                <!-- Hidden LinkButton to trigger C# server handler -->
-                <asp:LinkButton ID="LinkButton_SaveMessage" runat="server" OnClick="LinkButton_SaveMessage_Click" Style="display: none;"></asp:LinkButton>
+    
 
                 <div class="full-chat-wrapper">
                     <div class="full-chat-header">
@@ -46,10 +40,11 @@
                         <div class="input-wrapper">
                             <input type="text" id="messageInput" class="form-control" placeholder="Type a message..." autofocus autocomplete="off">
                         </div>
-                        <button type="button" id="sendBtn" class="btn btn-primary btn-send">
+                        <button type="button" id="LinkButton_SaveMessage" runat="server" class="btn btn-primary btn-send">
                             <span>Send</span>
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
+
                     </div>
                 </div>
             </ContentTemplate>

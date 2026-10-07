@@ -606,7 +606,7 @@ namespace BNet.Cafe.Client
         private void Button_Shop_Click(object sender, EventArgs e)
         {
             string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
-            string handlerUrl = $"{baseUrl}/Shop.aspx";
+            string handlerUrl = $"{baseUrl}/Shop.aspx?ClientName={ConfigHelper.GetClientNameFromIP()}";
 
             OpenFullscreenBrowser(handlerUrl);
         }
