@@ -279,13 +279,13 @@
 }
 
 .total-label {
-    font-size: 15px;
+    font-size: 30px;
     font-weight: 600;
     color: var(--text-light);
 }
 
 .total-amount {
-    font-size: 22px;
+    font-size: 42px;
     font-weight: 700;
     color: #16a34a;
 }
@@ -335,7 +335,7 @@
     }
 
     .total-amount {
-        font-size: 20px;
+        font-size: 40px;
     }
 }
 
@@ -355,5 +355,75 @@
 
     .product-price {
         font-size: 13px;
+    }
+}
+/* POS Toolbar Filters */
+.pos-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.pos-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.pos-search-box {
+    position: relative;
+    flex: 1; /* Maximizes search box width to take up all remaining space */
+    width: 100%;
+}
+
+.pos-select-box {
+    position: relative;
+    width: 180px; /* Keep category dropdown at a fixed compact width */
+    flex-shrink: 0;
+}
+
+    .pos-select-box .select-icon {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light-secondary);
+        font-size: 12px;
+        pointer-events: none;
+    }
+
+.category-select {
+    width: 100%;
+    height: 38px;
+    padding-left: 28px;
+    padding-right: 10px;
+    border: 1px solid var(--border-light);
+    background-color: var(--bg-light-tertiary);
+    color: var(--text-light);
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+}
+
+    .category-select:focus {
+        border-color: var(--primary);
+    }
+
+/* Mobile Responsiveness update for filters */
+@media (max-width: 768px) {
+    .pos-filter-group {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .pos-search-box,
+    .pos-select-box {
+        max-width: 100%;
+        width: 100%;
     }
 }

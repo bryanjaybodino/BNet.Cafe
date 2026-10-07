@@ -33,6 +33,15 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.TextBox TextBox_Search;
 
         /// <summary>
+        /// DropDownList_Category control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_Category;
+
+        /// <summary>
         /// Repeater_Products control.
         /// </summary>
         /// <remarks>
@@ -40,6 +49,15 @@ namespace BNet.Cafe.Server.Forms
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater Repeater_Products;
+
+        /// <summary>
+        /// Panel_NoResults control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel Panel_NoResults;
 
         /// <summary>
         /// GridView_Cart control.

@@ -1,4 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Sales.ascx.cs" Inherits="BNet.Cafe.Server.Forms.Sales" %>
+<%@ Register Src="~/Forms/Modals/SalesVoid.ascx" TagPrefix="uc1" TagName="SalesVoid" %>
+
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <asp:LinkButton ID="LinkButton_Refresh" runat="server"></asp:LinkButton>
@@ -85,6 +87,14 @@
                     <PagerStyle CssClass="bnet-pagination" HorizontalAlign="Center" />
 
                     <Columns>
+                        <asp:TemplateField HeaderText="Action" ItemStyle-Width="100px">
+                            <ItemTemplate>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                    onclick='openVoidModal("<%# Eval("DBId") %>", "<%# Eval("DBItemName") %>")'>
+                                    <i class="fa-solid fa-ban"></i>Void 
+                                </button>
+                            </ItemTemplate>
+                        </asp:TemplateField>
                         <asp:TemplateField HeaderText="Trans ID" ItemStyle-Width="120px">
                             <ItemTemplate>
                                 <asp:Label ID="Label_DBId" runat="server" Text='<%# Eval("DBId") %>'></asp:Label>
@@ -138,5 +148,6 @@
             </div>
             <asp:Panel ID="Panel_Pagination" runat="server" />
         </div>
+        <uc1:SalesVoid runat="server" id="SalesVoid" />
     </ContentTemplate>
 </asp:UpdatePanel>

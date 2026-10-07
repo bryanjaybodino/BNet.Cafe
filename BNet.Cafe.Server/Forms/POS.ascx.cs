@@ -14,11 +14,13 @@ namespace BNet.Cafe.Server.Forms
         private readonly InventoryItems itemsRepo = new InventoryItems();
         private readonly InventoryTransactions transactionsRepo = new InventoryTransactions();
         Sessions.User user = new Sessions.User();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 InitCart();
+                LoadCategories();
                 LoadCatalog();
                 BindCart();
             }
@@ -38,16 +40,62 @@ namespace BNet.Cafe.Server.Forms
             }
         }
 
-        private void LoadCatalog(string search = "")
+        private void LoadCategories()
         {
-            DataTable dt = itemsRepo.GetAll(search);
-            Repeater_Products.DataSource = dt;
-            Repeater_Products.DataBind();
+            DataTable dt = itemsRepo.GetAll();
+            DropDownList_Category.Items.Clear();
+            DropDownList_Category.Items.Add(new ListItem("All Categories", ""));
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                DataView view = new DataView(dt);
+                DataTable distinctCategories = view.ToTable(true, "DBCategory");
+
+                foreach (DataRow row in distinctCategories.Rows)
+                {
+                    string category = row["DBCategory"].ToString().Trim();
+                    if (!string.IsNullOrEmpty(category))
+                    {
+                        DropDownList_Category.Items.Add(new ListItem(category, category));
+                    }
+                }
+            }
         }
 
-        protected void TextBox_Search_TextChanged(object sender, EventArgs e)
+        private void LoadCatalog()
         {
-            LoadCatalog(TextBox_Search.Text.Trim());
+            string searchKeyword = TextBox_Search.Text.Trim();
+            string selectedCategory = DropDownList_Category.SelectedValue;
+
+            // Pass string.Empty or only search when not blank so GetAll SQL template builds correctly
+            DataTable dt = itemsRepo.GetAll(searchKeyword);
+
+            if (dt != null && !string.IsNullOrEmpty(selectedCategory))
+            {
+                DataView dv = dt.DefaultView;
+                dv.RowFilter = $"DBCategory = '{selectedCategory.Replace("'", "''")}'";
+                dt = dv.ToTable();
+            }
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                Repeater_Products.DataSource = dt;
+                Repeater_Products.DataBind();
+                Repeater_Products.Visible = true;
+                if (Panel_NoResults != null) Panel_NoResults.Visible = false;
+            }
+            else
+            {
+                Repeater_Products.DataSource = null;
+                Repeater_Products.DataBind();
+                Repeater_Products.Visible = false;
+                if (Panel_NoResults != null) Panel_NoResults.Visible = true;
+            }
+        }
+
+        protected void Filter_Changed(object sender, EventArgs e)
+        {
+            LoadCatalog();
         }
 
         public string GetProductImage(object itemIdObj)
@@ -205,7 +253,6 @@ namespace BNet.Cafe.Server.Forms
                 return;
             }
 
-            // Compute total payable before clearing cart state
             double totalAmount = 0;
             foreach (DataRow row in cart.Rows)
             {
@@ -228,9 +275,8 @@ namespace BNet.Cafe.Server.Forms
             if (allSuccess)
             {
                 ClearCart();
-                LoadCatalog(TextBox_Search.Text.Trim());
+                LoadCatalog();
 
-                // Open POSReceipt control passing total amount
                 POSReceipt.Show(totalAmount);
             }
             else

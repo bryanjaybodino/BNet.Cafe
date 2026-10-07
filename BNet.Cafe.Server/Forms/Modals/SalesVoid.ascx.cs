@@ -6,31 +6,29 @@ using BNet.Cafe.Server.Services;
 
 namespace BNet.Cafe.Server.Forms.Modals
 {
-    public partial class StockInDelete : System.Web.UI.UserControl
+    public partial class SalesVoid : System.Web.UI.UserControl
     {
         private readonly InventoryTransactions transactionsRepo = new InventoryTransactions();
         private readonly InventoryItems itemsRepo = new InventoryItems();
 
-
-        protected void LinkButton_ConfirmDelete_Click(object sender, EventArgs e)
+        protected void LinkButton_ConfirmVoid_Click(object sender, EventArgs e)
         {
-            // Verify that the postback target is actually this button
             string eventTarget = Request.Form["__EVENTTARGET"] ?? string.Empty;
-            if (!eventTarget.Contains(LinkButton_ConfirmDelete.ID))
+            if (!eventTarget.Contains(LinkButton_ConfirmVoid.ID))
             {
                 return;
             }
 
-            string deleteId = HiddenField_DeleteId.Value;
+            string voidId = HiddenField_VoidId.Value;
 
-            if (string.IsNullOrEmpty(deleteId))
+            if (string.IsNullOrEmpty(voidId))
             {
                 AlertService.ShowAlert(this, "Invalid transaction record.", "warning");
                 return;
             }
 
-            // 1. Retrieve transaction details to find Item ID and added Quantity
-            DataTable dtTrans = transactionsRepo.GetById(deleteId);
+            // 1. Get transaction details
+            DataTable dtTrans = transactionsRepo.GetById(voidId);
             if (dtTrans == null || dtTrans.Rows.Count == 0)
             {
                 AlertService.ShowAlert(this, "Transaction record not found.", "error");
@@ -41,30 +39,26 @@ namespace BNet.Cafe.Server.Forms.Modals
             string itemId = transRow["DBItemId"].ToString();
             int transactionQty = Convert.ToInt32(transRow["DBQuantity"]);
 
-            // 2. Retrieve current inventory item stock
+            // 2. Add sold stock back to inventory
             DataTable dtItem = itemsRepo.GetById(itemId);
             if (dtItem != null && dtItem.Rows.Count > 0)
             {
                 int currentStock = Convert.ToInt32(dtItem.Rows[0]["DBQuantityInStock"]);
-                int newStock = currentStock - transactionQty;
+                int newStock = currentStock + transactionQty; // Revert stock back
 
-                // Ensure stock doesn't drop below zero
-                if (newStock < 0) newStock = 0;
-
-                // Update item stock in inventory
                 itemsRepo.UpdateStock(itemId, newStock.ToString());
             }
 
-            // 3. Delete transaction log record
-            bool isSuccess = transactionsRepo.Delete(deleteId);
+            // 3. Delete or mark transaction as void
+            bool isSuccess = transactionsRepo.Delete(voidId);
 
             if (isSuccess)
             {
-                AlertService.ShowAlert(this, "Stock record deleted and inventory updated successfully.", "success");
+                AlertService.ShowAlert(this, "Sale voided and inventory stock restored successfully.", "success");
             }
             else
             {
-                AlertService.ShowAlert(this, "Failed to delete stock record.", "error");
+                AlertService.ShowAlert(this, "Failed to void sale transaction.", "error");
             }
         }
     }

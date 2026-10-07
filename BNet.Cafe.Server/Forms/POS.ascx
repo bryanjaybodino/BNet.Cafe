@@ -7,18 +7,24 @@
             <!-- Left Panel: Catalog -->
             <div class="pos-catalog-panel">
                 <div class="pos-toolbar">
-                    <div class="pos-title">
-                        <i class="fa-solid fa-store"></i> Catalog
-                    </div>
-                    <div class="pos-search-box">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input" 
-                            Placeholder="Search items..." AutoPostBack="true" 
-                            OnTextChanged="TextBox_Search_TextChanged" 
-                            onkeydown="if(event.keyCode===13){this.blur(); return false;}" />
+                    <div class="pos-filter-group">
+                        <div class="pos-search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <asp:TextBox ID="TextBox_Search" runat="server" CssClass="search-input"
+                                Placeholder="Search items..." AutoPostBack="true"
+                                OnTextChanged="Filter_Changed"
+                                onkeydown="if(event.keyCode===13){this.blur(); return false;}" />
+                        </div>
+
+                        <div class="pos-select-box">
+                            <i class="fa-solid fa-filter select-icon"></i>
+                            <asp:DropDownList ID="DropDownList_Category" runat="server" CssClass="category-select"
+                                AutoPostBack="true" OnSelectedIndexChanged="Filter_Changed">
+                            </asp:DropDownList>
+                        </div>
                     </div>
                 </div>
-
+                <div class="form-actions"></div>
                 <div class="product-grid">
                     <asp:Repeater ID="Repeater_Products" runat="server" OnItemCommand="Repeater_Products_ItemCommand">
                         <ItemTemplate>
@@ -42,6 +48,11 @@
                             </asp:LinkButton>
                         </ItemTemplate>
                     </asp:Repeater>
+                    <asp:Panel ID="Panel_NoResults" runat="server" Visible="false" Style="grid-column: 1 / -1; text-align: center; padding: 40px 10px; color: var(--text-light-secondary);">
+                        <i class="fa-solid fa-box-open" style="font-size: 32px; margin-bottom: 8px; opacity: 0.5;"></i>
+                        <div style="font-weight: 600;">No items found</div>
+                        <div style="font-size: 12px; margin-top: 4px;">Try clearing your search or changing the category filter.</div>
+                    </asp:Panel>
                 </div>
             </div>
 
@@ -49,12 +60,12 @@
             <div class="pos-checkout-panel">
                 <div class="pos-toolbar">
                     <div class="pos-title">
-                        <i class="fa-solid fa-cart-shopping"></i> Current Order
+                        <i class="fa-solid fa-cart-shopping"></i>Current Order
                     </div>
                 </div>
 
                 <div class="cart-table-wrapper">
-                    <asp:GridView ID="GridView_Cart" runat="server" AutoGenerateColumns="False" 
+                    <asp:GridView ID="GridView_Cart" runat="server" AutoGenerateColumns="False"
                         CssClass="cart-table" OnRowCommand="GridView_Cart_RowCommand" GridLines="None">
                         <Columns>
                             <asp:BoundField DataField="ItemName" HeaderText="Item" />
@@ -96,16 +107,16 @@
                     </div>
 
                     <div class="cart-actions">
-                        <asp:LinkButton ID="LinkButton_Clear" OnClick="LinkButton_Clear_Click" CssClass="btn btn-secondary" runat="server" style="padding: 10px 16px;">
+                        <asp:LinkButton ID="LinkButton_Clear" OnClick="LinkButton_Clear_Click" CssClass="btn btn-secondary" runat="server" Style="padding: 10px 16px;">
                             Clear
                         </asp:LinkButton>
-                        <asp:LinkButton ID="LinkButton_Submit" OnClick="LinkButton_Submit_Click" CssClass="btn btn-primary" style="flex: 1; justify-content: center;" OnClientClick="return ValidatePOSCart();" runat="server">
+                        <asp:LinkButton ID="LinkButton_Submit" OnClick="LinkButton_Submit_Click" CssClass="btn btn-primary" Style="flex: 1; justify-content: center;" OnClientClick="return ValidatePOSCart();" runat="server">
                             <i class="fa-solid fa-cart-shopping"></i> Complete Sale
                         </asp:LinkButton>
                     </div>
                 </div>
             </div>
         </div>
-        <uc1:POSReceipt runat="server" id="POSReceipt" />
+        <uc1:POSReceipt runat="server" ID="POSReceipt" />
     </ContentTemplate>
 </asp:UpdatePanel>

@@ -203,6 +203,7 @@
     <Content Include="Forms\Modals\POSReceipt.ascx" />
     <Content Include="Forms\Modals\RemoteRestart.ascx" />
     <Content Include="Forms\Modals\RemoteShutdown.ascx" />
+    <Content Include="Forms\Modals\SalesVoid.ascx" />
     <Content Include="Forms\Modals\StockInDelete.ascx" />
     <Content Include="Forms\Modals\SupplierDelete.ascx" />
     <Content Include="Forms\Modals\WallpaperDelete.ascx" />
@@ -550,6 +551,13 @@
     </Compile>
     <Compile Include="Forms\Modals\RemoteTimeTransfer.ascx.designer.cs">
       <DependentUpon>RemoteTimeTransfer.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\SalesVoid.ascx.cs">
+      <DependentUpon>SalesVoid.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\SalesVoid.ascx.designer.cs">
+      <DependentUpon>SalesVoid.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Modals\StockInDelete.ascx.cs">
       <DependentUpon>StockInDelete.ascx</DependentUpon>
