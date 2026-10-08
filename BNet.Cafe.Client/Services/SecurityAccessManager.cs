@@ -160,6 +160,8 @@ namespace BNet.Cafe.Client.Services
                                 trimmedTitle.Equals("OS (C:)", StringComparison.OrdinalIgnoreCase) ||
                                 trimmedTitle.EndsWith(@":\ (C:)", StringComparison.OrdinalIgnoreCase);
 
+            if (trimmedTitle == ConfigHelper.FtpServerPath + " - File Explorer") return true;
+
             if (isRootCDrive) return true;
 
             // 2. Critical Windows System Folders & Network Control Applets
