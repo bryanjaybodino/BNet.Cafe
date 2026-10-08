@@ -655,6 +655,7 @@ namespace BNet.Cafe.Client
 
                 if (!SessionLogin.Exists())
                 {
+                    _BNetCafeTimer.isAdmin = false;
                     _BNetCafeTimer.userId = userId;
                     await _BNetCafeTimer.CreateTimerDataAsync(dateTime, duration, amount);
                 }

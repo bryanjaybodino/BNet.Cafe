@@ -105,7 +105,6 @@ namespace BNet.Cafe.Client
 
             createdTime = Convert.ToDateTime(serverTime);
             isOpenTime = (parsedDurationMinutes == 0);
-            isAdmin = false;
             isPaused = false;
             hasWarned5Min = false;
             hasWarned1Min = false;
@@ -154,18 +153,18 @@ namespace BNet.Cafe.Client
 
             UpdateAccountActionButton();
 
-            if (isOpenTime)
-            {
-                Label_SessionType.Text = "OPEN TIME SESSION";
-                Label_TotalHours.Text = "Purchased: Pay-as-you-go";
-                Label_TimeoutDisplay.Text = "Timeout: Continuous";
-            }
-            else if (isAdmin)
+            if (isAdmin)
             {
                 Label_SessionType.Text = "ADMINISTRATOR MODE";
                 Label_TotalHours.Text = "Purchased: Unlimited";
                 Label_TimeoutDisplay.Text = "Timeout: --:--";
                 label_TotalAmount.Text = "Total Amount: --";
+            }
+            else if (isOpenTime)
+            {
+                Label_SessionType.Text = "OPEN TIME SESSION";
+                Label_TotalHours.Text = "Purchased: Pay-as-you-go";
+                Label_TimeoutDisplay.Text = "Timeout: Continuous";
             }
             else
             {
@@ -250,31 +249,28 @@ namespace BNet.Cafe.Client
 
         private void UpdateDisplay()
         {
-    
+
             Label_TimerDisplay.ForeColor = Color.FromArgb(67, 56, 202);
             TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
 
-            if (isOpenTime)
+            if (isAdmin)
+            {
+                Label_TimerDisplay.Text = "Unlimited";
+                label_TotalAmount.Text = "Total Amount: --";
+                Button_Logout.Enabled = true;
+            }
+            else if (isOpenTime)
             {
                 Label_TimerDisplay.Text = time.ToString(@"hh\:mm\:ss");
                 double amount = CalculateRentalPrice.CalculatePrice((int)time.TotalMinutes);
                 label_TotalAmount.Text = $"Total Amount: ₱ {amount:N2}";
                 Button_Logout.Enabled = false;
-                return;
-            }
-            else if (isAdmin)
-            {
-                Label_TimerDisplay.Text = "Unlimited";
-                label_TotalAmount.Text = "Total Amount: --";
-                Button_Logout.Enabled = true;
-                return;
             }
             else
             {
                 Label_TimerDisplay.Text = time.ToString(@"hh\:mm\:ss");
                 Label_TimeoutDisplay.Text = DisplayFormatter.FormatTimeoutDisplay(TimeService.Get().AddSeconds(remainingSeconds));
                 Button_Logout.Enabled = true;
-                return;
             }
 
             if (isPaused)

@@ -69,7 +69,7 @@ namespace BNet.Cafe.Client.Controls
 
             if (isLocalAdmin)
             {
-                LoginSuccessful?.Invoke(this, new LoginSuccessEventArgs("ADMIN", "0", true));
+                LoginSuccessful?.Invoke(this, new LoginSuccessEventArgs("ADMIN", "6000", true));
                 return;
             }
 
