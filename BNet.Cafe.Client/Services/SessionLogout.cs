@@ -2,8 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BNet.Cafe.Client.Services
@@ -19,31 +17,32 @@ namespace BNet.Cafe.Client.Services
 
     public static class SessionLogout
     {
-        private static string GetFtpLogoutUrl()
-        {
-            string ftpBasePath = ConfigHelper.FtpServerPath; // ftp://192.168.1.2/
-            if (string.IsNullOrEmpty(ftpBasePath)) return null;
+        // Safe local directory for diskless write access across all Windows users
+        private static readonly string PendingDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            "BNetCafe"
+        );
 
-            if (!ftpBasePath.EndsWith("/"))
-            {
-                ftpBasePath += "/";
-            }
+        //C:\ProgramData\BNetCafe
 
-            string clientName = ConfigHelper.GetClientNameFromIP();
-            return $"{ftpBasePath}{clientName}_Logout.json";
-        }
+        private static readonly string PendingFilePath = Path.Combine(PendingDirectory, $"{ConfigHelper.GetClientNameFromIP() + "_Logout"}.json");
 
+        // First: Check if the file exists
         public static bool HasPendingLogout()
         {
-            return ReadPendingLogout() != null;
+            return File.Exists(PendingFilePath);
         }
 
+        // Save pending logout data to local JSON file
         public static void SavePendingLogout(string userId, string minutesUsed, string amount, string actionType)
         {
             try
             {
-                string ftpUrl = GetFtpLogoutUrl();
-                if (string.IsNullOrEmpty(ftpUrl)) return;
+                // Ensure target directory exists before saving file
+                if (!Directory.Exists(PendingDirectory))
+                {
+                    Directory.CreateDirectory(PendingDirectory);
+                }
 
                 var data = new SessionLogoutData
                 {
@@ -55,46 +54,23 @@ namespace BNet.Cafe.Client.Services
                 };
 
                 string json = JsonConvert.SerializeObject(data, Formatting.Indented);
-                byte[] fileContents = Encoding.UTF8.GetBytes(json);
-
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
-                request.Method = WebRequestMethods.Ftp.UploadFile;
-                request.UseBinary = true;
-                request.KeepAlive = false;
-
-                using (Stream requestStream = request.GetRequestStream())
-                {
-                    requestStream.Write(fileContents, 0, fileContents.Length);
-                }
-
-                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse()) { }
+                File.WriteAllText(PendingFilePath, json);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error saving pending logout to FTP: {ex.Message}");
+                Console.WriteLine($"Error saving pending logout: {ex.Message}");
             }
         }
 
+        // Read pending data
         public static SessionLogoutData ReadPendingLogout()
         {
-            string ftpUrl = GetFtpLogoutUrl();
-            if (string.IsNullOrEmpty(ftpUrl)) return null;
+            if (!HasPendingLogout()) return null;
 
             try
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
-                request.Method = WebRequestMethods.Ftp.DownloadFile;
-                request.UseBinary = true;
-                request.KeepAlive = false;
-
-                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
-                using (Stream responseStream = response.GetResponseStream())
-                using (StreamReader reader = new StreamReader(responseStream, Encoding.UTF8))
-                {
-                    string json = reader.ReadToEnd();
-                    if (string.IsNullOrWhiteSpace(json)) return null;
-                    return JsonConvert.DeserializeObject<SessionLogoutData>(json);
-                }
+                string json = File.ReadAllText(PendingFilePath);
+                return JsonConvert.DeserializeObject<SessionLogoutData>(json);
             }
             catch
             {
@@ -102,34 +78,32 @@ namespace BNet.Cafe.Client.Services
             }
         }
 
+        // Fourth: Remove the notepad/file
         public static void ClearPendingLogout()
         {
-            string ftpUrl = GetFtpLogoutUrl();
-            if (string.IsNullOrEmpty(ftpUrl)) return;
-
-            try
+            if (File.Exists(PendingFilePath))
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
-                request.Method = WebRequestMethods.Ftp.DeleteFile;
-                request.KeepAlive = false;
-
-                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse()) { }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error clearing pending logout from FTP: {ex.Message}");
+                try { File.Delete(PendingFilePath); } catch { }
             }
         }
 
+        // Second & Third: Check server connection and sync save to DB
         public static async Task<bool> ProcessPendingLogoutAsync()
         {
+            if (!HasPendingLogout()) return true;
+
             var pendingData = ReadPendingLogout();
-            if (pendingData == null) return true;
+            if (pendingData == null)
+            {
+                ClearPendingLogout();
+                return true;
+            }
 
             try
             {
                 var createBalanceHandler = new CreateBalanceHandler();
 
+                // Attempt to send balance to the server database
                 var response = await createBalanceHandler.CreateBalanceAsync(
                     pendingData.UserId,
                     pendingData.MinutesUsed,
@@ -137,8 +111,10 @@ namespace BNet.Cafe.Client.Services
                     pendingData.ActionType
                 );
 
+                // Assuming server response returns success or non-null when online
                 if (response != null)
                 {
+                    // Fourth step: remove notepad/file upon successful save
                     ClearPendingLogout();
                     return true;
                 }
