@@ -105,6 +105,7 @@ namespace BNet.Cafe.Client
 
             createdTime = Convert.ToDateTime(serverTime);
             isOpenTime = (parsedDurationMinutes == 0);
+            isAdmin = false;
             isPaused = false;
             hasWarned5Min = false;
             hasWarned1Min = false;
@@ -175,7 +176,6 @@ namespace BNet.Cafe.Client
             }
 
             UpdateDisplay();
-            Button_Logout.Enabled = true;
 
             if (!isPaused && !Timer_Countdown.Enabled)
             {
@@ -250,32 +250,38 @@ namespace BNet.Cafe.Client
 
         private void UpdateDisplay()
         {
+    
+            Label_TimerDisplay.ForeColor = Color.FromArgb(67, 56, 202);
+            TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
+
+            if (isOpenTime)
+            {
+                Label_TimerDisplay.Text = time.ToString(@"hh\:mm\:ss");
+                double amount = CalculateRentalPrice.CalculatePrice((int)time.TotalMinutes);
+                label_TotalAmount.Text = $"Total Amount: ₱ {amount:N2}";
+                Button_Logout.Enabled = false;
+                return;
+            }
+            else if (isAdmin)
+            {
+                Label_TimerDisplay.Text = "Unlimited";
+                label_TotalAmount.Text = "Total Amount: --";
+                Button_Logout.Enabled = true;
+                return;
+            }
+            else
+            {
+                Label_TimerDisplay.Text = time.ToString(@"hh\:mm\:ss");
+                Label_TimeoutDisplay.Text = DisplayFormatter.FormatTimeoutDisplay(TimeService.Get().AddSeconds(remainingSeconds));
+                Button_Logout.Enabled = true;
+                return;
+            }
+
             if (isPaused)
             {
                 Label_TimerDisplay.Text = "PAUSED";
                 Label_TimerDisplay.ForeColor = Color.FromArgb(217, 119, 6);
                 return;
-            }
-
-            Label_TimerDisplay.ForeColor = Color.FromArgb(67, 56, 202);
-            TimeSpan time = TimeSpan.FromSeconds(Math.Max(0, remainingSeconds));
-            Label_TimerDisplay.Text = isAdmin ? "Unlimited" : time.ToString(@"hh\:mm\:ss");
-
-            if (isAdmin)
-            {
-                label_TotalAmount.Text = "Total Amount: --";
-                Button_Logout.Enabled = true;
-            }
-            else if (isOpenTime)
-            {
-                double amount = CalculateRentalPrice.CalculatePrice((int)time.TotalMinutes);
-                label_TotalAmount.Text = $"Total Amount: ₱ {amount:N2}";
-                Button_Logout.Enabled = false;
-            }
-            else
-            {
-                Label_TimeoutDisplay.Text = isAdmin ? "Timeout: --:--" : DisplayFormatter.FormatTimeoutDisplay(TimeService.Get().AddSeconds(remainingSeconds));
-                Button_Logout.Enabled = true;
             }
         }
 
@@ -372,7 +378,6 @@ namespace BNet.Cafe.Client
 
             if (isPaused)
             {
-                // Load stored remaining elapsed seconds from disk
                 remainingSeconds = session.RemainingSeconds;
                 endTime = session.EndTime;
             }
@@ -381,17 +386,16 @@ namespace BNet.Cafe.Client
                 endTime = session.EndTime;
                 if (isOpenTime)
                 {
-                    // For OpenTime, calculate elapsed seconds based on anchor createdTime
+                    // Always treat OpenTime elapsed seconds relative to createdTime
                     remainingSeconds = Math.Max(0, (now - createdTime).TotalSeconds);
                 }
                 else
                 {
-                    // For Prepaid, calculate remaining seconds left until endTime
                     remainingSeconds = Math.Max(0, (endTime - now).TotalSeconds);
                 }
             }
 
-            if (isAdmin || isOpenTime || remainingSeconds > 0)
+            if (isOpenTime || isAdmin || remainingSeconds > 0)
             {
                 Label_ClientName.Text = ConfigHelper.GetClientNameFromIP();
                 Label_CustomerName.Text = await ResolveDisplayNameAsync(userId);
@@ -399,19 +403,20 @@ namespace BNet.Cafe.Client
 
                 UpdateAccountActionButton();
 
-                if (isAdmin)
-                {
-                    Label_SessionType.Text = "ADMINISTRATOR MODE";
-                    Label_TotalHours.Text = "Purchased: Unlimited";
-                    Label_TimeoutDisplay.Text = "Timeout: --:--";
-                    label_TotalAmount.Text = "Total Amount: --";
-                }
-                else if (isOpenTime)
+                // Check OpenTime explicit condition prior to Admin override
+                if (isOpenTime)
                 {
                     Label_SessionType.Text = "OPEN TIME SESSION";
                     Label_TotalHours.Text = "Purchased: Pay-as-you-go";
                     Label_TimeoutDisplay.Text = "Timeout: Continuous";
                     label_TotalAmount.Text = $"Total Amount: ₱ {session.Amount:N2}";
+                }
+                else if (isAdmin)
+                {
+                    Label_SessionType.Text = "ADMINISTRATOR MODE";
+                    Label_TotalHours.Text = "Purchased: Unlimited";
+                    Label_TimeoutDisplay.Text = "Timeout: --:--";
+                    label_TotalAmount.Text = "Total Amount: --";
                 }
                 else
                 {
@@ -443,7 +448,6 @@ namespace BNet.Cafe.Client
 
             ClearSessionFile();
         }
-
         private void ClearSessionFile()
         {
             isOpenTime = false;

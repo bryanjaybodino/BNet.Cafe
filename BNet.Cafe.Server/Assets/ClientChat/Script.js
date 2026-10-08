@@ -32,7 +32,50 @@ function setStatus(text, isConnected) {
     }
 }
 
-// Load non-deleted chat history for this computer
+// Helper to escape HTML characters
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.innerText = str;
+    return div.innerHTML;
+}
+
+// Parse text into an HTML table if order items match, otherwise return raw text
+function parseOrderTable(text) {
+    if (!text) return '';
+
+    const cleaned = text.trim();
+    // Regex matching item name followed by X and quantity
+    const orderRegex = /(.+?)\s+X\s+(\d+)/gi;
+    const matches = [...cleaned.matchAll(orderRegex)];
+
+    if (matches.length > 0) {
+        let tableHtml = `
+            <table class="chat-order-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th class="qty-col">Qty</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+        matches.forEach(match => {
+            const item = match[1].trim();
+            const qty = match[2].trim();
+            tableHtml += `
+                <tr>
+                    <td>${escapeHtml(item)}</td>
+                    <td class="qty-col">${escapeHtml(qty)}</td>
+                </tr>`;
+        });
+
+        tableHtml += `</tbody></table>`;
+        return tableHtml;
+    }
+
+    return escapeHtml(cleaned);
+}
+
 // Load non-deleted chat history for this computer
 function loadChatHistory() {
     const endpoint = getHandlerEndpoint('GetChatMessagesHandler.ashx') + '?isDeleted=false';
@@ -53,7 +96,6 @@ function loadChatHistory() {
                 );
 
                 filtered.forEach(item => {
-                    // Determine whether message was sent by client (outgoing) or received (incoming)
                     const isOutgoing = item.computerName && item.computerName.toUpperCase() === clientName;
                     appendBubble(item.message, isOutgoing ? 'outgoing' : 'incoming');
                 });
@@ -61,6 +103,7 @@ function loadChatHistory() {
         })
         .catch(err => console.error('Error fetching chat history:', err));
 }
+
 function connectAgent() {
     agentWs = new WebSocket(`ws://${window.location.hostname}:2050/ws/agent`);
     agentWs.binaryType = 'arraybuffer';
@@ -104,7 +147,10 @@ function appendBubble(text, type) {
     const logs = document.getElementById('chatLogs');
     const bubble = document.createElement('div');
     bubble.className = `chat-bubble ${type}`;
-    bubble.textContent = text;
+
+    // Render HTML table if order pattern matches, otherwise display as standard innerHTML
+    bubble.innerHTML = parseOrderTable(text);
+
     logs.appendChild(bubble);
     logs.scrollTop = logs.scrollHeight;
 }
@@ -128,15 +174,12 @@ function startCooldown(seconds) {
 
     if (!input) return;
 
-    // Set readOnly instead of disabled so the input value remains clearly visible
     input.readOnly = true;
     if (sendBtn) sendBtn.classList.add('disabled');
 
     if (cooldownTimer) clearInterval(cooldownTimer);
 
     let currentRemaining = seconds;
-
-    // Set value and placeholder so the countdown is visible in all browsers
     input.value = `Please wait ${currentRemaining}s before sending again...`;
 
     cooldownTimer = setInterval(() => {
@@ -145,7 +188,7 @@ function startCooldown(seconds) {
         if (currentRemaining <= 0) {
             clearInterval(cooldownTimer);
             input.readOnly = false;
-            input.value = ''; // Clear countdown text
+            input.value = '';
             input.placeholder = "Type a message...";
             if (sendBtn) sendBtn.classList.remove('disabled');
             input.focus();
@@ -214,6 +257,7 @@ document.getElementById('messageInput').addEventListener('keypress', (e) => {
         handleSend(e);
     }
 });
+
 // Initialize WebSocket, fetch existing history, and verify active lock state
 connectAgent();
 loadChatHistory();
@@ -226,15 +270,12 @@ document.addEventListener('contextmenu', function (e) {
 
 // Disable keyboard shortcuts for Inspect Element / DevTools
 document.addEventListener('keydown', function (e) {
-    // Prevent F12
     if (e.key === 'F12') {
         e.preventDefault();
     }
-    // Prevent Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
     if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
         e.preventDefault();
     }
-    // Prevent Ctrl+U (View Source)
     if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
         e.preventDefault();
     }

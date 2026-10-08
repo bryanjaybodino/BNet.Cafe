@@ -16,7 +16,8 @@
             </div>
             <div style="margin-bottom: 12px;">
                 <label style="font-size: 12px; opacity: 0.7; display: block; margin-bottom: 4px;">Message:</label>
-                <textarea id="chatModalMessageText" readonly rows="8" style="width: 100%; background: rgba(0,0,0,0.2); color: inherit; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); word-break: break-word; resize: vertical; box-sizing: border-box; font-family: monospace; line-height: 1.4;"></textarea>
+                <!-- Replaced textarea with a flexible container div to support HTML tables -->
+                <div id="chatModalMessageContainer" style="width: 100%; max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.2); color: inherit; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); word-break: break-word; box-sizing: border-box; line-height: 1.4;"></div>
             </div>
             <p style="color: var(--text-light-secondary); font-size: 13px; margin-top: 10px;">Are you sure you want to delete this message?</p>
         </div>
@@ -37,32 +38,56 @@
         return chatMessageModalInstance;
     }
 
-    function formatTextForTextArea(str) {
+    function renderFormattedMessage(str) {
         if (!str) return '';
 
-        // Sanitize or clean the input string before regex matching
         let cleaned = str.trim();
+        // Regex matches "ITEM_NAME X QUANTITY" pattern
+        const orderRegex = /(.+?)\s+X\s+(\d+)/gi;
+        let matches = [...cleaned.matchAll(orderRegex)];
 
-        let items = [];
-        let matches = cleaned.matchAll(/([0-9A-Z\s\-\(\)]+?\s+X\s+\d+)/gi);
+        if (matches.length > 0) {
+            // Build Table Output if order patterns are found
+            let tableHtml = `
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                            <th style="padding: 6px 8px;">Item Description</th>
+                            <th style="padding: 6px 8px; text-align: center; width: 80px;">Qty</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
 
-        for (const match of matches) {
-            let itemStr = match[0].trim();
-            if (itemStr) items.push(itemStr);
+            matches.forEach(match => {
+                const item = match[1].trim();
+                const qty = match[2].trim();
+                tableHtml += `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 6px 8px;">${escapeHtml(item)}</td>
+                        <td style="padding: 6px 8px; text-align: center; font-weight: bold;">${escapeHtml(qty)}</td>
+                    </tr>`;
+            });
+
+            tableHtml += `</tbody></table>`;
+            return tableHtml;
         }
 
-        // Construct content list
-        const content = items.length > 0 ? items.join("\n") : cleaned;
+        // Render standard text output if no order pattern is found
+        return `<div style="white-space: pre-wrap; font-family: inherit;">${escapeHtml(cleaned)}</div>`;
+    }
 
-        return content;
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.innerText = text;
+        return div.innerHTML;
     }
 
     function openChatMessageModal(id, computerName, message, formattedTime) {
         document.getElementById('chatMessageModal_DeleteId').value = id || '';
         document.getElementById('chatModalComputerName').innerText = computerName || 'Terminal';
 
-        // Populate textarea using .value property
-        document.getElementById('chatModalMessageText').value = formatTextForTextArea(message || '');
+        // Render HTML content inside the message container
+        document.getElementById('chatModalMessageContainer').innerHTML = renderFormattedMessage(message || '');
         document.getElementById('chatModalTime').innerText = formattedTime || '';
 
         // Reset delete button state

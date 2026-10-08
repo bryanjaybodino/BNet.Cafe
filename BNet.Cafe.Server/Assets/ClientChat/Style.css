@@ -164,3 +164,41 @@
     padding: 0 20px;
     flex-shrink: 0;
 }
+
+/* Order Table Styling in Bubbles */
+.chat-order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2px 0;
+    font-size: 13px;
+}
+
+    .chat-order-table th,
+    .chat-order-table td {
+        padding: 5px 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        text-align: left;
+    }
+
+.chat-bubble.incoming .chat-order-table th,
+.chat-bubble.incoming .chat-order-table td {
+    border-bottom: 1px solid var(--border-light);
+}
+
+.chat-order-table th {
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+.chat-order-table .qty-col {
+    text-align: center;
+    width: 50px;
+    font-weight: 600;
+}
+body {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10+ and Edge */
+    user-select: none; /* Standard syntax */
+}
