@@ -10,12 +10,10 @@ namespace BNet.Cafe.Client.Services
 {
     public static class SessionPricingRate
     {
-        private static readonly string StorageDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "BNetCafe"
-        );
+        // Dynamic path pointing to persistent secondary drive (or fallback)
+        private static string StorageDirectory => DirectoryHelper.GetAppDataFolderPath("Data");
 
-        private static readonly string FilePath = Path.Combine(StorageDirectory, "PricingRates.json");
+        private static string FilePath => Path.Combine(StorageDirectory, "PricingRates.json");
 
         public static bool HasLocalRates()
         {

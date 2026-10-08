@@ -17,15 +17,10 @@ namespace BNet.Cafe.Client.Services
 
     public static class SessionLogout
     {
-        // Safe local directory for diskless write access across all Windows users
-        private static readonly string PendingDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "BNetCafe"
-        );
+        // Persistent directory path targeting secondary drive across diskless client restarts
+        private static string PendingDirectory => DirectoryHelper.GetAppDataFolderPath("Data");
 
-        //C:\ProgramData\BNetCafe
-
-        private static readonly string PendingFilePath = Path.Combine(PendingDirectory, $"{ConfigHelper.GetClientNameFromIP() + "_Logout"}.json");
+        private static string PendingFilePath => Path.Combine(PendingDirectory, $"{ConfigHelper.GetClientNameFromIP() + "_Logout"}.json");
 
         // First: Check if the file exists
         public static bool HasPendingLogout()

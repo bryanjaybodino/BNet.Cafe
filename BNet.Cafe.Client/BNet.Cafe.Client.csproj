@@ -130,9 +130,11 @@
     <Compile Include="Services\AppFocusHelper.cs" />
     <Compile Include="Services\CalculateRentalPrice.cs" />
     <Compile Include="Services\CommandPromptService.cs" />
+    <Compile Include="Services\DirectoryHelper.cs" />
     <Compile Include="Services\DisplayFormatter.cs" />
     <Compile Include="Services\ConfigHelper.cs" />
     <Compile Include="Services\NetworkUtility.cs" />
+    <Compile Include="Services\SesisionLogin_Backup.cs" />
     <Compile Include="Services\SessionLogout.cs" />
     <Compile Include="Services\SessionPricingRate.cs" />
     <Compile Include="Services\SecuredDataService.cs" />

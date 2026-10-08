@@ -34,7 +34,8 @@ namespace BNet.Cafe.Client.Services
             _onUserInteraction = onUserInteraction;
             _onAutoShutdownTriggered = onAutoShutdownTriggered;
 
-            _wallpaperFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Wallpaper");
+            // Use the centralized dynamic path instead of AppDomain base directory
+            _wallpaperFolder = DirectoryHelper.GetAppDataFolderPath("Wallpaper");
 
             InitializePictureBox();
             InitializeTimers();

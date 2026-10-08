@@ -127,7 +127,7 @@ namespace BNet.Cafe.Client
 
         public void Logout()
         {
-            if (!Label_CustomerName.Text.Contains("Guest / Walk-in") && !string.IsNullOrEmpty(userId))
+            if (Label_CustomerName.Text.Contains("Guest / Walk-in") || !string.IsNullOrEmpty(userId))
             {
                 TimeSpan time = TimeSpan.FromSeconds(remainingSeconds);
                 string totalMinutes = ((int)time.TotalMinutes).ToString();

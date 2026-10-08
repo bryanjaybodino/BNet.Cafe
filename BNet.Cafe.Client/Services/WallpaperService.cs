@@ -34,11 +34,13 @@ namespace BNet.Cafe.Client.Services
 
         public WallpaperService(int intervalMs = 10000)
         {
-            _wallpaperFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Wallpaper");
+            // Dynamically assign local/persistent path across diskless and traditional setups
+            _wallpaperFolderPath = DirectoryHelper.GetAppDataFolderPath("Wallpaper");
+
             _countHandler = new GetWallpaperCountHandler();
             _downloadHandler = new DownloadWallpaperHandler();
 
-            // Ensure local directory exists
+            // Ensure directory exists
             if (!Directory.Exists(_wallpaperFolderPath))
             {
                 Directory.CreateDirectory(_wallpaperFolderPath);
@@ -52,11 +54,10 @@ namespace BNet.Cafe.Client.Services
         }
 
         /// <summary>
-        /// Asynchronously fetches wallapers from server and starts the wallpaper service.
+        /// Asynchronously fetches wallpapers from server and starts the wallpaper service.
         /// </summary>
         public async Task StartAsync()
         {
-
             SaveOriginalWallpaper();
             await SyncWallpapersFromServerAsync();
             RefreshImagesAndApply();
@@ -95,7 +96,7 @@ namespace BNet.Cafe.Client.Services
                     {
                         string savePath = Path.Combine(_wallpaperFolderPath, fileName);
 
-                        // Safely delete existing file before downloading to ensure it overwrites cleanly
+                        // Safely delete existing file before downloading to ensure clean overwrite
                         if (File.Exists(savePath))
                         {
                             TryDeleteFile(savePath);
