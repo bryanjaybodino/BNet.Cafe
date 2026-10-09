@@ -233,7 +233,7 @@
     <Content Include="Website\assets\music.mp3" />
     <Content Include="Website\assets\font-awesome.min.css" />
     <Content Include="Website\assets\fonts.googleapis.css" />
-    <Content Include="Website\gcash.jpg" />
+    <Content Include="Website\assets\gcash.jpg" />
     <Content Include="Website\index.html" />
     <Content Include="Callback.aspx" />
     <Content Include="Databases\Queries\Balances\Create.sql" />
