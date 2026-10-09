@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace BNet.Cafe.Client.Services
 {
-    public class SlideshowManager : IDisposable
+    public class WallpaperLockscreenService : IDisposable
     {
 
         private readonly Form _parentForm;
@@ -28,7 +28,7 @@ namespace BNet.Cafe.Client.Services
 
         public PictureBox PictureBox => _pictureBox;
 
-        public SlideshowManager(Form parentForm, Action onUserInteraction, Action onAutoShutdownTriggered)
+        public WallpaperLockscreenService(Form parentForm, Action onUserInteraction, Action onAutoShutdownTriggered)
         {
             _parentForm = parentForm ?? throw new ArgumentNullException(nameof(parentForm));
             _onUserInteraction = onUserInteraction;

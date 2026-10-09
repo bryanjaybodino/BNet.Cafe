@@ -142,8 +142,8 @@
     <Compile Include="Services\SecuredDataService.cs" />
     <Compile Include="Services\SecurityAccessManager.cs" />
     <Compile Include="Services\SessionLogin.cs" />
-    <Compile Include="Services\SlideshowManager.cs" />
-    <Compile Include="Services\WallpaperService.cs" />
+    <Compile Include="Services\WallpaperLockscreenService.cs" />
+    <Compile Include="Services\WallpaperDeskopService.cs" />
     <Compile Include="Starter\EnvironmentHelper.cs" />
     <Compile Include="Starter\NativeMethods.cs" />
     <Compile Include="Services\ActivityReporter.cs" />

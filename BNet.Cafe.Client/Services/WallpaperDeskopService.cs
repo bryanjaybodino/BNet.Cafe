@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace BNet.Cafe.Client.Services
 {
-    public class WallpaperService
+    public class WallpaperDeskopService
     {
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int SystemParametersInfo(uint uAction, uint uParam, string lpvParam, uint fuWinIni);
@@ -32,7 +32,7 @@ namespace BNet.Cafe.Client.Services
         private string[] _imageFiles = new string[0];
         private int _currentImageIndex = -1;
 
-        public WallpaperService(int intervalMs = 10000)
+        public WallpaperDeskopService(int intervalMs = 10000)
         {
             // Dynamically assign local/persistent path across diskless and traditional setups
             _wallpaperFolderPath = DirectoryHelper.GetAppDataFolderPath("Wallpaper");

@@ -76,9 +76,9 @@ namespace BNet.Cafe.Client
 
         private readonly ScreenStreamer _screenStreamer = new ScreenStreamer();
         private readonly ActivityReporter _activityReporter = new ActivityReporter();
-        private WallpaperService _wallpaperService = new WallpaperService();
+        private WallpaperDeskopService _wallpaperService = new WallpaperDeskopService();
 
-        private SlideshowManager _slideshowManager;
+        private WallpaperLockscreenService _slideshowManager;
 
         private LoginControl _loginControl;
         private RegisterControl _registerControl;
@@ -104,7 +104,7 @@ namespace BNet.Cafe.Client
 
             InitializeComponent();
 
-            _slideshowManager = new SlideshowManager(
+            _slideshowManager = new WallpaperLockscreenService(
                 parentForm: this,
                 onUserInteraction: RegisterUserInteraction,
                 onAutoShutdownTriggered: () => CommandPromptService.ShutdownSystem()
@@ -379,7 +379,7 @@ namespace BNet.Cafe.Client
         private async void MainForm_Load(object sender, EventArgs e)
         {
             await _wallpaperService?.SyncWallpapersFromServerAsync();
-
+            _slideshowManager.LoadImages();
             string clientName = ConfigHelper.GetClientNameFromIP();
             lblBigPcName.Text = string.IsNullOrEmpty(clientName) ? "PC-01" : clientName;
             await Task.Delay(1000);
