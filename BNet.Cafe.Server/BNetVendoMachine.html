@@ -441,21 +441,25 @@
                 const status = getClientStatus(client);
                 const statusClass = `status-${status.toLowerCase()}`;
 
+                // Format dates
+                const formattedStart = formatDateTimeString(client.TimeStart);
+                const formattedEnd = formatDateTimeString(client.TimeEnd);
+
                 const card = document.createElement('div');
                 card.className = `psp-card ${index === selectedIndex ? 'active' : ''} ${statusClass}`;
 
                 card.innerHTML = `
-                    <div class="pc-icon">💻</div>
-                    <div class="pc-title">${client.ClientName || `PC-${String(index + 1).padStart(2, '0')}`}</div>
-                    <div class="pc-details">
-                        ${client.IPAddress ? `IP: ${client.IPAddress}<br>` : ''}
-                        ${client.TimeStart ? `Start: ${client.TimeStart}<br>` : ''}
-                        ${client.TimeEnd ? `End: ${client.TimeEnd}` : ''}
-                    </div>
-                    <div class="psp-badge ${statusClass}">
-                        ${status}
-                    </div>
-                `;
+                <div class="pc-icon">💻</div>
+                <div class="pc-title">${client.ClientName || `PC-${String(index + 1).padStart(2, '0')}`}</div>
+                <div class="pc-details">
+                    ${client.IPAddress ? `IP: ${client.IPAddress}<br>` : ''}
+                    ${formattedStart ? `Start: ${formattedStart}<br>` : ''}
+                    ${formattedEnd ? `End: ${formattedEnd}` : ''}
+                </div>
+                <div class="psp-badge ${statusClass}">
+                    ${status}
+                </div>
+            `;
 
                 card.addEventListener('click', () => {
                     if (Math.abs(currentDeltaX) < 10) {
@@ -602,6 +606,32 @@
                 console.error('Failed to initialize SSE:', e);
             }
         });
+        function formatDateTimeString(dateStr) {
+            if (!dateStr || dateStr.trim() === "") return "";
+
+            // Check for 9999-12-31 date
+            if (dateStr.includes("9999-12-31")) {
+                return "∞";
+            }
+
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr; // Return original string if unparseable
+
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+            const month = months[d.getMonth()];
+            const day = String(d.getDate()).padStart(2, '0');
+
+            let hours = d.getHours();
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+
+            hours = hours % 12;
+            hours = hours ? hours : 12; // convert '0' to '12'
+            const formattedHours = String(hours).padStart(2, '0');
+
+            return `${month} ${day} – ${formattedHours}:${minutes} ${ampm}`;
+        }
 
         discoverImages();
         fetchClientData();
