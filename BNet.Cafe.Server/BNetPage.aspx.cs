@@ -112,6 +112,7 @@ namespace BNet.Cafe.Server
                 HyperLink_Users.CssClass = "";
                 HyperLink_WallPaper.CssClass = "";
                 HyperLink_Commits.CssClass = "";
+                HyperLink_Config.CssClass = "";
 
                 // Reset details group state
                 group_Computers.Attributes.Remove("open");
@@ -142,6 +143,11 @@ namespace BNet.Cafe.Server
                 else if (formName.Contains(HyperLink_Commits.ToolTip))
                 {
                     HyperLink_Commits.CssClass = "active";
+                    group_Management.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_Config.ToolTip))
+                {
+                    HyperLink_Config.CssClass = "active";
                     group_Management.Attributes["open"] = "open";
                 }
                 //COMPUTER GROUP
@@ -266,6 +272,9 @@ namespace BNet.Cafe.Server
                     break;
                 case "POS":
                     scripts = new[] { "Pages/POS" };
+                    break;
+                case "CONFIG":
+                    scripts = new[] { "Pages/Config" };
                     break;
                 default:
                     scripts = Array.Empty<string>();

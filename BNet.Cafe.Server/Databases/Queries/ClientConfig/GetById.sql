@@ -1,0 +1,4 @@
+﻿SELECT * FROM client_config 
+WHERE DBId = '{DBId}'
+ORDER BY DBId DESC 
+{LIMIT}

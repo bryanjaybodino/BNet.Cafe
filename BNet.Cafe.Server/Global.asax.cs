@@ -22,6 +22,7 @@ namespace BNet.Cafe.Server
             new Databases.Tables.inventory_transactions().create();
             new Databases.Tables.suppliers().create();
             new Databases.Tables.chat_messages().create();
+            new Databases.Tables.client_config().create();
 
             DBContext DBContext = new DBContext();
             //DB UPDATE 

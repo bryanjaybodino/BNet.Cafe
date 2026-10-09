@@ -127,8 +127,8 @@
     <Content Include="Assets\ClientChat\Style.css" />
     <Content Include="Assets\Login\Script.js" />
     <Content Include="Assets\Login\Style.css" />
-    <Content Include="Assets\Pages\Computers.js" />
     <Content Include="Assets\Pages\InventoryManage.css" />
+    <Content Include="Assets\Pages\Config.js" />
     <Content Include="Assets\Pages\POS.css" />
     <Content Include="Assets\Pages\POS.js" />
     <Content Include="Assets\Pages\StockIn.css" />
@@ -167,6 +167,10 @@
     <Content Include="Databases\Queries\ChatMessages\DeleteById.sql" />
     <Content Include="Databases\Queries\ChatMessages\GetAll.sql" />
     <Content Include="Databases\Queries\ChatMessages\GetById.sql" />
+    <Content Include="Databases\Queries\ClientConfig\Create.sql" />
+    <Content Include="Databases\Queries\ClientConfig\GetAll.sql" />
+    <Content Include="Databases\Queries\ClientConfig\GetById.sql" />
+    <Content Include="Databases\Queries\ClientConfig\Update.sql" />
     <Content Include="Databases\Queries\InventoryItems\Create.sql" />
     <Content Include="Databases\Queries\InventoryItems\DeleteById.sql" />
     <Content Include="Databases\Queries\InventoryItems\GetCount.sql" />
@@ -192,6 +196,7 @@
     <Content Include="Databases\Queries\Suppliers\Update.sql" />
     <Content Include="Databases\Queries\Suppliers\UpdateCount.sql" />
     <Content Include="Databases\Queries\Users\GetCount.sql" />
+    <Content Include="Forms\Config.ascx" />
     <Content Include="Forms\DownloadApp.ascx" />
     <Content Include="Forms\GitHubCommitsFeed.ascx" />
     <Content Include="Forms\Inventory.ascx" />
@@ -329,6 +334,9 @@
     <Compile Include="Ashx\GetChatMessagesHandler.ashx.cs">
       <DependentUpon>GetChatMessagesHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Ashx\GetClientConfigHandler.ashx.cs">
+      <DependentUpon>GetClientConfigHandler.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Ashx\GetPricingRatesHandler.ashx.cs">
       <DependentUpon>GetPricingRatesHandler.ashx</DependentUpon>
     </Compile>
@@ -373,6 +381,7 @@
     <Compile Include="Databases\DBScriptService.cs" />
     <Compile Include="Databases\Tables\balances.cs" />
     <Compile Include="Databases\Tables\chat_messages.cs" />
+    <Compile Include="Databases\Tables\client_config.cs" />
     <Compile Include="Databases\Tables\computers.cs" />
     <Compile Include="Databases\Tables\inventory_items.cs" />
     <Compile Include="Databases\Tables\inventory_transactions.cs" />
@@ -421,6 +430,13 @@
     </Compile>
     <Compile Include="Forms\Computers.ascx.designer.cs">
       <DependentUpon>Computers.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Config.ascx.cs">
+      <DependentUpon>Config.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Config.ascx.designer.cs">
+      <DependentUpon>Config.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Dashboard.ascx.cs">
       <DependentUpon>Dashboard.ascx</DependentUpon>
@@ -730,6 +746,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Balances.cs" />
     <Compile Include="Repositories\ChatMessages.cs" />
+    <Compile Include="Repositories\ClientConfig.cs" />
     <Compile Include="Repositories\Computers.cs" />
     <Compile Include="Repositories\ClientData.cs" />
     <Compile Include="Repositories\Dashboard.cs" />
@@ -791,6 +808,7 @@
     <Content Include="Ashx\GetChatMessagesHandler.ashx" />
     <Content Include="Ashx\DeleteChatMessagesHandler.ashx" />
     <Content Include="Ashx\SaveChatMessageHandler.ashx" />
+    <Content Include="Ashx\GetClientConfigHandler.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

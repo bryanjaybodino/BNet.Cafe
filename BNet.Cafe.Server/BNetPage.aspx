@@ -126,6 +126,9 @@
                         <asp:HyperLink ID="HyperLink_WallPaper" runat="server" ToolTip="Wallpaper" onclick="navigateTo('?Form=Wallpaper'); return false;">
                             <i class="fas fa-image"></i><span>Wallpaper</span>
                         </asp:HyperLink>
+                        <asp:HyperLink ID="HyperLink_Config" runat="server" ToolTip="Config" onclick="navigateTo('?Form=Config'); return false;">
+                            <i class="fas fa-code"></i><span>Config</span>
+                        </asp:HyperLink>
                         <asp:HyperLink ID="HyperLink_Commits" runat="server" ToolTip="GitHubCommitsFeed" onclick="navigateTo('?Form=GitHubCommitsFeed'); return false;">
                             <i class="fab fa-github"></i><span>Commits</span>
                         </asp:HyperLink>
