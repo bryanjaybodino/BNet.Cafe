@@ -162,6 +162,7 @@
     <Content Include="Assets\Shop\Script.js" />
     <Content Include="Assets\Shop\Style.css" />
     <Content Include="BNetPage.aspx" />
+    <Content Include="BNetVendoMachine.html" />
     <Content Include="ClientChat.aspx" />
     <Content Include="Databases\Queries\Balances\GetCount.sql" />
     <Content Include="Databases\Queries\ChatMessages\Create.sql" />
