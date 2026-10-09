@@ -127,6 +127,7 @@
     <Content Include="Assets\ClientChat\Style.css" />
     <Content Include="Assets\Login\Script.js" />
     <Content Include="Assets\Login\Style.css" />
+    <Content Include="Assets\Pages\Computers.js" />
     <Content Include="Assets\Pages\InventoryManage.css" />
     <Content Include="Assets\Pages\Config.js" />
     <Content Include="Assets\Pages\POS.css" />

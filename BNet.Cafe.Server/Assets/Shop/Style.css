@@ -522,3 +522,43 @@ body {
     -ms-user-select: none; /* IE 10+ and Edge */
     user-select: none; /* Standard syntax */
 }
+
+/* Empty State Styling */
+.ecom-empty {
+    grid-column: 1 / -1; /* Spans across all available CSS grid columns */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px 20px;
+    width: 100%;
+}
+
+.empty-icon-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    box-shadow: var(--card-shadow);
+}
+
+.ecom-empty h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.ecom-empty p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
