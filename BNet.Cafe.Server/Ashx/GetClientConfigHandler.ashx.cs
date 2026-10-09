@@ -47,29 +47,23 @@ namespace BNet.Cafe.Server.Ashx
                         IsDeleted = Convert.ToBoolean(row["DBIsDeleted"])
                     };
 
-                    SendJsonResponse(context, true, "Client configuration retrieved successfully.", configData);
+                    SendJsonResponse(context,  configData);
                 }
                 else
                 {
-                    SendJsonResponse(context, false, "Client configuration not found.");
+                    SendJsonResponse(context);
                 }
             }
             catch (Exception ex)
             {
-                SendJsonResponse(context, false, $"Server error: {ex.Message}");
+                SendJsonResponse(context);
             }
         }
 
-        private void SendJsonResponse(HttpContext context, bool success, string message, GetClientConfigData data = null)
+        private void SendJsonResponse(HttpContext context, GetClientConfigData data = null)
         {
-            var responseObj = new
-            {
-                success = success,
-                message = message,
-                data = data
-            };
 
-            string jsonResponse = JsonConvert.SerializeObject(responseObj);
+            string jsonResponse = JsonConvert.SerializeObject(data);
             context.Response.Write(jsonResponse);
         }
 

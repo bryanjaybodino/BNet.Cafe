@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BNet.Cafe.Client.Ashx;
+using System;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -171,7 +172,7 @@ namespace BNet.Cafe.Client.Services
                 }
 
                 // Fallback default
-                return GetOrCreateSetting("AppUrl", "http://localhost:5000");
+                return GetOrCreateSetting("AppUrl", "http://localhost:2000/BNet.Cafe.Server/");
             }
         }
 
@@ -305,6 +306,41 @@ namespace BNet.Cafe.Client.Services
                 .Where(u => u.Address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(u.Address))
                 .Select(u => u.Address)
                 .FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Updates the 4 key server configurations directly in the App.config.
+        /// </summary>
+        private static void UpdateConfigFromServer(GetClientConfigData config)
+        {
+            if (config == null) return;
+
+            SaveAppSettingWithoutRemovingComments("AccountCreationAllowed", config.AccountCreationAllowed.ToString().ToLower());
+            SaveAppSettingWithoutRemovingComments("AutoShutDownInterval", config.AutoShutDownInterval.ToString());
+            SaveAppSettingWithoutRemovingComments("DesktopSlideShow", config.DesktopSlideShow.ToString().ToLower());
+            SaveAppSettingWithoutRemovingComments("ResetShutdownCountdown", config.ResetShutdownCountdown.ToString().ToLower());
+        }
+
+
+        public static async Task SyncServerConfigAsync()
+        {
+            try
+            {
+                var configHandler = new GetClientConfigHandler();
+
+                // Fetch config from handler
+                GetClientConfigData serverConfig = await configHandler.GetByIdAsync("1");
+
+                if (serverConfig != null)
+                {
+                    // Save the 4 settings into local App.config
+                    ConfigHelper.UpdateConfigFromServer(serverConfig);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle server unreachable / connection errors
+            }
         }
     }
 }

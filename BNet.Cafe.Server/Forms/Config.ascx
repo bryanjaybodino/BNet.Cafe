@@ -95,7 +95,7 @@
                 <p>Manage system behaviors, timers, and client feature switches.</p>
             </div>
 
-            <div class="card" style="max-width: 650px;">
+            <div class="card">
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="<%= CheckBox_AccountCreationAllowed.ClientID %>" class="toggle-label">
                         <div class="toggle-text">

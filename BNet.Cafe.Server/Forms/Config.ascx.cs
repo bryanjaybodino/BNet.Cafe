@@ -75,6 +75,12 @@ namespace BNet.Cafe.Server.Forms
             if (isSuccess)
             {
                 AlertService.ShowAlert(UpdatePanel1, "Client configuration saved successfully.", "success");
+                ClientData clientData = new ClientData();
+                var targetList = clientData.FetchData();
+                foreach (var target in targetList)
+                {
+                    RemoteMessagingService.RefreshPC(UpdatePanel1, target.ClientName);
+                }
             }
             else
             {

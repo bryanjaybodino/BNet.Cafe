@@ -138,7 +138,7 @@ namespace BNet.Cafe.Client
                 this.TopMost = false;
             }
 
-                InitializeIdleCheckTimer();
+            InitializeIdleCheckTimer();
         }
 
         private void InitializeAuthControls()
@@ -385,6 +385,7 @@ namespace BNet.Cafe.Client
             await Task.Delay(1000);
             _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
             await SessionPricingRate.InitializeRatesAsync();
+            await ConfigHelper.SyncServerConfigAsync();
             var session = SessionLogin.ReadSession();
             if (session != null)
             {
@@ -705,6 +706,7 @@ namespace BNet.Cafe.Client
             {
                 await _wallpaperService?.SyncWallpapersFromServerAsync();
                 _slideshowManager.LoadImages();
+                await ConfigHelper.SyncServerConfigAsync();
             }
             else if (textMessage == "SHUTDOWN")
             {

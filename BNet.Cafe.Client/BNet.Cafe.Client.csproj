@@ -67,6 +67,8 @@
     <Compile Include="Ashx\CreateUserHandler.cs" />
     <Compile Include="Ashx\DownloadWallpaperHandler.cs" />
     <Compile Include="Ashx\GetBalanceHandler.cs" />
+    <Compile Include="Ashx\_GetClientConfigData.cs" />
+    <Compile Include="Ashx\GetClientConfigHandler.cs" />
     <Compile Include="Ashx\GetWallpaperCountHandler.cs" />
     <Compile Include="Ashx\_GetWallpaperCountHandlerData.cs" />
     <Compile Include="Ashx\_GetBalanceHandlerData.cs" />
