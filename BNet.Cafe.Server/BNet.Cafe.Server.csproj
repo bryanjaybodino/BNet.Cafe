@@ -300,7 +300,6 @@
     <Content Include="ResetPassword.aspx" />
     <Content Include="Web.config" />
     <Content Include="Website\assets\tailwindcss.js" />
-    <Content Include="Website\my-gcash.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App\Installation.aspx.cs">
