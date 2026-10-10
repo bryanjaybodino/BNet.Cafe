@@ -1,0 +1,340 @@
+﻿/* Disable text selection and browser interactions */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    width: 100vw;
+    height: 100vh; /* Fixed viewport height prevents resizing jumps */
+    overflow: hidden;
+    background-color: #000;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    touch-action: pan-y;
+}
+
+
+/* --- Fullscreen Wallpaper Slider --- */
+.slider-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+    filter: brightness(0.65) contrast(1.1);
+}
+
+    .slide.active {
+        opacity: 1;
+    }
+
+.vignette-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+    background: radial-gradient(circle, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.3) 100%);
+    pointer-events: none;
+}
+
+
+/* --- Perfectly Centered PSP Carousel Viewport --- */
+.psp-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh; /* Fixed viewport height */
+    z-index: 10;
+    display: flex;
+    align-items: center; /* Centers cards vertically */
+    justify-content: flex-start;
+    overflow: hidden;
+    cursor: grab;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+    .psp-container:active {
+        cursor: grabbing;
+    }
+
+.psp-carousel {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 3vw, 28px);
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform;
+    padding-left: 0px;
+}
+
+
+/* --- Fully Responsive Mobile-Optimized Cards --- */
+.psp-card {
+    width: clamp(150px, 38vw, 280px);
+    /* Use safe viewport height (svh) so it doesn't overflow in mobile landscape */
+    height: clamp(220px, 75svh, 400px);
+    border-radius: clamp(16px, 3.5vw, 28px);
+    background: linear-gradient(135deg, rgba(30, 34, 45, 0.95) 0%, rgba(18, 20, 26, 0.98) 100%);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 3px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: clamp(10px, 2vh, 28px) clamp(10px, 2vw, 20px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+    opacity: 0.4;
+    -webkit-transform: scale(0.82);
+    transform: scale(0.82);
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    flex-shrink: 0;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+    .psp-card.active {
+        opacity: 1;
+        -webkit-transform: scale(1.05);
+        transform: scale(1.05);
+        border-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.25), 0 20px 45px rgba(0, 0, 0, 0.9);
+        background: linear-gradient(135deg, rgba(40, 46, 60, 0.98) 0%, rgba(22, 26, 34, 0.98) 100%);
+    }
+
+
+    /* --- Status Borders & Badges --- */
+    .psp-card.status-administrator {
+        border-color: rgba(155, 89, 182, 0.6);
+    }
+
+    .psp-card.status-paused {
+        border-color: rgba(230, 126, 34, 0.6);
+    }
+
+    .psp-card.status-occupied {
+        border-color: rgba(231, 76, 60, 0.6);
+    }
+
+    .psp-card.status-available {
+        border-color: rgba(46, 204, 113, 0.6);
+    }
+
+    .psp-card.status-offline {
+        border-color: rgba(127, 140, 141, 0.6);
+    }
+
+    .psp-card.active.status-administrator {
+        border-color: #9b59b6;
+        box-shadow: 0 0 25px rgba(155, 89, 182, 0.6), 0 20px 45px rgba(0, 0, 0, 0.9);
+    }
+
+    .psp-card.active.status-paused {
+        border-color: #e67e22;
+        box-shadow: 0 0 25px rgba(230, 126, 34, 0.6), 0 20px 45px rgba(0, 0, 0, 0.9);
+    }
+
+    .psp-card.active.status-occupied {
+        border-color: #e74c3c;
+        box-shadow: 0 0 25px rgba(231, 76, 60, 0.6), 0 20px 45px rgba(0, 0, 0, 0.9);
+    }
+
+    .psp-card.active.status-available {
+        border-color: #2ecc71;
+        box-shadow: 0 0 25px rgba(46, 204, 113, 0.6), 0 20px 45px rgba(0, 0, 0, 0.9);
+    }
+
+    .psp-card.active.status-offline {
+        border-color: #7f8c8d;
+        box-shadow: 0 0 25px rgba(127, 140, 141, 0.6), 0 20px 45px rgba(0, 0, 0, 0.9);
+    }
+
+.pc-icon-wrapper {
+    width: clamp(42px, 10vw, 70px);
+    height: clamp(42px, 10vw, 70px);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: clamp(1.3rem, 3.5vw, 2.2rem);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 2px 5px rgba(255,255,255,0.1);
+}
+
+.pc-title {
+    font-size: clamp(1.1rem, 3vw, 1.8rem);
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+    margin: 4px 0;
+}
+
+.pc-details {
+    font-size: clamp(0.7rem, 1.6vw, 0.95rem);
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.25);
+    width: 100%;
+    padding: clamp(6px, 1vh, 10px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.psp-badge {
+    padding: clamp(5px, 1vh, 8px) clamp(12px, 2.5vw, 20px);
+    border-radius: 24px;
+    font-size: clamp(0.65rem, 1.6vw, 0.85rem);
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #fff;
+    width: 100%;
+    text-align: center;
+}
+
+    .psp-badge.status-administrator {
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        box-shadow: 0 4px 12px rgba(155, 89, 182, 0.4);
+    }
+
+    .psp-badge.status-paused {
+        background: linear-gradient(135deg, #e67e22, #d35400);
+        box-shadow: 0 4px 12px rgba(230, 126, 34, 0.4);
+    }
+
+    .psp-badge.status-occupied {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+    }
+
+    .psp-badge.status-available {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+    }
+
+    .psp-badge.status-offline {
+        background: linear-gradient(135deg, #7f8c8d, #6c7a89);
+        box-shadow: 0 4px 12px rgba(127, 140, 141, 0.4);
+    }
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: clamp(0.85rem, 2vw, 1rem);
+    z-index: 5;
+    background: rgba(0,0,0,0.8);
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+/* --- Number Input Modal Styles (Fully Mobile Responsive) --- */
+.number-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 20px;
+}
+
+    .number-modal-overlay.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+.number-modal-box {
+    background: rgba(26, 29, 38, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    border-radius: 24px;
+    padding: clamp(20px, 4vh, 35px) clamp(25px, 6vw, 50px);
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(46, 204, 113, 0.2);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    width: 100%;
+    max-width: 360px;
+}
+
+.number-modal-overlay.visible .number-modal-box {
+    transform: scale(1);
+}
+
+.number-modal-pc-target {
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    font-weight: 800;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 6px 16px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.number-modal-label {
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+
+.number-modal-display {
+    font-size: clamp(2.5rem, 10vw, 3.5rem);
+    font-weight: 800;
+    color: #2ecc71;
+    text-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+    letter-spacing: 2px;
+}
+
+.number-modal-timer {
+    font-size: clamp(0.7rem, 1.8vw, 0.75rem);
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 12px;
+    letter-spacing: 1px;
+}

@@ -373,3 +373,6 @@ FodyWeavers.xsd
 /BNet.Cafe.Server/App/manifest.json
 /BNet.Cafe.Server/Arduino/placeholder.txt
 /BNet.Cafe.Server/BNetVendoMachine.html
+/BNet.Cafe.Server/BNetVendoMachine.aspx
+/BNet.Cafe.Server/BNetVendoMachine.aspx.cs
+/BNet.Cafe.Server/BNetVendoMachine.aspx.designer.cs

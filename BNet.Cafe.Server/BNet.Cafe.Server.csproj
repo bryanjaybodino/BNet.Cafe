@@ -162,8 +162,10 @@
     <Content Include="Assets\ResetPassword\Style.css" />
     <Content Include="Assets\Shop\Script.js" />
     <Content Include="Assets\Shop\Style.css" />
+    <Content Include="Assets\Vendo\Script.js" />
+    <Content Include="Assets\Vendo\Style.css" />
     <Content Include="BNetPage.aspx" />
-    <Content Include="BNetVendoMachine.html" />
+    <Content Include="BNetVendoMachine.aspx" />
     <Content Include="ClientChat.aspx" />
     <Content Include="Databases\Queries\Balances\GetCount.sql" />
     <Content Include="Databases\Queries\ChatMessages\Create.sql" />
@@ -362,6 +364,13 @@
     </Compile>
     <Compile Include="BNetPage.aspx.designer.cs">
       <DependentUpon>BNetPage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BNetVendoMachine.aspx.cs">
+      <DependentUpon>BNetVendoMachine.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BNetVendoMachine.aspx.designer.cs">
+      <DependentUpon>BNetVendoMachine.aspx</DependentUpon>
     </Compile>
     <Compile Include="Callback.aspx.cs">
       <DependentUpon>Callback.aspx</DependentUpon>
