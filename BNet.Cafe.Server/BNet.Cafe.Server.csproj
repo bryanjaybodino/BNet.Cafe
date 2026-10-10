@@ -107,6 +107,7 @@
     <Content Include="App\Installation.aspx" />
     <Content Include="App\script.js" />
     <Content Include="App\service-worker.js" />
+    <Content Include="Arduino\placeholder.txt" />
     <Content Include="Assets\BNetAlert\Script.js" />
     <Content Include="Assets\BNetAlert\Style.css" />
     <Content Include="Assets\BNetBadge\Style.css" />
