@@ -127,7 +127,7 @@ namespace BNet.Cafe.Server.Forms
                         }
                         else
                         {
-                            TimeSpan elapsedTime = DateTime.Now - start;
+                            TimeSpan elapsedTime = TimeService.Get() - start;
                             if (elapsedTime.TotalSeconds < 0) elapsedTime = TimeSpan.Zero;
 
                             int runHours = (int)elapsedTime.TotalHours;

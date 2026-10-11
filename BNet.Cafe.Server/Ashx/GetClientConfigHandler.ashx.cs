@@ -44,6 +44,7 @@ namespace BNet.Cafe.Server.Ashx
                         ResetShutdownCountdown = Convert.ToBoolean(row["DBResetShutdownCountdown"]),
                         DateCreated = row["DBDateCreated"].ToString(),
                         TimeCreated = row["DBTimeCreated"].ToString(),
+                        TimeZone = row["DBTimeZone"].ToString(),
                         IsDeleted = Convert.ToBoolean(row["DBIsDeleted"])
                     };
 
@@ -71,6 +72,8 @@ namespace BNet.Cafe.Server.Ashx
 
         public class GetClientConfigData
         {
+            [JsonProperty("timeZone")]
+            public string TimeZone { get; set; }
             [JsonProperty("id")]
             public string Id { get; set; }
 

@@ -16,6 +16,14 @@ namespace BNet.Cafe.Server.Databases.Tables
             // DBDateCreated is a timestamp yyyy-MM-dd
             // DBTimeCreated is a timestamp HH:mm:ss
 
+
+            list.Add(new DBMigration.DBColumns
+            {
+                Default = "TAIPEI STANDARD TIME",
+                ColumnName = "DBTimeZone",
+                Length = 150,
+                Type = DBMigration.DBColumns.type.VARCHAR
+            });
             list.Add(new DBMigration.DBColumns
             {
                 ColumnName = "DBAccountCreationAllowed",

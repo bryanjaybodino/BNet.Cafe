@@ -28,8 +28,8 @@ namespace BNet.Cafe.Client
         public static extern bool ReleaseCapture();
 
         private double remainingSeconds = 0;
-        private DateTime createdTime;
-        private DateTime endTime;
+        private DateTime createdTime = TimeService.Get();
+        private DateTime endTime = TimeService.Get();
         private bool isOpenTime = false;
         private bool hasWarned5Min = false;
         private bool hasWarned1Min = false;

@@ -84,7 +84,7 @@ namespace BNet.Cafe.Server.Services
                 GetCacheKey(gridView),
                 index,
                 null,
-                DateTime.Now.AddMinutes(CacheExpiryMinutes),
+                TimeService.Get().AddMinutes(CacheExpiryMinutes),
                 System.Web.Caching.Cache.NoSlidingExpiration
             );
         }

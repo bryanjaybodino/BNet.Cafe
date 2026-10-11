@@ -1,4 +1,5 @@
-﻿using BNet.Cafe.Client.Services;
+﻿using BNet.Cafe.Client.Repositories;
+using BNet.Cafe.Client.Services;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -9,8 +10,8 @@ namespace BNet.Cafe.Client
 {
     public class SessionLoginData_Backup
     {
-        public DateTime CreatedTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTime CreatedTime { get; set; } = TimeService.Get();
+        public DateTime EndTime { get; set; } = TimeService.Get();
         public string UserId { get; set; } = string.Empty;
         public double Amount { get; set; }
         public bool IsOpenTime { get; set; }

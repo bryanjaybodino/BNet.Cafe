@@ -22,7 +22,7 @@ namespace BNet.Cafe.Client.Repositories
             public string WindowTitle { get; set; } = "";
             public string Url { get; set; }           // null when not a browser
             public bool IsBrowser => Url != null;
-            public DateTime CapturedAt { get; set; }
+            public DateTime CapturedAt { get; set; } = TimeService.Get();
 
             public override string ToString() =>
                 IsBrowser

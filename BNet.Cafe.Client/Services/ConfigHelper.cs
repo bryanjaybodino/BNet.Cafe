@@ -145,6 +145,14 @@ namespace BNet.Cafe.Client.Services
                 return "300";
             }
         }
+        public static string TimeZone
+        {
+            get
+            {
+                string rawValue = GetOrCreateSetting("TimeZone", "TAIPEI STANDARD TIME");
+                return rawValue;
+            }
+        }
 
         public static string AppUrl
         {
@@ -319,6 +327,7 @@ namespace BNet.Cafe.Client.Services
             SaveAppSettingWithoutRemovingComments("AutoShutDownInterval", config.AutoShutDownInterval.ToString());
             SaveAppSettingWithoutRemovingComments("DesktopSlideShow", config.DesktopSlideShow.ToString().ToLower());
             SaveAppSettingWithoutRemovingComments("ResetShutdownCountdown", config.ResetShutdownCountdown.ToString().ToLower());
+            SaveAppSettingWithoutRemovingComments("TimeZone", config.TimeZone);
         }
 
 

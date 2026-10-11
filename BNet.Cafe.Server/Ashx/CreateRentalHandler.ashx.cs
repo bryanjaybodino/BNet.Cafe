@@ -1,4 +1,5 @@
 ﻿using BNet.Cafe.Server.Databases;
+using BNet.Cafe.Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,6 +60,7 @@ namespace BNet.Cafe.Server.Ashx
 
         public bool Create(HttpContext context, string computerName, string userId, string duration, string amount)
         {
+            var time = TimeService.Get();
             var dBScriptService = new DBScriptService();
             var DBContext = new DBContext();
             var scripts = new System.Collections.Generic.Dictionary<string, string>();
@@ -72,8 +74,8 @@ namespace BNet.Cafe.Server.Ashx
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBComputerId", DBComputerId);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDuration", duration);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBAmount", amount);
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", DateTime.Now.ToString("yyyy-MM-dd"));
-            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeCreated", DateTime.Now.ToString("HH:mm:ss"));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", time.ToString("yyyy-MM-dd"));
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeCreated", time.ToString("HH:mm:ss"));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
 
             string template = context.Server.MapPath("~/Databases/Queries/Rentals/Create.sql");

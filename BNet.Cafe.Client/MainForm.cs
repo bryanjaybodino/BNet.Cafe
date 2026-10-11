@@ -246,8 +246,8 @@ namespace BNet.Cafe.Client
         private void StartIdleMonitor()
         {
             _userInteracted = false;
-            _lastUserInteractionTime = DateTime.Now;
-            _monitoringStartTime = DateTime.Now;
+            _lastUserInteractionTime = TimeService.Get();
+            _monitoringStartTime = TimeService.Get();
             _lastMousePosition = Cursor.Position;
 
             ShowLoginForm();
@@ -303,14 +303,14 @@ namespace BNet.Cafe.Client
             }
         }
 
-        private DateTime _lastUserInteractionTime = DateTime.Now;
+        private DateTime _lastUserInteractionTime = TimeService.Get();
 
         private void RegisterUserInteraction()
         {
             if (!_idleCheckTimer.Enabled) return;
             if (GetSystemIdleTimeMs() > 1000) return;
 
-            _lastUserInteractionTime = DateTime.Now;
+            _lastUserInteractionTime = TimeService.Get();
             _userInteracted = true;
             ShowLoginForm();
 
@@ -330,7 +330,7 @@ namespace BNet.Cafe.Client
 
             uint systemIdleMs = GetSystemIdleTimeMs();
             double systemIdleSeconds = systemIdleMs / 1000.0;
-            double appIdleSeconds = (DateTime.Now - _lastUserInteractionTime).TotalSeconds;
+            double appIdleSeconds = (TimeService.Get() - _lastUserInteractionTime).TotalSeconds;
 
             if (systemIdleSeconds >= InputIdleThresholdSeconds && appIdleSeconds >= InputIdleThresholdSeconds)
             {

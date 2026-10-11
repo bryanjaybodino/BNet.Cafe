@@ -13,7 +13,19 @@ namespace BNet.Cafe.Server.Forms
         {
             if (!IsPostBack)
             {
+                PopulateTimeZones();
                 LoadConfiguration();
+            }
+        }
+
+        private void PopulateTimeZones()
+        {
+            DropDownList_TimeZone.Items.Clear();
+            foreach (TimeZoneInfo timeZone in TimeZoneInfo.GetSystemTimeZones())
+            {
+                string text = string.Format("({0}) {1}", timeZone.BaseUtcOffset, timeZone.DisplayName);
+                string value = timeZone.Id;
+                DropDownList_TimeZone.Items.Add(new System.Web.UI.WebControls.ListItem(text.ToUpper(), value.ToUpper()));
             }
         }
 
@@ -29,6 +41,18 @@ namespace BNet.Cafe.Server.Forms
                 TextBox_AutoShutDownInterval.Text = row["DBAutoShutDownInterval"].ToString();
                 CheckBox_DesktopSlideShow.Checked = row["DBDesktopSlideShow"].ToString().ToUpper() == "TRUE";
                 CheckBox_ResetShutdownCountdown.Checked = row["DBResetShutdownCountdown"].ToString().ToUpper() == "TRUE";
+
+                // Assuming you add a DBTimeZone column to your table. 
+                // Fallback to local system time zone if column data is empty.
+                string savedTimeZone = row.Table.Columns.Contains("DBTimeZone") ? row["DBTimeZone"].ToString() : "";
+                if (!string.IsNullOrEmpty(savedTimeZone) && DropDownList_TimeZone.Items.FindByValue(savedTimeZone) != null)
+                {
+                    DropDownList_TimeZone.SelectedValue = savedTimeZone;
+                }
+                else
+                {
+                    try { DropDownList_TimeZone.SelectedValue = TimeZoneInfo.Local.Id.ToUpper(); } catch { }
+                }
             }
             else
             {
@@ -37,6 +61,7 @@ namespace BNet.Cafe.Server.Forms
                 TextBox_AutoShutDownInterval.Text = "300";
                 CheckBox_DesktopSlideShow.Checked = false;
                 CheckBox_ResetShutdownCountdown.Checked = false;
+                try { DropDownList_TimeZone.SelectedValue = TimeZoneInfo.Local.Id.ToUpper(); } catch { }
             }
         }
 
@@ -46,8 +71,8 @@ namespace BNet.Cafe.Server.Forms
             string autoShutDownInterval = string.IsNullOrWhiteSpace(TextBox_AutoShutDownInterval.Text) ? "300" : TextBox_AutoShutDownInterval.Text.Trim();
             string desktopSlideShow = CheckBox_DesktopSlideShow.Checked ? "TRUE" : "FALSE";
             string resetShutdownCountdown = CheckBox_ResetShutdownCountdown.Checked ? "TRUE" : "FALSE";
+            string timeZoneId = DropDownList_TimeZone.SelectedValue;
 
-            // Query existing record directly from DB instead of ViewState
             DataTable dt = clientConfigRepository.GetAll();
 
             bool isSuccess;
@@ -59,7 +84,8 @@ namespace BNet.Cafe.Server.Forms
                     accountCreationAllowed,
                     autoShutDownInterval,
                     desktopSlideShow,
-                    resetShutdownCountdown
+                    resetShutdownCountdown,
+                    timeZoneId
                 );
             }
             else

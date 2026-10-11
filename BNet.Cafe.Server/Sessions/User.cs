@@ -11,7 +11,7 @@ namespace BNet.Cafe.Server.Sessions
     {
         void SetCookie(string name, string value, bool encrypt = true)
         {
-            DateTime expires = DateTime.Now.AddDays(30);
+            DateTime expires = TimeService.Get().AddDays(30);
             HttpContext.Current.Response.Cookies.Remove(cookiePrefix + name);
             var cookie = new HttpCookie(cookiePrefix + name);
             cookie.Value = encrypt ? SecuredDataService.Encrypted(value ?? "") : value ?? "";
@@ -137,7 +137,7 @@ namespace BNet.Cafe.Server.Sessions
                 // when expiring, otherwise some browsers ignore the deletion instruction.
                 var cookie = new HttpCookie(cookiePrefix + name)
                 {
-                    Expires = DateTime.Now.AddDays(-30),
+                    Expires = TimeService.Get().AddDays(-30),
                     Value = "",
                     HttpOnly = true,
                     SameSite = SameSiteMode.Lax

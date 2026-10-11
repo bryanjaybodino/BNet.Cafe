@@ -1,4 +1,5 @@
 ﻿using BNet.Cafe.Client.Ashx;
+using BNet.Cafe.Client.Repositories;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -12,7 +13,7 @@ namespace BNet.Cafe.Client.Services
         public string MinutesUsed { get; set; }
         public string Amount { get; set; }
         public string ActionType { get; set; }
-        public DateTime Timestamp { get; set; }
+        public DateTime Timestamp { get; set; } = TimeService.Get();
     }
 
     public static class SessionLogout
@@ -45,7 +46,7 @@ namespace BNet.Cafe.Client.Services
                     MinutesUsed = minutesUsed,
                     Amount = amount,
                     ActionType = actionType,
-                    Timestamp = DateTime.Now
+                    Timestamp = TimeService.Get()
                 };
 
                 string json = JsonConvert.SerializeObject(data, Formatting.Indented);

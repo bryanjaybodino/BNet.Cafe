@@ -4,6 +4,8 @@ namespace BNet.Cafe.Client.Ashx
 {
     public class GetClientConfigData
     {
+        [JsonProperty("timeZone")]
+        public string TimeZone { get; set; }
         [JsonProperty("id")]
         public string Id { get; set; }
 

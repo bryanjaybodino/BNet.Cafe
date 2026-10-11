@@ -61,6 +61,7 @@ namespace BNet.Cafe.Server.Repositories
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBAutoShutDownInterval", DBAutoShutDownInterval);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDesktopSlideShow", DBDesktopSlideShow);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBResetShutdownCountdown", DBResetShutdownCountdown);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeZone", "TAIPEI STANDARD TIME");
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDateCreated", TimeService.Get().ToString("yyyy-MM-dd"));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeCreated", TimeService.Get().ToString("HH:mm:ss"));
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBIsDeleted", "FALSE");
@@ -72,7 +73,7 @@ namespace BNet.Cafe.Server.Repositories
             return DBContext.SqlExecuteAsync(sql);
         }
 
-        public bool Update(string id, string accountCreationAllowed, string autoShutDownInterval, string desktopSlideShow, string resetShutdownCountdown)
+        public bool Update(string id, string accountCreationAllowed, string autoShutDownInterval, string desktopSlideShow, string resetShutdownCountdown,string timeZone)
         {
             var scripts = new Dictionary<string, string>();
             string DBId = dBScriptService.CleanUpToUpper(id);
@@ -80,12 +81,14 @@ namespace BNet.Cafe.Server.Repositories
             string DBAutoShutDownInterval = dBScriptService.CleanUpToUpper(autoShutDownInterval);
             string DBDesktopSlideShow = dBScriptService.CleanUpToUpper(desktopSlideShow);
             string DBResetShutdownCountdown = dBScriptService.CleanUpToUpper(resetShutdownCountdown);
+            string DBTimeZone = dBScriptService.CleanUpToUpper(timeZone);
 
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBId", DBId);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBAccountCreationAllowed", DBAccountCreationAllowed);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBAutoShutDownInterval", DBAutoShutDownInterval);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBDesktopSlideShow", DBDesktopSlideShow);
             dBScriptService.AddIfNotNullOrEmpty(scripts, "DBResetShutdownCountdown", DBResetShutdownCountdown);
+            dBScriptService.AddIfNotNullOrEmpty(scripts, "DBTimeZone", DBTimeZone);
 
             Page page = HttpContext.Current.Handler as Page;
             string template = HttpContext.Current.Server.MapPath("~/Databases/Queries/ClientConfig/Update.sql");

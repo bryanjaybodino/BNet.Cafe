@@ -108,7 +108,10 @@
                         </label>
                     </label>
                 </div>
-
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="<%= DropDownList_TimeZone.ClientID %>">Server/Client Time Zone <span class="required">*</span></label>
+                    <asp:DropDownList ID="DropDownList_TimeZone" runat="server" CssClass="form-control bnet-select" />
+                </div>
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="<%= TextBox_AutoShutDownInterval.ClientID %>">Auto Shutdown Interval (Seconds) <span class="required">*</span></label>
                     <asp:TextBox ID="TextBox_AutoShutDownInterval" oninput="NumberOnly(this);" TextMode="Number" runat="server" CssClass="form-control" placeholder="300" MaxLength="10"></asp:TextBox>

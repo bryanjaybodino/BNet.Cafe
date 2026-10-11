@@ -33,6 +33,15 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.CheckBox CheckBox_AccountCreationAllowed;
 
         /// <summary>
+        /// DropDownList_TimeZone control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_TimeZone;
+
+        /// <summary>
         /// TextBox_AutoShutDownInterval control.
         /// </summary>
         /// <remarks>

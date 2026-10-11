@@ -17,7 +17,7 @@ namespace BNet.Cafe.Server.Services
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
 
-                string logMessage = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {message}{Environment.NewLine}";
+                string logMessage = $"[{TimeService.Get():yyyy-MM-dd HH:mm:ss}] {message}{Environment.NewLine}";
 
                 lock (_lock)
                 {
