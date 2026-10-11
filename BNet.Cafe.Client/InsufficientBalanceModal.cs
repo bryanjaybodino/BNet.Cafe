@@ -31,14 +31,6 @@ namespace BNet.Cafe.Client.Controls
             this.Text = "Account Balance Notice";
             this.TopMost = true;
         }
-
-        private void BtnOk_Click(object sender, EventArgs e)
-        {
-            // User acknowledged, closing with OK so the application can wait/listen for coin insertion or admin time
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);

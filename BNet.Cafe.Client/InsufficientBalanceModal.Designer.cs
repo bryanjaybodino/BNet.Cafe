@@ -5,7 +5,6 @@
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Label lblMessage;
-        private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Panel pnlContainer;
 
         protected override void Dispose(bool disposing)
@@ -20,7 +19,6 @@
         private void InitializeComponent()
         {
             this.pnlContainer = new System.Windows.Forms.Panel();
-            this.btnOk = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
             this.lblMessage = new System.Windows.Forms.Label();
             this.pnlContainer.SuspendLayout();
@@ -29,7 +27,6 @@
             // pnlContainer
             // 
             this.pnlContainer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
-            this.pnlContainer.Controls.Add(this.btnOk);
             this.pnlContainer.Controls.Add(this.lblTitle);
             this.pnlContainer.Controls.Add(this.lblMessage);
             this.pnlContainer.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -37,21 +34,6 @@
             this.pnlContainer.Name = "pnlContainer";
             this.pnlContainer.Size = new System.Drawing.Size(480, 235);
             this.pnlContainer.TabIndex = 0;
-            // 
-            // btnOk
-            // 
-            this.btnOk.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(99)))), ((int)(((byte)(102)))), ((int)(((byte)(241)))));
-            this.btnOk.FlatAppearance.BorderSize = 0;
-            this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOk.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnOk.ForeColor = System.Drawing.Color.White;
-            this.btnOk.Location = new System.Drawing.Point(334, 168);
-            this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(114, 41);
-            this.btnOk.TabIndex = 2;
-            this.btnOk.Text = "OK";
-            this.btnOk.UseVisualStyleBackColor = false;
-            this.btnOk.Click += new System.EventHandler(this.BtnOk_Click);
             // 
             // lblTitle
             // 
@@ -66,15 +48,15 @@
             // 
             // lblMessage
             // 
-            this.lblMessage.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this.lblMessage.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMessage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
             this.lblMessage.Location = new System.Drawing.Point(31, 75);
             this.lblMessage.Name = "lblMessage";
             this.lblMessage.Size = new System.Drawing.Size(417, 134);
             this.lblMessage.TabIndex = 1;
-            this.lblMessage.Text = "Your account has 0 balance or time remaining. Please insert your coins into the c" +
-    "oin slot. Do not close this window while inserting coins so your balance reflect" +
-    "s correctly.";
+            this.lblMessage.Text = "No balance or time remaining. You have 5 minutes to continue your session. Insert" +
+    " coins if a coin slot is available, or ask the administrator to top up your acco" +
+    "unt.";
             // 
             // InsufficientBalanceModal
             // 
