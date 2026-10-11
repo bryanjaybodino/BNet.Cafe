@@ -648,6 +648,8 @@ namespace BNet.Cafe.Client
                 string duration = jsonObject["duration"]?.ToString() ?? "0";
                 string amount = jsonObject["amount"]?.ToString() ?? "0";
                 string dateTime = jsonObject["dateTime"]?.ToString() ?? TimeService.Get().ToString();
+                _BNetCafeTimer.userId = userId;
+                _BNetCafeTimer.isAdmin = false;
 
                 if (_BNetCafeTimer == null || _BNetCafeTimer.IsDisposed)
                 {
@@ -656,8 +658,6 @@ namespace BNet.Cafe.Client
 
                 if (!SessionLogin.Exists())
                 {
-                    _BNetCafeTimer.isAdmin = false;
-                    _BNetCafeTimer.userId = userId;
                     await _BNetCafeTimer.CreateTimerDataAsync(dateTime, duration, amount);
                 }
                 else

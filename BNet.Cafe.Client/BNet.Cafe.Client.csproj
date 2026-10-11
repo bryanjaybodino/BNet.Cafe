@@ -105,6 +105,12 @@
     <Compile Include="Design\ModernTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="InsufficientBalanceModal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InsufficientBalanceModal.Designer.cs">
+      <DependentUpon>InsufficientBalanceModal.cs</DependentUpon>
+    </Compile>
     <Compile Include="LoginControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -181,6 +187,9 @@
     <Compile Include="Starter\WatchdogManager.cs" />
     <EmbeddedResource Include="BNetCafeTimer.resx">
       <DependentUpon>BNetCafeTimer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InsufficientBalanceModal.resx">
+      <DependentUpon>InsufficientBalanceModal.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoginControl.resx">
       <DependentUpon>LoginControl.cs</DependentUpon>

@@ -79,9 +79,9 @@
             // 
             this.Label_ClientName.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.Label_ClientName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
-            this.Label_ClientName.Location = new System.Drawing.Point(220, 12);
+            this.Label_ClientName.Location = new System.Drawing.Point(200, 12);
             this.Label_ClientName.Name = "Label_ClientName";
-            this.Label_ClientName.Size = new System.Drawing.Size(75, 25);
+            this.Label_ClientName.Size = new System.Drawing.Size(95, 25);
             this.Label_ClientName.TabIndex = 1;
             this.Label_ClientName.Text = "PC-00";
             this.Label_ClientName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -94,7 +94,7 @@
             this.Label_CustomerName.ForeColor = System.Drawing.Color.White;
             this.Label_CustomerName.Location = new System.Drawing.Point(12, 12);
             this.Label_CustomerName.Name = "Label_CustomerName";
-            this.Label_CustomerName.Size = new System.Drawing.Size(200, 25);
+            this.Label_CustomerName.Size = new System.Drawing.Size(182, 25);
             this.Label_CustomerName.TabIndex = 0;
             this.Label_CustomerName.Text = "Guest / Walk-in";
             this.Label_CustomerName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

@@ -13,11 +13,11 @@ namespace BNet.Cafe.Server.Services
         /// </summary>
         /// <param name="control">The UserControl or Page instance calling the method.</param>
         /// <param name="targetClient">Target computer identifier (e.g., 'PC-01').</param>
-        /// <param name="customerName">Name of the customer assigned to the session.</param>
+        /// <param name="userId">Name of the customer assigned to the session.</param>
         /// <param name="duration">Rental duration in minutes.</param>
         /// <param name="amount">Total rental amount charged.</param>
         /// <param name="command">Command directive (defaults to 'CREATE').</param>
-        public static void SendToPC(Control control, string targetClient, string customerName, int duration, decimal amount, string command = "CREATE")
+        public static void SendToPC(Control control, string targetClient, string userId, int duration, decimal amount, string command = "CREATE")
         {
             if (control == null)
             {
@@ -27,7 +27,7 @@ namespace BNet.Cafe.Server.Services
             // 1. Build message object
             var dataPayload = new
             {
-                customerName = !string.IsNullOrEmpty(customerName) ? customerName : null,
+                userId = !string.IsNullOrEmpty(userId) ? userId : null,
                 duration = duration,
                 amount = amount,
                 command = command,
@@ -49,7 +49,7 @@ namespace BNet.Cafe.Server.Services
         }
 
 
-        public static void TransferSession(Control control, string targetClient, string customerName, int duration, decimal amount, DateTime dateTime)
+        public static void TransferSession(Control control, string targetClient, string userId, int duration, decimal amount, DateTime dateTime)
         {
             if (control == null)
             {
@@ -59,7 +59,7 @@ namespace BNet.Cafe.Server.Services
             // 1. Build message object
             var dataPayload = new
             {
-                customerName = !string.IsNullOrEmpty(customerName) ? customerName : null,
+                userId = !string.IsNullOrEmpty(userId) ? userId : null,
                 duration = duration,
                 amount = amount,
                 command = ConstantData.RentalCommand.CREATE,

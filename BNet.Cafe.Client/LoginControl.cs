@@ -15,7 +15,6 @@ namespace BNet.Cafe.Client.Controls
 
         private readonly Color _defaultBorderColor = Color.FromArgb(51, 65, 85);
         private readonly Color _errorBorderColor = Color.FromArgb(239, 68, 68);
-
         public LoginControl()
         {
             InitializeComponent();
@@ -97,7 +96,16 @@ namespace BNet.Cafe.Client.Controls
 
                 if (loginResponse.Data == null || loginResponse.Data.TotalDuration <= 0)
                 {
-                    MessageBox.Show("Your account balance is 0. Please top up at the counter.", "Insufficient Balance", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    string currentUserId = loginResponse.Data?.Id.ToString() ?? string.Empty;
+                    string clientName = ConfigHelper.GetClientNameFromIP();
+                    CreateRentalHandler rentalHandler = new CreateRentalHandler();
+                    await rentalHandler.CreateRentalAsync(clientName, currentUserId, "0", "0");
+                    // Open the modal popup binding the userId
+                    using (var balanceModal = new InsufficientBalanceModal())
+                    {
+                        DialogResult result = balanceModal.ShowDialog();
+                    }
+                    ClearFields();
                     return;
                 }
 
