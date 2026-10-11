@@ -349,6 +349,9 @@
     <Compile Include="Ashx\GetLoginHandler.ashx.cs">
       <DependentUpon>GetLoginHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Ashx\GetTimeServiceHandler.ashx.cs">
+      <DependentUpon>GetTimeServiceHandler.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Ashx\GetUserHandler.ashx.cs">
       <DependentUpon>GetUserHandler.ashx</DependentUpon>
     </Compile>
@@ -822,6 +825,7 @@
     <Content Include="Ashx\DeleteChatMessagesHandler.ashx" />
     <Content Include="Ashx\SaveChatMessageHandler.ashx" />
     <Content Include="Ashx\GetClientConfigHandler.ashx" />
+    <Content Include="Ashx\GetTimeServiceHandler.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

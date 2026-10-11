@@ -1,26 +1,40 @@
 ﻿using BNet.Cafe.Client.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Collections.Concurrent;
 
 namespace BNet.Cafe.Client.Repositories
 {
     public class TimeService
     {
         public static string XTimeZoneArgs = "X-TimeZone";
+
+        // Cache valid TimeZoneInfo objects to avoid repeated OS lookups
+        private static readonly ConcurrentDictionary<string, TimeZoneInfo> _timeZoneCache =
+            new ConcurrentDictionary<string, TimeZoneInfo>(StringComparer.OrdinalIgnoreCase);
+
         public static DateTime Get()
         {
             string timeZoneId = ConfigHelper.TimeZone;
 
-            // Perform a case-insensitive match against system time zones
-            var matchedZone = TimeZoneInfo.GetSystemTimeZones()
-                .FirstOrDefault(z => string.Equals(z.Id, timeZoneId, StringComparison.OrdinalIgnoreCase));
+            // Retrieve from cache or resolve once
+            TimeZoneInfo timeZone = _timeZoneCache.GetOrAdd(timeZoneId, id =>
+            {
+                try
+                {
+                    return TimeZoneInfo.FindSystemTimeZoneById(id);
+                }
+                catch (TimeZoneNotFoundException)
+                {
+                    // Fallback to UTC if the configured zone is invalid
+                    return TimeZoneInfo.Utc;
+                }
+                catch (InvalidTimeZoneException)
+                {
+                    return TimeZoneInfo.Utc;
+                }
+            });
 
-            // Use the correctly cased system ID if found, otherwise fall back to the original value
-            string validId = matchedZone?.Id ?? timeZoneId;
-
-            return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, validId);
+            return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone);
         }
     }
 }

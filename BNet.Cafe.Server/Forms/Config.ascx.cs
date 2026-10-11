@@ -100,6 +100,7 @@ namespace BNet.Cafe.Server.Forms
 
             if (isSuccess)
             {
+                TimeService.ClearTimeZoneCache();
                 AlertService.ShowAlert(UpdatePanel1, "Client configuration saved successfully.", "success");
                 ClientData clientData = new ClientData();
                 var targetList = clientData.FetchData();
