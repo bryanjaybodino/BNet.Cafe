@@ -680,13 +680,33 @@ function renderAttractGrid() {
     const list = clientData.slice().sort((a, b) =>
         (a.ClientName || '').localeCompare(b.ClientName || '', undefined, { numeric: true, sensitivity: 'base' }));
 
-    const numCols = list.length === 4 ? 2 : Math.max(1, Math.min(4, list.length));
-    grid.style.setProperty('--cols', numCols);
+    const count = list.length;
+    if (count === 0) {
+        grid.innerHTML = '';
+        return;
+    }
+
+    // Dynamic grid layout calculation
+    // Computes the optimal number of columns based on screen aspect ratio & total PC count
+    const screenAspect = window.innerWidth / Math.max(1, window.innerHeight);
+
+    // Ideal columns to maintain card proportions (~1.1 to 1.3 height-to-width ratio)
+    let cols = Math.ceil(Math.sqrt(count * screenAspect * 0.85));
+    cols = Math.max(2, Math.min(cols, count));
+
+    // Apply the dynamic column count directly to CSS variable
+    grid.style.setProperty('--cols', cols);
 
     grid.innerHTML = list.map(buildAttractCard).join('');
     tickAttractTimes();
 }
 
+// Re-calculate dynamic grid layout whenever window resizes
+window.addEventListener('resize', () => {
+    if (isPressAnyKeyVisible()) {
+        renderAttractGrid();
+    }
+});
 function tickAttractTimes() {
     document.querySelectorAll('#attractGrid .atc-digits').forEach(el => {
         let html;

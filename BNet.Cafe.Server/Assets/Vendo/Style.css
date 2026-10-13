@@ -403,15 +403,15 @@ textarea {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: clamp(12px, 2vh, 30px);
-    gap: clamp(12px, 2vh, 20px);
-    /* Semi-transparent dark background allowing the wallpaper slider underneath to be visible */
+    justify-content: space-between;
+    padding: 8px 12px;
+    gap: 6px;
     background: rgba(10, 12, 28, 0.45);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     color: #fff;
     cursor: pointer;
+    overflow: hidden;
 }
 
 .attract-header {
@@ -420,37 +420,45 @@ textarea {
 }
 
 .attract-brand {
-    font-size: clamp(1rem, 3vmin, 2rem);
+    font-size: clamp(0.9rem, 2.2vmin, 1.6rem);
     font-weight: 900;
-    letter-spacing: 6px;
+    letter-spacing: 4px;
     text-transform: uppercase;
     color: #fff;
-    text-shadow: 0 0 12px rgba(0, 200, 255, 0.8), 0 0 28px rgba(255, 0, 200, 0.5);
+    text-shadow: 0 0 10px rgba(0, 200, 255, 0.8), 0 0 22px rgba(255, 0, 200, 0.5);
 }
-
 .attract-grid {
-    flex: 0 1 auto;
+    flex: 1;
     width: 100%;
-    max-width: 1100px;
+    max-width: 1800px;
+    height: 100%;
     display: grid;
-    grid-template-columns: repeat(var(--cols, 2), minmax(260px, 1fr));
-    gap: 16px;
+    /* Uses dynamic --cols set by JavaScript */
+    grid-template-columns: repeat(var(--cols, 6), minmax(0, 1fr));
+    gap: clamp(4px, 0.8vw, 12px);
     pointer-events: none;
     justify-content: center;
+    align-content: center;
+    overflow: hidden;
+    padding: 6px;
 }
+
 
 @media (max-width: 700px) {
     .attract-grid {
-        --cols: 2 !important;
+        grid-template-columns: repeat(auto-fit, minmax(115px, 1fr)) !important;
     }
 }
 
 .atc-wrap {
     container-type: size;
     width: 100%;
-    height: 220px;
+    /* Maintain proper vertical card height proportions */
+    aspect-ratio: 16 / 11;
+    max-height: 100%;
     min-width: 0;
-    filter: drop-shadow(0 0 10px var(--c-glow));
+    min-height: 0;
+    filter: drop-shadow(0 0 4px var(--c-glow));
 }
 
     .atc-wrap.theme-green {
@@ -485,7 +493,7 @@ textarea {
 
 .atc,
 .atc-in {
-    --cut: 11cqw;
+    --cut: 8cqw;
     clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
 }
 
@@ -503,9 +511,8 @@ textarea {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: calc(var(--u) * 2);
-    padding: calc(var(--u) * 4) calc(var(--u) * 6) calc(var(--u) * 4);
-    /* Semi-transparent panel backgrounds so background wallpaper shows through slightly */
+    gap: calc(var(--u) * 1.5);
+    padding: calc(var(--u) * 3) calc(var(--u) * 4) calc(var(--u) * 3);
     background: linear-gradient(160deg, rgba(11, 16, 32, 0.85) 0%, rgba(5, 6, 13, 0.90) 100%);
     font-family: 'Orbitron', 'Segoe UI', system-ui, sans-serif;
 }
@@ -514,28 +521,28 @@ textarea {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: calc(var(--u) * 1.5);
+    gap: calc(var(--u) * 1);
     min-width: 0;
 }
 
 .atc-identity {
     display: flex;
     align-items: center;
-    gap: calc(var(--u) * 3);
+    gap: calc(var(--u) * 2.5);
     width: 100%;
     min-width: 0;
 }
 
     .atc-identity > i {
         color: var(--c);
-        font-size: calc(var(--u) * 10);
-        text-shadow: 0 0 8px var(--c-glow);
+        font-size: calc(var(--u) * 9);
+        text-shadow: 0 0 6px var(--c-glow);
     }
 
 .atc-name {
     flex: 1;
     min-width: 0;
-    font-size: calc(var(--u) * 10);
+    font-size: calc(var(--u) * 9);
     font-weight: 900;
     font-style: italic;
     letter-spacing: 1px;
@@ -548,12 +555,12 @@ textarea {
 .atc-pill {
     display: flex;
     align-items: center;
-    gap: calc(var(--u) * 2);
-    padding: calc(var(--u) * 1) calc(var(--u) * 3);
+    gap: calc(var(--u) * 1.5);
+    padding: calc(var(--u) * 0.8) calc(var(--u) * 2.5);
     border-radius: 999px;
     border: max(1px, calc(var(--u) * .5)) solid var(--pill);
     color: var(--pill);
-    font-size: calc(var(--u) * 4.5);
+    font-size: calc(var(--u) * 4);
     font-weight: 800;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -562,11 +569,11 @@ textarea {
 
     .atc-pill::before {
         content: '';
-        width: calc(var(--u) * 4.5);
-        height: calc(var(--u) * 4.5);
+        width: calc(var(--u) * 4);
+        height: calc(var(--u) * 4);
         border-radius: 50%;
         background: var(--pill);
-        box-shadow: 0 0 8px var(--pill);
+        box-shadow: 0 0 6px var(--pill);
     }
 
 .pill-available {
@@ -591,17 +598,17 @@ textarea {
 
 .atc-time {
     border: max(1px, calc(var(--u) * .5)) solid color-mix(in srgb, var(--c) 55%, transparent);
-    border-radius: calc(var(--u) * 3);
-    padding: calc(var(--u) * 2.5) calc(var(--u) * 4);
+    border-radius: calc(var(--u) * 2.5);
+    padding: calc(var(--u) * 2) calc(var(--u) * 3);
     background: rgba(0, 0, 0, 0.35);
 }
 
 .atc-label {
     display: flex;
     align-items: center;
-    gap: calc(var(--u) * 2);
+    gap: calc(var(--u) * 1.5);
     color: var(--c);
-    font-size: calc(var(--u) * 5);
+    font-size: calc(var(--u) * 4.5);
     font-weight: 700;
     letter-spacing: 1px;
 }
@@ -610,12 +617,12 @@ textarea {
     display: flex;
     justify-content: center;
     align-items: baseline;
-    gap: calc(var(--u) * 3);
-    font-size: calc(var(--u) * 13);
+    gap: calc(var(--u) * 2.5);
+    font-size: calc(var(--u) * 11);
     font-weight: 700;
     line-height: 1.1;
     color: var(--digit);
-    text-shadow: 0 0 10px var(--c-glow), 0 0 22px var(--c-glow);
+    text-shadow: 0 0 8px var(--c-glow), 0 0 16px var(--c-glow);
     font-variant-numeric: tabular-nums;
     font-family: 'Orbitron', 'Consolas', 'Courier New', monospace;
 }
@@ -632,7 +639,7 @@ textarea {
     display: flex;
     justify-content: space-around;
     color: var(--c);
-    font-size: calc(var(--u) * 3.4);
+    font-size: calc(var(--u) * 3);
     font-weight: 700;
     letter-spacing: .5px;
     text-transform: uppercase;
@@ -641,23 +648,23 @@ textarea {
 .atc-user {
     display: flex;
     align-items: center;
-    gap: calc(var(--u) * 4);
-    padding: calc(var(--u) * 2) calc(var(--u) * 4);
-    border-radius: calc(var(--u) * 3);
+    gap: calc(var(--u) * 3);
+    padding: calc(var(--u) * 1.5) calc(var(--u) * 3);
+    border-radius: calc(var(--u) * 2.5);
     border: max(1px, calc(var(--u) * .5)) solid color-mix(in srgb, var(--c) 40%, transparent);
     background: rgba(0, 0, 0, 0.35);
     min-width: 0;
 }
 
 .atc-avatar {
-    width: calc(var(--u) * 11);
-    height: calc(var(--u) * 11);
+    width: calc(var(--u) * 10);
+    height: calc(var(--u) * 10);
     flex: 0 0 auto;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: calc(var(--u) * 6.5);
+    font-size: calc(var(--u) * 5.5);
     color: #fff;
     background: rgba(255, 255, 255, 0.12);
 }
@@ -665,7 +672,7 @@ textarea {
 .atc-user.vip .atc-avatar {
     color: #ffc926;
     background: rgba(255, 201, 38, 0.15);
-    box-shadow: 0 0 10px rgba(255, 201, 38, 0.5);
+    box-shadow: 0 0 8px rgba(255, 201, 38, 0.5);
 }
 
 .atc-user.member .atc-avatar {
@@ -679,14 +686,14 @@ textarea {
 
     .atc-user-text small {
         display: block;
-        font-size: calc(var(--u) * 3.4);
+        font-size: calc(var(--u) * 3);
         color: rgba(255, 255, 255, 0.65);
         letter-spacing: 1px;
     }
 
     .atc-user-text b {
         display: block;
-        font-size: calc(var(--u) * 6);
+        font-size: calc(var(--u) * 5.2);
         font-weight: 800;
         letter-spacing: 1px;
         text-transform: uppercase;
@@ -712,24 +719,24 @@ textarea {
 .attract-banner {
     display: flex;
     align-items: center;
-    gap: clamp(10px, 2vmin, 24px);
-    padding: clamp(6px, 1.2vmin, 14px) clamp(26px, 6vmin, 80px);
-    font-size: clamp(1.1rem, 4.2vmin, 2.8rem);
+    gap: clamp(8px, 1.5vmin, 20px);
+    padding: clamp(4px, 1vmin, 10px) clamp(20px, 5vmin, 60px);
+    font-size: clamp(0.9rem, 3.2vmin, 2.2rem);
     font-weight: 900;
     font-style: italic;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     color: #fff;
-    border: 3px solid #19b8ff;
-    border-radius: 14px;
+    border: 2px solid #19b8ff;
+    border-radius: 12px;
     background: rgba(8, 10, 30, 0.85);
-    box-shadow: 0 0 18px rgba(25, 184, 255, 0.6), 0 0 18px rgba(255, 47, 208, 0.45), inset 0 0 14px rgba(255, 47, 208, 0.35);
-    text-shadow: 0 0 12px #19b8ff, 0 0 24px #ff2fd0;
+    box-shadow: 0 0 14px rgba(25, 184, 255, 0.6), 0 0 14px rgba(255, 47, 208, 0.45), inset 0 0 10px rgba(255, 47, 208, 0.35);
+    text-shadow: 0 0 10px #19b8ff, 0 0 20px #ff2fd0;
     animation: atcPulse 1.4s ease-in-out infinite;
 }
 
     .attract-banner i {
         color: #ffc926;
-        text-shadow: 0 0 10px rgba(255, 201, 38, 0.8);
+        text-shadow: 0 0 8px rgba(255, 201, 38, 0.8);
     }
 
 @keyframes atcBlink {
