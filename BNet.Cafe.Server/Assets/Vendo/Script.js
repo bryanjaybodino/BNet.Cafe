@@ -2,6 +2,32 @@
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('dragstart', e => e.preventDefault());
 
+// --- IDLE TIMER FOR ATTRACT SCREEN ---
+let idleTimer = null;
+const IDLE_TIMEOUT_MS = 10000; // 10 seconds of inactivity
+
+function resetIdleTimer() {
+    if (idleTimer) {
+        clearTimeout(idleTimer);
+        idleTimer = null;
+    }
+
+    // Only run the idle countdown if we are currently looking at the main menu (PSP container)
+    // and the modal is closed.
+    const psp = document.getElementById('pspContainer');
+    const isMainMenuViewable = psp && psp.style.display !== 'none';
+
+    if (isMainMenuViewable && !isModalOpen()) {
+        idleTimer = setTimeout(() => {
+            showPressAnyKey();
+        }, IDLE_TIMEOUT_MS);
+    }
+}
+
+// Bind meaningful user interaction events (removed 'mousemove' to prevent jitter/constant resets)
+['mousedown', 'keydown', 'touchstart', 'wheel', 'click'].forEach(event => {
+    window.addEventListener(event, resetIdleTimer, { passive: true });
+});
 // --- NUMBER TYPING & MODAL LOGIC ---
 let totalAmount = 0;          // coins already committed (each coin ends with Enter)
 let pendingDigits = "";       // digits of the coin currently being typed by the Arduino
@@ -19,6 +45,7 @@ function isModalOpen() {
 }
 
 function showNumberModal(pcName) {
+    if (idleTimer) clearTimeout(idleTimer); // Prevent idle trigger while modal is open
     modalPcTarget.innerText = pcName || "PC-01";
     numberModal.classList.add('visible');
 }
@@ -51,6 +78,7 @@ function hideNumberModal() {
 
     totalAmount = 0;
     pendingDigits = "";
+    resetIdleTimer();
 }
 
 function resetModalCloseTimer() {
@@ -207,14 +235,10 @@ async function fetchClientData() {
 function renderPSPMenu() {
     pspCarousel.innerHTML = '';
 
-    // Include "Offline" (and all other valid statuses) in the filter condition
     let filteredData = clientData.filter(client => {
         const status = getClientStatus(client);
         return status === "Available" || status === "Occupied" || status === "Offline" || status === "Paused" || status === "Administrator";
     });
-
-    // Alternatively, if you want to show ALL computers from the database without filtering out anything:
-    // let filteredData = clientData;
 
     filteredClientData = filteredData.sort((a, b) => {
         const nameA = a.clientName || a.ClientName || '';
@@ -285,7 +309,6 @@ function updateCarouselPosition(extraOffset = 0) {
     pspCarousel.style.transform = `translate3d(${totalTranslate}px, 0px, 0px)`;
     pspCarousel.style.webkitTransform = `translate3d(${totalTranslate}px, 0px, 0px)`;
 
-    // Automatically re-sync Arduino coin lock/unlock state whenever the active card changes
     syncArduinoState();
 }
 
@@ -371,7 +394,7 @@ document.addEventListener('keydown', (e) => {
             if (currentStatus === "Offline" || currentStatus === "Administrator") {
                 e.preventDefault();
                 e.stopPropagation();
-                return; // Stop processing numbers if the PC is offline
+                return;
             }
         }
 
@@ -382,10 +405,10 @@ document.addEventListener('keydown', (e) => {
     }
 
     if (e.key === 'Enter' && (pendingDigits || isModalOpen())) {
-        // Also prevent Enter if currently selected PC is offline
         if (filteredClientData && filteredClientData.length > 0 && selectedIndex >= 0 && selectedIndex < filteredClientData.length) {
             const currentClient = filteredClientData[selectedIndex];
-            if (getClientStatus(currentClient) === "Offline" || currentStatus === "Administrator" || currentStatus ==="Paused") {
+            const currentStatus = getClientStatus(currentClient);
+            if (currentStatus === "Offline" || currentStatus === "Administrator" || currentStatus === "Paused") {
                 e.preventDefault();
                 e.stopPropagation();
                 return;
@@ -436,6 +459,7 @@ window.addEventListener('load', function () {
     } catch (e) {
         console.error('Failed to initialize SSE:', e);
     }
+    resetIdleTimer();
 });
 
 function formatDateTimeString(dateStr) {
@@ -562,16 +586,14 @@ function shouldLock() {
     if (isPressAnyKeyVisible()) return true;
     if (LOCK_WHILE_MODAL_OPEN && isModalOpen()) return true;
 
-    // Check if the currently selected/active card in the carousel is Offline
     if (filteredClientData && filteredClientData.length > 0 && selectedIndex >= 0 && selectedIndex < filteredClientData.length) {
         const selectedClient = filteredClientData[selectedIndex];
         const status = getClientStatus(selectedClient);
         if (status === "Offline" || status === "Administrator" || status === "Paused") {
-            return true; // Lock the coin mechanism ('L') if the selected PC is offline
+            return true;
         }
     }
 
-    // Fallback: check if there are any valid online PCs in the entire system
     const hasValidPc = clientData.some(c => {
         const st = getClientStatus(c);
         return st === "Available" || st === "Occupied";
@@ -626,6 +648,8 @@ function isPressAnyKeyVisible() {
 
 function showPressAnyKey() {
     const screen = getPressAnyKeyScreen();
+    if (screen) screen.style.display = 'block'; // Ensure screen becomes visible
+
     const psp = document.getElementById('pspContainer');
     if (psp) psp.style.display = 'none';
     syncArduinoState();
@@ -640,6 +664,7 @@ function hidePressAnyKey() {
 
     requestAnimationFrame(() => updateCarouselPosition(0));
     syncArduinoState();
+    resetIdleTimer();
 }
 
 function escapeHtml(s) {
@@ -663,6 +688,7 @@ function getUserType(client) {
     if (t && !/guest/i.test(t)) return { text: /member/i.test(t) ? 'MEMBER' : t, cls: 'member', icon: 'fa-user' };
     return { text: 'GUEST', cls: 'guest', icon: 'fa-user' };
 }
+
 function buildAttractCard(client, index) {
     const status = getClientStatus(client);
     const running = (status === 'Occupied' || status === 'Paused' || status === 'Administrator');
@@ -697,10 +723,6 @@ function buildAttractCard(client, index) {
               <div class="atc-digits" data-end="${endAttr}" data-running="${running ? 1 : 0}"></div>
               <div class="atc-units"><span>Hour</span><span>|</span><span>Minutes</span><span>|</span><span>Seconds</span></div>
             </div>
-            <div class="atc-user ${user.cls}">
-              <div class="atc-avatar"><i class="fas ${user.icon}"></i></div>
-              <div class="atc-user-text"><small>USER</small><b>${escapeHtml(user.text)}</b></div>
-            </div>
           </div></div>
         </div>`;
 }
@@ -718,27 +740,22 @@ function renderAttractGrid() {
         return;
     }
 
-    // Dynamic grid layout calculation
-    // Computes the optimal number of columns based on screen aspect ratio & total PC count
     const screenAspect = window.innerWidth / Math.max(1, window.innerHeight);
-
-    // Ideal columns to maintain card proportions (~1.1 to 1.3 height-to-width ratio)
     let cols = Math.ceil(Math.sqrt(count * screenAspect * 0.85));
     cols = Math.max(2, Math.min(cols, count));
 
-    // Apply the dynamic column count directly to CSS variable
     grid.style.setProperty('--cols', cols);
 
     grid.innerHTML = list.map(buildAttractCard).join('');
     tickAttractTimes();
 }
 
-// Re-calculate dynamic grid layout whenever window resizes
 window.addEventListener('resize', () => {
     if (isPressAnyKeyVisible()) {
         renderAttractGrid();
     }
 });
+
 function tickAttractTimes() {
     document.querySelectorAll('#attractGrid .atc-digits').forEach(el => {
         let html;
