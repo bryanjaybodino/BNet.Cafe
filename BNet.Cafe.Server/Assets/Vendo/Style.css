@@ -13,13 +13,12 @@
 
 html, body {
     width: 100vw;
-    height: 100vh; /* Fixed viewport height prevents resizing jumps */
+    height: 100vh;
     overflow: hidden;
     background-color: #000;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     touch-action: pan-y;
 }
-
 
 /* --- Fullscreen Wallpaper Slider --- */
 .slider-container {
@@ -60,17 +59,16 @@ html, body {
     pointer-events: none;
 }
 
-
 /* --- Perfectly Centered PSP Carousel Viewport --- */
 .psp-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh; /* Fixed viewport height */
+    height: 100vh;
     z-index: 10;
     display: flex;
-    align-items: center; /* Centers cards vertically */
+    align-items: center;
     justify-content: flex-start;
     overflow: hidden;
     cursor: grab;
@@ -91,11 +89,9 @@ html, body {
     padding-left: 0px;
 }
 
-
 /* --- Fully Responsive Mobile-Optimized Cards --- */
 .psp-card {
     width: clamp(150px, 38vw, 280px);
-    /* Use safe viewport height (svh) so it doesn't overflow in mobile landscape */
     height: clamp(220px, 75svh, 400px);
     border-radius: clamp(16px, 3.5vw, 28px);
     background: linear-gradient(135deg, rgba(30, 34, 45, 0.95) 0%, rgba(18, 20, 26, 0.98) 100%);
@@ -126,8 +122,6 @@ html, body {
         background: linear-gradient(135deg, rgba(40, 46, 60, 0.98) 0%, rgba(22, 26, 34, 0.98) 100%);
     }
 
-
-    /* --- Status Borders & Badges --- */
     .psp-card.status-administrator {
         border-color: rgba(155, 89, 182, 0.6);
     }
@@ -260,7 +254,7 @@ html, body {
     border-radius: 10px;
 }
 
-/* --- Number Input Modal Styles (Fully Mobile Responsive) --- */
+/* --- Number Input Modal Styles --- */
 .number-modal-overlay {
     position: fixed;
     top: 0;
@@ -339,7 +333,6 @@ html, body {
     letter-spacing: 1px;
 }
 
-
 /* --- License Modal Enhancements --- */
 .license-input {
     width: 100%;
@@ -386,6 +379,7 @@ html, body {
     .btn-activate:active {
         transform: translateY(1px);
     }
+
 #licenseModal,
 #serverSerialDisplay,
 input,
@@ -394,4 +388,359 @@ textarea {
     -webkit-user-select: text !important;
     -moz-user-select: text !important;
     -ms-user-select: text !important;
+}
+
+/* =====================================================================
+   PRESS ANY KEY SCREEN  -  display-only PC status board
+   ===================================================================== */
+#pressAnyKeyScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(12px, 2vh, 30px);
+    gap: clamp(12px, 2vh, 20px);
+    /* Semi-transparent dark background allowing the wallpaper slider underneath to be visible */
+    background: rgba(10, 12, 28, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #fff;
+    cursor: pointer;
+}
+
+.attract-header {
+    flex: 0 0 auto;
+    text-align: center;
+}
+
+.attract-brand {
+    font-size: clamp(1rem, 3vmin, 2rem);
+    font-weight: 900;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 0 0 12px rgba(0, 200, 255, 0.8), 0 0 28px rgba(255, 0, 200, 0.5);
+}
+
+.attract-grid {
+    flex: 0 1 auto;
+    width: 100%;
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 2), minmax(260px, 1fr));
+    gap: 16px;
+    pointer-events: none;
+    justify-content: center;
+}
+
+@media (max-width: 700px) {
+    .attract-grid {
+        --cols: 2 !important;
+    }
+}
+
+.atc-wrap {
+    container-type: size;
+    width: 100%;
+    height: 220px;
+    min-width: 0;
+    filter: drop-shadow(0 0 10px var(--c-glow));
+}
+
+    .atc-wrap.theme-green {
+        --c: #2ecc71;
+        --c-glow: rgba(46, 204, 113, 0.55);
+        --digit: #55ff99;
+    }
+
+    .atc-wrap.theme-red {
+        --c: #e74c3c;
+        --c-glow: rgba(231, 76, 60, 0.55);
+        --digit: #ff7b6b;
+    }
+
+    .atc-wrap.theme-orange {
+        --c: #ff9a1f;
+        --c-glow: rgba(255, 154, 31, 0.55);
+        --digit: #ffd08a;
+    }
+
+    .atc-wrap.theme-purple {
+        --c: #b46bff;
+        --c-glow: rgba(180, 107, 255, 0.6);
+        --digit: #e6d0ff;
+    }
+
+    .atc-wrap.theme-pink {
+        --c: #ff2fd0;
+        --c-glow: rgba(255, 47, 208, 0.55);
+        --digit: #ff3df0;
+    }
+
+.atc,
+.atc-in {
+    --cut: 11cqw;
+    clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
+}
+
+.atc {
+    --u: min(1cqw, 1.55cqh);
+    width: 100%;
+    height: 100%;
+    padding: max(2px, calc(var(--u) * 1.1));
+    background: linear-gradient(135deg, var(--c), color-mix(in srgb, var(--c) 35%, #000));
+}
+
+.atc-in {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: calc(var(--u) * 2);
+    padding: calc(var(--u) * 4) calc(var(--u) * 6) calc(var(--u) * 4);
+    /* Semi-transparent panel backgrounds so background wallpaper shows through slightly */
+    background: linear-gradient(160deg, rgba(11, 16, 32, 0.85) 0%, rgba(5, 6, 13, 0.90) 100%);
+    font-family: 'Orbitron', 'Segoe UI', system-ui, sans-serif;
+}
+
+.atc-top {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(var(--u) * 1.5);
+    min-width: 0;
+}
+
+.atc-identity {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--u) * 3);
+    width: 100%;
+    min-width: 0;
+}
+
+    .atc-identity > i {
+        color: var(--c);
+        font-size: calc(var(--u) * 10);
+        text-shadow: 0 0 8px var(--c-glow);
+    }
+
+.atc-name {
+    flex: 1;
+    min-width: 0;
+    font-size: calc(var(--u) * 10);
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.atc-pill {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--u) * 2);
+    padding: calc(var(--u) * 1) calc(var(--u) * 3);
+    border-radius: 999px;
+    border: max(1px, calc(var(--u) * .5)) solid var(--pill);
+    color: var(--pill);
+    font-size: calc(var(--u) * 4.5);
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+    .atc-pill::before {
+        content: '';
+        width: calc(var(--u) * 4.5);
+        height: calc(var(--u) * 4.5);
+        border-radius: 50%;
+        background: var(--pill);
+        box-shadow: 0 0 8px var(--pill);
+    }
+
+.pill-available {
+    --pill: #2ecc71;
+}
+
+.pill-occupied {
+    --pill: #e74c3c;
+}
+
+.pill-paused {
+    --pill: #e67e22;
+}
+
+.pill-admin {
+    --pill: #b46bff;
+}
+
+.pill-offline {
+    --pill: #7f8c8d;
+}
+
+.atc-time {
+    border: max(1px, calc(var(--u) * .5)) solid color-mix(in srgb, var(--c) 55%, transparent);
+    border-radius: calc(var(--u) * 3);
+    padding: calc(var(--u) * 2.5) calc(var(--u) * 4);
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.atc-label {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--u) * 2);
+    color: var(--c);
+    font-size: calc(var(--u) * 5);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.atc-digits {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: calc(var(--u) * 3);
+    font-size: calc(var(--u) * 13);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--digit);
+    text-shadow: 0 0 10px var(--c-glow), 0 0 22px var(--c-glow);
+    font-variant-numeric: tabular-nums;
+    font-family: 'Orbitron', 'Consolas', 'Courier New', monospace;
+}
+
+    .atc-digits .sep {
+        animation: atcBlink 1s steps(1) infinite;
+    }
+
+    .atc-digits .inf {
+        font-size: 1.2em;
+    }
+
+.atc-units {
+    display: flex;
+    justify-content: space-around;
+    color: var(--c);
+    font-size: calc(var(--u) * 3.4);
+    font-weight: 700;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+
+.atc-user {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--u) * 4);
+    padding: calc(var(--u) * 2) calc(var(--u) * 4);
+    border-radius: calc(var(--u) * 3);
+    border: max(1px, calc(var(--u) * .5)) solid color-mix(in srgb, var(--c) 40%, transparent);
+    background: rgba(0, 0, 0, 0.35);
+    min-width: 0;
+}
+
+.atc-avatar {
+    width: calc(var(--u) * 11);
+    height: calc(var(--u) * 11);
+    flex: 0 0 auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(var(--u) * 6.5);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.atc-user.vip .atc-avatar {
+    color: #ffc926;
+    background: rgba(255, 201, 38, 0.15);
+    box-shadow: 0 0 10px rgba(255, 201, 38, 0.5);
+}
+
+.atc-user.member .atc-avatar {
+    color: var(--c);
+}
+
+.atc-user-text {
+    min-width: 0;
+    line-height: 1.15;
+}
+
+    .atc-user-text small {
+        display: block;
+        font-size: calc(var(--u) * 3.4);
+        color: rgba(255, 255, 255, 0.65);
+        letter-spacing: 1px;
+    }
+
+    .atc-user-text b {
+        display: block;
+        font-size: calc(var(--u) * 6);
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+.atc-user.vip .atc-user-text b {
+    color: #ffc926;
+}
+
+.atc-user.member .atc-user-text b {
+    color: var(--c);
+}
+
+.attract-footer {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.attract-banner {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2vmin, 24px);
+    padding: clamp(6px, 1.2vmin, 14px) clamp(26px, 6vmin, 80px);
+    font-size: clamp(1.1rem, 4.2vmin, 2.8rem);
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: 3px;
+    color: #fff;
+    border: 3px solid #19b8ff;
+    border-radius: 14px;
+    background: rgba(8, 10, 30, 0.85);
+    box-shadow: 0 0 18px rgba(25, 184, 255, 0.6), 0 0 18px rgba(255, 47, 208, 0.45), inset 0 0 14px rgba(255, 47, 208, 0.35);
+    text-shadow: 0 0 12px #19b8ff, 0 0 24px #ff2fd0;
+    animation: atcPulse 1.4s ease-in-out infinite;
+}
+
+    .attract-banner i {
+        color: #ffc926;
+        text-shadow: 0 0 10px rgba(255, 201, 38, 0.8);
+    }
+
+@keyframes atcBlink {
+    50% {
+        opacity: .25;
+    }
+}
+
+@keyframes atcPulse {
+    50% {
+        opacity: .65;
+        transform: scale(.98);
+    }
 }

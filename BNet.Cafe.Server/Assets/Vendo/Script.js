@@ -211,6 +211,7 @@ async function fetchClientData() {
         if (Array.isArray(data) && JSON.stringify(data) !== JSON.stringify(clientData)) {
             clientData = data;
             renderPSPMenu();
+            renderAttractGrid();  // display-only board on the Press Any Key screen
             syncArduinoState();   // lock/unlock coins depending on PC availability
         }
     } catch (err) {
@@ -281,7 +282,6 @@ function updateCarouselPosition(extraOffset = 0) {
         card.classList.toggle('active', idx === selectedIndex);
     });
 
-    // Container is hidden (Press Any Key screen) -> can't measure yet
     if (pspContainer.style.display === 'none') return;
 
     const target = cards[selectedIndex];
@@ -360,14 +360,12 @@ pspContainer.addEventListener('wheel', (e) => {
 });
 
 document.addEventListener('keydown', (e) => {
-    // Press Any Key screen: first key press dismisses it and unlocks the coin acceptor
     if (isPressAnyKeyVisible()) {
         e.preventDefault();
-        hidePressAnyKey();      // hides the screen and sends 'U' (if a PC is available)
+        hidePressAnyKey();
         return;
     }
 
-    // Prevent number keys from triggering browser shortcuts or focus changes
     if (e.key >= '0' && e.key <= '9') {
         e.preventDefault();
         e.stopPropagation();
@@ -394,7 +392,6 @@ document.addEventListener('keydown', (e) => {
             selectedIndex--;
             updateCarouselPosition();
         }
-
     }
 });
 
@@ -452,19 +449,16 @@ function formatDateTimeString(dateStr) {
 discoverImages();
 fetchClientData();
 
-
-
 function toggleFullScreen() {
     const icon = document.getElementById('fullscreenIcon');
 
     if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-        // Enter Fullscreen
         const docEl = document.documentElement;
         if (docEl.requestFullscreen) {
             docEl.requestFullscreen();
-        } else if (docEl.webkitRequestFullscreen) { /* Safari */
+        } else if (docEl.webkitRequestFullscreen) {
             docEl.webkitRequestFullscreen();
-        } else if (docEl.msRequestFullscreen) { /* IE11 */
+        } else if (docEl.msRequestFullscreen) {
             docEl.msRequestFullscreen();
         }
         if (icon) {
@@ -472,12 +466,11 @@ function toggleFullScreen() {
             icon.classList.add('fa-compress');
         }
     } else {
-        // Exit Fullscreen
         if (document.exitFullscreen) {
             document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { /* Safari */
+        } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE11 */
+        } else if (document.msExitFullscreen) {
             document.msExitFullscreen();
         }
         if (icon) {
@@ -487,7 +480,6 @@ function toggleFullScreen() {
     }
 }
 
-// Keep icon synced if user exits via ESC key
 document.addEventListener('fullscreenchange', () => {
     const icon = document.getElementById('fullscreenIcon');
     if (!icon) return;
@@ -501,18 +493,14 @@ document.addEventListener('fullscreenchange', () => {
     }
 });
 
-
-
-
-
 // ---------------- Web Serial ----------------
 let serialPort = null;
 let serialWriter = null;
-let serialQueue = Promise.resolve();   // commands are sent one by one, in order
+let serialQueue = Promise.resolve();
 
 async function openSerial(allowPrompt) {
     if (!('serial' in navigator)) {
-        console.error('Web Serial not available. Use Chrome/Edge on https:// or http://localhost');
+        console.error('Web Serial not available.');
         return false;
     }
     if (serialWriter) return true;
@@ -550,13 +538,9 @@ function sendSerialCommand(command) {
     });
 }
 
-// true  = coin acceptor is locked while the modal is open (one coin at a time)
-// false = customer can keep inserting coins during the 5s countdown (they add up)
 const LOCK_WHILE_MODAL_OPEN = false;
 
 function shouldLock() {
-    // Locked while: Press Any Key screen is visible, the coin modal is open,
-    // or there is no available PC to credit.
     if (isPressAnyKeyVisible()) return true;
     if (LOCK_WHILE_MODAL_OPEN && isModalOpen()) return true;
     const hasPc = filteredClientData.some(c => {
@@ -570,18 +554,15 @@ function syncArduinoState() {
     sendSerialCommand(shouldLock() ? 'L' : 'U');
 }
 
-// ONE-TIME SETUP: click the Press Any Key screen once and choose the Arduino Leonardo.
-// After that the browser remembers it and connects by itself.
 document.addEventListener('click', function (e) {
     if (!e.target.closest || !e.target.closest('#pressAnyKeyScreen')) return;
 
     serialTask(async () => {
         if (await openSerial(true)) {
-            hidePressAnyKey();   // hide the screen first so shouldLock() sees it as closed
+            hidePressAnyKey();
             await serialWriter.write(new TextEncoder().encode(shouldLock() ? 'L' : 'U'));
         }
     });
-
 });
 
 if ('serial' in navigator) {
@@ -589,7 +570,6 @@ if ('serial' in navigator) {
     navigator.serial.addEventListener('connect', () => syncArduinoState());
 }
 
-// ---------------- Lock while the coin modal is open ----------------
 const originalShowNumberModal = showNumberModal;
 showNumberModal = function (pcName) {
     originalShowNumberModal(pcName);
@@ -599,15 +579,11 @@ showNumberModal = function (pcName) {
 const originalHideNumberModal = hideNumberModal;
 hideNumberModal = function () {
     originalHideNumberModal();
-    // Unlock only if the Press Any Key screen is hidden AND a PC is available
     syncArduinoState();
 };
 
-// Page just loaded -> Press Any Key screen is visible -> lock coins
 if (document.readyState === 'complete') showPressAnyKey();
 else window.addEventListener('load', showPressAnyKey);
-
-
 
 function getPressAnyKeyScreen() {
     return document.getElementById('pressAnyKeyScreen');
@@ -620,11 +596,8 @@ function isPressAnyKeyVisible() {
 
 function showPressAnyKey() {
     const screen = getPressAnyKeyScreen();
-
-
     const psp = document.getElementById('pspContainer');
-    if (psp) psp.style.display = 'none';           // hide the PSP list
-
+    if (psp) psp.style.display = 'none';
     syncArduinoState();
 }
 
@@ -635,7 +608,103 @@ function hidePressAnyKey() {
     const psp = document.getElementById('pspContainer');
     if (psp) psp.style.removeProperty('display');
 
-    requestAnimationFrame(() => updateCarouselPosition(0));  // re-center now that it's visible
-
+    requestAnimationFrame(() => updateCarouselPosition(0));
     syncArduinoState();
 }
+
+function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function getRemainingSeconds(client) {
+    if (!client.TimeEnd || String(client.TimeEnd).includes('9999-12-31')) return null;
+    const end = Date.parse(client.TimeEnd);
+    if (isNaN(end)) return 0;
+    return Math.max(0, Math.floor((end - Date.now()) / 1000));
+}
+
+function getUserType(client) {
+    const raw = client.UserType || client.MemberType || client.AccountType || client.UserLevel || client.UserName || '';
+    const t = String(raw).trim();
+    if (/vip/i.test(t)) return { text: 'VIP', cls: 'vip', icon: 'fa-crown' };
+    if (t && !/guest/i.test(t)) return { text: /member/i.test(t) ? 'MEMBER' : t, cls: 'member', icon: 'fa-user' };
+    return { text: 'GUEST', cls: 'guest', icon: 'fa-user' };
+}
+
+function buildAttractCard(client, index) {
+    const status = getClientStatus(client);
+    const running = (status === 'Occupied' || status === 'Paused' || status === 'Administrator');
+
+    const theme = status === 'Paused' ? 'theme-orange'
+        : status === 'Administrator' ? 'theme-purple'
+            : status === 'Occupied' ? 'theme-red'
+                : status === 'Available' ? 'theme-green' : 'theme-pink';
+
+    const pill = status === 'Occupied' ? { cls: 'pill-occupied', text: 'OCCUPIED' }
+        : status === 'Paused' ? { cls: 'pill-paused', text: 'PAUSED' }
+            : status === 'Administrator' ? { cls: 'pill-admin', text: 'ADMINISTRATOR' }
+                : status === 'Available' ? { cls: 'pill-available', text: 'AVAILABLE' }
+                    : { cls: 'pill-offline', text: 'OFFLINE' };
+
+    const user = getUserType(client);
+    const name = client.ClientName || `PC-${String(index + 1).padStart(2, '0')}`;
+    const endAttr = (running && client.TimeEnd) ? escapeHtml(client.TimeEnd) : '';
+
+    return `
+        <div class="atc-wrap ${theme}">
+          <div class="atc"><div class="atc-in">
+            <div class="atc-top">
+              <div class="atc-pill ${pill.cls}">${pill.text}</div>
+              <div class="atc-identity">
+                <i class="fas fa-desktop"></i>
+                <div class="atc-name">${escapeHtml(name)}</div>
+              </div>
+            </div>
+            <div class="atc-time">
+              <div class="atc-label"><i class="far fa-clock"></i> TIME</div>
+              <div class="atc-digits" data-end="${endAttr}" data-running="${running ? 1 : 0}"></div>
+              <div class="atc-units"><span>Hour</span><span>|</span><span>Minutes</span><span>|</span><span>Seconds</span></div>
+            </div>
+            <div class="atc-user ${user.cls}">
+              <div class="atc-avatar"><i class="fas ${user.icon}"></i></div>
+              <div class="atc-user-text"><small>USER</small><b>${escapeHtml(user.text)}</b></div>
+            </div>
+          </div></div>
+        </div>`;
+}
+
+function renderAttractGrid() {
+    const grid = document.getElementById('attractGrid');
+    if (!grid) return;
+
+    const list = clientData.slice().sort((a, b) =>
+        (a.ClientName || '').localeCompare(b.ClientName || '', undefined, { numeric: true, sensitivity: 'base' }));
+
+    const numCols = list.length === 4 ? 2 : Math.max(1, Math.min(4, list.length));
+    grid.style.setProperty('--cols', numCols);
+
+    grid.innerHTML = list.map(buildAttractCard).join('');
+    tickAttractTimes();
+}
+
+function tickAttractTimes() {
+    document.querySelectorAll('#attractGrid .atc-digits').forEach(el => {
+        let html;
+        if (el.dataset.running !== '1') {
+            html = '<span>00</span><span class="sep">:</span><span>00</span><span class="sep">:</span><span>00</span>';
+        } else {
+            const secs = getRemainingSeconds({ TimeEnd: el.dataset.end });
+            if (secs === null) {
+                html = '<span class="inf">&infin;</span>';
+            } else {
+                const p = n => String(n).padStart(2, '0');
+                html = `<span>${p(Math.floor(secs / 3600))}</span><span class="sep">:</span>` +
+                    `<span>${p(Math.floor((secs % 3600) / 60))}</span><span class="sep">:</span>` +
+                    `<span>${p(secs % 60)}</span>`;
+            }
+        }
+        if (el.innerHTML !== html) el.innerHTML = html;
+    });
+}
+
+setInterval(() => { if (isPressAnyKeyVisible()) tickAttractTimes(); }, 1000);
