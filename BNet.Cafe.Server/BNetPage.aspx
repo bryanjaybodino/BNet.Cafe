@@ -140,6 +140,12 @@
                     <i class="fas fa-download"></i><span>Download App</span>
                     </asp:HyperLink>
                 </div>
+                <!-- KIOSK MODE -->
+                <div class="menu-item">
+                    <asp:HyperLink ID="HyperLink_KioskMode" runat="server" ToolTip="KioskMode" NavigateUrl="~/BNetVendoMachine.aspx">
+                    <i class="fas fa-expand"></i><span>Kiosk Mode</span>
+                    </asp:HyperLink>
+                </div>
             </div>
         </div>
 

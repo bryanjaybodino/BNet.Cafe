@@ -3,7 +3,8 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('dragstart', e => e.preventDefault());
 
 // --- NUMBER TYPING & MODAL LOGIC ---
-let typedNumbersString = "";
+let totalAmount = 0;          // coins already committed (each coin ends with Enter)
+let pendingDigits = "";       // digits of the coin currently being typed by the Arduino
 let modalCloseTimer = null;
 let modalCountdownInterval = null;
 let remainingSeconds = 5;
@@ -48,7 +49,8 @@ function hideNumberModal() {
         }
     }
 
-    typedNumbersString = "";
+    totalAmount = 0;
+    pendingDigits = "";
 }
 
 function resetModalCloseTimer() {
@@ -80,15 +82,21 @@ function handleNumberInput(digit) {
         if (titleEl) currentPcName = titleEl.innerText;
     }
 
-    typedNumbersString += digit;
+    // Digits are joined into ONE number ("2","0" -> 20) until Enter arrives.
+    pendingDigits += digit;
 
-    let sum = 0;
-    for (let i = 0; i < typedNumbersString.length; i++) {
-        sum += parseInt(typedNumbersString[i], 10);
-    }
-
-    modalNumberDisplay.innerText = sum;
+    modalNumberDisplay.innerText = totalAmount + (parseInt(pendingDigits, 10) || 0);
     showNumberModal(currentPcName);
+    resetModalCloseTimer();
+}
+
+// Enter = the Arduino finished typing one coin -> add it to the total
+function handleEnterInput() {
+    if (pendingDigits) {
+        totalAmount += parseInt(pendingDigits, 10) || 0;
+        pendingDigits = "";
+    }
+    modalNumberDisplay.innerText = totalAmount;
     resetModalCloseTimer();
 }
 
@@ -203,6 +211,7 @@ async function fetchClientData() {
         if (Array.isArray(data) && JSON.stringify(data) !== JSON.stringify(clientData)) {
             clientData = data;
             renderPSPMenu();
+            syncArduinoState();   // lock/unlock coins depending on PC availability
         }
     } catch (err) {
         console.error(err);
@@ -275,6 +284,7 @@ function updateCarouselPosition(extraOffset = 0) {
             card.classList.remove('active');
         }
     });
+
 
     const screenWidth = window.innerWidth;
     const cardWidth = cards[0].offsetWidth;
@@ -355,11 +365,25 @@ pspContainer.addEventListener('wheel', (e) => {
 });
 
 document.addEventListener('keydown', (e) => {
+    // Press Any Key screen: first key press dismisses it and unlocks the coin acceptor
+    if (isPressAnyKeyVisible()) {
+        e.preventDefault();
+        hidePressAnyKey();      // hides the screen and sends 'U' (if a PC is available)
+        return;
+    }
+
     // Prevent number keys from triggering browser shortcuts or focus changes
     if (e.key >= '0' && e.key <= '9') {
         e.preventDefault();
         e.stopPropagation();
         handleNumberInput(e.key);
+        return;
+    }
+
+    if (e.key === 'Enter' && (pendingDigits || isModalOpen())) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleEnterInput();
         return;
     }
 
@@ -375,6 +399,7 @@ document.addEventListener('keydown', (e) => {
             selectedIndex--;
             updateCarouselPosition();
         }
+
     }
 });
 
@@ -480,3 +505,132 @@ document.addEventListener('fullscreenchange', () => {
         icon.classList.add('fa-expand');
     }
 });
+
+
+
+
+
+// ---------------- Web Serial ----------------
+let serialPort = null;
+let serialWriter = null;
+let serialQueue = Promise.resolve();   // commands are sent one by one, in order
+
+async function openSerial(allowPrompt) {
+    if (!('serial' in navigator)) {
+        console.error('Web Serial not available. Use Chrome/Edge on https:// or http://localhost');
+        return false;
+    }
+    if (serialWriter) return true;
+
+    if (!serialPort) {
+        const ports = await navigator.serial.getPorts();
+        serialPort = ports[0] || null;
+        if (!serialPort && allowPrompt) serialPort = await navigator.serial.requestPort();
+        if (!serialPort) return false;
+    }
+    if (!serialPort.writable) await serialPort.open({ baudRate: 9600 });
+    serialWriter = serialPort.writable.getWriter();
+    return true;
+}
+
+function serialTask(task) {
+    serialQueue = serialQueue.then(async () => {
+        try {
+            await task();
+        } catch (err) {
+            console.error('Serial error:', err);
+            try { if (serialWriter) serialWriter.releaseLock(); } catch (e) { }
+            try { if (serialPort) await serialPort.close(); } catch (e) { }
+            serialWriter = null;
+            serialPort = null;
+        }
+    });
+}
+
+function sendSerialCommand(command) {
+    serialTask(async () => {
+        if (await openSerial(false)) {
+            await serialWriter.write(new TextEncoder().encode(command));
+        }
+    });
+}
+
+// true  = coin acceptor is locked while the modal is open (one coin at a time)
+// false = customer can keep inserting coins during the 5s countdown (they add up)
+const LOCK_WHILE_MODAL_OPEN = false;
+
+function shouldLock() {
+    // Locked while: Press Any Key screen is visible, the coin modal is open,
+    // or there is no available PC to credit.
+    if (isPressAnyKeyVisible()) return true;
+    if (LOCK_WHILE_MODAL_OPEN && isModalOpen()) return true;
+    const hasPc = filteredClientData.some(c => {
+        const st = getClientStatus(c);
+        return st === "Available" || st === "Occupied";
+    });
+    return !hasPc;
+}
+
+function syncArduinoState() {
+    sendSerialCommand(shouldLock() ? 'L' : 'U');
+}
+
+// ONE-TIME SETUP: click the Press Any Key screen once and choose the Arduino Leonardo.
+// After that the browser remembers it and connects by itself.
+document.addEventListener('click', function (e) {
+    if (!e.target.closest || !e.target.closest('#pressAnyKeyScreen')) return;
+
+    serialTask(async () => {
+        if (await openSerial(true)) {
+            hidePressAnyKey();   // hide the screen first so shouldLock() sees it as closed
+            await serialWriter.write(new TextEncoder().encode(shouldLock() ? 'L' : 'U'));
+        }
+    });
+
+});
+
+if ('serial' in navigator) {
+    navigator.serial.addEventListener('disconnect', () => { serialWriter = null; serialPort = null; });
+    navigator.serial.addEventListener('connect', () => syncArduinoState());
+}
+
+// ---------------- Lock while the coin modal is open ----------------
+const originalShowNumberModal = showNumberModal;
+showNumberModal = function (pcName) {
+    originalShowNumberModal(pcName);
+    if (LOCK_WHILE_MODAL_OPEN) sendSerialCommand('L');
+};
+
+const originalHideNumberModal = hideNumberModal;
+hideNumberModal = function () {
+    originalHideNumberModal();
+    // Unlock only if the Press Any Key screen is hidden AND a PC is available
+    syncArduinoState();
+};
+
+// Page just loaded -> Press Any Key screen is visible -> lock coins
+if (document.readyState === 'complete') showPressAnyKey();
+else window.addEventListener('load', showPressAnyKey);
+
+
+
+function getPressAnyKeyScreen() {
+    return document.getElementById('pressAnyKeyScreen');
+}
+
+function isPressAnyKeyVisible() {
+    const screen = getPressAnyKeyScreen();
+    return !!screen && screen.style.display !== 'none';
+}
+
+function showPressAnyKey() {
+    const screen = getPressAnyKeyScreen();
+    if (screen) screen.style.display = 'flex';
+    syncArduinoState();
+}
+
+function hidePressAnyKey() {
+    const screen = getPressAnyKeyScreen();
+    if (screen) screen.style.display = 'none';
+    syncArduinoState();   // stays locked if there is no PC
+}
