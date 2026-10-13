@@ -1,21 +1,6 @@
 ﻿// --- 1. PROTECTIONS ---
 document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('selectstart', e => e.preventDefault());
 document.addEventListener('dragstart', e => e.preventDefault());
-document.addEventListener('copy', e => e.preventDefault());
-document.addEventListener('cut', e => e.preventDefault());
-document.addEventListener('paste', e => e.preventDefault());
-
-document.addEventListener('keydown', e => {
-    if (
-        e.keyCode === 123 ||
-        (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) ||
-        (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 67 || e.keyCode === 65))
-    ) {
-        e.preventDefault();
-        return false;
-    }
-});
 
 // --- NUMBER TYPING & MODAL LOGIC ---
 let typedNumbersString = "";
@@ -256,9 +241,9 @@ function renderPSPMenu() {
                     <div class="pc-icon-wrapper">💻</div>
                     <div class="pc-title">${client.ClientName || `PC-${String(index + 1).padStart(2, '0')}`}</div>
                     <div class="pc-details">
-                        ${client.IPAddress ? `IP: ${client.IPAddress}<br>` : ''}
-                        ${formattedStart ? `Start: ${formattedStart}<br>` : ''}
-                        ${formattedEnd ? `End: ${formattedEnd}` : ''}
+                        ${client.IPAddress ? `${client.IPAddress}<br>` : ''}
+                        ${formattedStart ? `${formattedStart}<br>` : ''}
+                        ${formattedEnd ? `${formattedEnd}` : ''}
                     </div>
                     <div class="psp-badge ${statusClass}">
                         ${status}

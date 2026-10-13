@@ -338,3 +338,60 @@ html, body {
     margin-top: 12px;
     letter-spacing: 1px;
 }
+
+
+/* --- License Modal Enhancements --- */
+.license-input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+    .license-input:focus {
+        border-color: #2ecc71;
+        box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+    }
+
+.btn-activate {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    border: none;
+    border-radius: 10px;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .btn-activate:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(46, 204, 113, 0.6);
+    }
+
+    .btn-activate:active {
+        transform: translateY(1px);
+    }
+#licenseModal,
+#serverSerialDisplay,
+input,
+textarea {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+}
