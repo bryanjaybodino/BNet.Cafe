@@ -278,20 +278,15 @@ function updateCarouselPosition(extraOffset = 0) {
     if (cards.length === 0) return;
 
     cards.forEach((card, idx) => {
-        if (idx === selectedIndex) {
-            card.classList.add('active');
-        } else {
-            card.classList.remove('active');
-        }
+        card.classList.toggle('active', idx === selectedIndex);
     });
 
+    // Container is hidden (Press Any Key screen) -> can't measure yet
+    if (pspContainer.style.display === 'none') return;
 
-    const screenWidth = window.innerWidth;
-    const cardWidth = cards[0].offsetWidth;
-    const gap = window.innerWidth < 600 ? 12 : 28;
-
-    const centerOffset = (screenWidth / 2) - (cardWidth / 2) - (selectedIndex * (cardWidth + gap));
-    const totalTranslate = centerOffset + extraOffset;
+    const target = cards[selectedIndex];
+    const cardCenter = (target.offsetLeft - pspCarousel.offsetLeft) + (target.offsetWidth / 2);
+    const totalTranslate = (window.innerWidth / 2) - cardCenter + extraOffset;
 
     pspCarousel.style.transform = `translate3d(${totalTranslate}px, 0px, 0px)`;
     pspCarousel.style.webkitTransform = `translate3d(${totalTranslate}px, 0px, 0px)`;
@@ -625,12 +620,22 @@ function isPressAnyKeyVisible() {
 
 function showPressAnyKey() {
     const screen = getPressAnyKeyScreen();
-    if (screen) screen.style.display = 'flex';
+
+
+    const psp = document.getElementById('pspContainer');
+    if (psp) psp.style.display = 'none';           // hide the PSP list
+
     syncArduinoState();
 }
 
 function hidePressAnyKey() {
     const screen = getPressAnyKeyScreen();
     if (screen) screen.style.display = 'none';
-    syncArduinoState();   // stays locked if there is no PC
+
+    const psp = document.getElementById('pspContainer');
+    if (psp) psp.style.removeProperty('display');
+
+    requestAnimationFrame(() => updateCarouselPosition(0));  // re-center now that it's visible
+
+    syncArduinoState();
 }
