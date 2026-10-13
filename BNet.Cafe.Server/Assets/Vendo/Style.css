@@ -485,10 +485,10 @@ textarea {
         --digit: #e6d0ff;
     }
 
-    .atc-wrap.theme-pink {
-        --c: #ff2fd0;
-        --c-glow: rgba(255, 47, 208, 0.55);
-        --digit: #ff3df0;
+    .atc-wrap.theme-gray {
+        --c: #7f8c8d;
+        --c-glow: rgba(127, 140, 141, 0.55);
+        --digit: #bdc3c7;
     }
 
 .atc,

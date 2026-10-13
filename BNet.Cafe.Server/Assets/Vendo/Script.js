@@ -696,7 +696,7 @@ function buildAttractCard(client, index) {
     const theme = status === 'Paused' ? 'theme-orange'
         : status === 'Administrator' ? 'theme-purple'
             : status === 'Occupied' ? 'theme-red'
-                : status === 'Available' ? 'theme-green' : 'theme-pink';
+                : status === 'Available' ? 'theme-green' : 'theme-gray';
 
     const pill = status === 'Occupied' ? { cls: 'pill-occupied', text: 'OCCUPIED' }
         : status === 'Paused' ? { cls: 'pill-paused', text: 'PAUSED' }
