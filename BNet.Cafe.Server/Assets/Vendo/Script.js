@@ -167,26 +167,10 @@ function nextSlide() {
 function getClientStatus(client) {
     if (!client) return "Offline";
 
-    if (client.TimeStart && client.TimeStart.trim() !== "") {
-        const start = Date.parse(client.TimeStart);
-        const end = Date.parse(client.TimeEnd);
-
-        if (!isNaN(start)) {
-            let hours = 0;
-            if (!isNaN(end)) {
-                const durationMs = end - start;
-                hours = Math.floor(durationMs / (1000 * 60 * 60));
-            }
-
-            const isAdministrator = (hours === 100);
-
-            if (isAdministrator) {
-                return "Administrator";
-            } else {
-                const isPaused = String(client.IsPaused).toUpperCase() === "TRUE";
-                return isPaused ? "Paused" : "Occupied";
-            }
-        }
+    // Use pre-calculated status from handler (supports both camelCase and PascalCase)
+    const status = client.status || client.Status;
+    if (status) {
+        return status;
     }
 
     return "Available";
@@ -201,35 +185,40 @@ let filteredClientData = [];
 
 async function fetchClientData() {
     try {
-        const endpoint = window.location.protocol + '//' + window.location.hostname + ':2050/text';
-        const response = await fetch(endpoint);
-        let data = await response.text();
-        try {
-            data = JSON.parse(data);
-        } catch (e) { }
+        var endpoint = /\.aspx$/i.test(window.location.pathname)
+            ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/GetComputerHandler.ashx')
+            : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/GetComputerHandler.ashx');
 
-        if (Array.isArray(data) && JSON.stringify(data) !== JSON.stringify(clientData)) {
-            clientData = data;
-            renderPSPMenu();
-            renderAttractGrid();  // display-only board on the Press Any Key screen
-            syncArduinoState();   // lock/unlock coins depending on PC availability
+        const response = await fetch(endpoint);
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+            if (JSON.stringify(data) !== JSON.stringify(clientData)) {
+                clientData = data;
+                renderPSPMenu();
+                renderAttractGrid();  // display-only board on the Press Any Key screen
+                syncArduinoState();   // lock/unlock coins depending on PC availability
+            }
         }
     } catch (err) {
-        console.error(err);
+        console.error('Failed to fetch computer data from handler:', err);
     }
 }
-
 function renderPSPMenu() {
     pspCarousel.innerHTML = '';
 
+    // Include "Offline" (and all other valid statuses) in the filter condition
     let filteredData = clientData.filter(client => {
         const status = getClientStatus(client);
-        return status === "Available" || status === "Occupied";
+        return status === "Available" || status === "Occupied" || status === "Offline" || status === "Paused" || status === "Administrator";
     });
 
+    // Alternatively, if you want to show ALL computers from the database without filtering out anything:
+    // let filteredData = clientData;
+
     filteredClientData = filteredData.sort((a, b) => {
-        const nameA = a.ClientName || '';
-        const nameB = b.ClientName || '';
+        const nameA = a.clientName || a.ClientName || '';
+        const nameB = b.clientName || b.ClientName || '';
         return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
     });
 
@@ -241,24 +230,29 @@ function renderPSPMenu() {
         const status = getClientStatus(client);
         const statusClass = `status-${status.toLowerCase()}`;
 
-        const formattedStart = formatDateTimeString(client.TimeStart);
-        const formattedEnd = formatDateTimeString(client.TimeEnd);
+        const timeStart = client.timeStart || client.TimeStart;
+        const timeEnd = client.timeEnd || client.TimeEnd;
+        const ipAddress = client.ipAddress || client.IPAddress;
+        const clientName = client.clientName || client.ClientName;
+
+        const formattedStart = formatDateTimeString(timeStart);
+        const formattedEnd = formatDateTimeString(timeEnd);
 
         const card = document.createElement('div');
         card.className = `psp-card ${index === selectedIndex ? 'active' : ''} ${statusClass}`;
 
         card.innerHTML = `
-                    <div class="pc-icon-wrapper">💻</div>
-                    <div class="pc-title">${client.ClientName || `PC-${String(index + 1).padStart(2, '0')}`}</div>
-                    <div class="pc-details">
-                        ${client.IPAddress ? `${client.IPAddress}<br>` : ''}
-                        ${formattedStart ? `${formattedStart}<br>` : ''}
-                        ${formattedEnd ? `${formattedEnd}` : ''}
-                    </div>
-                    <div class="psp-badge ${statusClass}">
-                        ${status}
-                    </div>
-                `;
+            <div class="pc-icon-wrapper">💻</div>
+            <div class="pc-title">${clientName || `PC-${String(index + 1).padStart(2, '0')}`}</div>
+            <div class="pc-details">
+                ${ipAddress && ipAddress !== '-' ? `${ipAddress}<br>` : ''}
+                ${formattedStart ? `${formattedStart}<br>` : ''}
+                ${formattedEnd ? `${formattedEnd}` : ''}
+            </div>
+            <div class="psp-badge ${statusClass}">
+                ${status}
+            </div>
+        `;
 
         card.addEventListener('click', () => {
             if (isModalOpen()) return;
@@ -290,6 +284,9 @@ function updateCarouselPosition(extraOffset = 0) {
 
     pspCarousel.style.transform = `translate3d(${totalTranslate}px, 0px, 0px)`;
     pspCarousel.style.webkitTransform = `translate3d(${totalTranslate}px, 0px, 0px)`;
+
+    // Automatically re-sync Arduino coin lock/unlock state whenever the active card changes
+    syncArduinoState();
 }
 
 // --- 5. TOUCH / SWIPE DRAG ENGINE ---
@@ -366,7 +363,18 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
+    // --- Block number typing if the currently selected PC is Offline ---
     if (e.key >= '0' && e.key <= '9') {
+        if (filteredClientData && filteredClientData.length > 0 && selectedIndex >= 0 && selectedIndex < filteredClientData.length) {
+            const currentClient = filteredClientData[selectedIndex];
+            const currentStatus = getClientStatus(currentClient);
+            if (currentStatus === "Offline") {
+                e.preventDefault();
+                e.stopPropagation();
+                return; // Stop processing numbers if the PC is offline
+            }
+        }
+
         e.preventDefault();
         e.stopPropagation();
         handleNumberInput(e.key);
@@ -374,6 +382,16 @@ document.addEventListener('keydown', (e) => {
     }
 
     if (e.key === 'Enter' && (pendingDigits || isModalOpen())) {
+        // Also prevent Enter if currently selected PC is offline
+        if (filteredClientData && filteredClientData.length > 0 && selectedIndex >= 0 && selectedIndex < filteredClientData.length) {
+            const currentClient = filteredClientData[selectedIndex];
+            if (getClientStatus(currentClient) === "Offline") {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
+        }
+
         e.preventDefault();
         e.stopPropagation();
         handleEnterInput();
@@ -543,11 +561,23 @@ const LOCK_WHILE_MODAL_OPEN = false;
 function shouldLock() {
     if (isPressAnyKeyVisible()) return true;
     if (LOCK_WHILE_MODAL_OPEN && isModalOpen()) return true;
-    const hasPc = filteredClientData.some(c => {
+
+    // Check if the currently selected/active card in the carousel is Offline
+    if (filteredClientData && filteredClientData.length > 0 && selectedIndex >= 0 && selectedIndex < filteredClientData.length) {
+        const selectedClient = filteredClientData[selectedIndex];
+        const status = getClientStatus(selectedClient);
+        if (status === "Offline") {
+            return true; // Lock the coin mechanism ('L') if the selected PC is offline
+        }
+    }
+
+    // Fallback: check if there are any valid online PCs in the entire system
+    const hasValidPc = clientData.some(c => {
         const st = getClientStatus(c);
-        return st === "Available" || st === "Occupied";
+        return st === "Available" || st === "Occupied" || st === "Paused" || st === "Administrator";
     });
-    return !hasPc;
+
+    return !hasValidPc;
 }
 
 function syncArduinoState() {
@@ -617,20 +647,22 @@ function escapeHtml(s) {
 }
 
 function getRemainingSeconds(client) {
-    if (!client.TimeEnd || String(client.TimeEnd).includes('9999-12-31')) return null;
-    const end = Date.parse(client.TimeEnd);
+    const endStr = client.timeEnd || client.TimeEnd;
+    if (!endStr || String(endStr).includes('9999-12-31') || String(endStr).trim() === "") return null;
+
+    const fixedTimeEnd = endStr.replace(" ", "T");
+    const end = Date.parse(fixedTimeEnd);
     if (isNaN(end)) return 0;
     return Math.max(0, Math.floor((end - Date.now()) / 1000));
 }
 
 function getUserType(client) {
-    const raw = client.UserType || client.MemberType || client.AccountType || client.UserLevel || client.UserName || '';
+    const raw = client.userType || client.UserType || client.memberType || client.accountType || '';
     const t = String(raw).trim();
     if (/vip/i.test(t)) return { text: 'VIP', cls: 'vip', icon: 'fa-crown' };
     if (t && !/guest/i.test(t)) return { text: /member/i.test(t) ? 'MEMBER' : t, cls: 'member', icon: 'fa-user' };
     return { text: 'GUEST', cls: 'guest', icon: 'fa-user' };
 }
-
 function buildAttractCard(client, index) {
     const status = getClientStatus(client);
     const running = (status === 'Occupied' || status === 'Paused' || status === 'Administrator');
