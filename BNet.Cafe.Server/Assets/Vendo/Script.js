@@ -368,7 +368,7 @@ document.addEventListener('keydown', (e) => {
         if (filteredClientData && filteredClientData.length > 0 && selectedIndex >= 0 && selectedIndex < filteredClientData.length) {
             const currentClient = filteredClientData[selectedIndex];
             const currentStatus = getClientStatus(currentClient);
-            if (currentStatus === "Offline") {
+            if (currentStatus === "Offline" || currentStatus === "Administrator") {
                 e.preventDefault();
                 e.stopPropagation();
                 return; // Stop processing numbers if the PC is offline
@@ -385,7 +385,7 @@ document.addEventListener('keydown', (e) => {
         // Also prevent Enter if currently selected PC is offline
         if (filteredClientData && filteredClientData.length > 0 && selectedIndex >= 0 && selectedIndex < filteredClientData.length) {
             const currentClient = filteredClientData[selectedIndex];
-            if (getClientStatus(currentClient) === "Offline") {
+            if (getClientStatus(currentClient) === "Offline" || currentStatus === "Administrator" || currentStatus ==="Paused") {
                 e.preventDefault();
                 e.stopPropagation();
                 return;
@@ -566,7 +566,7 @@ function shouldLock() {
     if (filteredClientData && filteredClientData.length > 0 && selectedIndex >= 0 && selectedIndex < filteredClientData.length) {
         const selectedClient = filteredClientData[selectedIndex];
         const status = getClientStatus(selectedClient);
-        if (status === "Offline") {
+        if (status === "Offline" || status === "Administrator" || status === "Paused") {
             return true; // Lock the coin mechanism ('L') if the selected PC is offline
         }
     }
@@ -574,7 +574,7 @@ function shouldLock() {
     // Fallback: check if there are any valid online PCs in the entire system
     const hasValidPc = clientData.some(c => {
         const st = getClientStatus(c);
-        return st === "Available" || st === "Occupied" || st === "Paused" || st === "Administrator";
+        return st === "Available" || st === "Occupied";
     });
 
     return !hasValidPc;
