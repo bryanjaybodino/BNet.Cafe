@@ -16,7 +16,7 @@ namespace BNet.Cafe.Websocket
     {
         private HttpListener _server;
         private int _activeConnections = 0;
-        private const int MaxConnections = 50;
+        private const int MaxConnections = 150;
 
         private const int AgentRecvBufSize = 64 * 1024;
         private const int BrowserRecvBufSize = 64 * 1024;
