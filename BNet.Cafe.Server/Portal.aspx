@@ -138,11 +138,6 @@
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>
-                                    <EmptyDataTemplate>
-                                        <div class="bnet-table-empty-container">
-                                            No balance transactions found.
-                                        </div>
-                                    </EmptyDataTemplate>
                                 </asp:GridView>
                                 <asp:Panel ID="Panel_Pagination" runat="server" CssClass="bnet-table-pagination-container" />
                             </div>
