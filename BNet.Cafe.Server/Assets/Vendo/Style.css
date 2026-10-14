@@ -272,6 +272,7 @@ html, body {
     pointer-events: none;
     transition: opacity 0.3s ease;
     padding: 20px;
+    z-index:9999;
 }
 
     .number-modal-overlay.visible {
