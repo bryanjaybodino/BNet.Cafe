@@ -407,9 +407,7 @@ textarea {
     justify-content: space-between;
     padding: 12px;
     gap: 10px;
-    background: rgba(10, 12, 28, 0.45);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: rgba(10, 12, 28, 0.2);
     color: #fff;
     cursor: pointer;
     overflow: hidden; /* Change or remove if it clips children */
@@ -496,7 +494,7 @@ textarea {
 
 .atc,
 .atc-in {
-    --cut: 8cqw;
+    --cut: 3cqw;
     clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
 }
 

@@ -831,6 +831,7 @@
     <Content Include="Ashx\GetClientConfigHandler.ashx" />
     <Content Include="Ashx\GetTimeServiceHandler.ashx" />
     <Content Include="Ashx\GetComputerHandler.ashx" />
+    <Content Include="kiosk-mode.bat" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
