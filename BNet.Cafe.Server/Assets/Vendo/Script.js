@@ -774,7 +774,6 @@ function buildAttractCard(client, index) {
           </div></div>
         </div>`;
 }
-
 function renderAttractGrid() {
     const grid = document.getElementById('attractGrid');
     if (!grid) return;
@@ -788,16 +787,23 @@ function renderAttractGrid() {
         return;
     }
 
-    const screenAspect = window.innerWidth / Math.max(1, window.innerHeight);
-    let cols = Math.ceil(Math.sqrt(count * screenAspect * 0.85));
-    cols = Math.max(2, Math.min(cols, count));
+    let cols = 4; // default fallback
+
+    // Tailored symmetric layouts for specific counts:
+    if (count <= 4) {
+        cols = count;
+    } else {
+        // Dynamic scaling for in-between numbers
+        const screenAspect = window.innerWidth / Math.max(1, window.innerHeight);
+        cols = Math.ceil(Math.sqrt(count * screenAspect * 0.7));
+        cols = Math.max(2, Math.min(cols, count));
+    }
 
     grid.style.setProperty('--cols', cols);
 
     grid.innerHTML = list.map(buildAttractCard).join('');
     tickAttractTimes();
 }
-
 window.addEventListener('resize', () => {
     if (isPressAnyKeyVisible()) {
         renderAttractGrid();
