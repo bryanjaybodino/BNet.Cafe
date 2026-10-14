@@ -692,14 +692,41 @@ function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+
+let serverTimeOffset = null;
+
+async function fetchServerTime() {
+    var endpoint = /\.aspx$/i.test(window.location.pathname)
+        ? window.location.pathname.replace(/[^\/]+\.aspx$/i, 'Ashx/GetTimeServiceHandler.ashx')
+        : window.location.pathname.replace(/[^\/]+$/i, 'Ashx/GetTimeServiceHandler.ashx');
+
+    const response = await fetch(endpoint, { cache: 'no-store' });
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    return new Date(data.serverTime).getTime();
+}
+
+async function syncServerTime() {
+    try {
+        const serverNow = await fetchServerTime();
+        serverTimeOffset = serverNow - (performance.timeOrigin + performance.now());
+    } catch (err) {
+        console.warn('Failed to sync server time:', err);
+    }
+}
+
+function getServerNow() {
+    return performance.timeOrigin + performance.now() + (serverTimeOffset || 0);
+}
+
 function getRemainingSeconds(client) {
     const endStr = client.timeEnd || client.TimeEnd;
     if (!endStr || String(endStr).includes('9999-12-31') || String(endStr).trim() === "") return null;
 
-    const fixedTimeEnd = endStr.replace(" ", "T");
-    const end = Date.parse(fixedTimeEnd);
+    const end = Date.parse(String(endStr).replace(" ", "T"));
     if (isNaN(end)) return 0;
-    return Math.max(0, Math.floor((end - Date.now()) / 1000));
+
+    return Math.max(0, Math.floor((end - getServerNow()) / 1000));
 }
 
 function getUserType(client) {
@@ -796,5 +823,10 @@ function tickAttractTimes() {
         if (el.innerHTML !== html) el.innerHTML = html;
     });
 }
+
+syncServerTime().then(() => {
+    if (typeof tickAttractTimes === 'function') tickAttractTimes();
+});
+setInterval(syncServerTime, 5 * 60 * 1000);
 
 setInterval(() => { if (isPressAnyKeyVisible()) tickAttractTimes(); }, 1000);
