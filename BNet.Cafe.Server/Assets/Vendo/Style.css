@@ -404,14 +404,14 @@ textarea {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px;
-    gap: 6px;
+    padding: 12px;
+    gap: 10px;
     background: rgba(10, 12, 28, 0.45);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     color: #fff;
     cursor: pointer;
-    overflow: hidden;
+    overflow: hidden; /* Change or remove if it clips children */
 }
 
 .attract-header {
@@ -441,6 +441,8 @@ textarea {
     align-content: center;
     overflow: hidden;
     padding: 6px;
+    overflow-y: auto; /* Allow scrolling/containment if grid is too tall */
+    max-height: calc(100vh - 100px); /* Reserve space for header and footer */
 }
 
 

@@ -378,15 +378,28 @@ pspContainer.addEventListener('wheel', (e) => {
     isWheelCoolingDown = true;
     setTimeout(() => { isWheelCoolingDown = false; }, 200);
 });
-
 document.addEventListener('keydown', (e) => {
+    // 1. If the "Press Any Key" screen is visible
     if (isPressAnyKeyVisible()) {
+        // If the user presses Left or Right arrow (or numbers), dismiss the attract screen AND open/unlock the serial port
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || (e.key >= '0' && e.key <= '9')) {
+            e.preventDefault();
+
+            // Execute the serial port routine (matching what the click event does)
+            serialTask(async () => {
+                if (await openSerial(true)) {
+                    hidePressAnyKey();
+                    await serialWriter.write(new TextEncoder().encode(shouldLock() ? 'L' : 'U'));
+                }
+            });
+            return;
+        }
+        // Ignore all other keys while the attract screen is showing
         e.preventDefault();
-        hidePressAnyKey();
         return;
     }
 
-    // --- Block number typing if the currently selected PC is Offline ---
+    // --- Block number typing if the currently selected PC is Offline or Admin ---
     if (e.key >= '0' && e.key <= '9') {
         if (filteredClientData && filteredClientData.length > 0 && selectedIndex >= 0 && selectedIndex < filteredClientData.length) {
             const currentClient = filteredClientData[selectedIndex];
@@ -404,6 +417,7 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
+    // --- Enter input for coins ---
     if (e.key === 'Enter' && (pendingDigits || isModalOpen())) {
         if (filteredClientData && filteredClientData.length > 0 && selectedIndex >= 0 && selectedIndex < filteredClientData.length) {
             const currentClient = filteredClientData[selectedIndex];
@@ -423,16 +437,23 @@ document.addEventListener('keydown', (e) => {
 
     if (isModalOpen() || filteredClientData.length === 0) return;
 
-    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+    // --- Carousel Navigation ---
+    if (e.key === 'ArrowRight') {
+        e.preventDefault();
         if (selectedIndex < filteredClientData.length - 1) {
             selectedIndex++;
             updateCarouselPosition();
         }
-    } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+    } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
         if (selectedIndex > 0) {
             selectedIndex--;
             updateCarouselPosition();
         }
+    } else {
+        // Block and swallow any other unexpected keystrokes
+        e.preventDefault();
+        e.stopPropagation();
     }
 });
 
