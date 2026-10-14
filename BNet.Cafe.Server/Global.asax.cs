@@ -26,10 +26,10 @@ namespace BNet.Cafe.Server
 
             DBContext DBContext = new DBContext();
             //DB UPDATE 
-            StringBuilder queries = new StringBuilder();
-            queries.AppendLine("UPDATE users SET DBRole = 'MEMBER' WHERE DBRole = 'USER';");
-            queries.AppendLine("UPDATE pricing_rates SET DBCustomerType = 'MEMBER' WHERE DBCustomerType = 'USER';");
-            DBContext.SqlExecuteAsync(queries.ToString());
+            //StringBuilder queries = new StringBuilder();
+            //queries.AppendLine("UPDATE users SET DBRole = 'MEMBER' WHERE DBRole = 'USER';");
+            //queries.AppendLine("UPDATE pricing_rates SET DBCustomerType = 'MEMBER' WHERE DBCustomerType = 'USER';");
+            //DBContext.SqlExecuteAsync(queries.ToString());
 
             //Page.RegisterAsyncTask(new PageAsyncTask(async () =>
             //{
