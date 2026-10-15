@@ -1,5 +1,6 @@
 ﻿using BNet.Cafe.Client.Design;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -11,13 +12,14 @@ namespace BNet.Cafe.Client.Services
 {
     public class WallpaperLockscreenService : IDisposable
     {
-
         private readonly Form _parentForm;
         private readonly Action _onUserInteraction;
         private readonly Action _onAutoShutdownTriggered;
         private readonly string _wallpaperFolder;
 
         private PictureBox _pictureBox;
+        private readonly List<SecondaryLockForm> _secondaryForms = new List<SecondaryLockForm>();
+
         private Timer _slideTimer;
         private Timer _countdownTimer;
         private Label _badgeCountdownLabel;
@@ -25,6 +27,7 @@ namespace BNet.Cafe.Client.Services
         private string[] _imageFiles = new string[0];
         private int _currentIndex = -1;
         private int _remainingIdleSeconds;
+        private bool _loading;
 
         public PictureBox PictureBox => _pictureBox;
 
@@ -33,14 +36,13 @@ namespace BNet.Cafe.Client.Services
             _parentForm = parentForm ?? throw new ArgumentNullException(nameof(parentForm));
             _onUserInteraction = onUserInteraction;
             _onAutoShutdownTriggered = onAutoShutdownTriggered;
-
-            // Use the centralized dynamic path instead of AppDomain base directory
             _wallpaperFolder = DirectoryHelper.GetAppDataFolderPath("Wallpaper");
 
             InitializePictureBox();
             InitializeTimers();
             LoadImages();
         }
+
         private void InitializePictureBox()
         {
             _pictureBox = new BufferedPictureBox
@@ -73,11 +75,59 @@ namespace BNet.Cafe.Client.Services
             control.Parent = _pictureBox;
             control.Location = originalPos;
 
-            // Retain transparent appearance relative to PictureBox backdrop
             if (control.BackColor == Color.Transparent || control.BackColor.A < 255)
             {
                 control.BackColor = Color.FromArgb(160, 15, 23, 42);
             }
+        }
+
+        public void ShowSecondaryScreens()
+        {
+            CloseSecondaryScreens();
+
+            foreach (var screen in Screen.AllScreens)
+            {
+                if (!screen.Primary)
+                {
+                    var secForm = new SecondaryLockForm(screen.Bounds);
+                    secForm.WallpaperPictureBox.MouseDown += (s, e) => _onUserInteraction?.Invoke();
+
+                    if (_imageFiles.Length > 0 && _currentIndex >= 0 && _currentIndex < _imageFiles.Length)
+                    {
+                        Task.Run(async () =>
+                        {
+                            Bitmap scaled = LoadScaled(_imageFiles[_currentIndex], secForm.WallpaperPictureBox.ClientSize);
+                            secForm.BeginInvoke((Action)(() =>
+                            {
+                                if (!secForm.IsDisposed && secForm.WallpaperPictureBox != null)
+                                {
+                                    secForm.WallpaperPictureBox.Image = scaled;
+                                }
+                                else
+                                {
+                                    scaled?.Dispose();
+                                }
+                            }));
+                        });
+                    }
+
+                    secForm.Show();
+                    _secondaryForms.Add(secForm);
+                }
+            }
+        }
+
+        public void CloseSecondaryScreens()
+        {
+            foreach (var form in _secondaryForms)
+            {
+                if (!form.IsDisposed)
+                {
+                    form.Close();
+                    form.Dispose();
+                }
+            }
+            _secondaryForms.Clear();
         }
 
         public void LoadImages()
@@ -96,11 +146,9 @@ namespace BNet.Cafe.Client.Services
 
             if (_imageFiles.Length > 0)
             {
-                // Reset index to ensure clean cycling when new files arrive
                 _currentIndex = -1;
                 LoadNextImage();
 
-                // Start slideshow timer if more than 1 image is present
                 if (_imageFiles.Length > 1)
                 {
                     _slideTimer.Stop();
@@ -117,8 +165,6 @@ namespace BNet.Cafe.Client.Services
             }
         }
 
-        private bool _loading;
-
         private async void LoadNextImage()
         {
             if (_imageFiles.Length == 0 || _loading) return;
@@ -128,17 +174,37 @@ namespace BNet.Cafe.Client.Services
                 _currentIndex = (_currentIndex + 1) % _imageFiles.Length;
                 string path = _imageFiles[_currentIndex];
 
-                // Use PictureBox size or parent form size instead of screen bounds
                 Size target = _pictureBox.ClientSize.Width > 0 && _pictureBox.ClientSize.Height > 0
                     ? _pictureBox.ClientSize
                     : _parentForm.ClientSize;
 
                 Bitmap scaled = await Task.Run(() => LoadScaled(path, target));
 
-                if (_pictureBox.IsDisposed) { scaled?.Dispose(); return; }
-                var old = _pictureBox.Image;
-                _pictureBox.Image = scaled;
-                old?.Dispose();
+                if (_pictureBox.IsDisposed)
+                {
+                    scaled?.Dispose();
+                }
+                else
+                {
+                    var old = _pictureBox.Image;
+                    _pictureBox.Image = scaled;
+                    old?.Dispose();
+                }
+
+                // Push synchronized updates to all secondary screens
+                foreach (var secForm in _secondaryForms)
+                {
+                    if (secForm.WallpaperPictureBox != null && !secForm.WallpaperPictureBox.IsDisposed)
+                    {
+                        Size secTarget = secForm.WallpaperPictureBox.ClientSize;
+                        if (secTarget.Width <= 0 || secTarget.Height <= 0) secTarget = new Size(800, 600);
+
+                        Bitmap secScaled = await Task.Run(() => LoadScaled(path, secTarget));
+                        var oldSec = secForm.WallpaperPictureBox.Image;
+                        secForm.WallpaperPictureBox.Image = secScaled;
+                        oldSec?.Dispose();
+                    }
+                }
             }
             catch (Exception ex) { Debug.WriteLine(ex.Message); }
             finally { _loading = false; }
@@ -146,6 +212,7 @@ namespace BNet.Cafe.Client.Services
 
         private static Bitmap LoadScaled(string path, Size target)
         {
+            if (target.Width <= 0 || target.Height <= 0) target = new Size(800, 600);
             using (var ms = new MemoryStream(File.ReadAllBytes(path)))
             using (var src = Image.FromStream(ms))
             {
@@ -158,12 +225,14 @@ namespace BNet.Cafe.Client.Services
                 return bmp;
             }
         }
+
         public void Start(int idleTimeoutSeconds, Label badgeCountdown)
         {
             _badgeCountdownLabel = badgeCountdown;
             _remainingIdleSeconds = idleTimeoutSeconds;
 
             UpdateCountdownDisplay();
+            ShowSecondaryScreens();
 
             if (_imageFiles.Length > 1)
             {
@@ -179,6 +248,7 @@ namespace BNet.Cafe.Client.Services
         {
             _slideTimer.Stop();
             _countdownTimer.Stop();
+            CloseSecondaryScreens();
         }
 
         private void SlideTimer_Tick(object sender, EventArgs e)
@@ -217,22 +287,20 @@ namespace BNet.Cafe.Client.Services
                 _badgeCountdownLabel.ForeColor = Color.White;
             }
         }
+
         public void ResetCountdown(int idleTimeoutSeconds)
         {
             _remainingIdleSeconds = idleTimeoutSeconds;
             UpdateCountdownDisplay();
 
-            // Restart the countdown timer
             _countdownTimer.Stop();
             _countdownTimer.Start();
         }
 
         public void Dispose()
         {
-            _slideTimer?.Stop();
+            Stop();
             _slideTimer?.Dispose();
-
-            _countdownTimer?.Stop();
             _countdownTimer?.Dispose();
 
             _pictureBox?.Image?.Dispose();

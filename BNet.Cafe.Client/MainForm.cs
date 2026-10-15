@@ -351,6 +351,11 @@ namespace BNet.Cafe.Client
                 return;
             }
 
+            // Target the primary display bounds specifically
+            Screen primaryScreen = Screen.PrimaryScreen;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Bounds = primaryScreen.Bounds;
+
             this.Show();
             this.BringToFront();
             this.Activate();
