@@ -70,6 +70,8 @@ namespace BNet.Cafe.Websocket
                 Setup server = new Setup();
                 server.StartWebsocket();
 
+                WebServerRunner.Start(args);
+
                 // Keep process alive
                 KeepAliveEvent.WaitOne();
             }

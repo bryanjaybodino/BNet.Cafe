@@ -36,10 +36,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BNet.Apache.Webforms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\BNet.Apache.Webforms.exe</HintPath>
-    </Reference>
     <Reference Include="BNet.FTPServer, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Offline Packages\BNet.FTPServer\BNet.FTPServer.dll</HintPath>
@@ -49,7 +45,9 @@
       <HintPath>bin\Debug\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -74,6 +72,8 @@
     <Compile Include="Setup.cs" />
     <Compile Include="Services\WebSocketHelper.cs" />
     <Compile Include="Services\WebSocketSession.cs" />
+    <Compile Include="WebHost.cs" />
+    <Compile Include="WebServerRunner.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -99,6 +99,9 @@
   <ItemGroup>
     <Content Include="Offline Packages\BNet.FTPServer\BNet.FTPServer.dll" />
     <Content Include="Offline Packages\Newtonsoft.Json\Newtonsoft.Json.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
