@@ -23,9 +23,10 @@
             this.lblElevationStatus = new System.Windows.Forms.Label();
             this.btnElevate = new System.Windows.Forms.Button();
             this.grpSecurity = new System.Windows.Forms.GroupBox();
-            this.chkBlockUsb = new System.Windows.Forms.CheckBox();
             this.chkBlockInstallers = new System.Windows.Forms.CheckBox();
+            this.chkBlockUsb = new System.Windows.Forms.CheckBox();
             this.btnApplyChanges = new System.Windows.Forms.Button();
+            this.btnExitApp = new System.Windows.Forms.Button();
             this.lblStatusMessage = new System.Windows.Forms.Label();
             this.panelHeader.SuspendLayout();
             this.grpSecurity.SuspendLayout();
@@ -104,24 +105,10 @@
             this.grpSecurity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.grpSecurity.Location = new System.Drawing.Point(20, 135);
             this.grpSecurity.Name = "grpSecurity";
-            this.grpSecurity.Size = new System.Drawing.Size(340, 160);
+            this.grpSecurity.Size = new System.Drawing.Size(340, 120);
             this.grpSecurity.TabIndex = 3;
             this.grpSecurity.TabStop = false;
             this.grpSecurity.Text = " System Security Restrictions ";
-            // 
-            // chkBlockUsb
-            // 
-            this.chkBlockUsb.AutoSize = true;
-            this.chkBlockUsb.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.chkBlockUsb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkBlockUsb.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.chkBlockUsb.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.chkBlockUsb.Location = new System.Drawing.Point(8, 35);
-            this.chkBlockUsb.Name = "chkBlockUsb";
-            this.chkBlockUsb.Size = new System.Drawing.Size(330, 24);
-            this.chkBlockUsb.TabIndex = 0;
-            this.chkBlockUsb.Text = "Block USB Storage && Smartphones (MTP/PTP)";
-            this.chkBlockUsb.UseVisualStyleBackColor = true;
             // 
             // chkBlockInstallers
             // 
@@ -137,6 +124,20 @@
             this.chkBlockInstallers.Text = "Block Software Installers (.msi packages)";
             this.chkBlockInstallers.UseVisualStyleBackColor = true;
             // 
+            // chkBlockUsb
+            // 
+            this.chkBlockUsb.AutoSize = true;
+            this.chkBlockUsb.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkBlockUsb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkBlockUsb.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.chkBlockUsb.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.chkBlockUsb.Location = new System.Drawing.Point(8, 35);
+            this.chkBlockUsb.Name = "chkBlockUsb";
+            this.chkBlockUsb.Size = new System.Drawing.Size(330, 24);
+            this.chkBlockUsb.TabIndex = 0;
+            this.chkBlockUsb.Text = "Block USB Storage && Smartphones (MTP/PTP)";
+            this.chkBlockUsb.UseVisualStyleBackColor = true;
+            // 
             // btnApplyChanges
             // 
             this.btnApplyChanges.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(99)))), ((int)(((byte)(102)))), ((int)(((byte)(241)))));
@@ -145,13 +146,29 @@
             this.btnApplyChanges.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnApplyChanges.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnApplyChanges.ForeColor = System.Drawing.Color.White;
-            this.btnApplyChanges.Location = new System.Drawing.Point(20, 310);
+            this.btnApplyChanges.Location = new System.Drawing.Point(20, 265);
             this.btnApplyChanges.Name = "btnApplyChanges";
-            this.btnApplyChanges.Size = new System.Drawing.Size(340, 42);
+            this.btnApplyChanges.Size = new System.Drawing.Size(340, 38);
             this.btnApplyChanges.TabIndex = 4;
             this.btnApplyChanges.Text = "Save && Apply Security Settings";
             this.btnApplyChanges.UseVisualStyleBackColor = false;
             this.btnApplyChanges.Click += new System.EventHandler(this.BtnApplyChanges_Click);
+            // 
+            // btnExitApp
+            // 
+            this.btnExitApp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+            this.btnExitApp.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnExitApp.FlatAppearance.BorderSize = 0;
+            this.btnExitApp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExitApp.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnExitApp.ForeColor = System.Drawing.Color.White;
+            this.btnExitApp.Location = new System.Drawing.Point(20, 312);
+            this.btnExitApp.Name = "btnExitApp";
+            this.btnExitApp.Size = new System.Drawing.Size(340, 38);
+            this.btnExitApp.TabIndex = 5;
+            this.btnExitApp.Text = "Exit Application";
+            this.btnExitApp.UseVisualStyleBackColor = false;
+            this.btnExitApp.Click += new System.EventHandler(this.BtnExitApp_Click);
             // 
             // lblStatusMessage
             // 
@@ -160,7 +177,7 @@
             this.lblStatusMessage.Location = new System.Drawing.Point(20, 360);
             this.lblStatusMessage.Name = "lblStatusMessage";
             this.lblStatusMessage.Size = new System.Drawing.Size(340, 25);
-            this.lblStatusMessage.TabIndex = 5;
+            this.lblStatusMessage.TabIndex = 6;
             this.lblStatusMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // AdminControlModal
@@ -168,8 +185,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.ClientSize = new System.Drawing.Size(380, 400);
+            this.ClientSize = new System.Drawing.Size(380, 370);
             this.Controls.Add(this.lblStatusMessage);
+            this.Controls.Add(this.btnExitApp);
             this.Controls.Add(this.btnApplyChanges);
             this.Controls.Add(this.grpSecurity);
             this.Controls.Add(this.btnElevate);
@@ -200,6 +218,7 @@
         private System.Windows.Forms.CheckBox chkBlockUsb;
         private System.Windows.Forms.CheckBox chkBlockInstallers;
         private System.Windows.Forms.Button btnApplyChanges;
+        private System.Windows.Forms.Button btnExitApp;
         private System.Windows.Forms.Label lblStatusMessage;
     }
 }

@@ -33,10 +33,10 @@ namespace BNet.Cafe.Client
 
                 // Adjust layout if elevation button is hidden
                 grpSecurity.Location = new Point(20, 95);
-                grpSecurity.Size = new Size(340, 160);
-                btnApplyChanges.Location = new Point(20, 270);
+                grpSecurity.Size = new Size(340, 120);
+                btnApplyChanges.Location = new Point(20, 230);
+                btnExitApp.Location = new Point(20, 278);
 
-                // Hide or remove the bottom status label since we use pop-ups now
                 if (lblStatusMessage != null) lblStatusMessage.Visible = false;
 
                 this.ClientSize = new Size(380, 335);
@@ -47,6 +47,8 @@ namespace BNet.Cafe.Client
                 lblElevationStatus.ForeColor = Color.FromArgb(217, 119, 6);
                 btnElevate.Visible = true;
                 if (lblStatusMessage != null) lblStatusMessage.Visible = false;
+
+                this.ClientSize = new Size(380, 370);
             }
         }
 
@@ -107,6 +109,21 @@ namespace BNet.Cafe.Client
             }
         }
 
+        private void BtnExitApp_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox.Show(
+                "Are you sure you want to exit the application?",
+                "Confirm Exit",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
+        }
+
         private void BtnElevate_Click(object sender, EventArgs e)
         {
             try
@@ -130,6 +147,7 @@ namespace BNet.Cafe.Client
                 MessageBox.Show("Elevation failed: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void BtnClose_Click(object sender, EventArgs e)
         {
             this.Close();
