@@ -148,6 +148,7 @@
     <Compile Include="Services\DisplayFormatter.cs" />
     <Compile Include="Services\ConfigHelper.cs" />
     <Compile Include="Services\NetworkUtility.cs" />
+    <Compile Include="Services\SecurityInstallerBlockerManager.cs" />
     <Compile Include="Services\SesisionLogin_Backup.cs" />
     <Compile Include="Services\SessionLogout.cs" />
     <Compile Include="Services\SessionPricingRate.cs" />
