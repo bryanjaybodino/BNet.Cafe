@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace BNet.Cafe.Client.Services
 {
-    public static class UsbSecurityManager
+    public static class SecurityUsbManager
     {
         private const string UsbStorPath = @"SYSTEM\CurrentControlSet\Services\USBSTOR";
         private const string MtpDriverPath = @"SYSTEM\CurrentControlSet\Services\WUDFWpdMtp";

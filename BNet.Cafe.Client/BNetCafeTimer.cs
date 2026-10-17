@@ -80,7 +80,13 @@ namespace BNet.Cafe.Client
 
         private void UpdateAccountActionButton()
         {
-            if (IsMemberUser())
+            if (isAdmin)
+            {
+                Button_AccountAction.Text = "Admin Security Control";
+                Button_AccountAction.BackColor = Color.FromArgb(99, 102, 241);
+                Button_AccountAction.Visible = true;
+            }
+            else if (IsMemberUser())
             {
                 Button_AccountAction.Text = "Change Password";
                 Button_AccountAction.BackColor = Color.FromArgb(99, 102, 241);
@@ -484,7 +490,15 @@ namespace BNet.Cafe.Client
 
         private void Button_AccountAction_Click(object sender, EventArgs e)
         {
-            if (IsMemberUser())
+            if (isAdmin)
+            {
+                // Show Admin Control Modal for security features (USB and Installer restrictions)
+                using (var modal = new AdminControlModal())
+                {
+                    modal.ShowDialog(this);
+                }
+            }
+            else if (IsMemberUser())
             {
                 string baseUrl = ConfigHelper.AppUrl?.TrimEnd('/');
                 string handlerUrl = $"{baseUrl}/ResetPassword.aspx?UserId={SecuredDataService.Encrypted(userId)}";
