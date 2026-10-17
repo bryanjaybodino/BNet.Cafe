@@ -111,21 +111,25 @@ namespace BNet.Cafe.Client
         {
             try
             {
+                string exePath = Application.ExecutablePath;
                 var psi = new System.Diagnostics.ProcessStartInfo
                 {
-                    FileName = Application.ExecutablePath,
+                    FileName = "cmd.exe",
+                    Arguments = $"/c start \"\" \"{exePath}\"",
+                    WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory,
                     UseShellExecute = true,
-                    Verb = "runas" // Triggers UAC prompt
+                    Verb = "runas",
+                    CreateNoWindow = false
                 };
+
                 System.Diagnostics.Process.Start(psi);
                 Application.Exit();
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Elevation was canceled or failed.", "Action Canceled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Elevation failed: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void BtnClose_Click(object sender, EventArgs e)
         {
             this.Close();
