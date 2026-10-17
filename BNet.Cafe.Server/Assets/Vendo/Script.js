@@ -381,8 +381,8 @@ pspContainer.addEventListener('wheel', (e) => {
 document.addEventListener('keydown', (e) => {
     // 1. If the "Press Any Key" screen is visible
     if (isPressAnyKeyVisible()) {
-        // If the user presses Left or Right arrow (or numbers), dismiss the attract screen AND open/unlock the serial port
-        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || (e.key >= '0' && e.key <= '9')) {
+        // If the user presses Left/Right arrow, numbers, or Ctrl+A / Ctrl+C, dismiss the attract screen
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || (e.key >= '0' && e.key <= '9') || (e.ctrlKey && (e.key.toLowerCase() === 'a' || e.key.toLowerCase() === 'c'))) {
             e.preventDefault();
 
             // Execute the serial port routine (matching what the click event does)
@@ -437,14 +437,14 @@ document.addEventListener('keydown', (e) => {
 
     if (isModalOpen() || filteredClientData.length === 0) return;
 
-    // --- Carousel Navigation ---
-    if (e.key === 'ArrowRight') {
+    // --- Carousel Navigation (Arrow Keys & Ctrl Shortcuts) ---
+    if (e.key === 'ArrowRight' || (e.ctrlKey && e.key.toLowerCase() === 'c')) {
         e.preventDefault();
         if (selectedIndex < filteredClientData.length - 1) {
             selectedIndex++;
             updateCarouselPosition();
         }
-    } else if (e.key === 'ArrowLeft') {
+    } else if (e.key === 'ArrowLeft' || (e.ctrlKey && e.key.toLowerCase() === 'a')) {
         e.preventDefault();
         if (selectedIndex > 0) {
             selectedIndex--;
@@ -456,7 +456,6 @@ document.addEventListener('keydown', (e) => {
         e.stopPropagation();
     }
 });
-
 // --- 6. INITIALIZATION & SSE ---
 window.addEventListener('load', function () {
     const endpoint = window.location.protocol + '//' + window.location.hostname + ':2050/sse';
