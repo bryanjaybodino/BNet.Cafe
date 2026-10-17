@@ -1,4 +1,4 @@
 ﻿SELECT * FROM rentals 
-WHERE DBComputerId = '{DBId}'
+WHERE DBComputerId = '{DBComputerId}'
 ORDER BY DBId DESC 
 LIMIT 1
