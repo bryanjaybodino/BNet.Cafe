@@ -130,14 +130,17 @@ namespace BNet.Cafe.Server.Services
         private static void RenderEmptyState(Panel paginationPanel)
         {
             paginationPanel.Controls.Clear();
-            paginationPanel.CssClass = "bnet-table-empty-container text-center p-4";
 
-            var label = new Label
-            {
-                Text = "No Data Available",
-                CssClass = "text-muted font-weight-bold"
-            };
-            paginationPanel.Controls.Add(label);
+            // Optional: If you want to clear or replace the panel's CSS class so it doesn't conflict with your inline styles
+            paginationPanel.CssClass = string.Empty;
+
+            string emptyStateHtml = @"
+            <div style=""text-align: center; color: var(--text-light-secondary); padding: 30px 10px;"">
+                <i class=""fa-solid fa-inbox"" style=""font-size: 32px; margin-bottom: 8px; color: var(--border-light);""></i>
+                <div>No Item</div>
+            </div>";
+
+            paginationPanel.Controls.Add(new LiteralControl(emptyStateHtml));
         }
 
         // ── Custom UI Rendering ─────────────────────────────────────────────────

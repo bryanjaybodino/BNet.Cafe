@@ -123,6 +123,9 @@ i{
    12. MEDIA QUERIES & RESPONSIVE DESIGN
    ========================================== */
 @media (max-width: 768px) {
+    .container {
+        height: 90vh;
+    }
     .sidebar {
         width: 260px;
         left: -260px;

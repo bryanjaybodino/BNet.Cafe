@@ -532,7 +532,29 @@ namespace BNet.Cafe.Client
                         var sendTask = SendLoop(session);
                         var recvTask = ReceiveLoop(session);
 
-                        await Task.WhenAny(captureTask, sendTask, recvTask);
+                        // --- HEARTBEAT LOOP TASK ---
+                        var heartbeatTask = Task.Run(async () =>
+                        {
+                            while (session.IsOpen)
+                            {
+                                try
+                                {
+                                    await Task.Delay(60000); // Send heartbeat every 60 seconds
+                                    if (!session.IsOpen) break;
+
+                                    var currentWindow = UserActivity.ActiveWindowMonitor.GetCurrent();
+                                    await _activityReporter.SendActivityInfoAsync(session, currentWindow, _deviceInfo);
+                                }
+                                catch
+                                {
+ 
+                                }
+                            }
+                        });
+                        // ------------------------------------
+
+                        // Include heartbeatTask in your Task.WhenAny
+                        await Task.WhenAny(captureTask, sendTask, recvTask, heartbeatTask);
                         _currentSession = null;
 
                         _framePending.Release();

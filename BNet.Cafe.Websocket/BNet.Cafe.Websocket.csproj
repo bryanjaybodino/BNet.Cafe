@@ -62,8 +62,8 @@
     <Compile Include="Services\ClientManager.cs" />
     <Compile Include="Services\FTPServer.cs" />
     <Compile Include="Services\InputQueueManager.cs" />
-    <Compile Include="Models\ByteCompressor.cs" />
-    <Compile Include="Models\PortManager.cs" />
+    <Compile Include="Services\ByteCompressor.cs" />
+    <Compile Include="Services\PortManager.cs" />
     <Compile Include="Models\RemoteInput.cs" />
     <Compile Include="Models\ServerTextMessage.cs" />
     <Compile Include="Models\TextContent.cs" />
