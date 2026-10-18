@@ -351,5 +351,49 @@ namespace BNet.Cafe.Client.Services
                 // Handle server unreachable / connection errors
             }
         }
+
+        // Add inside BNet.Cafe.Client.Services.ConfigHelper class
+
+        /// <summary>
+        /// Clears the cached server IP, re-discovers the server across the network, and syncs configuration.
+        /// </summary>
+        public static async Task<bool> RecheckAndUpdateServerAsync()
+        {
+            try
+            {
+                // Clear cached IP so DiscoverServerIp will perform a fresh scan
+                foundIp = string.Empty;
+
+                // Accessing WebSocketUrl or AppUrl forces a fresh network sweep if the old IP is unreachable
+                IPAddress gateway = GetDefaultGateway();
+                if (gateway == null) return false;
+
+                string serverIp = DiscoverServerIp(gateway, targetPort: 2050);
+                if (string.IsNullOrEmpty(serverIp))
+                {
+                    // Try port 2000 fallback if 2050 failed
+                    serverIp = DiscoverServerIp(gateway, targetPort: 2000);
+                }
+
+                if (!string.IsNullOrEmpty(serverIp))
+                {
+                    string discoveredWsUrl = $"ws://{serverIp}:2050";
+                    string discoveredAppUrl = $"http://{serverIp}:2000/BNet.Cafe.Server/";
+
+                    SaveAppSettingWithoutRemovingComments("WebSocketUrl", discoveredWsUrl);
+                    SaveAppSettingWithoutRemovingComments("AppUrl", discoveredAppUrl);
+
+                    // Sync full configuration from server
+                    await SyncServerConfigAsync();
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                // Handle discovery error
+            }
+
+            return false;
+        }
     }
 }

@@ -26,6 +26,8 @@
             this.chkBlockInstallers = new System.Windows.Forms.CheckBox();
             this.chkBlockUsb = new System.Windows.Forms.CheckBox();
             this.btnApplyChanges = new System.Windows.Forms.Button();
+            this.progressBarSync = new System.Windows.Forms.ProgressBar();
+            this.btnCheckServer = new System.Windows.Forms.Button();
             this.btnExitApp = new System.Windows.Forms.Button();
             this.lblStatusMessage = new System.Windows.Forms.Label();
             this.panelHeader.SuspendLayout();
@@ -154,6 +156,32 @@
             this.btnApplyChanges.UseVisualStyleBackColor = false;
             this.btnApplyChanges.Click += new System.EventHandler(this.BtnApplyChanges_Click);
             // 
+            // progressBarSync
+            // 
+            this.progressBarSync.Location = new System.Drawing.Point(20, 312);
+            this.progressBarSync.Name = "progressBarSync";
+            this.progressBarSync.Size = new System.Drawing.Size(340, 18);
+            this.progressBarSync.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBarSync.MarqueeAnimationSpeed = 30;
+            this.progressBarSync.Visible = false;
+            this.progressBarSync.TabIndex = 7;
+            // 
+            // btnCheckServer
+            // 
+            this.btnCheckServer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
+            this.btnCheckServer.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCheckServer.FlatAppearance.BorderSize = 0;
+            this.btnCheckServer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCheckServer.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnCheckServer.ForeColor = System.Drawing.Color.White;
+            this.btnCheckServer.Location = new System.Drawing.Point(20, 338);
+            this.btnCheckServer.Name = "btnCheckServer";
+            this.btnCheckServer.Size = new System.Drawing.Size(340, 38);
+            this.btnCheckServer.TabIndex = 5;
+            this.btnCheckServer.Text = "🔍 Recheck Server && Update Config";
+            this.btnCheckServer.UseVisualStyleBackColor = false;
+            this.btnCheckServer.Click += new System.EventHandler(this.BtnCheckServer_Click);
+            // 
             // btnExitApp
             // 
             this.btnExitApp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
@@ -162,10 +190,10 @@
             this.btnExitApp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExitApp.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnExitApp.ForeColor = System.Drawing.Color.White;
-            this.btnExitApp.Location = new System.Drawing.Point(20, 312);
+            this.btnExitApp.Location = new System.Drawing.Point(20, 385);
             this.btnExitApp.Name = "btnExitApp";
             this.btnExitApp.Size = new System.Drawing.Size(340, 38);
-            this.btnExitApp.TabIndex = 5;
+            this.btnExitApp.TabIndex = 6;
             this.btnExitApp.Text = "Exit Application";
             this.btnExitApp.UseVisualStyleBackColor = false;
             this.btnExitApp.Click += new System.EventHandler(this.BtnExitApp_Click);
@@ -174,10 +202,10 @@
             // 
             this.lblStatusMessage.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Italic);
             this.lblStatusMessage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblStatusMessage.Location = new System.Drawing.Point(20, 360);
+            this.lblStatusMessage.Location = new System.Drawing.Point(20, 428);
             this.lblStatusMessage.Name = "lblStatusMessage";
             this.lblStatusMessage.Size = new System.Drawing.Size(340, 25);
-            this.lblStatusMessage.TabIndex = 6;
+            this.lblStatusMessage.TabIndex = 8;
             this.lblStatusMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // AdminControlModal
@@ -185,9 +213,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.ClientSize = new System.Drawing.Size(380, 370);
+            this.ClientSize = new System.Drawing.Size(380, 445);
             this.Controls.Add(this.lblStatusMessage);
             this.Controls.Add(this.btnExitApp);
+            this.Controls.Add(this.btnCheckServer);
+            this.Controls.Add(this.progressBarSync);
             this.Controls.Add(this.btnApplyChanges);
             this.Controls.Add(this.grpSecurity);
             this.Controls.Add(this.btnElevate);
@@ -218,6 +248,8 @@
         private System.Windows.Forms.CheckBox chkBlockUsb;
         private System.Windows.Forms.CheckBox chkBlockInstallers;
         private System.Windows.Forms.Button btnApplyChanges;
+        private System.Windows.Forms.ProgressBar progressBarSync;
+        private System.Windows.Forms.Button btnCheckServer;
         private System.Windows.Forms.Button btnExitApp;
         private System.Windows.Forms.Label lblStatusMessage;
     }

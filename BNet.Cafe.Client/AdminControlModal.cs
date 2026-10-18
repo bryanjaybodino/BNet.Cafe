@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BNet.Cafe.Client.Services;
 
@@ -30,16 +31,7 @@ namespace BNet.Cafe.Client
                 lblElevationStatus.Text = "✓ Running with Administrator Privileges";
                 lblElevationStatus.ForeColor = Color.FromArgb(16, 185, 129);
                 btnElevate.Visible = false;
-
-                // Adjust layout if elevation button is hidden
-                grpSecurity.Location = new Point(20, 95);
-                grpSecurity.Size = new Size(340, 120);
-                btnApplyChanges.Location = new Point(20, 230);
-                btnExitApp.Location = new Point(20, 278);
-
                 if (lblStatusMessage != null) lblStatusMessage.Visible = false;
-
-                this.ClientSize = new Size(380, 335);
             }
             else
             {
@@ -47,8 +39,6 @@ namespace BNet.Cafe.Client
                 lblElevationStatus.ForeColor = Color.FromArgb(217, 119, 6);
                 btnElevate.Visible = true;
                 if (lblStatusMessage != null) lblStatusMessage.Visible = false;
-
-                this.ClientSize = new Size(380, 370);
             }
         }
 
@@ -159,6 +149,69 @@ namespace BNet.Cafe.Client
             {
                 ReleaseCapture();
                 SendMessage(Handle, 0xA1, 0x2, 0);
+            }
+        }
+        private async void BtnCheckServer_Click(object sender, EventArgs e)
+        {
+            // Disable buttons and show progress bar
+            btnCheckServer.Enabled = false;
+            btnApplyChanges.Enabled = false;
+            btnExitApp.Enabled = false;
+
+            progressBarSync.Visible = true;
+            progressBarSync.Style = ProgressBarStyle.Marquee;
+
+            if (lblStatusMessage != null)
+            {
+                lblStatusMessage.Visible = true;
+                lblStatusMessage.Text = "Scanning network for server IP and syncing config...";
+            }
+
+            try
+            {
+                // Run config re-check asynchronously to avoid freezing the UI thread
+                bool success = await Task.Run(() => ConfigHelper.RecheckAndUpdateServerAsync());
+
+                if (success)
+                {
+                    MessageBox.Show(
+                        "Server IP re-discovered and configuration updated successfully!",
+                        "Server Updated",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Could not locate an active server on the local network. Please verify your server connection.",
+                        "Server Not Found",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "An error occurred while rechecking the server: " + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
+            finally
+            {
+                // Re-enable controls and hide progress bar
+                progressBarSync.Visible = false;
+                btnCheckServer.Enabled = true;
+                btnApplyChanges.Enabled = true;
+                btnExitApp.Enabled = true;
+
+                if (lblStatusMessage != null)
+                {
+                    lblStatusMessage.Text = string.Empty;
+                }
             }
         }
     }
