@@ -69,6 +69,51 @@ namespace BNet.Cafe.Server.Forms
         protected global::System.Web.UI.WebControls.GridView GridView_Cart;
 
         /// <summary>
+        /// DropDownList_POSComputer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_POSComputer;
+
+        /// <summary>
+        /// DropDownList_POSCustomer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_POSCustomer;
+
+        /// <summary>
+        /// Panel_Points control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel Panel_Points;
+
+        /// <summary>
+        /// litAvailablePoints control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litAvailablePoints;
+
+        /// <summary>
+        /// CheckBox_UsePoints control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox CheckBox_UsePoints;
+
+        /// <summary>
         /// Label_Total control.
         /// </summary>
         /// <remarks>

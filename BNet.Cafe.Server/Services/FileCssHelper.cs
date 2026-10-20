@@ -73,6 +73,7 @@ namespace BNet.Cafe.Server.Services
                 || file.Contains("Assets/BNetTable/Style.css")
                 || file.Contains("Assets/BNetDropdown/Style.css")
                 || file.Contains("Assets/BNetBadge/Style.css")
+                || file.Contains("Assets/BNetCheckbox/Style.css")
                 || file.Contains("Assets/BNetDatePicker/Style.css");
         }
 

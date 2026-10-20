@@ -1,0 +1,65 @@
+﻿/* ==========================================
+   12. BNET TOGGLE SWITCH SYSTEM
+   ========================================== */
+.bnet-toggle-wrapper {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-light, #f3f4f6);
+}
+
+    .bnet-toggle-wrapper input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+.bnet-toggle-slider {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 18px;
+    background-color: var(--bg-light-tertiary, #21262d);
+    border: 1px solid var(--border-light, rgba(255, 255, 255, 0.15));
+    border-radius: 20px;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+    flex-shrink: 0;
+}
+
+    .bnet-toggle-slider::before {
+        content: "";
+        position: absolute;
+        height: 12px;
+        width: 12px;
+        left: 2px;
+        bottom: 2px;
+        background-color: var(--text-light-secondary, #9ca3af);
+        border-radius: 50%;
+        transition: transform 0.25s ease, background-color 0.25s ease;
+    }
+
+.bnet-toggle-wrapper input[type="checkbox"]:checked ~ .bnet-toggle-slider {
+    background-color: var(--primary, #6366f1);
+    border-color: var(--primary, #6366f1);
+}
+
+    .bnet-toggle-wrapper input[type="checkbox"]:checked ~ .bnet-toggle-slider::before {
+        transform: translateX(16px);
+        background-color: #ffffff;
+    }
+
+/* Disabled State Fix */
+.bnet-toggle-wrapper input[type="checkbox"]:disabled ~ .bnet-toggle-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.bnet-toggle-wrapper input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+}

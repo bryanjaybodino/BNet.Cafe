@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BNet.Cafe.Server.Repositories;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using BNet.Cafe.Server.Services;
 
 namespace BNet.Cafe.Server.Forms
@@ -13,6 +15,10 @@ namespace BNet.Cafe.Server.Forms
     {
         private readonly InventoryItems itemsRepo = new InventoryItems();
         private readonly InventoryTransactions transactionsRepo = new InventoryTransactions();
+        private readonly Repositories.Users userRepo = new Repositories.Users();
+        private readonly Repositories.Computers computersRepo = new Repositories.Computers();
+        private readonly Repositories.Rentals rentalsRepo = new Repositories.Rentals();
+        private readonly Repositories.Points pointsRepo = new Repositories.Points();
         Sessions.User user = new Sessions.User();
 
         protected void Page_Load(object sender, EventArgs e)
@@ -22,7 +28,188 @@ namespace BNet.Cafe.Server.Forms
                 InitCart();
                 LoadCategories();
                 LoadCatalog();
+                LoadComputers();
+                LoadCustomers();
+
+                // AUTO-DETECT COMPUTER, USER, AND BIND CHAT ORDER ITEMS
+                AutoDetectComputerAndUser();
+                ProcessIncomingChatOrder();
+
                 BindCart();
+            }
+        }
+
+        private void LoadComputers()
+        {
+            DataTable dt = computersRepo.GetAll();
+            DropDownList_POSComputer.DataSource = dt;
+            DropDownList_POSComputer.DataTextField = "DBComputerName";
+            DropDownList_POSComputer.DataValueField = "DBId";
+            DropDownList_POSComputer.DataBind();
+            DropDownList_POSComputer.Items.Insert(0, new ListItem("-- Select PC Terminal --", ""));
+        }
+
+        private void LoadCustomers()
+        {
+            DataTable dt = userRepo.GetAll();
+            DropDownList_POSCustomer.DataSource = dt;
+            DropDownList_POSCustomer.DataTextField = "DBEmail";
+            DropDownList_POSCustomer.DataValueField = "DBId";
+            DropDownList_POSCustomer.DataBind();
+            DropDownList_POSCustomer.Items.Insert(0, new ListItem("-- Walk-in / Guest --", ""));
+        }
+
+        private void AutoDetectComputerAndUser()
+        {
+            string targetComputer = Request.QueryString["ComputerName"] ?? Request.QueryString["clientName"] ?? Request.QueryString["ClientName"];
+            string targetUserId = Request.QueryString["UserId"] ?? Request.QueryString["userId"];
+
+            if (!string.IsNullOrEmpty(targetComputer))
+            {
+                ListItem pcItem = DropDownList_POSComputer.Items.FindByText(targetComputer.ToUpper());
+                if (pcItem != null)
+                {
+                    DropDownList_POSComputer.SelectedValue = pcItem.Value;
+
+                    if (string.IsNullOrEmpty(targetUserId))
+                    {
+                        DataTable activeRental = rentalsRepo.GetByComputerId(pcItem.Value);
+                        if (activeRental != null && activeRental.Rows.Count > 0)
+                        {
+                            targetUserId = activeRental.Rows[0]["DBUserId"].ToString();
+                        }
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(targetUserId))
+            {
+                ListItem userItem = DropDownList_POSCustomer.Items.FindByValue(targetUserId);
+                if (userItem != null)
+                {
+                    DropDownList_POSCustomer.SelectedValue = userItem.Value;
+                }
+            }
+
+            UpdatePointsDisplay();
+        }
+
+        private void ProcessIncomingChatOrder()
+        {
+            string orderItemsJson = Request.QueryString["OrderItems"];
+            if (string.IsNullOrEmpty(orderItemsJson)) return;
+
+            try
+            {
+                string decodedJson = Server.UrlDecode(orderItemsJson);
+                JArray orderItems = JArray.Parse(decodedJson);
+                DataTable cart = (DataTable)ViewState["Cart"];
+
+                foreach (var item in orderItems)
+                {
+                    string itemName = item["name"]?.ToString()?.Trim();
+                    int qty = item["qty"]?.Value<int>() ?? 1;
+
+                    if (string.IsNullOrEmpty(itemName)) continue;
+
+                    // Search inventory item by name match
+                    DataTable allItems = itemsRepo.GetAll();
+                    DataRow matchedProduct = null;
+
+                    foreach (DataRow row in allItems.Rows)
+                    {
+                        if (row["DBItemName"].ToString().Trim().Equals(itemName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            matchedProduct = row;
+                            break;
+                        }
+                    }
+
+                    if (matchedProduct != null)
+                    {
+                        string itemId = matchedProduct["DBId"].ToString();
+                        double price = Convert.ToDouble(matchedProduct["DBUnitPrice"]);
+                        int stock = Convert.ToInt32(matchedProduct["DBQuantityInStock"]);
+
+                        int finalQty = Math.Min(qty, stock > 0 ? stock : qty);
+                        if (finalQty <= 0) continue;
+
+                        DataRow existingRow = null;
+                        foreach (DataRow cartRow in cart.Rows)
+                        {
+                            if (cartRow["ItemId"].ToString() == itemId)
+                            {
+                                existingRow = cartRow;
+                                break;
+                            }
+                        }
+
+                        if (existingRow != null)
+                        {
+                            existingRow["Quantity"] = finalQty;
+                            existingRow["Subtotal"] = finalQty * price;
+                        }
+                        else
+                        {
+                            cart.Rows.Add(itemId, itemName, price, finalQty, finalQty * price);
+                        }
+                    }
+                }
+
+                ViewState["Cart"] = cart;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("Error parsing chat order query string: " + ex.Message);
+            }
+        }
+
+        protected void DropDownList_POSComputer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string computerId = DropDownList_POSComputer.SelectedValue;
+            if (!string.IsNullOrEmpty(computerId))
+            {
+                DataTable activeRental = rentalsRepo.GetByComputerId(computerId);
+                if (activeRental != null && activeRental.Rows.Count > 0)
+                {
+                    string userId = activeRental.Rows[0]["DBUserId"].ToString();
+                    ListItem userItem = DropDownList_POSCustomer.Items.FindByValue(userId);
+                    DropDownList_POSCustomer.SelectedValue = userItem != null ? userItem.Value : "";
+                }
+                else
+                {
+                    DropDownList_POSCustomer.SelectedValue = "";
+                }
+            }
+
+            UpdatePointsDisplay();
+            BindCart();
+        }
+
+        protected void DropDownList_POSCustomer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdatePointsDisplay();
+            BindCart();
+        }
+
+        protected void CheckBox_UsePoints_CheckedChanged(object sender, EventArgs e)
+        {
+            BindCart();
+        }
+
+        private void UpdatePointsDisplay()
+        {
+            string customerId = DropDownList_POSCustomer.SelectedValue;
+            if (!string.IsNullOrEmpty(customerId))
+            {
+                double points = pointsRepo.GetPointsByUserId(customerId);
+                litAvailablePoints.Text = points.ToString("N2");
+                Panel_Points.Visible = true;
+            }
+            else
+            {
+                Panel_Points.Visible = false;
+                CheckBox_UsePoints.Checked = false;
             }
         }
 
@@ -67,7 +254,6 @@ namespace BNet.Cafe.Server.Forms
             string searchKeyword = TextBox_Search.Text.Trim();
             string selectedCategory = DropDownList_Category.SelectedValue;
 
-            // Pass string.Empty or only search when not blank so GetAll SQL template builds correctly
             DataTable dt = itemsRepo.GetAll(searchKeyword);
 
             if (dt != null && !string.IsNullOrEmpty(selectedCategory))
@@ -228,7 +414,17 @@ namespace BNet.Cafe.Server.Forms
             {
                 total += Convert.ToDouble(row["Subtotal"]);
             }
-            Label_Total.Text = total.ToString("N2");
+
+            if (CheckBox_UsePoints.Checked && !string.IsNullOrEmpty(DropDownList_POSCustomer.SelectedValue))
+            {
+                string customerId = DropDownList_POSCustomer.SelectedValue;
+                double availablePoints = pointsRepo.GetPointsByUserId(customerId);
+
+                double pointsToApply = Math.Min(availablePoints, total);
+                total -= pointsToApply;
+            }
+
+            Label_Total.Text = total < 0 ? "0.00" : total.ToString("N2");
         }
 
         protected void LinkButton_Clear_Click(object sender, EventArgs e)
@@ -241,6 +437,7 @@ namespace BNet.Cafe.Server.Forms
             DataTable cart = (DataTable)ViewState["Cart"];
             cart.Clear();
             ViewState["Cart"] = cart;
+            CheckBox_UsePoints.Checked = false;
             BindCart();
         }
 
@@ -253,11 +450,22 @@ namespace BNet.Cafe.Server.Forms
                 return;
             }
 
-            double totalAmount = 0;
+            double subtotalAmount = 0;
             foreach (DataRow row in cart.Rows)
             {
-                totalAmount += Convert.ToDouble(row["Subtotal"]);
+                subtotalAmount += Convert.ToDouble(row["Subtotal"]);
             }
+
+            string customerId = DropDownList_POSCustomer.SelectedValue;
+            double pointsDeducted = 0;
+
+            if (CheckBox_UsePoints.Checked && !string.IsNullOrEmpty(customerId))
+            {
+                double availablePoints = pointsRepo.GetPointsByUserId(customerId);
+                pointsDeducted = Math.Min(availablePoints, subtotalAmount);
+            }
+
+            double finalTotalPayable = subtotalAmount - pointsDeducted;
 
             string userId = user.user_id;
             bool allSuccess = true;
@@ -274,10 +482,16 @@ namespace BNet.Cafe.Server.Forms
 
             if (allSuccess)
             {
+                if (pointsDeducted > 0 && !string.IsNullOrEmpty(customerId))
+                {
+                    pointsRepo.Create(customerId, (-pointsDeducted).ToString(), "Points Redeemed for POS Purchase");
+                }
+
                 ClearCart();
                 LoadCatalog();
+                UpdatePointsDisplay();
 
-                POSReceipt.Show(totalAmount);
+                POSReceipt.Show(finalTotalPayable);
             }
             else
             {

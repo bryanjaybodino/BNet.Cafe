@@ -120,6 +120,7 @@
     <Content Include="Assets\BNetChart\Style.css" />
     <Content Include="Assets\BNetChart\BNetDonutChart.js" />
     <Content Include="Assets\BNetChart\BNetLineChart.js" />
+    <Content Include="Assets\BNetCheckbox\Style.css" />
     <Content Include="Assets\BNetDatePicker\Script.js" />
     <Content Include="Assets\BNetDatePicker\Style.css" />
     <Content Include="Assets\BNetDropdown\Style.css" />
