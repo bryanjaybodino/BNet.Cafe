@@ -482,7 +482,15 @@ namespace BNet.Cafe.Client
             _ = Task.Run(ContinuousPendingLogoutSyncLoopAsync);
             _ = Task.Run(RunAgentLoop);
 
-            KeyboardHook.Start();
+
+            if (session.isAdmin)
+            {
+                KeyboardHook.Stop();
+            }
+            else
+            {
+                KeyboardHook.Start();
+            }
         }
 
         protected override void WndProc(ref Message m)
@@ -573,7 +581,7 @@ namespace BNet.Cafe.Client
                                 }
                                 catch
                                 {
- 
+
                                 }
                             }
                         });
