@@ -161,7 +161,6 @@ namespace BNet.Cafe.Client
             btnApplyChanges.Enabled = false;
             btnExitApp.Enabled = false;
 
-            progressBarSync.Visible = true;
             progressBarSync.Style = ProgressBarStyle.Marquee;
 
             if (lblStatusMessage != null)
@@ -206,7 +205,7 @@ namespace BNet.Cafe.Client
             finally
             {
                 // Re-enable controls and hide progress bar
-                progressBarSync.Visible = false;
+                progressBarSync.Style = ProgressBarStyle.Blocks;
                 btnCheckServer.Enabled = true;
                 btnApplyChanges.Enabled = true;
                 btnExitApp.Enabled = true;

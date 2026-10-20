@@ -123,7 +123,7 @@
             this.chkRunOnStartup.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.chkRunOnStartup.Location = new System.Drawing.Point(8, 105);
             this.chkRunOnStartup.Name = "chkRunOnStartup";
-            this.chkRunOnStartup.Size = new System.Drawing.Size(256, 24);
+            this.chkRunOnStartup.Size = new System.Drawing.Size(271, 24);
             this.chkRunOnStartup.TabIndex = 2;
             this.chkRunOnStartup.Text = "Run Application on Windows Startup";
             this.chkRunOnStartup.UseVisualStyleBackColor = true;
@@ -178,9 +178,7 @@
             this.progressBarSync.MarqueeAnimationSpeed = 30;
             this.progressBarSync.Name = "progressBarSync";
             this.progressBarSync.Size = new System.Drawing.Size(340, 18);
-            this.progressBarSync.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBarSync.TabIndex = 7;
-            this.progressBarSync.Visible = false;
             // 
             // btnCheckServer
             // 
