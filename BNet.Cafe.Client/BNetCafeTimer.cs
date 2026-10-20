@@ -41,9 +41,28 @@ namespace BNet.Cafe.Client
 
         public BNetCafeTimer()
         {
+            // Enable double buffering on the form level to stop background bleed-through
+            this.SetStyle(
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.UserPaint |
+                ControlStyles.OptimizedDoubleBuffer,
+                true
+            );
+            this.UpdateStyles();
+
             InitializeComponent();
             ConfigureFormStyle();
             _ = ResumeExistingSessionAsync();
+        }
+        // Prevents window redrawing glitches when shown
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED (Composites all child controls into off-screen buffer)
+                return cp;
+            }
         }
 
         private void ConfigureFormStyle()
@@ -51,6 +70,10 @@ namespace BNet.Cafe.Client
             this.FormBorderStyle = FormBorderStyle.None;
             this.TopMost = false;
             this.ShowInTaskbar = true;
+            this.ShowIcon = true;
+
+            // Keep the form hidden initially to prevent skeleton/flash drawing
+            this.Visible = false;
         }
 
         private void Panel_Header_MouseDown(object sender, MouseEventArgs e)

@@ -140,7 +140,16 @@ namespace BNet.Cafe.Client
 
             InitializeIdleCheckTimer();
         }
-
+        // Prevents window redrawing glitches when shown
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED (Composites all child controls into off-screen buffer)
+                return cp;
+            }
+        }
         private void InitializeAuthControls()
         {
             _loginControl = new LoginControl();
@@ -173,14 +182,23 @@ namespace BNet.Cafe.Client
                 string clientName = ConfigHelper.GetClientNameFromIP();
                 if (!args.IsAdmin)
                 {
-                    CreateRentalHandler rentalHandler = new CreateRentalHandler();
-                    await rentalHandler.CreateRentalAsync(clientName, args.UserId, args.DurationMinutes, "0");
-
-                    CreateBalanceHandler balanceHandler = new CreateBalanceHandler();
-                    await balanceHandler.CreateBalanceAsync(args.UserId, "-" + args.DurationMinutes, "0", "LOGGING-IN");
+                    // Run network calls concurrently or handle them smoothly
+                    var rentalTask = new CreateRentalHandler().CreateRentalAsync(clientName, args.UserId, args.DurationMinutes, "0");
+                    var balanceTask = new CreateBalanceHandler().CreateBalanceAsync(args.UserId, "-" + args.DurationMinutes, "0", "LOGGING-IN");
+                    await Task.WhenAll(rentalTask, balanceTask);
                 }
 
                 await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), args.DurationMinutes, "0");
+                // IMMEDIATELY show the timer and unlock screen without waiting for the 1-second poll
+                // Example usage inside HandleIncomingTextMessage or LoginSuccessful
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(new Action(() => LoginSession()));
+                }
+                else
+                {
+                    LoginSession();
+                }
 
                 _loginControl.ClearFields();
                 StopIdleMonitor();
@@ -192,7 +210,48 @@ namespace BNet.Cafe.Client
 
             ShowView(_loginControl);
         }
+        public void LoginSession()
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(LoginSession));
+                return;
+            }
 
+            // Only hide and stop idle monitor if the lock screen is currently visible
+            if (this.Visible)
+            {
+                this.Hide();
+                StopIdleMonitor();
+            }
+
+            // Only show the timer if it isn't already visible
+            if (!_BNetCafeTimer.Visible)
+            {
+                _BNetCafeTimer.Show();
+            }
+        }
+
+        public void LogoutSession()
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(LogoutSession));
+                return;
+            }
+
+            // Only hide the timer if it's currently visible
+            if (_BNetCafeTimer.Visible)
+            {
+                _BNetCafeTimer.Hide();
+            }
+
+            // Only lock the screen and start the idle monitor if it isn't already locked/visible
+            if (!this.Visible)
+            {
+                LockScreen();
+            }
+        }
         private void ShowView(Control targetView)
         {
             this.SuspendLayout();
@@ -399,7 +458,7 @@ namespace BNet.Cafe.Client
             {
                 this.Hide();
                 _BNetCafeTimer.isAdmin = session.isAdmin;
-                _BNetCafeTimer.Show();
+                LoginSession();
                 TriggerImmediateActivityReport();
                 ClearTitleCache();
                 StopIdleMonitor();
@@ -431,53 +490,40 @@ namespace BNet.Cafe.Client
             _ = Task.Run(RunAgentLoop);
 
 
-            UserActivity.ActiveWindowMonitor.OnPolled += async info =>
+            UserActivity.ActiveWindowMonitor.OnPolled += info =>
             {
-                try
+                // Fire-and-forget on a background thread pool thread to prevent blocking the poller/UI
+                _ = Task.Run(async () =>
                 {
-                    bool fileExists = SessionLogin.Exists();
-                    this.BeginInvoke((Action)(() =>
+                    try
                     {
+                        bool fileExists = SessionLogin.Exists();
+
                         if (!fileExists)
                         {
-                            if (!_BNetCafeTimer.Visible && !this.Visible)
-                            {
-                                LockScreen();
-                            }
-
-                            if (_BNetCafeTimer.Visible)
-                            {
-                                _BNetCafeTimer.Hide();
-                            }
+                            // Replaced manual form checks and Invoke blocks with your LogoutSession method
+                            LogoutSession();
                         }
                         else
                         {
-                            if (this.Visible)
-                            {
-                                this.Hide();
-                                StopIdleMonitor();
-                            }
-
-                            if (!_BNetCafeTimer.Visible)
-                            {
-                                _BNetCafeTimer.Show();
-                                UnlockScreen();
-                            }
+                            // Replaced manual form checks and Invoke blocks with your LoginSession method
+                            LoginSession();
                         }
 
                         if (!_BNetCafeTimer.isAdmin)
                         {
                             SecurityAccessManager.EnforceRestrictions(info);
                         }
-                    }));
 
-                    var sess = _currentSession;
-                    if (sess == null || !sess.IsOpen) return;
-                    await _activityReporter.SendActivityInfoAsync(sess, info, _deviceInfo);
-                }
-                catch { }
+                        var sess = _currentSession;
+                        if (sess == null || !sess.IsOpen) return;
+
+                        // This network call now runs entirely in the background
+                        await _activityReporter.SendActivityInfoAsync(sess, info, _deviceInfo);
+                    }
+                    catch { }
+                });
             };
-
             UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
             if (_BNetCafeTimer.isAdmin)
             {
