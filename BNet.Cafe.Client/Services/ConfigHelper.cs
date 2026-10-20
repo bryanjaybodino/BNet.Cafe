@@ -186,25 +186,48 @@ namespace BNet.Cafe.Client.Services
             {
                 return foundIp;
             }
+
             byte[] bytes = gateway.GetAddressBytes();
             string gatewayIpStr = gateway.ToString();
 
+            // Optional: Find local IP so we can start scanning incrementally 
+            // closer to home first, or scan strictly from 1 to 254.
+            int startOctet = 1;
+            var localIp = NetworkInterface.GetAllNetworkInterfaces()
+                .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
+                             ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                .SelectMany(ni => ni.GetIPProperties().UnicastAddresses)
+                .FirstOrDefault(ip => ip.Address.AddressFamily == AddressFamily.InterNetwork
+                                   && !IPAddress.IsLoopback(ip.Address))?.Address;
 
-            Parallel.For(1, 255, (i, loopState) =>
+            if (localIp != null)
             {
+                byte[] localBytes = localIp.GetAddressBytes();
+                if (localBytes[0] == bytes[0] && localBytes[1] == bytes[1] && localBytes[2] == bytes[2])
+                {
+                    startOctet = localBytes[3];
+                }
+            }
+
+            // Incremental sequential scan: checks every IP one by one in order
+            for (int i = 1; i < 255; i++)
+            {
+                // If you want it to scan strictly from 1 to 254, use 'i'. 
+                // If you want it to start from the local PC's IP and increment outwards, use the offset logic below.
                 string targetIp = $"{bytes[0]}.{bytes[1]}.{bytes[2]}.{i}";
 
                 // Skip scanning the gateway address directly
                 if (targetIp == gatewayIpStr)
-                    return;
+                    continue;
 
-                // Probe TCP port 2000 to verify the server application is active
+                // Probe TCP port to verify the server application is active
                 if (IsPortOpen(targetIp, targetPort, timeoutMs: 250))
                 {
                     foundIp = targetIp;
-                    loopState.Stop();
+                    break;
                 }
-            });
+            }
+
             return foundIp;
         }
 

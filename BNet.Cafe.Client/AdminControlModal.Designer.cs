@@ -159,12 +159,12 @@
             // progressBarSync
             // 
             this.progressBarSync.Location = new System.Drawing.Point(20, 312);
+            this.progressBarSync.MarqueeAnimationSpeed = 30;
             this.progressBarSync.Name = "progressBarSync";
             this.progressBarSync.Size = new System.Drawing.Size(340, 18);
             this.progressBarSync.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.progressBarSync.MarqueeAnimationSpeed = 30;
-            this.progressBarSync.Visible = false;
             this.progressBarSync.TabIndex = 7;
+            this.progressBarSync.Visible = false;
             // 
             // btnCheckServer
             // 
@@ -213,7 +213,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.ClientSize = new System.Drawing.Size(380, 445);
+            this.ClientSize = new System.Drawing.Size(380, 470);
             this.Controls.Add(this.lblStatusMessage);
             this.Controls.Add(this.btnExitApp);
             this.Controls.Add(this.btnCheckServer);

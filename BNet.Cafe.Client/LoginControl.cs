@@ -130,6 +130,27 @@ namespace BNet.Cafe.Client.Controls
             OnActivity();
             SwitchToRegisterRequested?.Invoke(this, EventArgs.Empty);
         }
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+
+            // Dynamically center textboxes horizontally based on LoginControl's current width
+            int controlWidth = 330;
+            int leftMargin = (this.Width - controlWidth) / 2;
+            if (leftMargin > 0)
+            {
+                lblUsername.Left = leftMargin;
+                txtUsername.Left = leftMargin;
+                txtUsername.Width = controlWidth;
+
+                lblPassword.Left = leftMargin;
+                txtPassword.Left = leftMargin;
+                txtPassword.Width = controlWidth;
+
+                btnLogin.Left = leftMargin;
+                btnLogin.Width = controlWidth;
+            }
+        }
     }
 
     public class LoginSuccessEventArgs : EventArgs

@@ -111,5 +111,44 @@ namespace BNet.Cafe.Client.Controls
             OnActivity();
             SwitchToLoginRequested?.Invoke(this, EventArgs.Empty);
         }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+
+            // Standard field width matching the container sizing
+            int elementWidth = 330;
+            int leftMargin = (this.Width - elementWidth) / 2;
+
+            if (leftMargin > 0)
+            {
+                // Align headers and label elements horizontally
+                lblTitle.Left = leftMargin;
+                lblFullName.Left = leftMargin;
+                lblEmail.Left = leftMargin;
+                lblPassword.Left = leftMargin;
+                lblConfirmPassword.Left = leftMargin;
+
+                // Align and resize input fields
+                txtFullName.Left = leftMargin;
+                txtFullName.Width = elementWidth;
+
+                txtEmail.Left = leftMargin;
+                txtEmail.Width = elementWidth;
+
+                txtPassword.Left = leftMargin;
+                txtPassword.Width = elementWidth;
+
+                txtConfirmPassword.Left = leftMargin;
+                txtConfirmPassword.Width = elementWidth;
+
+                // Align and resize submit button
+                btnSubmit.Left = leftMargin;
+                btnSubmit.Width = elementWidth;
+
+                // Center the bottom login link text relative to the control width
+                lblLoginLink.Left = leftMargin + (elementWidth - lblLoginLink.Width) / 2;
+            }
+        }
     }
 }

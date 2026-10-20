@@ -389,23 +389,19 @@ namespace BNet.Cafe.Client
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
-            await _wallpaperService?.SyncWallpapersFromServerAsync();
-            _slideshowManager.LoadImages();
+            CenterLoginCard();
             string clientName = ConfigHelper.GetClientNameFromIP();
             lblBigPcName.Text = string.IsNullOrEmpty(clientName) ? "PC-01" : clientName;
+
             await Task.Delay(1000);
-            _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
-            await SessionPricingRate.InitializeRatesAsync();
-            await ConfigHelper.SyncServerConfigAsync();
             var session = SessionLogin.ReadSession();
             if (session != null)
             {
-                TriggerImmediateActivityReport();
-                _BNetCafeTimer.isAdmin = session.isAdmin;
                 this.Hide();
+                _BNetCafeTimer.isAdmin = session.isAdmin;
                 _BNetCafeTimer.Show();
+                TriggerImmediateActivityReport();
                 ClearTitleCache();
-
                 StopIdleMonitor();
             }
             else
@@ -414,10 +410,31 @@ namespace BNet.Cafe.Client
             }
 
             VolumeController.SetMaxVolume();
-            _screenStreamer.RebuildScreenKeyCache(ScreenCaptured.GetScreenCount(), _deviceInfo.ClientName);
+            _screenStreamer.RebuildScreenKeyCache(ScreenCaptured.GetScreenCount(), _deviceInfo?.ClientName ?? "PC-01");
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await _wallpaperService?.SyncWallpapersFromServerAsync();
+
+                    this.BeginInvoke((Action)(() => _slideshowManager.LoadImages()));
+
+                    _deviceInfo = await DeviceInfoCollector.GatherDeviceInfoAsync();
+                    await SessionPricingRate.InitializeRatesAsync();
+                    await ConfigHelper.SyncServerConfigAsync();
+                }
+                catch { }
+            });
 
             UserActivity.ActiveWindowMonitor.OnPolled += async info =>
             {
+                // Skip heavy security enforcement if the login form is visible and being typed into
+                if (!this.Visible)
+                {
+                    return;
+                }
+
                 bool fileExists = SessionLogin.Exists();
 
                 this.BeginInvoke((Action)(() =>
@@ -460,6 +477,8 @@ namespace BNet.Cafe.Client
             };
 
             UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
+
+            // Keep your background loops running asynchronously as desired:
             _ = Task.Run(ContinuousPendingLogoutSyncLoopAsync);
             _ = Task.Run(RunAgentLoop);
 
