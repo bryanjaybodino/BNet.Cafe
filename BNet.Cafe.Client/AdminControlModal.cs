@@ -48,6 +48,7 @@ namespace BNet.Cafe.Client
             {
                 chkBlockUsb.Checked = SecurityUsbManager.IsUsbDisabled();
                 chkBlockInstallers.Checked = SecurityInstallerBlockerManager.AreInstallersDisabled();
+                chkRunOnStartup.Checked = SecurityStartupManager.IsStartupEnabled();
             }
             catch (Exception ex)
             {
@@ -68,12 +69,13 @@ namespace BNet.Cafe.Client
             {
                 bool usbSuccess = chkBlockUsb.Checked ? SecurityUsbManager.DisableUsb() : SecurityUsbManager.EnableUsb();
                 bool msiSuccess = chkBlockInstallers.Checked ? SecurityInstallerBlockerManager.DisableInstallers() : SecurityInstallerBlockerManager.EnableInstallers();
+                bool startupSuccess = chkRunOnStartup.Checked ? SecurityStartupManager.EnableStartup() : SecurityStartupManager.DisableStartup();
 
-                if (usbSuccess && msiSuccess)
+                if (usbSuccess && msiSuccess && startupSuccess)
                 {
                     MessageBox.Show(
-                        "Security settings have been updated and applied successfully!",
-                        "Security Updated",
+                        "Security and startup configurations have been updated and applied successfully!",
+                        "Settings Updated",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
                     );
@@ -151,6 +153,7 @@ namespace BNet.Cafe.Client
                 SendMessage(Handle, 0xA1, 0x2, 0);
             }
         }
+
         private async void BtnCheckServer_Click(object sender, EventArgs e)
         {
             // Disable buttons and show progress bar
