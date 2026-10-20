@@ -1,0 +1,4 @@
+﻿SELECT * FROM points_rates 
+WHERE DBId = '{DBId}'
+ORDER BY DBId DESC 
+{LIMIT}

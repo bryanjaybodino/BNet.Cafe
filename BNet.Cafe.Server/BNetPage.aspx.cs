@@ -97,6 +97,7 @@ namespace BNet.Cafe.Server
                 HyperLink_SeatMap.CssClass = "";
                 HyperLink_Remote.CssClass = "";
                 HyperLink_PricingSettings.CssClass = "";
+                HyperLink_PointsSettings.CssClass = "";
                 HyperLink_TopUp.CssClass = "";
                 HyperLink_Billings.CssClass = "";
 
@@ -171,6 +172,11 @@ namespace BNet.Cafe.Server
                     HyperLink_PricingSettings.CssClass = "active";
                     group_Computers.Attributes["open"] = "open";
                 }
+                else if (formName.Contains(HyperLink_PointsSettings.ToolTip))
+                {
+                    HyperLink_PointsSettings.CssClass = "active";
+                    group_Computers.Attributes["open"] = "open";
+                } 
                 else if (formName.Contains(HyperLink_Billings.ToolTip))
                 {
                     HyperLink_Billings.CssClass = "active";
@@ -255,6 +261,9 @@ namespace BNet.Cafe.Server
                     break;
                 case "PRICINGSETTINGS":
                     scripts = new[] { "Pages/PricingSettings" };
+                    break;
+                case "POINTSSETTINGS":
+                    scripts = new[] { "Pages/PointsSettings" };
                     break;
                 case "WALLPAPER":
                     scripts = new[] { "Pages/Wallpaper" };

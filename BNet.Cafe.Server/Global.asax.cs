@@ -23,6 +23,7 @@ namespace BNet.Cafe.Server
             new Databases.Tables.suppliers().create();
             new Databases.Tables.chat_messages().create();
             new Databases.Tables.client_config().create();
+            new Databases.Tables.points_rates().create();
 
             DBContext DBContext = new DBContext();
             //DB UPDATE 

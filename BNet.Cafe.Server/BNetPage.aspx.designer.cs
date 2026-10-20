@@ -78,6 +78,15 @@ namespace BNet.Cafe.Server
         protected global::System.Web.UI.WebControls.HyperLink HyperLink_PricingSettings;
 
         /// <summary>
+        /// HyperLink_PointsSettings control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink_PointsSettings;
+
+        /// <summary>
         /// HyperLink_Billings control.
         /// </summary>
         /// <remarks>

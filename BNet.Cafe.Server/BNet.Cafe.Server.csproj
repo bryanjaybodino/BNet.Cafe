@@ -132,6 +132,7 @@
     <Content Include="Assets\ClientChat\Style.css" />
     <Content Include="Assets\Login\Script.js" />
     <Content Include="Assets\Login\Style.css" />
+    <Content Include="Assets\Pages\PointsSettings.js" />
     <Content Include="Assets\Pages\Computers.js" />
     <Content Include="Assets\Pages\InventoryManage.css" />
     <Content Include="Assets\Pages\Config.js" />
@@ -180,6 +181,11 @@
     <Content Include="Databases\Queries\ClientConfig\GetAll.sql" />
     <Content Include="Databases\Queries\ClientConfig\GetById.sql" />
     <Content Include="Databases\Queries\ClientConfig\Update.sql" />
+    <Content Include="Databases\Queries\PointsRates\Create.sql" />
+    <Content Include="Databases\Queries\PointsRates\DeleteById.sql" />
+    <Content Include="Databases\Queries\PointsRates\GetAll.sql" />
+    <Content Include="Databases\Queries\PointsRates\GetById.sql" />
+    <Content Include="Databases\Queries\PointsRates\Update.sql" />
     <Content Include="Databases\Queries\InventoryItems\Create.sql" />
     <Content Include="Databases\Queries\InventoryItems\DeleteById.sql" />
     <Content Include="Databases\Queries\InventoryItems\GetCount.sql" />
@@ -206,12 +212,14 @@
     <Content Include="Databases\Queries\Suppliers\UpdateCount.sql" />
     <Content Include="Databases\Queries\Users\GetCount.sql" />
     <Content Include="Forms\Config.ascx" />
+    <Content Include="Forms\PointsSettings.ascx" />
     <Content Include="Forms\DownloadApp.ascx" />
     <Content Include="Forms\GitHubCommitsFeed.ascx" />
     <Content Include="Forms\Inventory.ascx" />
     <Content Include="Forms\InventoryCreate.ascx" />
     <Content Include="Forms\InventoryEdit.ascx" />
     <Content Include="Forms\Modals\ChatMessage.ascx" />
+    <Content Include="Forms\Modals\PointsSettingDelete.ascx" />
     <Content Include="Forms\Modals\GitHubUpdateModal.ascx" />
     <Content Include="Forms\Modals\InventoryDelete.ascx" />
     <Content Include="Forms\Modals\POSReceipt.ascx" />
@@ -406,6 +414,7 @@
     <Compile Include="Databases\Tables\chat_messages.cs" />
     <Compile Include="Databases\Tables\client_config.cs" />
     <Compile Include="Databases\Tables\computers.cs" />
+    <Compile Include="Databases\Tables\points_rates.cs" />
     <Compile Include="Databases\Tables\inventory_items.cs" />
     <Compile Include="Databases\Tables\inventory_transactions.cs" />
     <Compile Include="Databases\Tables\pricing_rates.cs" />
@@ -460,6 +469,13 @@
     </Compile>
     <Compile Include="Forms\Config.ascx.designer.cs">
       <DependentUpon>Config.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\PointsSettings.ascx.cs">
+      <DependentUpon>PointsSettings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\PointsSettings.ascx.designer.cs">
+      <DependentUpon>PointsSettings.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Dashboard.ascx.cs">
       <DependentUpon>Dashboard.ascx</DependentUpon>
@@ -516,6 +532,13 @@
     </Compile>
     <Compile Include="Forms\Modals\ComputerDelete.ascx.designer.cs">
       <DependentUpon>ComputerDelete.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Modals\PointsSettingDelete.ascx.cs">
+      <DependentUpon>PointsSettingDelete.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Modals\PointsSettingDelete.ascx.designer.cs">
+      <DependentUpon>PointsSettingDelete.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\Modals\GitHubUpdateModal.ascx.cs">
       <DependentUpon>GitHubUpdateModal.ascx</DependentUpon>
@@ -773,6 +796,7 @@
     <Compile Include="Repositories\Computers.cs" />
     <Compile Include="Repositories\ClientData.cs" />
     <Compile Include="Repositories\Dashboard.cs" />
+    <Compile Include="Repositories\PointsRates.cs" />
     <Compile Include="Repositories\InventoryItems.cs" />
     <Compile Include="Repositories\InventoryTransactions.cs" />
     <Compile Include="Repositories\PricingRates.cs" />
