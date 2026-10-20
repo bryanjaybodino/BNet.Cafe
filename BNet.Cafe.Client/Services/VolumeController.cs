@@ -111,6 +111,33 @@ namespace BNet.Cafe.Client.Services
             catch { }
         }
 
+        /// <summary>
+        /// Sets the master volume level to 100% (1.0f) and unmutes the device.
+        /// </summary>
+        public static void SetMaxVolume()
+        {
+            try
+            {
+                var device = GetDefaultAudioDevice();
+                if (device == null) return;
+
+                Guid iid = typeof(IAudioEndpointVolume).GUID;
+                device.Activate(ref iid, 1, IntPtr.Zero, out IntPtr ptr);
+                if (ptr != IntPtr.Zero)
+                {
+                    var volume = (IAudioEndpointVolume)Marshal.GetTypedObjectForIUnknown(ptr, typeof(IAudioEndpointVolume));
+                    Marshal.Release(ptr);
+
+                    Guid guid = Guid.Empty;
+
+                    // Set scalar to 1.0 (100%) and unmute
+                    volume.SetMasterVolumeLevelScalar(1.0f, ref guid);
+                    volume.SetMute(false, ref guid);
+                }
+            }
+            catch { }
+        }
+
         private static IMMDevice GetDefaultAudioDevice()
         {
             try

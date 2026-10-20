@@ -413,6 +413,7 @@ namespace BNet.Cafe.Client
                 StartIdleMonitor();
             }
 
+            VolumeController.SetMaxVolume();
             _screenStreamer.RebuildScreenKeyCache(ScreenCaptured.GetScreenCount(), _deviceInfo.ClientName);
 
             UserActivity.ActiveWindowMonitor.OnPolled += async info =>
