@@ -48,7 +48,7 @@
                     </div>
                     <div class="hero-details">
                         <div class="hero-name">
-                            <asp:Literal ID="litUserName" runat="server">User</asp:Literal>
+                            <asp:Literal ID="litUserName" runat="server"></asp:Literal>
                         </div>
                         <div class="hero-email">
                             <asp:Literal ID="litUserEmail" runat="server"></asp:Literal>
@@ -60,7 +60,7 @@
                 </div>
 
                 <!-- Grid Container for Dual Balance Cards -->
-                <div class="balance-cards-grid">
+             <div class="balance-cards-grid">
                     <!-- Card 1: Active Session Balance (Currently in Use) -->
                     <div class="balance-card session-card">
                         <div class="card-label">
@@ -88,6 +88,19 @@
                             Available to claim: <span>
                                 <asp:Literal ID="litAccountBalanceMins" runat="server">0</asp:Literal>
                                 mins</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Total Points -->
+                    <div class="balance-card points-card">
+                        <div class="card-label">
+                            <i class="fa fa-star"></i>Total Points
+                        </div>
+                        <div class="balance-value">
+                            <asp:Literal ID="litTotalPoints" runat="server">0</asp:Literal>
+                        </div>
+                        <div class="balance-footer">
+                            Accumulated reward points
                         </div>
                     </div>
                 </div>

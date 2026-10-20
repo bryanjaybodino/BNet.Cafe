@@ -174,8 +174,7 @@ body {
     background: var(--portal-card-bg);
     border: 1px solid var(--portal-card-border);
     border-radius: 20px;
-    padding: 24px;
-    margin-bottom: 20px;
+    padding: 20px;
     position: relative;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
@@ -186,8 +185,8 @@ body {
         position: absolute;
         top: 0;
         right: 0;
-        width: 150px;
-        height: 150px;
+        width: 120px;
+        height: 120px;
         background: var(--portal-accent-gradient);
         opacity: 0.12;
         filter: blur(40px);
@@ -196,7 +195,7 @@ body {
     }
 
 .card-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8px;
@@ -204,11 +203,11 @@ body {
     margin-bottom: 8px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .balance-value {
-    font-size: 36px;
+    font-size: 28px;
     font-weight: 800;
     letter-spacing: -1px;
     color: var(--portal-text-main);
@@ -216,7 +215,7 @@ body {
 }
 
 .balance-footer {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--portal-text-muted);
 }
 
@@ -225,24 +224,31 @@ body {
         font-weight: 700;
     }
 
+/* 3-Column Grid Layout */
 .balance-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin-bottom: 20px;
 }
 
-.balance-card.session-card {
-    border-left: 4px solid #6366f1;
-}
 
-.balance-card.account-card {
-    border-left: 4px solid #10b981;
-}
 
     .balance-card.account-card .card-label {
         color: #10b981;
     }
+
+
+    .balance-card.points-card .card-label {
+        color: #f59e0b;
+    }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .balance-cards-grid {
+        grid-template-columns: 1fr;
+    }
+}
 
 /* Mobile Responsive Adjustments */
 @media (max-width: 600px) {

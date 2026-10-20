@@ -69,6 +69,7 @@ namespace BNet.Cafe.Server
                     string userId = userRow["DBId"].ToString();
                     string name = userRow["DBName"].ToString();
                     double accountBalanceMinutes = Convert.ToDouble(userRow["DBTotalDuration"]);
+                    string totalPoints = userRow["DBTotalPoints"].ToString();
 
                     HiddenField_UserId.Value = userId;
 
@@ -83,6 +84,9 @@ namespace BNet.Cafe.Server
                     // 1. Account / Banked Balance Card (Top-ups while playing stay here)
                     litAccountBalanceMins.Text = accountBalanceMinutes.ToString();
                     litAccountBalanceTime.Text = FormatDuration(accountBalanceMinutes);
+
+                    // 2. Total Points Card
+                    litTotalPoints.Text = totalPoints;
                 }
             }
 
