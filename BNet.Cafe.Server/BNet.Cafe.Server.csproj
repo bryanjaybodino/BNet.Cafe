@@ -203,6 +203,10 @@
     <Content Include="Databases\Queries\InventoryTransactions\GetById.sql" />
     <Content Include="Databases\Queries\InventoryTransactions\Update.sql" />
     <Content Include="Databases\Queries\InventoryTransactions\UpdateCount.sql" />
+    <Content Include="Databases\Queries\Points\Create.sql" />
+    <Content Include="Databases\Queries\Points\GetAll.sql" />
+    <Content Include="Databases\Queries\Points\GetPointsByUserId.sql" />
+    <Content Include="Databases\Queries\Points\GetCount.sql" />
     <Content Include="Databases\Queries\Suppliers\DeleteById.sql" />
     <Content Include="Databases\Queries\Suppliers\GetAll.sql" />
     <Content Include="Databases\Queries\Suppliers\GetById.sql" />
@@ -212,6 +216,7 @@
     <Content Include="Databases\Queries\Suppliers\UpdateCount.sql" />
     <Content Include="Databases\Queries\Users\GetCount.sql" />
     <Content Include="Forms\Config.ascx" />
+    <Content Include="Forms\Points.ascx" />
     <Content Include="Forms\PointsSettings.ascx" />
     <Content Include="Forms\DownloadApp.ascx" />
     <Content Include="Forms\GitHubCommitsFeed.ascx" />
@@ -414,6 +419,7 @@
     <Compile Include="Databases\Tables\chat_messages.cs" />
     <Compile Include="Databases\Tables\client_config.cs" />
     <Compile Include="Databases\Tables\computers.cs" />
+    <Compile Include="Databases\Tables\points.cs" />
     <Compile Include="Databases\Tables\points_rates.cs" />
     <Compile Include="Databases\Tables\inventory_items.cs" />
     <Compile Include="Databases\Tables\inventory_transactions.cs" />
@@ -469,6 +475,13 @@
     </Compile>
     <Compile Include="Forms\Config.ascx.designer.cs">
       <DependentUpon>Config.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Points.ascx.cs">
+      <DependentUpon>Points.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Forms\Points.ascx.designer.cs">
+      <DependentUpon>Points.ascx</DependentUpon>
     </Compile>
     <Compile Include="Forms\PointsSettings.ascx.cs">
       <DependentUpon>PointsSettings.ascx</DependentUpon>
@@ -796,6 +809,7 @@
     <Compile Include="Repositories\Computers.cs" />
     <Compile Include="Repositories\ClientData.cs" />
     <Compile Include="Repositories\Dashboard.cs" />
+    <Compile Include="Repositories\Points.cs" />
     <Compile Include="Repositories\PointsRates.cs" />
     <Compile Include="Repositories\InventoryItems.cs" />
     <Compile Include="Repositories\InventoryTransactions.cs" />

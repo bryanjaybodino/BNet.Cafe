@@ -126,7 +126,11 @@
                                 <asp:Label ID="Label_DBFormattedTotalDuration" runat="server" Text='<%# Eval("DBFormattedTotalDuration") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-
+                        <asp:TemplateField HeaderText="Points" ItemStyle-Width="150px">
+                            <ItemTemplate>
+                                <asp:Label ID="Label_DBTotalPoints" runat="server" Text='<%# Eval("DBTotalPoints") %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
                         <asp:TemplateField HeaderText="Date & Time" ItemStyle-Width="220px">
                             <ItemTemplate>
                                 <asp:Label ID="Label_DBDateCreated_DBTimeCreated" runat="server" Text='<%# string.Format("{0} - {1}", Eval("DBDateCreated"), Eval("DBTimeCreated")) %>'></asp:Label>

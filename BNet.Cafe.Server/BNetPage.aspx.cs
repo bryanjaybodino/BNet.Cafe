@@ -99,6 +99,7 @@ namespace BNet.Cafe.Server
                 HyperLink_PricingSettings.CssClass = "";
                 HyperLink_PointsSettings.CssClass = "";
                 HyperLink_TopUp.CssClass = "";
+                HyperLink_Points.CssClass = ""; // Added
                 HyperLink_Billings.CssClass = "";
 
                 HyperLink_POS.CssClass = "";
@@ -108,7 +109,6 @@ namespace BNet.Cafe.Server
                 HyperLink_Suppliers.CssClass = "";
 
                 HyperLink_SportTimer.CssClass = "";
-
 
                 HyperLink_Users.CssClass = "";
                 HyperLink_WallPaper.CssClass = "";
@@ -176,7 +176,7 @@ namespace BNet.Cafe.Server
                 {
                     HyperLink_PointsSettings.CssClass = "active";
                     group_Computers.Attributes["open"] = "open";
-                } 
+                }
                 else if (formName.Contains(HyperLink_Billings.ToolTip))
                 {
                     HyperLink_Billings.CssClass = "active";
@@ -185,6 +185,11 @@ namespace BNet.Cafe.Server
                 else if (formName.Contains(HyperLink_TopUp.ToolTip))
                 {
                     HyperLink_TopUp.CssClass = "active";
+                    group_Computers.Attributes["open"] = "open";
+                }
+                else if (formName.Contains(HyperLink_Points.ToolTip)) // Added
+                {
+                    HyperLink_Points.CssClass = "active";
                     group_Computers.Attributes["open"] = "open";
                 }
 

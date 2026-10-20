@@ -1,6 +1,7 @@
 ﻿using BNet.Cafe.Server.ConstantData;
+using BNet.Cafe.Server.Repositories;
 using BNet.Cafe.Server.Services;
-using Newtonsoft.Json; // Ensure Newtonsoft.Json is referenced
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Web.UI;
@@ -9,6 +10,7 @@ namespace BNet.Cafe.Server.Forms
 {
     public partial class RentalManage : System.Web.UI.UserControl
     {
+        private readonly Repositories.Points pointsRepo = new Repositories.Points();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -145,6 +147,45 @@ namespace BNet.Cafe.Server.Forms
 
             if (isSuccess)
             {
+                // Only credit/process points if a user is explicitly selected (not empty/walk-in guest with no ID)
+                if (!string.IsNullOrEmpty(userId) && duration > 0)
+                {
+                    string userRole = HiddenField_Role.Value;
+
+                    // Fallback to fetch role if hidden field is blank/guest
+                    if (string.IsNullOrEmpty(userRole) || userRole == UserType.Guest)
+                    {
+                        Repositories.Users customers = new Repositories.Users();
+                        var userData = customers.GetById(userId);
+                        if (userData != null && userData.Rows.Count > 0)
+                        {
+                            userRole = userData.Rows[0]["DBRole"].ToString();
+                        }
+                    }
+
+                    // Determine the points duration: use newly added duration if it's an update
+                    int pointsDuration = duration;
+                    if (command == ConstantData.RentalCommand.UPDATE)
+                    {
+                        int initialDuration = int.TryParse(HiddenField_InitialDuration.Value, out int initD) ? initD : 0;
+                        pointsDuration = Math.Max(0, duration - initialDuration);
+                    }
+
+                    // Calculate points earned based on the applicable duration portion and customer role/type pricing settings
+                    if (pointsDuration > 0)
+                    {
+                        double calculatedPoints = PointsRates.CalculatePointsFromDuration(pointsDuration, userRole);
+                        if (calculatedPoints > 0)
+                        {
+                            string pointsDescription = command == ConstantData.RentalCommand.UPDATE
+                                ? $"Points Earned from Rental Update ({computerName})"
+                                : $"Points Earned from Computer Rental ({computerName})";
+
+                            pointsRepo.Create(userId, calculatedPoints.ToString(), pointsDescription);
+                        }
+                    }
+                }
+
                 RemoteMessagingService.SendToPC(UpdatePanel1, computerName, userId, duration, amount, command);
                 AlertService.ShowAlert(UpdatePanel1, "Rental session successfully created.", "success", "BNetPage.aspx?Form=Computers");
             }

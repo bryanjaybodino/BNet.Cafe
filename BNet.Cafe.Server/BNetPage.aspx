@@ -72,6 +72,9 @@
                         <asp:HyperLink ID="HyperLink_TopUp" runat="server" ToolTip="TopUp" onclick="navigateTo('?Form=TopUp'); return false;">
                             <i class="fas fa-trophy"></i><span>Top-Up</span>
                         </asp:HyperLink>
+                        <asp:HyperLink ID="HyperLink_Points" runat="server" ToolTip="Points" onclick="navigateTo('?Form=Points'); return false;">
+                            <i class="fas fa-star"></i><span>Points</span>
+                        </asp:HyperLink>
                     </div>
                 </details>
 

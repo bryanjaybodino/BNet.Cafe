@@ -12,6 +12,7 @@ namespace BNet.Cafe.Server.Forms
     {
         private readonly Repositories.Users users = new Repositories.Users();
         private readonly Balances balances = new Balances();
+        private readonly Repositories.Points pointsRepo = new Repositories.Points(); // Added Points repository
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -119,13 +120,29 @@ namespace BNet.Cafe.Server.Forms
                 description = isDeduction ? "Balance Deduction" : "Top-Up Load Credit";
             }
 
+            // 1. Process balance transaction
             bool isSuccess = balances.Create(userId, duration, amount, description);
 
             if (isSuccess)
             {
+                // 2. Automatically calculate and record points based on added duration (or deduct points if it's a deduction)
+                int totalMinutesForPoints = (int)Math.Abs(durationVal);
+                double calculatedPoints = PointsRates.CalculatePointsFromDuration(totalMinutesForPoints, HiddenField_Role.Value);
+
+                if (calculatedPoints > 0)
+                {
+                    if (isDeduction)
+                    {
+                        calculatedPoints = -Math.Abs(calculatedPoints);
+                    }
+
+                    string pointsDescription = isDeduction ? "Points Deduction from Balance Adjustment" : "Points Earned from Top-Up";
+                    pointsRepo.Create(userId, calculatedPoints.ToString(), pointsDescription);
+                }
+
                 string successMessage = isDeduction
-                    ? "Deduction successful! Balance updated."
-                    : "Top-Up successful! Balance added to user account.";
+                    ? "Deduction successful! Balance and points updated."
+                    : $"Top-Up successful! Balance added and {calculatedPoints} points credited.";
 
                 AlertService.ShowAlert(UpdatePanel1, successMessage, "success", "BNetPage.aspx?Form=Users");
             }

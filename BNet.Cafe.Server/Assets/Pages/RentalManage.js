@@ -45,12 +45,25 @@ function CalculateDurationFromAmountHandlerBackend(amount) {
 }
 
 // Automatically compute duration when Admin manually inputs/changes the Amount
+// Automatically compute duration when Admin manually inputs/changes the Amount
 function calculateTimeFromAmount() {
     var amountInput = document.querySelector('[id$="TextBox_Amount"]');
+    var initialAmountInput = document.querySelector('[id$="HiddenField_InitialAmount"]');
+    var customerSelect = document.querySelector('[id$="DropDownList_Customer"]');
     if (!amountInput) return;
 
-    var amount = parseFloat(amountInput.value) || 0;
-    CalculateDurationFromAmountHandlerBackend(amount);
+    var isWalkIn = !customerSelect || !customerSelect.value || customerSelect.value === "";
+    var initialAmount = (!isWalkIn && initialAmountInput) ? (parseFloat(initialAmountInput.value) || 0) : 0;
+
+    var currentAmount = parseFloat(amountInput.value) || 0;
+
+    // PREVENT DEDUCTING BELOW INITIAL AMOUNT FOR EXISTING RENTALS
+    if (currentAmount < initialAmount) {
+        currentAmount = initialAmount;
+        amountInput.value = data.totalAmount;
+    }
+
+    CalculateDurationFromAmountHandlerBackend(currentAmount);
 }
 
 // Asynchronously fetch exact rate calculation from the backend ASHX Handler

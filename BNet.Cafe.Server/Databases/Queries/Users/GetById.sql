@@ -16,7 +16,8 @@
             CONCAT(FLOOR(b.DBTotalDuration / 60), IF(FLOOR(b.DBTotalDuration / 60) = 1, ' hr', ' hrs'))
         ELSE 
             CONCAT((b.DBTotalDuration % 60), IF((b.DBTotalDuration % 60) = 1, ' min', ' mins'))
-    END AS DBFormattedTotalDuration
+    END AS DBFormattedTotalDuration,
+    IFNULL(p.DBTotalPoints, 0) AS DBTotalPoints
 FROM users u
 LEFT JOIN (
     SELECT 
@@ -26,6 +27,14 @@ LEFT JOIN (
     WHERE DBIsDeleted = 'FALSE'
     GROUP BY DBUserId
 ) b ON u.DBId = b.DBUserId
+LEFT JOIN (
+    SELECT 
+        DBUserId, 
+        SUM(CAST(DBPoints AS DECIMAL(10,2))) AS DBTotalPoints
+    FROM points
+    WHERE DBIsDeleted = 'FALSE'
+    GROUP BY DBUserId
+) p ON u.DBId = p.DBUserId
 WHERE 1 = 1
   AND u.DBIsDeleted = '{DBIsDeleted}'
   AND u.DBId = '{DBId}'

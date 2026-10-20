@@ -24,6 +24,7 @@ namespace BNet.Cafe.Server
             new Databases.Tables.chat_messages().create();
             new Databases.Tables.client_config().create();
             new Databases.Tables.points_rates().create();
+            new Databases.Tables.points().create();
 
             DBContext DBContext = new DBContext();
             //DB UPDATE 
