@@ -351,6 +351,9 @@ namespace BNet.Cafe.Client
                 return;
             }
 
+            // Mute / set volume to 0 when locked
+            VolumeController.Mute();
+
             // Target the primary display bounds specifically
             Screen primaryScreen = Screen.PrimaryScreen;
             this.StartPosition = FormStartPosition.Manual;
@@ -367,6 +370,9 @@ namespace BNet.Cafe.Client
 
         public void UnlockScreen()
         {
+            // Restore original volume when unlocked
+            VolumeController.Restore();
+
             HideLoginForm();
             _wallpaperService?.StartAsync();
 
