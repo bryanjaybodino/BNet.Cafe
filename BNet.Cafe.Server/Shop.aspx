@@ -5,7 +5,7 @@
 <head runat="server">
     <script>
         (function () {
-            var savedTheme = localStorage.getItem('theme') || 'dark';
+            var savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
             document.documentElement.classList.add('no-transitions');
         })();
