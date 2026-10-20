@@ -426,64 +426,60 @@ namespace BNet.Cafe.Client
                 }
                 catch { }
             });
-
-            UserActivity.ActiveWindowMonitor.OnPolled += async info =>
-            {
-                // Skip heavy security enforcement if the login form is visible and being typed into
-                if (!this.Visible)
-                {
-                    return;
-                }
-
-                bool fileExists = SessionLogin.Exists();
-
-                this.BeginInvoke((Action)(() =>
-                {
-                    if (!fileExists)
-                    {
-                        if (!_BNetCafeTimer.Visible && !this.Visible)
-                        {
-                            LockScreen();
-                        }
-
-                        if (_BNetCafeTimer.Visible)
-                        {
-                            _BNetCafeTimer.Hide();
-                        }
-                    }
-                    else
-                    {
-                        if (this.Visible)
-                        {
-                            this.Hide();
-                            StopIdleMonitor();
-                        }
-
-                        if (!_BNetCafeTimer.Visible)
-                        {
-                            _BNetCafeTimer.Show();
-                            UnlockScreen();
-                        }
-                    }
-                }));
-
-                if (!_BNetCafeTimer.isAdmin)
-                {
-                    SecurityAccessManager.EnforceRestrictions(info);
-                }
-                var sess = _currentSession;
-                if (sess == null || !sess.IsOpen) return;
-                await _activityReporter.SendActivityInfoAsync(sess, info, _deviceInfo);
-            };
-
-            UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
-
             // Keep your background loops running asynchronously as desired:
             _ = Task.Run(ContinuousPendingLogoutSyncLoopAsync);
             _ = Task.Run(RunAgentLoop);
 
 
-            if (session.isAdmin)
+            UserActivity.ActiveWindowMonitor.OnPolled += async info =>
+            {
+                try
+                {
+                    bool fileExists = SessionLogin.Exists();
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        if (!fileExists)
+                        {
+                            if (!_BNetCafeTimer.Visible && !this.Visible)
+                            {
+                                LockScreen();
+                            }
+
+                            if (_BNetCafeTimer.Visible)
+                            {
+                                _BNetCafeTimer.Hide();
+                            }
+                        }
+                        else
+                        {
+                            if (this.Visible)
+                            {
+                                this.Hide();
+                                StopIdleMonitor();
+                            }
+
+                            if (!_BNetCafeTimer.Visible)
+                            {
+                                _BNetCafeTimer.Show();
+                                UnlockScreen();
+                            }
+                        }
+
+                        if (!_BNetCafeTimer.isAdmin)
+                        {
+                            SecurityAccessManager.EnforceRestrictions(info);
+                        }
+                    }));
+
+                    var sess = _currentSession;
+                    if (sess == null || !sess.IsOpen) return;
+                    await _activityReporter.SendActivityInfoAsync(sess, info, _deviceInfo);
+                }
+                catch { }
+            };
+
+            UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
+            if (_BNetCafeTimer.isAdmin)
             {
                 KeyboardHook.Stop();
             }
