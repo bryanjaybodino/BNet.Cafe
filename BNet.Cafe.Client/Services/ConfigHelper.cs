@@ -43,15 +43,9 @@ namespace BNet.Cafe.Client.Services
                         string[] octets = localIp.ToString().Split('.');
                         if (octets.Length == 4 && int.TryParse(octets[3], out int lastOctet))
                         {
-                            if (lastOctet > 100)
-                            {
-                                int pcNumber = lastOctet - 100;
-                                return $"PC-{pcNumber:D2}";
-                            }
-                            else
-                            {
-                                return $"PC-{lastOctet:D2}";
-                            }
+                            // Maps 1-100, 101-200, 201-254 into the range 1-100
+                            int pcNumber = ((lastOctet - 1) % 100) + 1;
+                            return $"PC-{pcNumber:D2}";
                         }
                     }
                 }
