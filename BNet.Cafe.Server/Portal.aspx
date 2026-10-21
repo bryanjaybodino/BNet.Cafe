@@ -60,8 +60,8 @@
                 </div>
 
                 <!-- Grid Container for Dual Balance Cards -->
-             <div class="balance-cards-grid">
-                    <!-- Card 1: Active Session Balance (Currently in Use) -->
+                <div class="balance-cards-grid">
+                    <!-- Card 1: Active Session Balance -->
                     <div class="balance-card session-card">
                         <div class="card-label">
                             <i class="fa fa-play-circle"></i>Active Session Time
@@ -76,7 +76,7 @@
                         </div>
                     </div>
 
-                    <!-- Card 2: Account / Top-Up Balance (Unused / Mid-game Top-ups) -->
+                    <!-- Card 2: Account / Top-Up Balance -->
                     <div class="balance-card account-card">
                         <div class="card-label">
                             <i class="fa fa-wallet"></i>Account Balance (Top-Ups)
@@ -108,53 +108,159 @@
                 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                     <ContentTemplate>
                         <asp:HiddenField ID="HiddenField_UserId" runat="server" />
-                        <!-- Transaction Log Table -->
-                        <div class="bnet-table-wrapper">
-                            <div class="bnet-table-toolbar">
-                                <div style="font-size: 16px; font-weight: 700; color: var(--portal-text-main); display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa fa-history"></i>Transaction History
+                        <asp:HiddenField ID="HiddenField_CustomerType" runat="server" />
+                        <asp:HiddenField ID="HF_RedeemMinutes" runat="server" />
+                        <asp:HiddenField ID="HF_RedeemPoints" runat="server" />
+
+                        <!-- 3 Tabs Navigation using LinkButton -->
+                        <div class="portal-tabs">
+                            <asp:LinkButton ID="lnkTabTransactions" runat="server" CssClass="portal-tab active" OnClick="lnkTab_Click" CommandArgument="Transactions">
+                                <i class="fa fa-history"></i> Transaction History
+                            </asp:LinkButton>
+                            <asp:LinkButton ID="lnkTabPointsHistory" runat="server" CssClass="portal-tab" OnClick="lnkTab_Click" CommandArgument="PointsHistory">
+                                <i class="fa fa-star"></i> Points History
+                            </asp:LinkButton>
+                            <asp:LinkButton ID="lnkTabRedeem" runat="server" CssClass="portal-tab" OnClick="lnkTab_Click" CommandArgument="Redeem">
+                                <i class="fa fa-gift"></i> Redeem Points
+                            </asp:LinkButton>
+                        </div>
+
+                        <!-- Tab 1: Transaction History Panel -->
+                        <asp:Panel ID="PanelTransactions" runat="server" CssClass="tab-content-panel">
+                            <div class="bnet-table-wrapper">
+                                <div class="bnet-table-toolbar">
+                                    <div style="font-size: 16px; font-weight: 700; color: var(--portal-text-main); display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa fa-history"></i>Transaction History
+                                    </div>
+                                </div>
+                                <div class="bnet-table-container">
+                                    <asp:GridView ID="GridViewTable" runat="server" ShowHeaderWhenEmpty="true"
+                                        AutoGenerateColumns="False" CssClass="bnet-table" GridLines="None"
+                                        AllowPaging="True" OnPageIndexChanging="GridViewTable_PageIndexChanging">
+                                        <Columns>
+                                            <asp:TemplateField HeaderText="Date">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="Label_DBDateCreated" runat="server" Text='<%# Eval("DBDateCreated") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Time">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="Label_DBTimeCreated" runat="server" Text='<%# Eval("DBTimeCreated") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Minutes">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="Label_DBDuration" runat="server" Text='<%# Eval("DBDuration") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Duration">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="Label_DBFormattedDuration" runat="server" Text='<%# Eval("DBFormattedDuration") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Amount">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="Label_DBAmount" runat="server" Text='<%# Eval("DBAmount") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Description">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="Label_DBDescription" runat="server" Text='<%# Eval("DBDescription") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                    </asp:GridView>
+                                    <asp:Panel ID="Panel_Pagination" runat="server" CssClass="bnet-table-pagination-container" />
                                 </div>
                             </div>
-                            <div class="bnet-table-container">
-                                <asp:GridView ID="GridViewTable" runat="server" ShowHeaderWhenEmpty="true"
-                                    AutoGenerateColumns="False" CssClass="bnet-table" GridLines="None"
-                                    AllowPaging="True" OnPageIndexChanging="GridViewTable_PageIndexChanging">
-                                    <Columns>
-                                        <asp:TemplateField HeaderText="Date">
-                                            <ItemTemplate>
-                                                <asp:Label ID="Label_DBDateCreated" runat="server" Text='<%# Eval("DBDateCreated") %>'></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Time">
-                                            <ItemTemplate>
-                                                <asp:Label ID="Label_DBTimeCreated" runat="server" Text='<%# Eval("DBTimeCreated") %>'></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Minutes">
-                                            <ItemTemplate>
-                                                <asp:Label ID="Label_DBDuration" runat="server" Text='<%# Eval("DBDuration") %>'></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Duration">
-                                            <ItemTemplate>
-                                                <asp:Label ID="Label_DBFormattedDuration" runat="server" Text='<%# Eval("DBFormattedDuration") %>'></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Amount">
-                                            <ItemTemplate>
-                                                <asp:Label ID="Label_DBAmount" runat="server" Text='<%# Eval("DBAmount") %>'></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Description">
-                                            <ItemTemplate>
-                                                <asp:Label ID="Label_DBDescription" runat="server" Text='<%# Eval("DBDescription") %>'></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                    </Columns>
-                                </asp:GridView>
-                                <asp:Panel ID="Panel_Pagination" runat="server" CssClass="bnet-table-pagination-container" />
+                        </asp:Panel>
+
+                        <!-- Tab 2: Points History Panel -->
+                        <asp:Panel ID="PanelPointsHistory" runat="server" CssClass="tab-content-panel" Visible="false">
+                            <div class="bnet-table-wrapper">
+                                <div class="bnet-table-toolbar">
+                                    <div style="font-size: 16px; font-weight: 700; color: var(--portal-text-main); display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa fa-star"></i>Points History
+                                    </div>
+                                </div>
+                                <div class="bnet-table-container">
+                                    <asp:GridView ID="GridViewPoints" runat="server" ShowHeaderWhenEmpty="true"
+                                        AutoGenerateColumns="False" CssClass="bnet-table" GridLines="None"
+                                        AllowPaging="True" OnPageIndexChanging="GridViewPoints_PageIndexChanging">
+                                        <Columns>
+                                            <asp:TemplateField HeaderText="Date">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="Label_PointsDate" runat="server" Text='<%# Eval("DBDateCreated") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Time">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="Label_PointsTime" runat="server" Text='<%# Eval("DBTimeCreated") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Points">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="Label_PointsValue" runat="server" Text='<%# Eval("DBPoints") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Description">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="Label_PointsDescription" runat="server" Text='<%# Eval("DBDescription") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                    </asp:GridView>
+                                    <asp:Panel ID="Panel_PointsPagination" runat="server" CssClass="bnet-table-pagination-container" />
+                                </div>
                             </div>
-                        </div>
+                        </asp:Panel>
+
+                        <!-- Tab 3: Redeem Points Panel -->
+                        <asp:Panel ID="PanelRedeem" runat="server" CssClass="tab-content-panel" Visible="false">
+                            <div class="user-hero-card" style="flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 20px;">
+                                <div style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--portal-text-main);">
+                                    <i class="fa fa-tags" style="color: var(--portal-accent);"></i> Available Pricing Rates (<asp:Literal ID="litCustomerType" runat="server">MEMBER</asp:Literal>)
+                                </div>
+                                <div style="font-size: 13px; color: var(--portal-text-muted);">
+                                    Redeem your accumulated reward points for time based on your active pricing tier.
+                                </div>
+                                <asp:Repeater ID="RepeaterPricingRates" runat="server" OnItemCommand="RepeaterPricingRates_ItemCommand">
+                                    <HeaderTemplate>
+                                        <div class="pricing-rates-grid" style="width: 100%;">
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <div class="pricing-rate-card">
+                                            <div class="pricing-rate-minutes"><%# Eval("DBMinutes") %> Mins</div>
+                                            <div class="pricing-rate-price">₱<%# Eval("DBPrice") %></div>
+                                            <div style="font-size: 11px; color: var(--portal-text-muted); margin-bottom: 12px;">
+                                                Cost: <%# Eval("DBPrice") %> Points
+                                            </div>
+                                            <asp:Button ID="btnRedeemRate" runat="server" CssClass="btn-redeem-rate" Text="Redeem" 
+                                                CommandName="PrepareRedeem" CommandArgument='<%# Eval("DBMinutes") + "|" + Eval("DBPrice") %>' />
+                                        </div>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                        </div>
+                                    </FooterTemplate>
+                                </asp:Repeater>
+                            </div>
+                        </asp:Panel>
+
+                        <!-- Redemption Confirmation Modal Popup -->
+                        <asp:Panel ID="PanelRedeemModal" runat="server" CssClass="modal-backdrop-overlay" Visible="false">
+                            <div class="modal-card">
+                                <div class="modal-header">
+                                    <i class="fa fa-star" style="color: #f59e0b;"></i> Confirm Redemption
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to redeem <strong><asp:Literal ID="litModalMinutes" runat="server"></asp:Literal> minutes</strong> for <strong><asp:Literal ID="litModalPoints" runat="server"></asp:Literal> points</strong>?
+                                </div>
+                                <div class="modal-footer">
+                                    <asp:Button ID="btnConfirmRedeem" runat="server" CssClass="btn-redeem-rate" Text="Yes, Redeem" OnClick="btnConfirmRedeem_Click" style="background: #10b981;" />
+                                    <asp:Button ID="btnCancelRedeem" runat="server" CssClass="btn-theme-toggle" Text="Cancel" OnClick="btnCancelRedeem_Click" style="width: auto; padding: 8px 16px; border-radius: 10px;" />
+                                </div>
+                            </div>
+                        </asp:Panel>
                     </ContentTemplate>
                 </asp:UpdatePanel>
             </main>

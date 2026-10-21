@@ -7,6 +7,7 @@ using System;
 using System.Data;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Points = BNet.Cafe.Server.Repositories.Points;
 
 namespace BNet.Cafe.Server
 {
@@ -15,13 +16,14 @@ namespace BNet.Cafe.Server
         private readonly User userSession = new User();
         private readonly Repositories.Users userRepo = new Repositories.Users();
         private readonly Balances balanceRepo = new Balances();
+        private readonly Points pointsRepo = new Points();
+        private readonly PricingRates pricingRatesRepo = new PricingRates();
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 FileJsHelpler.BundleAddScripts(ScriptManager1, "Portal/Script");
-                // Decrypt and check parameter safely
                 bool isLoginQuery = false;
                 if (!string.IsNullOrEmpty(Request.QueryString["UserId"]))
                 {
@@ -45,14 +47,12 @@ namespace BNet.Cafe.Server
                     }
                     else
                     {
-                        // kapag walk in tapos inopen ang history 
                         userSession.RemoveCookies();
                         Response.Redirect("~/ExpiredOrInvalid.aspx");
                         return;
                     }
                 }
 
-                // Redirect if unauthenticated AND NOT coming from a valid login query
                 if (userSession.count == 0 && !isLoginQuery)
                 {
                     Response.Redirect("~/Login.aspx");
@@ -68,12 +68,15 @@ namespace BNet.Cafe.Server
                     DataRow userRow = userTable.Rows[0];
                     string userId = userRow["DBId"].ToString();
                     string name = userRow["DBName"].ToString();
-                    double accountBalanceMinutes = Convert.ToDouble(userRow["DBTotalDuration"]);
-                    string totalPoints = userRow["DBTotalPoints"].ToString();
+                    string role = userRow["DBRole"].ToString();
+
+                    double accountBalanceMinutes = balanceRepo.GetBalanceByUserId(userId);
+                    double totalPointsValue = pointsRepo.GetPointsByUserId(userId);
 
                     HiddenField_UserId.Value = userId;
+                    HiddenField_CustomerType.Value = role;
+                    litCustomerType.Text = Server.HtmlEncode(role);
 
-                    // Set user info
                     litUserName.Text = Server.HtmlEncode(name);
                     litUserEmail.Text = Server.HtmlEncode(email);
                     if (!string.IsNullOrEmpty(name))
@@ -81,28 +84,33 @@ namespace BNet.Cafe.Server
                         litAvatar.Text = name.Substring(0, 1).ToUpper();
                     }
 
-                    // 1. Account / Banked Balance Card (Top-ups while playing stay here)
                     litAccountBalanceMins.Text = accountBalanceMinutes.ToString();
                     litAccountBalanceTime.Text = FormatDuration(accountBalanceMinutes);
-
-                    // 2. Total Points Card
-                    litTotalPoints.Text = totalPoints;
+                    litTotalPoints.Text = totalPointsValue.ToString();
                 }
             }
 
-            // Single call to fetch transaction logs and bind GridView
-            DataTable data = balanceRepo.GetAll("", HiddenField_UserId.Value,"", GridViewTemplateService.GetPaginationIndex(GridViewTable));
-            GridViewTemplateService.SetGridView(GridViewTable, data, Panel_Pagination);
+            // 1. Bind Transaction History GridView
+            DataTable transactionData = balanceRepo.GetAll("", HiddenField_UserId.Value, "", GridViewTemplateService.GetPaginationIndex(GridViewTable));
+            GridViewTemplateService.SetGridView(GridViewTable, transactionData, Panel_Pagination);
 
+            // 2. Bind Pricing Rates based on User Role / Customer Type
+            string currentCustomerType = string.IsNullOrEmpty(HiddenField_CustomerType.Value) ? "MEMBER" : HiddenField_CustomerType.Value;
+            DataTable pricingTable = pricingRatesRepo.GetAll(currentCustomerType);
+            RepeaterPricingRates.DataSource = pricingTable;
+            RepeaterPricingRates.DataBind();
+
+            // 3. Bind Points History GridView
+            DataTable pointsData = pointsRepo.GetAll("", HiddenField_UserId.Value, "", GridViewTemplateService.GetPaginationIndex(GridViewPoints));
+            GridViewTemplateService.SetGridView(GridViewPoints, pointsData, Panel_PointsPagination);
+
+            // Calculate active session minutes
             double activeSessionMinutes = 0;
             bool foundSession = false;
 
-            // Loop directly through GridView rows to format time and check active session using FindControl
             for (int i = 0; i < GridViewTable.Rows.Count; i++)
             {
                 GridViewRow row = GridViewTable.Rows[i];
-
-                // Format Time Label
                 try
                 {
                     Label Label_DBTimeCreated = (Label)row.FindControl("Label_DBTimeCreated");
@@ -113,7 +121,6 @@ namespace BNet.Cafe.Server
                 }
                 catch { }
 
-                // Evaluate Active Session State from rendered GridView controls
                 if (!foundSession)
                 {
                     Label Label_DBDescription = (Label)row.FindControl("Label_DBDescription");
@@ -122,26 +129,112 @@ namespace BNet.Cafe.Server
                     if (description.Contains("LOGGING-OUT"))
                     {
                         activeSessionMinutes = 0;
-                        foundSession = true; // Session ended
+                        foundSession = true;
                     }
                     else if (description.Contains("LOGGING-IN"))
                     {
                         Label Label_DBDuration = (Label)row.FindControl("Label_DBDuration");
                         string durationText = Label_DBDuration != null ? Label_DBDuration.Text : "";
 
-                        // Extract digits/numbers from string like "-3 hrs 49 mins" or "-229"
                         if (double.TryParse(System.Text.RegularExpressions.Regex.Match(durationText, @"\d+").Value, out double duration))
                         {
                             activeSessionMinutes = duration;
                         }
-                        foundSession = true; // Active session entry found
+                        foundSession = true;
                     }
                 }
             }
 
-            // Update active session cards
             litActiveSessionMins.Text = activeSessionMinutes.ToString();
             litActiveSessionTime.Text = FormatDuration(activeSessionMinutes);
+        }
+
+        protected void lnkTab_Click(object sender, EventArgs e)
+        {
+            LinkButton btn = (LinkButton)sender;
+            string command = btn.CommandArgument;
+
+            // Reset tab classes
+            lnkTabTransactions.CssClass = "portal-tab";
+            lnkTabPointsHistory.CssClass = "portal-tab";
+            lnkTabRedeem.CssClass = "portal-tab";
+
+            // Hide all panels
+            PanelTransactions.Visible = false;
+            PanelPointsHistory.Visible = false;
+            PanelRedeem.Visible = false;
+
+            if (command == "Transactions")
+            {
+                lnkTabTransactions.CssClass = "portal-tab active";
+                PanelTransactions.Visible = true;
+            }
+            else if (command == "PointsHistory")
+            {
+                lnkTabPointsHistory.CssClass = "portal-tab active";
+                PanelPointsHistory.Visible = true;
+            }
+            else if (command == "Redeem")
+            {
+                lnkTabRedeem.CssClass = "portal-tab active";
+                PanelRedeem.Visible = true;
+            }
+        }
+
+        protected void RepeaterPricingRates_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "PrepareRedeem")
+            {
+                string[] args = e.CommandArgument.ToString().Split('|');
+                if (args.Length == 2)
+                {
+                    if (int.TryParse(args[0], out int minutesToRedeem) && double.TryParse(args[1], out double pointsRequired))
+                    {
+                        string userId = HiddenField_UserId.Value;
+                        double currentPoints = pointsRepo.GetPointsByUserId(userId);
+
+                        if (currentPoints >= pointsRequired)
+                        {
+                            HF_RedeemMinutes.Value = minutesToRedeem.ToString();
+                            HF_RedeemPoints.Value = pointsRequired.ToString();
+
+                            litModalMinutes.Text = minutesToRedeem.ToString();
+                            litModalPoints.Text = pointsRequired.ToString();
+                            PanelRedeemModal.Visible = true;
+                        }
+                        else
+                        {
+                            ScriptManager.RegisterStartupScript(this, GetType(), "alert", "alert('Insufficient points to redeem this reward.');", true);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void btnConfirmRedeem_Click(object sender, EventArgs e)
+        {
+            if (int.TryParse(HF_RedeemMinutes.Value, out int minutesToRedeem) && double.TryParse(HF_RedeemPoints.Value, out double pointsRequired))
+            {
+                string userId = HiddenField_UserId.Value;
+                double currentPoints = pointsRepo.GetPointsByUserId(userId);
+
+                if (currentPoints >= pointsRequired)
+                {
+                    // 1. Deduct points via points repository
+                    pointsRepo.Create(userId, "-" + pointsRequired, $"REDEEMED {minutesToRedeem} MINUTES");
+
+                    // 2. Add time to user balance via balances repository
+                    balanceRepo.Create(userId, minutesToRedeem.ToString(), "0.00", $"REDEEMED POINTS FOR {minutesToRedeem} MINS");
+
+                    // Refresh page
+                    Response.Redirect(Request.RawUrl);
+                }
+            }
+        }
+
+        protected void btnCancelRedeem_Click(object sender, EventArgs e)
+        {
+            PanelRedeemModal.Visible = false;
         }
 
         private string FormatDuration(double totalMinutes)
@@ -159,6 +252,11 @@ namespace BNet.Cafe.Server
         protected void GridViewTable_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             GridViewTable.PageIndex = e.NewPageIndex;
+        }
+
+        protected void GridViewPoints_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GridViewPoints.PageIndex = e.NewPageIndex;
         }
 
         protected void btnLogout_Click(object sender, EventArgs e)

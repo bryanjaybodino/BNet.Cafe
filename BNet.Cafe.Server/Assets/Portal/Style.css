@@ -1,4 +1,141 @@
-﻿:root {
+﻿/* Portal Tabs */
+.portal-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--portal-card-border);
+    padding-bottom: 12px;
+    overflow-x: auto;
+}
+
+.portal-tab {
+    background: var(--portal-card-bg);
+    border: 1px solid var(--portal-card-border);
+    color: var(--portal-text-muted);
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+    .portal-tab:hover {
+        color: var(--portal-text-main);
+        border-color: var(--portal-accent);
+    }
+
+    .portal-tab.active {
+        background: var(--portal-accent-gradient);
+        color: #ffffff !important;
+        border-color: transparent;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+/* Pricing Rates Grid / Card */
+.pricing-rates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.pricing-rate-card {
+    background: var(--portal-card-bg);
+    border: 1px solid var(--portal-card-border);
+    border-radius: 16px;
+    padding: 18px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.pricing-rate-minutes {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--portal-text-main);
+    margin-bottom: 4px;
+}
+
+.pricing-rate-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #10b981;
+    margin-bottom: 12px;
+}
+
+.btn-redeem-rate {
+    background: var(--portal-accent-gradient);
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    width: 100%;
+    transition: opacity 0.2s;
+}
+
+    .btn-redeem-rate:hover {
+        opacity: 0.9;
+    }
+
+/* Confirmation Modal Overlay */
+.modal-backdrop-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 16px;
+}
+
+.modal-card {
+    background: var(--portal-card-bg);
+    border: 1px solid var(--portal-card-border);
+    border-radius: 20px;
+    padding: 24px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--portal-text-main);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-body {
+    font-size: 14px;
+    color: var(--portal-text-muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+:root {
     --portal-bg: #0d1117;
     --portal-card-bg: rgba(22, 27, 34, 0.75);
     --portal-card-border: rgba(255, 255, 255, 0.08);
@@ -232,16 +369,13 @@ body {
     margin-bottom: 20px;
 }
 
+.balance-card.account-card .card-label {
+    color: #10b981;
+}
 
-
-    .balance-card.account-card .card-label {
-        color: #10b981;
-    }
-
-
-    .balance-card.points-card .card-label {
-        color: #f59e0b;
-    }
+.balance-card.points-card .card-label {
+    color: #f59e0b;
+}
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
@@ -250,7 +384,6 @@ body {
     }
 }
 
-/* Mobile Responsive Adjustments */
 @media (max-width: 600px) {
     .portal-layout {
         padding: 12px;
