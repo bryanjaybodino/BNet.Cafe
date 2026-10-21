@@ -204,7 +204,8 @@ namespace BNet.Cafe.Server
                         }
                         else
                         {
-                            ScriptManager.RegisterStartupScript(this, GetType(), "alert", "alert('Insufficient points to redeem this reward.');", true);
+                            // Show modern modal popup instead of browser alert
+                            PanelInsufficientModal.Visible = true;
                         }
                     }
                 }
@@ -235,6 +236,11 @@ namespace BNet.Cafe.Server
         protected void btnCancelRedeem_Click(object sender, EventArgs e)
         {
             PanelRedeemModal.Visible = false;
+        }
+
+        protected void btnCloseInsufficientModal_Click(object sender, EventArgs e)
+        {
+            PanelInsufficientModal.Visible = false;
         }
 
         private string FormatDuration(double totalMinutes)

@@ -23,25 +23,10 @@
         <asp:ScriptManager ID="ScriptManager1" EnableCdn="false" EnablePageMethods="true" EnablePartialRendering="true" AsyncPostBackTimeout="99999999" ScriptMode="Release" ValidateRequestMode="Enabled" EnableScriptLocalization="true" EnableScriptGlobalization="true" LoadScriptsBeforeUI="false" CompositeScript-ScriptMode="Release" CompositeScript-ResourceUICultures="Release" runat="server"></asp:ScriptManager>
         <div class="portal-layout">
 
-            <!-- Navbar Header -->
-            <header class="portal-nav">
-                <div class="brand-logo">
-                    <i class="fa fa-cube"></i>
-                    <span>BNet Portal</span>
-                </div>
-
-                <div class="nav-actions">
-                    <button type="button" class="btn-theme-toggle" id="themeToggle" title="Toggle theme">
-                        <i class="fa fa-moon"></i>
-                    </button>
-
-                    <asp:Button ID="btnLogout" runat="server" Text="Logout" CssClass="btn-logout-modern" OnClick="btnLogout_Click" />
-                </div>
-            </header>
 
             <!-- Main Content Area -->
             <main>
-                <!-- User Information Section (Main Body) -->
+                <!-- Combined User Profile & Actions Hero Card -->
                 <div class="user-hero-card">
                     <div class="hero-avatar">
                         <asp:Literal ID="litAvatar" runat="server">U</asp:Literal>
@@ -55,7 +40,15 @@
                         </div>
                         <div class="hero-badge">
                             <i class="fa fa-circle"></i>Active Account
+                       
                         </div>
+                    </div>
+                    <!-- Integrated Actions inside the Hero Card -->
+                    <div class="hero-actions">
+                        <button type="button" class="btn-theme-toggle" id="themeToggle" title="Toggle theme">
+                            <i class="fa fa-moon"></i>
+                        </button>
+                        <asp:Button ID="btnLogout" runat="server" Text="Logout" CssClass="btn-logout-modern" OnClick="btnLogout_Click" />
                     </div>
                 </div>
 
@@ -113,15 +106,16 @@
                         <asp:HiddenField ID="HF_RedeemPoints" runat="server" />
 
                         <!-- 3 Tabs Navigation using LinkButton -->
+
                         <div class="portal-tabs">
                             <asp:LinkButton ID="lnkTabTransactions" runat="server" CssClass="portal-tab active" OnClick="lnkTab_Click" CommandArgument="Transactions">
-                                <i class="fa fa-history"></i> Transaction History
+                                <i class="fa fa-history"></i> Transactions
                             </asp:LinkButton>
                             <asp:LinkButton ID="lnkTabPointsHistory" runat="server" CssClass="portal-tab" OnClick="lnkTab_Click" CommandArgument="PointsHistory">
                                 <i class="fa fa-star"></i> Points History
                             </asp:LinkButton>
                             <asp:LinkButton ID="lnkTabRedeem" runat="server" CssClass="portal-tab" OnClick="lnkTab_Click" CommandArgument="Redeem">
-                                <i class="fa fa-gift"></i> Redeem Points
+                                <i class="fa fa-gift"></i> Redeem Rewards
                             </asp:LinkButton>
                         </div>
 
@@ -219,7 +213,7 @@
                         <asp:Panel ID="PanelRedeem" runat="server" CssClass="tab-content-panel" Visible="false">
                             <div class="user-hero-card" style="flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 20px;">
                                 <div style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--portal-text-main);">
-                                    <i class="fa fa-tags" style="color: var(--portal-accent);"></i> Available Pricing Rates (<asp:Literal ID="litCustomerType" runat="server">MEMBER</asp:Literal>)
+                                    <i class="fa fa-tags" style="color: var(--portal-accent);"></i>Available Pricing Rates (<asp:Literal ID="litCustomerType" runat="server">MEMBER</asp:Literal>)
                                 </div>
                                 <div style="font-size: 13px; color: var(--portal-text-muted);">
                                     Redeem your accumulated reward points for time based on your active pricing tier.
@@ -235,7 +229,7 @@
                                             <div style="font-size: 11px; color: var(--portal-text-muted); margin-bottom: 12px;">
                                                 Cost: <%# Eval("DBPrice") %> Points
                                             </div>
-                                            <asp:Button ID="btnRedeemRate" runat="server" CssClass="btn-redeem-rate" Text="Redeem" 
+                                            <asp:Button ID="btnRedeemRate" runat="server" CssClass="btn-redeem-rate" Text="Redeem"
                                                 CommandName="PrepareRedeem" CommandArgument='<%# Eval("DBMinutes") + "|" + Eval("DBPrice") %>' />
                                         </div>
                                     </ItemTemplate>
@@ -250,14 +244,34 @@
                         <asp:Panel ID="PanelRedeemModal" runat="server" CssClass="modal-backdrop-overlay" Visible="false">
                             <div class="modal-card">
                                 <div class="modal-header">
-                                    <i class="fa fa-star" style="color: #f59e0b;"></i> Confirm Redemption
+                                    <i class="fa fa-star" style="color: #f59e0b;"></i>Confirm Redemption
                                 </div>
                                 <div class="modal-body">
-                                    Are you sure you want to redeem <strong><asp:Literal ID="litModalMinutes" runat="server"></asp:Literal> minutes</strong> for <strong><asp:Literal ID="litModalPoints" runat="server"></asp:Literal> points</strong>?
+                                    Are you sure you want to redeem <strong>
+                                        <asp:Literal ID="litModalMinutes" runat="server"></asp:Literal>
+                                        minutes</strong> for <strong>
+                                            <asp:Literal ID="litModalPoints" runat="server"></asp:Literal>
+                                            points</strong>?
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button ID="btnConfirmRedeem" runat="server" CssClass="btn-redeem-rate" Text="Yes, Redeem" OnClick="btnConfirmRedeem_Click" style="background: #10b981;" />
-                                    <asp:Button ID="btnCancelRedeem" runat="server" CssClass="btn-theme-toggle" Text="Cancel" OnClick="btnCancelRedeem_Click" style="width: auto; padding: 8px 16px; border-radius: 10px;" />
+                                    <asp:Button ID="btnConfirmRedeem" runat="server" CssClass="btn-redeem-rate" Text="Yes, Redeem" OnClick="btnConfirmRedeem_Click" Style="background: #10b981;" />
+                                    <asp:Button ID="btnCancelRedeem" runat="server" CssClass="btn-theme-toggle" Text="Cancel" OnClick="btnCancelRedeem_Click" Style="width: auto; padding: 8px 16px; border-radius: 10px;" />
+                                </div>
+                            </div>
+                        </asp:Panel>
+                        <!-- Insufficient Points Warning Modal Popup -->
+                        <asp:Panel ID="PanelInsufficientModal" runat="server" CssClass="modal-backdrop-overlay" Visible="false">
+                            <div class="modal-card">
+                                <div class="modal-header">
+                                    <i class="fa fa-exclamation-circle" style="color: #ef4444;"></i>Insufficient Points
+                               
+                                </div>
+                                <div class="modal-body">
+                                    You don't have enough reward points to redeem this reward tier. Keep earning points to unlock more time!
+                               
+                                </div>
+                                <div class="modal-footer" style="justify-content: center;">
+                                    <asp:Button ID="btnCloseInsufficientModal" runat="server" CssClass="btn-redeem-rate" Text="Okay" OnClick="btnCloseInsufficientModal_Click" Style="background: var(--portal-accent);" />
                                 </div>
                             </div>
                         </asp:Panel>

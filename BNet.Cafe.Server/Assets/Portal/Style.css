@@ -1,154 +1,20 @@
-﻿/* Portal Tabs */
-.portal-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-    border-bottom: 1px solid var(--portal-card-border);
-    padding-bottom: 12px;
-    overflow-x: auto;
-}
-
-.portal-tab {
-    background: var(--portal-card-bg);
-    border: 1px solid var(--portal-card-border);
-    color: var(--portal-text-muted);
-    padding: 10px 20px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 14px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-}
-
-    .portal-tab:hover {
-        color: var(--portal-text-main);
-        border-color: var(--portal-accent);
-    }
-
-    .portal-tab.active {
-        background: var(--portal-accent-gradient);
-        color: #ffffff !important;
-        border-color: transparent;
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-    }
-
-/* Pricing Rates Grid / Card */
-.pricing-rates-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 16px;
-    margin-top: 10px;
-}
-
-.pricing-rate-card {
-    background: var(--portal-card-bg);
-    border: 1px solid var(--portal-card-border);
-    border-radius: 16px;
-    padding: 18px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
-
-.pricing-rate-minutes {
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--portal-text-main);
-    margin-bottom: 4px;
-}
-
-.pricing-rate-price {
-    font-size: 16px;
-    font-weight: 700;
-    color: #10b981;
-    margin-bottom: 12px;
-}
-
-.btn-redeem-rate {
-    background: var(--portal-accent-gradient);
-    color: #ffffff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    width: 100%;
-    transition: opacity 0.2s;
-}
-
-    .btn-redeem-rate:hover {
-        opacity: 0.9;
-    }
-
-/* Confirmation Modal Overlay */
-.modal-backdrop-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    padding: 16px;
-}
-
-.modal-card {
-    background: var(--portal-card-bg);
-    border: 1px solid var(--portal-card-border);
-    border-radius: 20px;
-    padding: 24px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
-
-.modal-header {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--portal-text-main);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.modal-body {
-    font-size: 14px;
-    color: var(--portal-text-muted);
-    margin-bottom: 20px;
-    line-height: 1.5;
-}
-
-.modal-footer {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-}
-
-:root {
-    --portal-bg: #0d1117;
-    --portal-card-bg: rgba(22, 27, 34, 0.75);
+﻿:root {
+    --portal-bg: #090d16;
+    --portal-card-bg: rgba(17, 24, 39, 0.7);
     --portal-card-border: rgba(255, 255, 255, 0.08);
     --portal-accent: #6366f1;
     --portal-accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-    --portal-text-main: #f3f4f6;
-    --portal-text-muted: #9ca3af;
+    --portal-text-main: #f8fafc;
+    --portal-text-muted: #94a3b8;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-theme="light"] {
-    --portal-bg: #f8fafc;
-    --portal-card-bg: #ffffff;
-    --portal-card-border: #e2e8f0;
+    --portal-bg: #f1f5f9;
+    --portal-card-bg: rgba(255, 255, 255, 0.85);
+    --portal-card-border: rgba(226, 232, 240, 0.8);
     --portal-accent: #4f46e5;
     --portal-accent-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
     --portal-text-main: #0f172a;
@@ -165,107 +31,44 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
 .portal-layout {
-    max-width: 900px;
+    max-width: 960px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 24px 16px;
 }
 
-/* Clean Topbar */
-.portal-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    background: var(--portal-card-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--portal-card-border);
-    border-radius: 16px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
-
-.brand-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 800;
-    font-size: 18px;
-    letter-spacing: -0.5px;
-    color: var(--portal-text-main);
-}
-
-    .brand-logo i {
-        color: var(--portal-accent);
-        font-size: 20px;
-    }
-
-.nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.btn-theme-toggle {
-    background: none;
-    border: 1px solid var(--portal-card-border);
-    color: var(--portal-text-main);
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.btn-logout-modern {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-    .btn-logout-modern:hover {
-        background: #ef4444;
-        color: #ffffff !important;
-    }
-
-/* User Profile Hero Section (Main Body) */
+/* User Profile Hero Section with Integrated Actions */
 .user-hero-card {
     background: var(--portal-card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--portal-card-border);
-    border-radius: 20px;
-    padding: 24px;
-    margin-bottom: 20px;
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin-bottom: 24px;
     display: flex;
     align-items: center;
     gap: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.08);
+    position: relative;
 }
 
 .hero-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 18px;
+    width: 68px;
+    height: 68px;
+    border-radius: 20px;
     background: var(--portal-accent-gradient);
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 800;
-    font-size: 24px;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    font-size: 26px;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
     flex-shrink: 0;
 }
 
@@ -274,10 +77,11 @@ body {
     flex-direction: column;
     gap: 4px;
     overflow: hidden;
+    flex-grow: 1;
 }
 
 .hero-name {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 800;
     color: var(--portal-text-main);
     line-height: 1.2;
@@ -285,7 +89,7 @@ body {
 }
 
 .hero-email {
-    font-size: 13px;
+    font-size: 13.5px;
     color: var(--portal-text-muted);
     word-break: break-all;
 }
@@ -300,73 +104,108 @@ body {
     color: #10b981;
     background: rgba(16, 185, 129, 0.1);
     border: 1px solid rgba(16, 185, 129, 0.2);
-    padding: 3px 8px;
-    border-radius: 6px;
+    padding: 4px 10px;
+    border-radius: 8px;
     width: fit-content;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
-/* Balance Highlight Card */
-.balance-card {
+/* Hero Card Action Buttons */
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.btn-theme-toggle {
     background: var(--portal-card-bg);
     border: 1px solid var(--portal-card-border);
-    border-radius: 20px;
-    padding: 20px;
+    color: var(--portal-text-main);
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+    .btn-theme-toggle:hover {
+        border-color: var(--portal-accent);
+        transform: translateY(-1px);
+    }
+
+.btn-logout-modern {
+    background: rgba(239, 68, 68, 0.08);
+    color: #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 9px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+    .btn-logout-modern:hover {
+        background: #ef4444;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+/* 3-Column Balance Cards Grid */
+.balance-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.balance-card {
+    background: var(--portal-card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--portal-card-border);
+    border-radius: var(--radius-lg);
+    padding: 22px;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06);
+    transition: var(--transition);
 }
+
+    .balance-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(99, 102, 241, 0.3);
+    }
 
     .balance-card::before {
         content: '';
         position: absolute;
         top: 0;
         right: 0;
-        width: 120px;
-        height: 120px;
+        width: 140px;
+        height: 140px;
         background: var(--portal-accent-gradient);
-        opacity: 0.12;
-        filter: blur(40px);
+        opacity: 0.08;
+        filter: blur(45px);
         border-radius: 50%;
         pointer-events: none;
     }
 
 .card-label {
-    font-size: 11px;
+    font-size: 11.5px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8px;
     color: var(--portal-accent);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
-    gap: 6px;
-}
-
-.balance-value {
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: -1px;
-    color: var(--portal-text-main);
-    margin-bottom: 6px;
-}
-
-.balance-footer {
-    font-size: 12px;
-    color: var(--portal-text-muted);
-}
-
-    .balance-footer span {
-        color: #10b981;
-        font-weight: 700;
-    }
-
-/* 3-Column Grid Layout */
-.balance-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 20px;
+    gap: 7px;
 }
 
 .balance-card.account-card .card-label {
@@ -377,10 +216,208 @@ body {
     color: #f59e0b;
 }
 
-/* Responsive Adjustments */
+.balance-value {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--portal-text-main);
+    margin-bottom: 8px;
+}
+
+.balance-footer {
+    font-size: 12.5px;
+    color: var(--portal-text-muted);
+}
+
+    .balance-footer span {
+        color: #10b981;
+        font-weight: 700;
+    }
+
+/* Modern Segmented Navigation Tabs */
+.portal-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: var(--portal-card-bg);
+    padding: 6px;
+    border: 1px solid var(--portal-card-border);
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.portal-tab {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--portal-text-muted);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13.5px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+    flex: 1;
+    justify-content: center;
+}
+
+    .portal-tab:hover {
+        color: var(--portal-text-main);
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .portal-tab.active {
+        background: var(--portal-accent-gradient);
+        color: #ffffff !important;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+/* Pricing Rates Grid Cards */
+.pricing-rates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.pricing-rate-card {
+    background: var(--portal-card-bg);
+    border: 1px solid var(--portal-card-border);
+    border-radius: var(--radius-md);
+    padding: 22px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+    transition: var(--transition);
+}
+
+    .pricing-rate-card:hover {
+        border-color: var(--portal-accent);
+        transform: translateY(-2px);
+    }
+
+.pricing-rate-minutes {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--portal-text-main);
+    margin-bottom: 4px;
+}
+
+.pricing-rate-price {
+    font-size: 17px;
+    font-weight: 700;
+    color: #10b981;
+    margin-bottom: 12px;
+}
+
+.btn-redeem-rate {
+    background: var(--portal-accent-gradient);
+    color: #ffffff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13.5px;
+    cursor: pointer;
+    width: 100%;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+    .btn-redeem-rate:hover {
+        opacity: 0.92;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+    }
+
+/* Confirmation Modal Overlay */
+.modal-backdrop-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 7, 12, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 16px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal-card {
+    background: var(--portal-card-bg);
+    border: 1px solid var(--portal-card-border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: scaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-header {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--portal-text-main);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-body {
+    font-size: 14.5px;
+    color: var(--portal-text-muted);
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleUp {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsive Breakpoints & Mobile Optimization */
 @media (max-width: 768px) {
     .balance-cards-grid {
         grid-template-columns: 1fr;
+    }
+
+    .portal-tabs {
+        justify-content: flex-start;
     }
 }
 
@@ -390,8 +427,9 @@ body {
     }
 
     .user-hero-card {
+        flex-wrap: wrap;
         padding: 18px;
-        gap: 14px;
+        gap: 16px;
     }
 
     .hero-avatar {
@@ -401,15 +439,43 @@ body {
         border-radius: 14px;
     }
 
+    .hero-details {
+        flex-grow: 1;
+        min-width: 140px;
+    }
+
     .hero-name {
-        font-size: 17px;
+        font-size: 18px;
     }
 
     .hero-email {
         font-size: 12px;
     }
 
+    .hero-actions {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        margin-left: 0;
+        margin-top: 4px;
+        border-top: 1px solid var(--portal-card-border);
+        padding-top: 12px;
+    }
+
+    .btn-logout-modern {
+        flex-grow: 1;
+        text-align: center;
+        padding: 10px 16px;
+    }
+
+    .btn-theme-toggle {
+        width: 42px;
+        height: 42px;
+    }
+
     .balance-value {
-        font-size: 28px;
+        font-size: 26px;
     }
 }
