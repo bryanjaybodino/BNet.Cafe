@@ -187,6 +187,10 @@ namespace BNet.Cafe.Client
                     var balanceTask = new CreateBalanceHandler().CreateBalanceAsync(args.UserId, "-" + args.DurationMinutes, "0", "LOGGING-IN");
                     await Task.WhenAll(rentalTask, balanceTask);
                 }
+                else
+                {
+                    KeyboardHook.Stop();
+                }
 
                 await _BNetCafeTimer.CreateTimerDataAsync(TimeService.Get().ToString(), args.DurationMinutes, "0");
                 // IMMEDIATELY show the timer and unlock screen without waiting for the 1-second poll
@@ -448,6 +452,7 @@ namespace BNet.Cafe.Client
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
+            KeyboardHook.Start();
             CenterLoginCard();
             string clientName = ConfigHelper.GetClientNameFromIP();
             lblBigPcName.Text = string.IsNullOrEmpty(clientName) ? "PC-01" : clientName;
@@ -462,6 +467,7 @@ namespace BNet.Cafe.Client
                 TriggerImmediateActivityReport();
                 ClearTitleCache();
                 StopIdleMonitor();
+                KeyboardHook.Stop();
             }
             else
             {
@@ -525,14 +531,6 @@ namespace BNet.Cafe.Client
                 });
             };
             UserActivity.ActiveWindowMonitor.StartPolling(ActivityIntervalMs);
-            if (_BNetCafeTimer.isAdmin)
-            {
-                KeyboardHook.Stop();
-            }
-            else
-            {
-                KeyboardHook.Start();
-            }
         }
 
         protected override void WndProc(ref Message m)
