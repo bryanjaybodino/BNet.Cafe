@@ -1,28 +1,85 @@
 #Requires -RunAsAdministrator
+param([string]$TargetDir)   # folder to update; passed along when the script relaunches itself from TEMP
+
 $ErrorActionPreference = 'Stop'
+$ProgressPreference    = 'SilentlyContinue'   # Windows PowerShell 5.1's progress bar makes downloads extremely slow
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 $ProcessName = "BNet.Cafe.Websocket"
-$ZipUrl = "https://github.com/bryanjaybodino/BNet.Cafe.Timer/archive/refs/heads/main.zip"
-$TargetDir = $PSScriptRoot
-$TempZip = "$env:TEMP\BNet_Repo.zip"
+$Owner       = "bryanjaybodino"
+$Repo        = "BNet.Cafe.Timer"
+$Branch      = "main"
+$SourceFolder = "BNet.Cafe.Server"
+$ManifestName = "server-manifest.txt"
+
+# The script relaunches itself from TEMP, where $PSScriptRoot is TEMP and NOT the real folder.
+# So the real folder is handed over twice: as -TargetDir and in a small state file.
+$RunnerName = "patcher_runner.ps1"
+$StateFile  = "$env:TEMP\$RunnerName.target.txt"
+$IsRunner   = $MyInvocation.MyCommand.Path -and ((Split-Path $MyInvocation.MyCommand.Path -Leaf) -eq $RunnerName)
+
+if (-not $TargetDir -and $IsRunner -and (Test-Path $StateFile)) { $TargetDir = (Get-Content $StateFile -Raw).Trim() }
+if (-not $TargetDir) { $TargetDir = $PSScriptRoot }
+$TargetDir = $TargetDir.TrimEnd('\')
+
+# Safety net: never write into TEMP (the folder that holds the runner copy)
+if ($IsRunner -and (Test-Path (Join-Path $TargetDir $RunnerName))) {
+    Write-Host "[ERROR] Could not determine the real patcher folder (got: $TargetDir)." -ForegroundColor Red
+    Write-Host "        Start the patcher from patcher.bat inside the folder you want to update." -ForegroundColor Red
+    Read-Host "Press Enter to exit"
+    exit 1
+}
+
+# Fallback only (full repo zip)
+$ZipUrl      = "https://github.com/$Owner/$Repo/archive/refs/heads/$Branch.zip"
+$TempZip     = "$env:TEMP\BNet_Repo.zip"
 $TempExtract = "$env:TEMP\BNet_Extracted"
 
 # SELF-RELOCATION PROTECTION (Prevents file locks on patcher files while updating)
 $RunningScriptPath = $MyInvocation.MyCommand.Path
-if ($RunningScriptPath -and -not $env:BNET_PATCHER_RUNNING_FROM_TEMP) {
-    $RunnerCopy = "$env:TEMP\patcher_runner.ps1"
+if ($RunningScriptPath -and -not $IsRunner) {   # relocate only once: the TEMP copy must not relocate again
+    $RunnerCopy = "$env:TEMP\$RunnerName"
     Copy-Item -Path $RunningScriptPath -Destination $RunnerCopy -Force
-    
+
     $BatSource = Join-Path $TargetDir "patcher.bat"
     if (Test-Path $BatSource) {
         Copy-Item -Path $BatSource -Destination "$env:TEMP\patcher.bat" -Force
     }
 
+    Set-Content -Path $StateFile -Value $TargetDir -Encoding UTF8   # remember the real folder for the TEMP copy
     $env:BNET_PATCHER_RUNNING_FROM_TEMP = "1"
-    Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$RunnerCopy`"" -Verb RunAs
+    Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$RunnerCopy`" -TargetDir `"$TargetDir`"" -Verb RunAs
     exit
 }
+
+# Git blob SHA-1 of a local file (lets us skip files that are already up to date)
+function Get-GitBlobSha([string]$Path) {
+    $bytes  = [IO.File]::ReadAllBytes($Path)
+    $header = [Text.Encoding]::ASCII.GetBytes("blob $($bytes.Length)`0")
+    $sha    = [Security.Cryptography.SHA1]::Create()
+    [void]$sha.TransformBlock($header, 0, $header.Length, $null, 0)
+    [void]$sha.TransformFinalBlock($bytes, 0, $bytes.Length)
+    -join ($sha.Hash | ForEach-Object { $_.ToString("x2") })
+}
+
+# Full-repo zip download (slow; only used if the manifest is unavailable)
+function Update-FromZip {
+    Write-Host "[INFO] Falling back to full archive download (slower)..." -ForegroundColor DarkYellow
+    if (Test-Path $TempZip)     { Remove-Item $TempZip -Force }
+    if (Test-Path $TempExtract) { Remove-Item $TempExtract -Recurse -Force }
+    Invoke-WebRequest -Uri $ZipUrl -OutFile $TempZip -UseBasicParsing
+    Expand-Archive -Path $TempZip -DestinationPath $TempExtract -Force
+    $src = Get-ChildItem -Path $TempExtract -Recurse -Directory | Where-Object { $_.Name -eq $SourceFolder } | Select-Object -First 1
+    if (-not $src) { throw "Could not find '$SourceFolder' folder in the downloaded archive." }
+    Get-ChildItem -Path $src.FullName | ForEach-Object {
+        Write-Host "  -> Updating: $($_.Name)" -ForegroundColor Cyan
+        Copy-Item -Path $_.FullName -Destination $TargetDir -Recurse -Force
+    }
+    if (Test-Path $TempZip)     { Remove-Item $TempZip -Force }
+    if (Test-Path $TempExtract) { Remove-Item $TempExtract -Recurse -Force }
+}
+
+try { Start-Transcript -Path (Join-Path $TargetDir "patcher.log") -Force | Out-Null } catch {}
 
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "     BNet.Cafe.Server Auto-Patcher        " -ForegroundColor Cyan
@@ -32,7 +89,7 @@ Write-Host "[INFO] Target Directory: $TargetDir" -ForegroundColor Gray
 Write-Host ""
 
 # STEP 1: Terminate Process
-Write-Host "[STEP 1/4] Checking for running process: $ProcessName.exe..." -ForegroundColor Yellow
+Write-Host "[STEP 1/3] Checking for running process: $ProcessName.exe..." -ForegroundColor Yellow
 $RunningProcess = Get-Process -Name $ProcessName -ErrorAction SilentlyContinue
 if ($RunningProcess) {
     Write-Host "[INFO] Terminating $ProcessName..." -ForegroundColor DarkYellow
@@ -44,54 +101,75 @@ if ($RunningProcess) {
 }
 Write-Host ""
 
-# STEP 2: Download Repository Archive
-Write-Host "[STEP 2/4] Downloading latest update package..." -ForegroundColor Yellow
-if (Test-Path $TempZip) { Remove-Item $TempZip -Force }
-if (Test-Path $TempExtract) { Remove-Item $TempExtract -Recurse -Force }
-
+# STEP 2: Download ONLY the BNet.Cafe.Server folder (and only files that changed)
+Write-Host "[STEP 2/3] Checking for updated files in $SourceFolder..." -ForegroundColor Yellow
 try {
-    Invoke-WebRequest -Uri $ZipUrl -OutFile $TempZip
-    Write-Host "[SUCCESS] Download completed." -ForegroundColor Green
+    # $ManifestName is generated by GitHub Actions: "<git blob sha>`t<relative path>" per line.
+    # It comes from raw.githubusercontent.com, so it does NOT use the rate-limited GitHub API.
+    $stamp   = [DateTime]::UtcNow.Ticks   # cache-buster so we always see the latest manifest
+    $content = (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/$Owner/$Repo/$Branch/$ManifestName?t=$stamp" -UseBasicParsing).Content
+    if ($content -is [byte[]]) { $content = [Text.Encoding]::UTF8.GetString($content) }
+
+    $files = @()
+    foreach ($line in ($content -split "`n")) {
+        $line = $line.TrimEnd("`r")
+        if (-not $line) { continue }
+        $parts = $line -split "`t", 2
+        if ($parts.Count -ne 2) { continue }
+        $files += [pscustomobject]@{ sha = $parts[0]; path = $parts[1] }
+    }
+    if ($files.Count -eq 0) { throw "Manifest is empty or invalid." }
+
+    $updated = 0; $skipped = 0; $failed = 0
+    foreach ($f in $files) {
+        $localPath = Join-Path $TargetDir ($f.path -replace '/', '\')
+
+        if ((Test-Path $localPath) -and ((Get-GitBlobSha $localPath) -eq $f.sha)) {
+            $skipped++
+            continue
+        }
+
+        $encoded = ($f.path -split '/' | ForEach-Object { [Uri]::EscapeDataString($_) }) -join '/'
+        $rawUrl  = "https://raw.githubusercontent.com/$Owner/$Repo/$Branch/$SourceFolder/$encoded"
+        $tmp     = "$env:TEMP\bnet_$([guid]::NewGuid().ToString('N')).tmp"
+
+        try {
+            Write-Host "  -> Updating: $($f.path)" -ForegroundColor Cyan
+            Invoke-WebRequest -Uri $rawUrl -OutFile $tmp -UseBasicParsing
+            New-Item -ItemType Directory -Path (Split-Path $localPath -Parent) -Force | Out-Null
+            Move-Item -Path $tmp -Destination $localPath -Force
+            $updated++
+        } catch {
+            $failed++
+            Write-Host "  [ERROR] $($f.path): $_" -ForegroundColor Red
+            if (Test-Path $tmp) { Remove-Item $tmp -Force }
+        }
+    }
+
+    if ($failed -gt 0) { throw "$failed file(s) failed to download." }
+    Write-Host "[SUCCESS] $updated updated, $skipped already up to date." -ForegroundColor Green
 } catch {
-    Write-Host "[ERROR] Download failed: $_" -ForegroundColor Red
-    Read-Host "Press Enter to exit"
-    exit 1
+    Write-Host "[WARNING] Selective update failed: $_" -ForegroundColor DarkYellow
+    try {
+        Update-FromZip
+        Write-Host "[SUCCESS] Files updated via full archive." -ForegroundColor Green
+    } catch {
+        Write-Host "[ERROR] Update failed: $_" -ForegroundColor Red
+        Read-Host "Press Enter to exit"
+        exit 1
+    }
 }
 Write-Host ""
 
-# STEP 3: Extract and Update Server Folder
-Write-Host "[STEP 3/4] Extracting and updating server files..." -ForegroundColor Yellow
-Expand-Archive -Path $TempZip -DestinationPath $TempExtract -Force
-
-$ServerSourceDir = Get-ChildItem -Path $TempExtract -Recurse -Directory | Where-Object { $_.Name -eq "BNet.Cafe.Server" } | Select-Object -First 1
-
-if (-not $ServerSourceDir) {
-    Write-Host "[ERROR] Could not find 'BNet.Cafe.Server' folder in the downloaded archive." -ForegroundColor Red
-    Read-Host "Press Enter to exit"
-    exit 1
-}
-
-# Copy all files safely into your repository directory
-Get-ChildItem -Path $ServerSourceDir.FullName | ForEach-Object {
-    Write-Host "  -> Updating: $($_.Name)" -ForegroundColor Cyan
-    Copy-Item -Path $_.FullName -Destination $TargetDir -Recurse -Force
-}
-Write-Host "[SUCCESS] Files updated successfully right here." -ForegroundColor Green
+# STEP 3: Done
+Write-Host "[STEP 3/3] Finishing up..." -ForegroundColor Yellow
 Write-Host ""
-
-# STEP 4: Cleanup
-Write-Host "[STEP 4/4] Cleaning up temp files..." -ForegroundColor Yellow
-if (Test-Path $TempZip) { Remove-Item $TempZip -Force }
-if (Test-Path $TempExtract) { Remove-Item $TempExtract -Recurse -Force }
-Write-Host "[SUCCESS] Cleanup finished." -ForegroundColor Green
-Write-Host ""
-
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "     UPDATE COMPLETE SUCCESSFULLY!        " -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Auto-run the WebSocket application without prompting
+# Auto-run the application without prompting
 $ExePath = Join-Path $TargetDir "$ProcessName.exe"
 if (Test-Path $ExePath) {
     Write-Host "[INFO] Automatically starting $ProcessName.exe..." -ForegroundColor Yellow
