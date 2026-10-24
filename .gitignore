@@ -380,3 +380,5 @@ FodyWeavers.xsd
 /BNet.Cafe.Server/App_Data/License.txt
 /BNet.Cafe.Server/Arduino/lock.txt
 /Published
+!/BNet.Cafe.Flasher/bin/
+!/BNet.Cafe.Flasher/bin/Debug/

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BNet.Cafe.Server", "BNet.Ca
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BNet.Cafe.Websocket", "BNet.Cafe.Websocket\BNet.Cafe.Websocket.csproj", "{A08D4E03-B0CB-421A-82BE-7589D92274DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BNet.Cafe.Flasher", "BNet.Cafe.Flasher\BNet.Cafe.Flasher.csproj", "{6B9D52DB-AC08-4941-9675-5D954CA47622}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A08D4E03-B0CB-421A-82BE-7589D92274DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A08D4E03-B0CB-421A-82BE-7589D92274DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A08D4E03-B0CB-421A-82BE-7589D92274DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B9D52DB-AC08-4941-9675-5D954CA47622}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B9D52DB-AC08-4941-9675-5D954CA47622}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B9D52DB-AC08-4941-9675-5D954CA47622}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B9D52DB-AC08-4941-9675-5D954CA47622}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
