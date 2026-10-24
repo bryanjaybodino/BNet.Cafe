@@ -873,6 +873,8 @@
     <Content Include="Ashx\GetComputerHandler.ashx" />
     <Content Include="kiosk-mode.bat" />
     <None Include="packages.config" />
+    <Content Include="patcher.bat" />
+    <Content Include="patcher.ps1" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
