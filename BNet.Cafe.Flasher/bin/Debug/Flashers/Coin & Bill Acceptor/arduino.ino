@@ -5,12 +5,12 @@
 #endif
 
 // Pico GPIO is 3.3V ONLY.
-// ---- Coin acceptor: GP4 = pin 1, GP5 = pin 2 ----
+// ---- Coin acceptor: GP1 (coinPin), GP2 (inhibitPin) ----
 const int coinPin    = 1;
 const int inhibitPin = 2;
 const bool INHIBIT_ACTIVE_LOW = true;
 
-// ---- Bill acceptor: GP1 = pin 4, GP2 = pin 5 ----
+// ---- Bill acceptor: GP4 (billPin), GP5 (billInhibitPin) ----
 const int billPin         = 4;
 const int billInhibitPin  = 5;
 const bool BILL_INHIBIT_ACTIVE_LOW = true;
@@ -19,14 +19,18 @@ const bool BILL_INHIBIT_ACTIVE_LOW = true;
 const bool DEBUG = true;
 
 // Coin
-const unsigned long coinTimeoutMs = 50;       // ms gap = coin finished
+const unsigned long coinTimeoutMs = 100;       // ms gap = coin finished
 const unsigned long minPulseUs    = 10000UL;  // reject pulses < 10ms
 const unsigned long minGapMs      = 10;       // min gap between accepted pulses
 const unsigned long settleMs      = 500;      // ignore after lock/unlock
 
 // Bill (bill pulses are usually ~50ms wide with ~50-100ms gaps)
-const unsigned long billTimeoutMs  = 300;     // ms gap = bill finished
-const unsigned long billMinPulseUs = 20000UL; // reject pulses < 20ms
+const unsigned long billTimeoutMs    = 500;      // gap = bill finished (>= 3x acceptor pulse period)
+const unsigned long billMinPulseUs   = 20000UL;  // reject pulses < 20ms
+const unsigned long billMaxPulseUs   = 200000UL; // reject pulses > 200ms (stuck line / noise burst)
+const unsigned long billDebounceUs   = 2000UL;   // ignore edges < 2ms after the previous accepted edge
+const int           BILL_CHUNK       = 10;       // bill credit is sent in steps of 10
+const unsigned long BILL_SEND_GAP_MS = 100;      // pause between each "10" so the PC can keep up
 
 // ---- Coin shared with ISR ----
 volatile int pulseCount = 0;
@@ -39,7 +43,7 @@ volatile bool lockedISR = true;
 // ---- Bill shared with ISR ----
 volatile int billPulseCount = 0;
 volatile unsigned long billLastPulseTime = 0;
-volatile unsigned long billIgnoreUntil = 0;
+volatile unsigned long billLastEdgeUs = 0;
 volatile unsigned long billFallUs = 0;
 volatile bool billPulseActive = false;
 
@@ -48,7 +52,7 @@ bool locked = true;
 // ---- Event log ring buffer ----
 enum EvType : uint8_t {
   EV_FALL, EV_ACCEPT, EV_REJ_SHORT, EV_REJ_LOCKED, EV_REJ_SETTLE, EV_REJ_GAP,
-  EV_BILL_FALL, EV_BILL_ACCEPT, EV_BILL_REJ_SHORT, EV_BILL_REJ_LOCKED, EV_BILL_REJ_SETTLE
+  EV_BILL_FALL, EV_BILL_ACCEPT, EV_BILL_REJ_SHORT, EV_BILL_REJ_LONG
 };
 struct Event { uint8_t type; unsigned long ms; unsigned long widthUs; };
 const uint8_t LOG_SIZE = 32;
@@ -93,9 +97,7 @@ void flushLog() {
                                 Serial.print(e.widthUs); Serial.println(F("us")); break;
       case EV_BILL_REJ_SHORT:   Serial.print(F("BILL REJECTED too short (noise), width="));
                                 Serial.print(e.widthUs); Serial.println(F("us")); break;
-      case EV_BILL_REJ_LOCKED:  Serial.print(F("BILL rejected: locked, width="));
-                                Serial.print(e.widthUs); Serial.println(F("us")); break;
-      case EV_BILL_REJ_SETTLE:  Serial.print(F("BILL rejected: settle window, width="));
+      case EV_BILL_REJ_LONG:    Serial.print(F("BILL REJECTED too long (stuck/noise), width="));
                                 Serial.print(e.widthUs); Serial.println(F("us")); break;
     }
   }
@@ -123,11 +125,10 @@ void applyLockState() {
   noInterrupts();
   pulseCount = 0;
   pulseActive = false;
-  billPulseCount = 0;
-  billPulseActive = false;
   lockedISR = locked;
   ignoreUntil = millis() + settleMs;
-  billIgnoreUntil = millis() + settleMs;
+  // Bill state is intentionally NOT cleared or ignored here: a bill already
+  // feeding must still be counted so the money is never lost.
   interrupts();
 
   if (DEBUG) {
@@ -165,12 +166,15 @@ void coinISR() {
   if (DEBUG) logEvent(EV_ACCEPT, width);
 }
 
-// ---- Bill ISR: same idea, separate state and pin ----
+// ---- Bill ISR: debounced, counts every valid pulse (even while locked) ----
 void billISR() {
   unsigned long nowUs = micros();
+  if (nowUs - billLastEdgeUs < billDebounceUs) return;   // bounce / glitch
   bool level = gpio_get(billPin);
 
   if (!level) {                               // FALLING
+    if (billPulseActive) return;              // already low -> ignore duplicate
+    billLastEdgeUs = nowUs;
     billFallUs = nowUs;
     billPulseActive = true;
     if (DEBUG) logEvent(EV_BILL_FALL, 0);
@@ -179,16 +183,16 @@ void billISR() {
 
   // RISING
   if (!billPulseActive) return;
+  billLastEdgeUs = nowUs;
   billPulseActive = false;
   unsigned long width = nowUs - billFallUs;
-  unsigned long nowMs = millis();
 
-  if (lockedISR)                  { if (DEBUG) logEvent(EV_BILL_REJ_LOCKED, width); return; }
-  if (nowMs < billIgnoreUntil)    { if (DEBUG) logEvent(EV_BILL_REJ_SETTLE, width); return; }
-  if (width < billMinPulseUs)     { if (DEBUG) logEvent(EV_BILL_REJ_SHORT, width);  return; }
+  if (width < billMinPulseUs) { if (DEBUG) logEvent(EV_BILL_REJ_SHORT, width); return; }
+  if (width > billMaxPulseUs) { if (DEBUG) logEvent(EV_BILL_REJ_LONG, width);  return; }
 
+  // No lock/settle rejection: never discard real money pulses.
   billPulseCount++;
-  billLastPulseTime = nowMs;
+  billLastPulseTime = millis();
   if (DEBUG) logEvent(EV_BILL_ACCEPT, width);
 }
 
@@ -216,6 +220,8 @@ int evaluateBill(int pulses) {
 void setup() {
   Serial.begin(115200);
   Keyboard.begin();
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
   pinMode(coinPin, INPUT_PULLUP);
   pinMode(billPin, INPUT_PULLUP);
 
@@ -261,9 +267,11 @@ void loop() {
   }
 
   // ---- Bill ----
+  static int pendingBillValue = 0;     // credit held if the bill finished while locked
   int billCount = 0;
   noInterrupts();
-  if (billPulseCount > 0 && millis() - billLastPulseTime > billTimeoutMs) {
+  if (billPulseCount > 0 && !billPulseActive &&
+      millis() - billLastPulseTime > billTimeoutMs) {
     billCount = billPulseCount;
     billPulseCount = 0;
   }
@@ -277,9 +285,22 @@ void loop() {
       Serial.print(F(" value="));
       Serial.println(billValue);
     }
-    if (billValue > 0 && !locked) {
-      Keyboard.print(billValue);
-      Keyboard.write(KEY_RETURN);
+    if (billValue == 0) {
+      Serial.print(F("WARNING: unknown bill pulse count ("));
+      Serial.print(billCount);
+      Serial.println(F(") - check mapping/noise/wiring!"));
+    } else {
+      pendingBillValue += billValue;
     }
+  }
+
+  // Send bill credit in steps of 10 (e.g. 50 -> 10,10,10,10,10), one per BILL_SEND_GAP_MS
+  static unsigned long lastBillSendMs = 0;
+  if (pendingBillValue > 0 && !locked && millis() - lastBillSendMs >= BILL_SEND_GAP_MS) {
+    int chunk = (pendingBillValue < BILL_CHUNK) ? pendingBillValue : BILL_CHUNK;
+    Keyboard.print(chunk);
+    Keyboard.write(KEY_RETURN);
+    pendingBillValue -= chunk;
+    lastBillSendMs = millis();
   }
 }
