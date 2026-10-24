@@ -220,6 +220,7 @@
         <i id="musicIcon" class="fa-solid fa-volume-xmark text-lg"></i>
         <span id="musicStatusText">Muted</span>
     </button>
+
     <!-- Navigation Header -->
     <header class="sticky top-0 z-50 backdrop-blur-md dark:bg-[#090d16]/80 bg-white/80 border-b dark:border-slate-800 border-slate-200 transition-colors">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -521,6 +522,7 @@
             </div>
         </div>
     </section>
+
     <!-- Setup Environment & Compatibility -->
     <section id="compatibility" class="py-16 dark:bg-[#0c111d] bg-slate-100/70 border-b dark:border-slate-800/80 border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -847,17 +849,18 @@
             </div>
         </div>
     </section>
+
     <!-- Downloads Section -->
     <section id="download" class="py-20 border-t dark:border-slate-800/80 border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-12">
                 <span class="text-xs font-mono font-bold text-cyan-500 uppercase tracking-widest">Free Distribution</span>
                 <h2 class="text-3xl font-extrabold dark:text-white text-slate-900 mt-1">Download BNet Cafe Software</h2>
-                <p class="dark:text-slate-400 text-slate-600 text-sm mt-2">Download individual software modules for server deployment and client workstation setup.</p>
+                <p class="dark:text-slate-400 text-slate-600 text-sm mt-2">Download individual software modules for server deployment, client workstations, and hardware firmware flashing.</p>
             </div>
 
-            <!-- Download Packages (2 Columns) -->
-            <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <!-- Download Packages (3 Columns Layout) -->
+            <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 <!-- Server Release -->
                 <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
                     <div>
@@ -899,9 +902,31 @@
                         <i class="fa-solid fa-download mr-1"></i> Download Client
                     </a>
                 </div>
+
+                <!-- Firmware Flasher Release -->
+                <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded text-[10px] font-mono bg-purple-500/10 text-purple-400 font-bold">FIRMWARE FLASHER</span>
+                            <span class="text-xs font-mono dark:text-slate-500 text-slate-400">v4.8.0</span>
+                        </div>
+                        <h3 class="text-lg font-bold dark:text-white text-slate-900 mt-3">Firmware Flasher</h3>
+                        <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">Hardware flasher utility tool for programming microcontrollers and board firmware.</p>
+
+                        <div class="mt-4 space-y-1 text-xs font-mono dark:text-slate-400 text-slate-500">
+                            <p><i class="fa-solid fa-angle-right text-purple-400 mr-1"></i> ESP32 &amp; Microcontroller Flasher</p>
+                            <p><i class="fa-solid fa-angle-right text-purple-400 mr-1"></i> Automatic COM Port Detection</p>
+                        </div>
+                    </div>
+
+                    <a href="https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2Fbryanjaybodino%2FBNet.Cafe%2Ftree%2Fmaster%2FBNet.Cafe.Flasher%2Fbin%2FDebug" class="mt-6 w-full py-2.5 bg-purple-500 hover:bg-purple-600 text-white font-bold text-xs uppercase rounded-xl transition-all text-center block">
+                        <i class="fa-solid fa-download mr-1"></i> Download Flasher
+                    </a>
+                </div>
             </div>
         </div>
     </section>
+
     <!-- Buy Me A Coffee / GCash Support Section -->
     <section id="support" class="py-16 border-t dark:border-slate-800/80 border-slate-200 dark:bg-[#0c111d] bg-slate-100/70">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1302,8 +1327,6 @@
                 }, 2000);
             });
         }
-
-
 
         // Fetch and display visitor count
         const COUNTER_API_URL = 'https://api.counterapi.dev/v2/bryanjaybodino-5219/portfolio-5219';
