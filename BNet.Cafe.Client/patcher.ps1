@@ -11,8 +11,32 @@ $Repo        = "BNet.Cafe.Timer"
 $Branch      = "main"
 $SourceFolder = "BNet.Cafe.Client"
 $ManifestName = "client-manifest.txt"
-if (-not $TargetDir) { $TargetDir = $PSScriptRoot }   # NOTE: inside the TEMP copy $PSScriptRoot is TEMP, so the real folder must be passed in
-$TargetDir   = $TargetDir.TrimEnd('\')
+
+# The script relaunches itself from TEMP, where $PSScriptRoot is TEMP and NOT the real folder.
+# So the real folder is handed over twice: as -TargetDir and in a small state file.
+$RunnerName = "client_patcher_runner.ps1"
+$StateFile  = "$env:TEMP\$RunnerName.target.txt"
+$IsRunner   = $MyInvocation.MyCommand.Path -and ((Split-Path $MyInvocation.MyCommand.Path -Leaf) -eq $RunnerName)
+
+if (-not $TargetDir -and $IsRunner -and (Test-Path $StateFile)) { $TargetDir = (Get-Content $StateFile -Raw).Trim() }
+if (-not $TargetDir) { $TargetDir = $PSScriptRoot }
+# Clean the path: a batch file can hand it over with stray quotes, spaces or a trailing backslash (e.g. "C:\Folder\ ")
+$TargetDir = $TargetDir.Trim().TrimStart('"').TrimEnd(' ', '"', '\')
+if ($TargetDir -match '^[A-Za-z]:$') { $TargetDir += '\' }   # keep drive roots valid
+
+# Safety net: never write into TEMP (the folder that holds the runner copy)
+if ($IsRunner -and (Test-Path (Join-Path $TargetDir $RunnerName))) {
+    Write-Host "[ERROR] Could not determine the real patcher folder (got: $TargetDir)." -ForegroundColor Red
+    Write-Host "        Start the patcher from patcher.bat inside the folder you want to update." -ForegroundColor Red
+    Read-Host "Press Enter to exit"
+    exit 1
+}
+
+if (-not (Test-Path -LiteralPath $TargetDir -PathType Container)) {
+    Write-Host "[ERROR] Target folder does not exist: [$TargetDir]" -ForegroundColor Red
+    Read-Host "Press Enter to exit"
+    exit 1
+}
 
 # Fallback only (full repo zip)
 $ZipUrl      = "https://github.com/$Owner/$Repo/archive/refs/heads/$Branch.zip"
@@ -21,8 +45,8 @@ $TempExtract = "$env:TEMP\BNet_Client_Extracted"
 
 # SELF-RELOCATION PROTECTION (Prevents file locks on patcher files while updating)
 $RunningScriptPath = $MyInvocation.MyCommand.Path
-if ($RunningScriptPath -and -not $env:BNET_CLIENT_PATCHER_RUNNING_FROM_TEMP) {
-    $RunnerCopy = "$env:TEMP\client_patcher_runner.ps1"
+if ($RunningScriptPath -and -not $IsRunner) {   # relocate only once: the TEMP copy must not relocate again
+    $RunnerCopy = "$env:TEMP\$RunnerName"
     Copy-Item -Path $RunningScriptPath -Destination $RunnerCopy -Force
 
     $BatSource = Join-Path $TargetDir "patcher.bat"
@@ -30,6 +54,7 @@ if ($RunningScriptPath -and -not $env:BNET_CLIENT_PATCHER_RUNNING_FROM_TEMP) {
         Copy-Item -Path $BatSource -Destination "$env:TEMP\patcher.bat" -Force
     }
 
+    Set-Content -Path $StateFile -Value $TargetDir -Encoding UTF8   # remember the real folder for the TEMP copy
     $env:BNET_CLIENT_PATCHER_RUNNING_FROM_TEMP = "1"
     Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$RunnerCopy`" -TargetDir `"$TargetDir`"" -Verb RunAs
     exit
@@ -68,7 +93,7 @@ Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "     BNet.Cafe.Client Auto-Patcher        " -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "[INFO] Target Directory: $TargetDir" -ForegroundColor Gray
+Write-Host "[INFO] Target Directory: [$TargetDir]" -ForegroundColor Gray
 Write-Host ""
 
 # STEP 1: Terminate Process

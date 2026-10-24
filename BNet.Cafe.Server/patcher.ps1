@@ -20,12 +20,20 @@ $IsRunner   = $MyInvocation.MyCommand.Path -and ((Split-Path $MyInvocation.MyCom
 
 if (-not $TargetDir -and $IsRunner -and (Test-Path $StateFile)) { $TargetDir = (Get-Content $StateFile -Raw).Trim() }
 if (-not $TargetDir) { $TargetDir = $PSScriptRoot }
-$TargetDir = $TargetDir.TrimEnd('\')
+# Clean the path: a batch file can hand it over with stray quotes, spaces or a trailing backslash (e.g. "C:\Folder\ ")
+$TargetDir = $TargetDir.Trim().TrimStart('"').TrimEnd(' ', '"', '\')
+if ($TargetDir -match '^[A-Za-z]:$') { $TargetDir += '\' }   # keep drive roots valid
 
 # Safety net: never write into TEMP (the folder that holds the runner copy)
 if ($IsRunner -and (Test-Path (Join-Path $TargetDir $RunnerName))) {
     Write-Host "[ERROR] Could not determine the real patcher folder (got: $TargetDir)." -ForegroundColor Red
     Write-Host "        Start the patcher from patcher.bat inside the folder you want to update." -ForegroundColor Red
+    Read-Host "Press Enter to exit"
+    exit 1
+}
+
+if (-not (Test-Path -LiteralPath $TargetDir -PathType Container)) {
+    Write-Host "[ERROR] Target folder does not exist: [$TargetDir]" -ForegroundColor Red
     Read-Host "Press Enter to exit"
     exit 1
 }
@@ -85,7 +93,7 @@ Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "     BNet.Cafe.Server Auto-Patcher        " -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "[INFO] Target Directory: $TargetDir" -ForegroundColor Gray
+Write-Host "[INFO] Target Directory: [$TargetDir]" -ForegroundColor Gray
 Write-Host ""
 
 # STEP 1: Terminate Process
