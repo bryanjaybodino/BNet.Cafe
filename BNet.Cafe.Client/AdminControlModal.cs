@@ -49,6 +49,7 @@ namespace BNet.Cafe.Client
                 chkBlockUsb.Checked = SecurityUsbManager.IsUsbDisabled();
                 chkBlockInstallers.Checked = SecurityInstallerBlockerManager.AreInstallersDisabled();
                 chkRunOnStartup.Checked = SecurityStartupManager.IsStartupEnabled();
+                chkBlockPorn.Checked = SecurityDnsManager.IsAntiPornEnabled();
             }
             catch (Exception ex)
             {
@@ -70,11 +71,12 @@ namespace BNet.Cafe.Client
                 bool usbSuccess = chkBlockUsb.Checked ? SecurityUsbManager.DisableUsb() : SecurityUsbManager.EnableUsb();
                 bool msiSuccess = chkBlockInstallers.Checked ? SecurityInstallerBlockerManager.DisableInstallers() : SecurityInstallerBlockerManager.EnableInstallers();
                 bool startupSuccess = chkRunOnStartup.Checked ? SecurityStartupManager.EnableStartup() : SecurityStartupManager.DisableStartup();
+                bool dnsSuccess = chkBlockPorn.Checked ? SecurityDnsManager.EnableAntiPorn() : SecurityDnsManager.DisableAntiPorn();
 
-                if (usbSuccess && msiSuccess && startupSuccess)
+                if (usbSuccess && msiSuccess && startupSuccess && dnsSuccess)
                 {
                     MessageBox.Show(
-                        "Security and startup configurations have been updated and applied successfully!",
+                        "Security, startup, and DNS network configurations have been updated and applied successfully!",
                         "Settings Updated",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
@@ -83,7 +85,7 @@ namespace BNet.Cafe.Client
                 else
                 {
                     MessageBox.Show(
-                        "Security settings were applied with some warnings. Check if rules failed to update.",
+                        "Security settings were applied with some warnings. Check if rules or network adapter changes failed to update.",
                         "Warning",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning

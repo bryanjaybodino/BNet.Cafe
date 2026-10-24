@@ -23,6 +23,7 @@
             this.lblElevationStatus = new System.Windows.Forms.Label();
             this.btnElevate = new System.Windows.Forms.Button();
             this.grpSecurity = new System.Windows.Forms.GroupBox();
+            this.chkBlockPorn = new System.Windows.Forms.CheckBox();
             this.chkRunOnStartup = new System.Windows.Forms.CheckBox();
             this.chkBlockInstallers = new System.Windows.Forms.CheckBox();
             this.chkBlockUsb = new System.Windows.Forms.CheckBox();
@@ -102,6 +103,7 @@
             // 
             // grpSecurity
             // 
+            this.grpSecurity.Controls.Add(this.chkBlockPorn);
             this.grpSecurity.Controls.Add(this.chkRunOnStartup);
             this.grpSecurity.Controls.Add(this.chkBlockInstallers);
             this.grpSecurity.Controls.Add(this.chkBlockUsb);
@@ -109,10 +111,24 @@
             this.grpSecurity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.grpSecurity.Location = new System.Drawing.Point(20, 135);
             this.grpSecurity.Name = "grpSecurity";
-            this.grpSecurity.Size = new System.Drawing.Size(340, 145);
+            this.grpSecurity.Size = new System.Drawing.Size(340, 175);
             this.grpSecurity.TabIndex = 3;
             this.grpSecurity.TabStop = false;
             this.grpSecurity.Text = " System Security Restrictions ";
+            // 
+            // chkBlockPorn
+            // 
+            this.chkBlockPorn.AutoSize = true;
+            this.chkBlockPorn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkBlockPorn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkBlockPorn.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.chkBlockPorn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.chkBlockPorn.Location = new System.Drawing.Point(8, 140);
+            this.chkBlockPorn.Name = "chkBlockPorn";
+            this.chkBlockPorn.Size = new System.Drawing.Size(248, 24);
+            this.chkBlockPorn.TabIndex = 3;
+            this.chkBlockPorn.Text = "Block Adult / Pornographic Sites";
+            this.chkBlockPorn.UseVisualStyleBackColor = true;
             // 
             // chkRunOnStartup
             // 
@@ -164,7 +180,7 @@
             this.btnApplyChanges.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnApplyChanges.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnApplyChanges.ForeColor = System.Drawing.Color.White;
-            this.btnApplyChanges.Location = new System.Drawing.Point(20, 290);
+            this.btnApplyChanges.Location = new System.Drawing.Point(20, 323);
             this.btnApplyChanges.Name = "btnApplyChanges";
             this.btnApplyChanges.Size = new System.Drawing.Size(340, 38);
             this.btnApplyChanges.TabIndex = 4;
@@ -174,7 +190,7 @@
             // 
             // progressBarSync
             // 
-            this.progressBarSync.Location = new System.Drawing.Point(20, 337);
+            this.progressBarSync.Location = new System.Drawing.Point(20, 370);
             this.progressBarSync.MarqueeAnimationSpeed = 30;
             this.progressBarSync.Name = "progressBarSync";
             this.progressBarSync.Size = new System.Drawing.Size(340, 18);
@@ -188,7 +204,7 @@
             this.btnCheckServer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCheckServer.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnCheckServer.ForeColor = System.Drawing.Color.White;
-            this.btnCheckServer.Location = new System.Drawing.Point(20, 363);
+            this.btnCheckServer.Location = new System.Drawing.Point(20, 396);
             this.btnCheckServer.Name = "btnCheckServer";
             this.btnCheckServer.Size = new System.Drawing.Size(340, 38);
             this.btnCheckServer.TabIndex = 5;
@@ -204,7 +220,7 @@
             this.btnExitApp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExitApp.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnExitApp.ForeColor = System.Drawing.Color.White;
-            this.btnExitApp.Location = new System.Drawing.Point(20, 410);
+            this.btnExitApp.Location = new System.Drawing.Point(20, 443);
             this.btnExitApp.Name = "btnExitApp";
             this.btnExitApp.Size = new System.Drawing.Size(340, 38);
             this.btnExitApp.TabIndex = 6;
@@ -216,7 +232,7 @@
             // 
             this.lblStatusMessage.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Italic);
             this.lblStatusMessage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblStatusMessage.Location = new System.Drawing.Point(20, 453);
+            this.lblStatusMessage.Location = new System.Drawing.Point(20, 486);
             this.lblStatusMessage.Name = "lblStatusMessage";
             this.lblStatusMessage.Size = new System.Drawing.Size(340, 25);
             this.lblStatusMessage.TabIndex = 8;
@@ -227,7 +243,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.ClientSize = new System.Drawing.Size(380, 495);
+            this.ClientSize = new System.Drawing.Size(380, 525);
             this.Controls.Add(this.lblStatusMessage);
             this.Controls.Add(this.btnExitApp);
             this.Controls.Add(this.btnCheckServer);
@@ -262,6 +278,7 @@
         private System.Windows.Forms.CheckBox chkBlockUsb;
         private System.Windows.Forms.CheckBox chkBlockInstallers;
         private System.Windows.Forms.CheckBox chkRunOnStartup;
+        private System.Windows.Forms.CheckBox chkBlockPorn;
         private System.Windows.Forms.Button btnApplyChanges;
         private System.Windows.Forms.ProgressBar progressBarSync;
         private System.Windows.Forms.Button btnCheckServer;
