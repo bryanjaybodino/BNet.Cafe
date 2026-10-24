@@ -4,24 +4,89 @@ document.addEventListener('dragstart', e => e.preventDefault());
 
 // --- IDLE TIMER FOR ATTRACT SCREEN ---
 let idleTimer = null;
-const IDLE_TIMEOUT_MS = 10000; // 10 seconds of inactivity
+let lockCountdownInterval = null;
+let lockRemainingSeconds = 60;
+const IDLE_TIMEOUT_MS = 10000; // 16 seconds of inactivity before countdown starts
 
 function resetIdleTimer() {
     if (idleTimer) {
         clearTimeout(idleTimer);
         idleTimer = null;
     }
+    if (lockCountdownInterval) {
+        clearInterval(lockCountdownInterval);
+        lockCountdownInterval = null;
+    }
 
-    // Only run the idle countdown if we are currently looking at the main menu (PSP container)
-    // and the modal is closed.
+    // Hide the idle countdown footer while active/interacting
+    const idleFooter = document.getElementById('idleCountdownFooter');
+    if (idleFooter) {
+        idleFooter.style.display = 'none';
+    }
+
     const psp = document.getElementById('pspContainer');
     const isMainMenuViewable = psp && psp.style.display !== 'none';
 
     if (isMainMenuViewable && !isModalOpen()) {
         idleTimer = setTimeout(() => {
-            showPressAnyKey();
+            startLockCountdown();
         }, IDLE_TIMEOUT_MS);
     }
+}
+
+function startLockCountdown() {
+    const idleFooter = document.getElementById('idleCountdownFooter');
+    const bannerIcon = document.getElementById('bannerIcon');
+    const bannerText = document.getElementById('bannerText');
+
+    lockRemainingSeconds = 60; // Countdown duration before locking
+    if (bannerIcon) bannerIcon.className = 'fas fa-lock';
+    if (bannerText) bannerText.innerText = `LOCKING IN ${lockRemainingSeconds}s`;
+
+    // Only reveal the footer when the countdown actually begins
+    if (idleFooter) idleFooter.style.display = 'flex';
+
+    if (lockCountdownInterval) clearInterval(lockCountdownInterval);
+
+    lockCountdownInterval = setInterval(() => {
+        lockRemainingSeconds--;
+        if (bannerText) bannerText.innerText = `LOCKING IN ${lockRemainingSeconds}s`;
+
+        if (lockRemainingSeconds <= 0) {
+            clearInterval(lockCountdownInterval);
+            lockCountdownInterval = null;
+            if (idleFooter) idleFooter.style.display = 'none';
+
+            // Trigger full lock screen
+            showPressAnyKey();
+        }
+    }, 1000);
+}
+function showPressAnyKey() {
+    if (idleTimer) clearTimeout(idleTimer);
+    if (lockCountdownInterval) clearInterval(lockCountdownInterval);
+
+    const idleFooter = document.getElementById('idleCountdownFooter');
+    if (idleFooter) idleFooter.style.display = 'none';
+
+    const screen = document.getElementById('pressAnyKeyScreen');
+    if (screen) screen.style.display = 'block'; // Show full lock screen
+
+    const psp = document.getElementById('pspContainer');
+    if (psp) psp.style.display = 'none';
+    syncArduinoState();
+}
+
+function hidePressAnyKey() {
+    const screen = document.getElementById('pressAnyKeyScreen');
+    if (screen) screen.style.display = 'none'; // Completely hide lock overlay so mouse/swipe works
+
+    const psp = document.getElementById('pspContainer');
+    if (psp) psp.style.removeProperty('display');
+
+    requestAnimationFrame(() => updateCarouselPosition(0));
+    syncArduinoState();
+    resetIdleTimer();
 }
 
 // Bind meaningful user interaction events (removed 'mousemove' to prevent jitter/constant resets)
@@ -666,26 +731,6 @@ function isPressAnyKeyVisible() {
     return !!screen && screen.style.display !== 'none';
 }
 
-function showPressAnyKey() {
-    const screen = getPressAnyKeyScreen();
-    if (screen) screen.style.display = 'block'; // Ensure screen becomes visible
-
-    const psp = document.getElementById('pspContainer');
-    if (psp) psp.style.display = 'none';
-    syncArduinoState();
-}
-
-function hidePressAnyKey() {
-    const screen = getPressAnyKeyScreen();
-    if (screen) screen.style.display = 'none';
-
-    const psp = document.getElementById('pspContainer');
-    if (psp) psp.style.removeProperty('display');
-
-    requestAnimationFrame(() => updateCarouselPosition(0));
-    syncArduinoState();
-    resetIdleTimer();
-}
 
 function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
