@@ -46,6 +46,8 @@ function startLockCountdown() {
     // Only reveal the footer when the countdown actually begins
     if (idleFooter) idleFooter.style.display = 'flex';
 
+    speakText("System is Locking soon");
+
     if (lockCountdownInterval) clearInterval(lockCountdownInterval);
 
     lockCountdownInterval = setInterval(() => {
@@ -74,6 +76,10 @@ function showPressAnyKey() {
 
     const psp = document.getElementById('pspContainer');
     if (psp) psp.style.display = 'none';
+
+    // --- ADD SOUND WHEN LOCKED ---
+    speakText("System is locked now");
+
     syncArduinoState();
 }
 
@@ -87,6 +93,9 @@ function hidePressAnyKey() {
     requestAnimationFrame(() => updateCarouselPosition(0));
     syncArduinoState();
     resetIdleTimer();
+
+    // --- ADD SOUND WHEN UNLOCKED ---
+    speakText("Choose PC");
 }
 
 // Bind meaningful user interaction events (removed 'mousemove' to prevent jitter/constant resets)
@@ -175,14 +184,19 @@ function handleNumberInput(digit) {
         if (titleEl) currentPcName = titleEl.innerText;
     }
 
-    // Digits are joined into ONE number ("2","0" -> 20) until Enter arrives.
-    pendingDigits += digit;
+    // Play coin sound on every input
+    playCoinSound();
 
-    modalNumberDisplay.innerText = totalAmount + (parseInt(pendingDigits, 10) || 0);
+    // Instead of string concatenation ("1" + "1" = "11"), 
+    // we add them numerically (1 + 1 = 2)
+    const currentPending = parseInt(pendingDigits, 10) || 0;
+    const incomingDigit = parseInt(digit, 10) || 0;
+    pendingDigits = currentPending + incomingDigit;
+
+    modalNumberDisplay.innerText = totalAmount + pendingDigits;
     showNumberModal(currentPcName);
     resetModalCloseTimer();
 }
-
 // Enter = the Arduino finished typing one coin -> add it to the total
 function handleEnterInput() {
     if (pendingDigits) {
@@ -356,7 +370,7 @@ function renderPSPMenu() {
 
     requestAnimationFrame(() => updateCarouselPosition(0));
 }
-
+let lastSpokenPC = "";
 function updateCarouselPosition(extraOffset = 0) {
     const cards = document.querySelectorAll('.psp-card');
     if (cards.length === 0) return;
@@ -368,6 +382,18 @@ function updateCarouselPosition(extraOffset = 0) {
     if (pspContainer.style.display === 'none') return;
 
     const target = cards[selectedIndex];
+
+    // --- ADD SOUND WHEN SELECTING / MOVING TO A PC ---
+    if (target) {
+        const titleEl = target.querySelector('.pc-title');
+        const pcName = titleEl ? titleEl.innerText : `PC-${String(selectedIndex + 1).padStart(2, '0')}`;
+
+        if (pcName !== lastSpokenPC) {
+            lastSpokenPC = pcName;
+            speakText(pcName); // e.g. says "PC-01"
+        }
+    }
+
     const cardCenter = (target.offsetLeft - pspCarousel.offsetLeft) + (target.offsetWidth / 2);
     const totalTranslate = (window.innerWidth / 2) - cardCenter + extraOffset;
 
@@ -880,3 +906,88 @@ syncServerTime().then(() => {
 setInterval(syncServerTime, 5 * 60 * 1000);
 
 setInterval(() => { if (isPressAnyKeyVisible()) tickAttractTimes(); }, 1000);
+
+
+// --- HELPER: Text-to-Speech Function ---
+function speakText(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.5; // Speed (0.1 to 10)
+        utterance.pitch = 2.0; // Pitch (0 to 2)
+        window.speechSynthesis.speak(utterance);
+    }
+}
+// --- SHARED AUDIO CONTEXT (Prevents browser audio crash on rapid drops) ---
+let sharedAudioCtx = null;
+
+function getAudioContext() {
+    if (!sharedAudioCtx) {
+        const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtxClass) {
+            sharedAudioCtx = new AudioCtxClass();
+        }
+    }
+    if (sharedAudioCtx && sharedAudioCtx.state === 'suspended') {
+        sharedAudioCtx.resume();
+    }
+    return sharedAudioCtx;
+}
+
+function playCoinSound() {
+    try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+
+        const now = ctx.currentTime;
+
+        // Master gain container
+        const masterGain = ctx.createGain();
+        masterGain.gain.setValueAtTime(0.35, now);
+        masterGain.connect(ctx.destination);
+
+        // Crisp dual metallic coin frequencies (tuned for a clearer coin clink)
+        const metallicFrequencies = [2400, 3100];
+
+        metallicFrequencies.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+            // Natural metallic pitch decay
+            osc.frequency.exponentialRampToValueAtTime(freq * 0.9, now + 0.12);
+
+            // Clean decay envelope
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + (i === 0 ? 0.1 : 0.15));
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+
+            osc.start(now);
+            osc.stop(now + 0.16);
+        });
+
+        // Short impact thud/clink component
+        const thudOsc = ctx.createOscillator();
+        const thudGain = ctx.createGain();
+
+        thudOsc.type = 'triangle';
+        thudOsc.frequency.setValueAtTime(600, now);
+        thudOsc.frequency.exponentialRampToValueAtTime(200, now + 0.04);
+
+        thudGain.gain.setValueAtTime(0.15, now);
+        thudGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+
+        thudOsc.connect(thudGain);
+        thudGain.connect(masterGain);
+
+        thudOsc.start(now);
+        thudOsc.stop(now + 0.05);
+
+    } catch (e) {
+        console.warn("Web Audio API not supported or blocked:", e);
+    }
+}
