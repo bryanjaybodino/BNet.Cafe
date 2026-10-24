@@ -552,7 +552,7 @@ namespace BNet.Cafe.Client
                 this.Refresh();
             }
         }
-        private void Button_Print_Click(object sender, EventArgs e)
+        private async void Button_Print_Click(object sender, EventArgs e)
         {
             try
             {
@@ -574,25 +574,54 @@ namespace BNet.Cafe.Client
 
                 string fullFtpFolderPath = $"{ftpPath}{currentPcName}";
 
-                // Attempt to create the directory via FTP if it does not already exist
-                try
+                // Show a brief message or disable button if desired, but Task.Run keeps UI fully responsive
+                bool isServerReachable = await Task.Run(() =>
                 {
-                    FtpWebRequest request = (FtpWebRequest)WebRequest.Create(fullFtpFolderPath);
-                    request.Method = WebRequestMethods.Ftp.MakeDirectory;
-                    // request.Credentials = new NetworkCredential("username", "password");
+                    try
+                    {
+                        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(fullFtpFolderPath);
+                        request.Method = WebRequestMethods.Ftp.MakeDirectory;
 
-                    using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
-                    {
-                        // Directory created successfully
+                        // Keep a short timeout so it fails fast in the background if the server is offline
+                        request.Timeout = 3000;
+                        request.ReadWriteTimeout = 3000;
+
+                        using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                        {
+                            // Directory created successfully
+                        }
+                        return true;
                     }
-                }
-                catch (WebException ex)
-                {
-                    FtpWebResponse response = (FtpWebResponse)ex.Response;
-                    // Ignore status code 550 (ActionNotTakenFileUnavailable) as it indicates the folder already exists
-                    if (response != null && response.StatusCode != FtpStatusCode.ActionNotTakenFileUnavailable)
+                    catch (WebException ex)
                     {
-                        // Optionally log other specific FTP response status codes here
+                        FtpWebResponse response = ex.Response as FtpWebResponse;
+
+                        // Status code 550 means the folder already exists (which is completely fine)
+                        if (response != null && response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                });
+
+                // If the server is down, ask the user what to do instead of crashing or locking up
+                if (!isServerReachable)
+                {
+                    var choice = MessageBox.Show(
+                        "The print server is currently offline or unreachable. Would you still like to try opening the folder?",
+                        "FTP Server Warning",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+
+                    if (choice == DialogResult.No)
+                    {
+                        return;
                     }
                 }
 
