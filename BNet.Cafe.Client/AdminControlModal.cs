@@ -57,7 +57,7 @@ namespace BNet.Cafe.Client
             }
         }
 
-        private void BtnApplyChanges_Click(object sender, EventArgs e)
+        private async void BtnApplyChanges_Click(object sender, EventArgs e)
         {
             if (!SecurityInstallerBlockerManager.IsElevated())
             {
@@ -66,14 +66,31 @@ namespace BNet.Cafe.Client
                 return;
             }
 
+            // Save the original window title to restore it later
+            string originalTitle = this.Text;
+
+            // Disable controls to prevent duplicate clicks while applying
+            btnApplyChanges.Enabled = false;
+            btnCheckServer.Enabled = false;
+            btnExitApp.Enabled = false;
+
+            // Change window title to show progress status
+            this.Text = "Applying security settings... Please wait";
+
             try
             {
-                bool usbSuccess = chkBlockUsb.Checked ? SecurityUsbManager.DisableUsb() : SecurityUsbManager.EnableUsb();
-                bool msiSuccess = chkBlockInstallers.Checked ? SecurityInstallerBlockerManager.DisableInstallers() : SecurityInstallerBlockerManager.EnableInstallers();
-                bool startupSuccess = chkRunOnStartup.Checked ? SecurityStartupManager.EnableStartup() : SecurityStartupManager.DisableStartup();
-                bool dnsSuccess = chkBlockPorn.Checked ? SecurityDnsManager.EnableAntiPorn() : SecurityDnsManager.DisableAntiPorn();
+                // Run security changes asynchronously on a background thread so the UI never freezes
+                bool success = await Task.Run(() =>
+                {
+                    bool usbSuccess = chkBlockUsb.Checked ? SecurityUsbManager.DisableUsb() : SecurityUsbManager.EnableUsb();
+                    bool msiSuccess = chkBlockInstallers.Checked ? SecurityInstallerBlockerManager.DisableInstallers() : SecurityInstallerBlockerManager.EnableInstallers();
+                    bool startupSuccess = chkRunOnStartup.Checked ? SecurityStartupManager.EnableStartup() : SecurityStartupManager.DisableStartup();
+                    bool dnsSuccess = chkBlockPorn.Checked ? SecurityDnsManager.EnableAntiPorn() : SecurityDnsManager.DisableAntiPorn();
 
-                if (usbSuccess && msiSuccess && startupSuccess && dnsSuccess)
+                    return usbSuccess && msiSuccess && startupSuccess && dnsSuccess;
+                });
+
+                if (success)
                 {
                     MessageBox.Show(
                         "Security, startup, and DNS network configurations have been updated and applied successfully!",
@@ -100,6 +117,14 @@ namespace BNet.Cafe.Client
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
+            }
+            finally
+            {
+                // Restore the original window title and re-enable controls
+                this.Text = originalTitle;
+                btnApplyChanges.Enabled = true;
+                btnCheckServer.Enabled = true;
+                btnExitApp.Enabled = true;
             }
         }
 
